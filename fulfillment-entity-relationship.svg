@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1120" viewBox="0 0 1600 1120">
+  <defs>
+    <style>
+      .bg { fill: #f7f9fc; }
+      .title { font: 700 34px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #172033; }
+      .subtitle { font: 400 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #627086; }
+      .card { fill: #ffffff; stroke: #d8e0ea; stroke-width: 1.5; rx: 14; }
+      .core { fill: #fff8ed; stroke: #f1b867; }
+      .msg { fill: #eef7ff; stroke: #8ec5f5; }
+      .flow { fill: #f2f6ff; stroke: #9eb7ed; }
+      .task { fill: #effaf4; stroke: #8bd3a9; }
+      .track { fill: #f7f1ff; stroke: #b89bea; }
+      .header { font: 700 18px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #172033; }
+      .field { font: 400 14px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #334155; }
+      .note { font: 400 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #64748b; }
+      .edge { stroke: #54637a; stroke-width: 2.2; fill: none; }
+      .edge-dashed { stroke: #7d8da6; stroke-width: 2; stroke-dasharray: 7 7; fill: none; }
+      .edge-label { font: 600 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #475569; }
+      .pill { fill: #e9eef6; rx: 12; }
+      .pill-text { font: 600 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #475569; }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#54637a"/>
+    </marker>
+    <marker id="arrow-soft" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#7d8da6"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1600" height="1120"/>
+
+  <text class="title" x="64" y="64">履约核心实体关系图</text>
+  <text class="subtitle" x="64" y="96">订单消息生成履约单据，履约主单按流程和状态流转，再驱动任务、跟单、SLA、驳回等后续模块。</text>
+
+  <rect class="pill" x="1220" y="50" width="306" height="34"/>
+  <text class="pill-text" x="1238" y="72">核心关联键：service_code / biz_code</text>
+
+  <!-- Row 1: entry and core -->
+  <rect class="card msg" x="64" y="160" width="260" height="170"/>
+  <text class="header" x="88" y="194">入口消息</text>
+  <text class="field" x="88" y="224">ServiceReceiptDTO</text>
+  <text class="field" x="88" y="250">orderNo / itemId</text>
+  <text class="field" x="88" y="276">receiptType / number</text>
+  <text class="field" x="88" y="302">skuId / categoryId / typeId</text>
+
+  <rect class="card core" x="414" y="146" width="300" height="198"/>
+  <text class="header" x="438" y="180">履约单据</text>
+  <text class="field" x="438" y="210">kxt_service_receipt</text>
+  <text class="field" x="438" y="236">receipt_code 单据编号</text>
+  <text class="field" x="438" y="262">service_code 服务单号</text>
+  <text class="field" x="438" y="288">order_no / item_id</text>
+  <text class="field" x="438" y="314">receipt_type / service_start/end_time</text>
+
+  <rect class="card core" x="820" y="118" width="360" height="254"/>
+  <text class="header" x="844" y="152">履约主单</text>
+  <text class="field" x="844" y="182">kxt_service_perform</text>
+  <text class="field" x="844" y="208">service_code 服务单号</text>
+  <text class="field" x="844" y="234">parent_service_code 父服务单号</text>
+  <text class="field" x="844" y="260">category_id / type_id / country_code</text>
+  <text class="field" x="844" y="286">flow_id 当前流程</text>
+  <text class="field" x="844" y="312">state_id 当前状态 / pre_state_id 前状态</text>
+  <text class="field" x="844" y="338">s_user_id 客户经理 / c_user_id 客服</text>
+
+  <rect class="card core" x="1238" y="146" width="298" height="198"/>
+  <text class="header" x="1262" y="180">履约明细</text>
+  <text class="field" x="1262" y="210">kxt_service_perform_info</text>
+  <text class="field" x="1262" y="236">perform_id</text>
+  <text class="field" x="1262" y="262">form_data_info 表单资料</text>
+  <text class="field" x="1262" y="288">submission/audit/rejection_time</text>
+  <text class="field" x="1262" y="314">tax_json / certificate / agreement</text>
+
+  <!-- Flow config row -->
+  <rect class="card flow" x="414" y="482" width="300" height="176"/>
+  <text class="header" x="438" y="516">流程匹配规则</text>
+  <text class="field" x="438" y="546">kxt_process_rules</text>
+  <text class="field" x="438" y="572">category_id 类目</text>
+  <text class="field" x="438" y="598">type_id 类型</text>
+  <text class="field" x="438" y="624">country_code 国家</text>
+  <text class="field" x="438" y="650">flow_id 匹配流程</text>
+
+  <rect class="card flow" x="820" y="468" width="360" height="204"/>
+  <text class="header" x="844" y="502">流程定义</text>
+  <text class="field" x="844" y="532">kxt_service_process_flow</text>
+  <text class="field" x="844" y="558">id / name</text>
+  <text class="field" x="844" y="584">flow_form_json 流程JSON</text>
+  <text class="field" x="844" y="610">current_version_id / version_no</text>
+  <text class="field" x="844" y="636">定义节点、按钮、流转线</text>
+
+  <rect class="card flow" x="1238" y="468" width="298" height="204"/>
+  <text class="header" x="1262" y="502">状态节点</text>
+  <text class="field" x="1262" y="532">kxt_service_process_state</text>
+  <text class="field" x="1262" y="558">id</text>
+  <text class="field" x="1262" y="584">code 状态编码</text>
+  <text class="field" x="1262" y="610">name 后台名称</text>
+  <text class="field" x="1262" y="636">client_name 客户端名称</text>
+
+  <rect class="card flow" x="1238" y="724" width="298" height="142"/>
+  <text class="header" x="1262" y="758">状态展示配置</text>
+  <text class="field" x="1262" y="788">kxt_service_perform_state</text>
+  <text class="field" x="1262" y="814">category_id / show_type</text>
+  <text class="field" x="1262" y="840">state_id / sort / compose</text>
+
+  <!-- Track / message / downstream -->
+  <rect class="card track" x="64" y="890" width="300" height="164"/>
+  <text class="header" x="88" y="924">操作轨迹</text>
+  <text class="field" x="88" y="954">kxt_service_perform_track</text>
+  <text class="field" x="88" y="980">service_code</text>
+  <text class="field" x="88" y="1006">operate_code / operate_action</text>
+  <text class="field" x="88" y="1032">before_state_id / after_state_id</text>
+
+  <rect class="card msg" x="414" y="882" width="300" height="180"/>
+  <text class="header" x="438" y="916">状态变更消息</text>
+  <text class="field" x="438" y="946">PerformStateChangeMsg</text>
+  <text class="field" x="438" y="972">bizCode = service_code</text>
+  <text class="field" x="438" y="998">bizStatus 当前状态</text>
+  <text class="field" x="438" y="1024">bizPreStatus 前状态</text>
+  <text class="field" x="438" y="1050">operateCode / action</text>
+
+  <rect class="card task" x="820" y="890" width="220" height="164"/>
+  <text class="header" x="844" y="924">任务</text>
+  <text class="field" x="844" y="954">kxt_assignment_task</text>
+  <text class="field" x="844" y="980">task_type</text>
+  <text class="field" x="844" y="1006">status</text>
+  <text class="field" x="844" y="1032">priority</text>
+
+  <rect class="card task" x="1062" y="890" width="220" height="164"/>
+  <text class="header" x="1086" y="924">任务扩展/分配</text>
+  <text class="field" x="1086" y="954">task_extend_info</text>
+  <text class="field" x="1086" y="980">biz_code = service_code</text>
+  <text class="field" x="1086" y="1006">biz_status / flow_id</text>
+  <text class="field" x="1086" y="1032">resource_code 当前处理人</text>
+
+  <rect class="card task" x="1304" y="890" width="232" height="164"/>
+  <text class="header" x="1328" y="924">跟单/质控/SLA</text>
+  <text class="field" x="1328" y="954">kxt_trail_order</text>
+  <text class="field" x="1328" y="980">trail_order_ext</text>
+  <text class="field" x="1328" y="1006">biz_code = service_code</text>
+  <text class="field" x="1328" y="1032">stage_id / stage_code</text>
+
+  <!-- Edges -->
+  <path class="edge" d="M324 245 H414" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="340" y="230">生成单据</text>
+
+  <path class="edge" d="M714 245 H820" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="732" y="230">反写 service_code</text>
+
+  <path class="edge" d="M1180 245 H1238" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="1190" y="230">id = perform_id</text>
+
+  <path class="edge" d="M714 570 H820" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="736" y="552">匹配 flow_id</text>
+
+  <path class="edge" d="M1000 372 V468" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="1014" y="424">flow_id</text>
+
+  <path class="edge" d="M1180 570 H1238" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="1198" y="552">节点集合</text>
+
+  <path class="edge" d="M1387 724 V672" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="1400" y="705">state_id</text>
+
+  <path class="edge-dashed" d="M1238 570 C1160 570 1160 312 1180 312" marker-end="url(#arrow-soft)"/>
+  <text class="edge-label" x="1138" y="438">state_id 当前状态</text>
+
+  <path class="edge" d="M820 330 C650 430 365 832 288 890" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="424" y="786">操作后记录</text>
+
+  <path class="edge" d="M820 340 C690 500 610 750 570 882" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="642" y="760">状态变化广播</text>
+
+  <path class="edge" d="M714 972 H820" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="734" y="956">消费生成/刷新</text>
+
+  <path class="edge" d="M1040 972 H1062" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="1032" y="956">task_id</text>
+
+  <path class="edge" d="M1282 972 H1304" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="1278" y="956">biz_code</text>
+
+  <path class="edge-dashed" d="M1172 890 C1110 760 1050 520 1050 372" marker-end="url(#arrow-soft)"/>
+  <text class="edge-label" x="1098" y="730">biz_code 回连服务单</text>
+
+  <!-- Footer -->
+  <text class="note" x="64" y="1092">讲解口径：订单消息生成单据，单据绑定履约主单；履约主单按流程规则进入流程和状态；状态变化后通过消息驱动任务、跟单、SLA、驳回等模块。</text>
+</svg>

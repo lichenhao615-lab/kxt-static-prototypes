@@ -1,0 +1,2470 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>流程资料包导出配置原型</title>
+	<style>
+		:root {
+			--brand: #00a5a8;
+			--brand-dark: #008b8f;
+			--brand-soft: #e7fafa;
+			--nav: #eaf8f8;
+			--sidebar: #eefafa;
+			--line: #e5e8eb;
+			--line-strong: #d5dbe0;
+			--text: #17212b;
+			--muted: #657383;
+			--weak: #a0aab5;
+			--danger: #ff4d4f;
+			--success: #18b978;
+			--warning: #faad14;
+			--blue: #2f80ed;
+			--bg: #f5f7f9;
+			--white: #fff;
+			--shadow: 0 18px 48px rgba(15, 23, 42, .16);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			min-width: 1280px;
+			color: var(--text);
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+			background: var(--bg);
+			letter-spacing: 0;
+		}
+
+		button,
+		input,
+		select,
+		textarea {
+			font: inherit;
+			letter-spacing: 0;
+		}
+
+		button {
+			cursor: pointer;
+		}
+
+		.topbar {
+			height: 52px;
+			display: flex;
+			align-items: center;
+			border-bottom: 1px solid #d9eeee;
+			background: var(--nav);
+		}
+
+		.brand {
+			width: 210px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding-left: 28px;
+			font-size: 15px;
+			font-weight: 600;
+			color: #12212b;
+		}
+
+		.logo {
+			width: 20px;
+			height: 20px;
+			display: grid;
+			place-items: center;
+			border: 1px solid #1ba8a8;
+			border-radius: 50%;
+			color: #138f91;
+			font-size: 11px;
+			font-weight: 700;
+		}
+
+		.main-nav {
+			display: flex;
+			align-items: center;
+			gap: 24px;
+			height: 100%;
+			font-size: 14px;
+		}
+
+		.nav-item {
+			height: 100%;
+			display: flex;
+			align-items: center;
+			border-bottom: 2px solid transparent;
+			color: #1f2937;
+		}
+
+		.nav-item.active {
+			color: var(--brand-dark);
+			border-color: var(--brand);
+		}
+
+		.top-actions {
+			margin-left: auto;
+			display: flex;
+			align-items: center;
+			gap: 22px;
+			padding-right: 28px;
+			color: #74808a;
+			font-size: 18px;
+		}
+
+		.avatar {
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			background: linear-gradient(160deg, #ffb347 0%, #293241 48%, #111827 100%);
+			box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5);
+		}
+
+		.user {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 14px;
+			color: #657383;
+		}
+
+		.app-shell {
+			display: grid;
+			grid-template-columns: 210px 1fr;
+			min-height: calc(100vh - 52px);
+		}
+
+		.sidebar {
+			background: var(--sidebar);
+			border-right: 1px solid #ddecee;
+			padding-top: 10px;
+		}
+
+		.menu-row {
+			height: 48px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 28px;
+			color: #0f172a;
+			font-size: 14px;
+		}
+
+		.menu-row.small {
+			height: 44px;
+			padding-left: 52px;
+			color: #1f2937;
+		}
+
+		.menu-row.active {
+			position: relative;
+			background: #cceaea;
+			color: var(--brand-dark);
+		}
+
+		.menu-row.active::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			right: 10px;
+			width: 3px;
+			height: 100%;
+			background: var(--brand);
+		}
+
+		.content {
+			min-height: calc(100vh - 52px);
+			background: #fff;
+		}
+
+		.page-tabs {
+			height: 33px;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			padding-left: 16px;
+			border-bottom: 1px solid var(--line);
+			background: #fafafa;
+		}
+
+		.page-tab {
+			height: 26px;
+			display: flex;
+			align-items: center;
+			gap: 5px;
+			padding: 0 11px;
+			border: 1px solid #dfe5ea;
+			border-radius: 2px;
+			background: #fff;
+			font-size: 13px;
+			color: #1f2937;
+		}
+
+		.page-tab.active {
+			border-color: var(--brand);
+			background: var(--brand);
+			color: #fff;
+		}
+
+		.workspace {
+			padding: 0 20px 28px;
+		}
+
+		.module-tabs {
+			height: 48px;
+			display: flex;
+			align-items: end;
+			gap: 30px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.module-tab {
+			height: 44px;
+			display: flex;
+			align-items: center;
+			border-bottom: 2px solid transparent;
+			font-size: 15px;
+			color: #1f2937;
+		}
+
+		.module-tab.active {
+			color: var(--brand-dark);
+			border-color: var(--brand);
+			font-weight: 600;
+		}
+
+		.toolbar {
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			padding: 16px 0 10px;
+		}
+
+		.input,
+		.select {
+			height: 32px;
+			border: 1px solid #d8dde3;
+			border-radius: 2px;
+			background: #fff;
+			color: #1f2937;
+			font-size: 13px;
+			outline: none;
+		}
+
+		.input {
+			width: 280px;
+			padding: 0 12px;
+		}
+
+		.input::placeholder {
+			color: #a3adb8;
+		}
+
+		.select {
+			min-width: 150px;
+			padding: 0 28px 0 12px;
+			color: #8a95a1;
+		}
+
+		.btn {
+			height: 32px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			padding: 0 16px;
+			border: 1px solid #d8dde3;
+			border-radius: 2px;
+			background: #fff;
+			color: #1f2937;
+			font-size: 14px;
+		}
+
+		.btn.primary {
+			border-color: var(--brand);
+			background: var(--brand);
+			color: #fff;
+		}
+
+		.btn.ghost {
+			background: #fff;
+		}
+
+		.btn.small {
+			height: 28px;
+			padding: 0 10px;
+			font-size: 13px;
+		}
+
+		.btn.link {
+			height: auto;
+			border: none;
+			background: transparent;
+			padding: 0;
+			color: var(--brand-dark);
+		}
+
+		.btn.link.danger {
+			color: var(--danger);
+		}
+
+		.action-line {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 4px 0 20px;
+		}
+
+		.summary-pills {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			color: var(--muted);
+			font-size: 13px;
+		}
+
+		.pill {
+			height: 26px;
+			display: inline-flex;
+			align-items: center;
+			padding: 0 10px;
+			border-radius: 14px;
+			background: #f3f7f7;
+			color: #55626f;
+		}
+
+		.table-wrap {
+			border: 1px solid #edf0f2;
+			border-bottom: none;
+			background: #fff;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			table-layout: fixed;
+			font-size: 13px;
+		}
+
+		th {
+			height: 46px;
+			background: #f6f7f9;
+			border-right: 1px solid #edf0f2;
+			color: #111827;
+			font-weight: 600;
+			text-align: center;
+		}
+
+		td {
+			height: 48px;
+			border-right: 1px solid #edf0f2;
+			border-bottom: 1px solid #edf0f2;
+			text-align: center;
+			vertical-align: middle;
+			color: #111827;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		tr.selected td {
+			background: #f0f1f2;
+		}
+
+		.actions {
+			display: inline-flex;
+			align-items: center;
+			gap: 12px;
+			white-space: nowrap;
+		}
+
+		.action-danger {
+			color: var(--danger);
+		}
+
+		.action-text {
+			color: var(--brand-dark);
+		}
+
+		.footer-page {
+			height: 62px;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 8px;
+			color: #1f2937;
+			font-size: 13px;
+		}
+
+		.page-num,
+		.page-arrow {
+			width: 32px;
+			height: 32px;
+			display: grid;
+			place-items: center;
+			border: 1px solid #d8dde3;
+			border-radius: 3px;
+			background: #fff;
+		}
+
+		.page-num.active {
+			border-color: var(--brand);
+			color: var(--brand-dark);
+		}
+
+		.page-size {
+			width: 90px;
+		}
+
+		.template-view,
+		.form-view {
+			display: none;
+		}
+
+		.content[data-view="templates"] .flow-view,
+		.content[data-view="forms"] .flow-view {
+			display: none;
+		}
+
+		.content[data-view="templates"] .template-view {
+			display: block;
+		}
+
+		.content[data-view="forms"] .form-view {
+			display: block;
+		}
+
+		.content[data-view="templates"] .menu-row[data-menu="flows"] {
+			background: transparent;
+			color: #1f2937;
+		}
+
+		.drawer-mask {
+			position: fixed;
+			inset: 52px 0 0 0;
+			display: none;
+			background: rgba(15, 23, 42, .18);
+			z-index: 20;
+		}
+
+		.drawer-mask.open {
+			display: block;
+		}
+
+		.drawer {
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 760px;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			background: #fff;
+			box-shadow: var(--shadow);
+		}
+
+		.drawer.wide {
+			width: 860px;
+		}
+
+		.drawer-header {
+			height: 56px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 22px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.drawer-title {
+			font-size: 16px;
+			font-weight: 600;
+			color: #111827;
+		}
+
+		.drawer-close {
+			width: 28px;
+			height: 28px;
+			border: none;
+			background: transparent;
+			color: #6b7280;
+			font-size: 24px;
+			line-height: 1;
+		}
+
+		.drawer-body {
+			flex: 1;
+			overflow: auto;
+			padding: 18px 22px 88px;
+			background: #fbfcfd;
+		}
+
+		.drawer-footer {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			height: 64px;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 10px;
+			padding: 0 22px;
+			border-top: 1px solid var(--line);
+			background: #fff;
+		}
+
+		.section {
+			margin-bottom: 16px;
+			border: 1px solid #e7ebef;
+			background: #fff;
+		}
+
+		.section-head {
+			height: 42px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 16px;
+			border-bottom: 1px solid #edf0f2;
+			background: #fafafa;
+			font-weight: 600;
+			font-size: 14px;
+		}
+
+		.section-body {
+			padding: 16px;
+		}
+
+		.form-grid {
+			display: grid;
+			grid-template-columns: 110px 1fr 110px 1fr;
+			gap: 14px 12px;
+			align-items: center;
+			font-size: 13px;
+		}
+
+		.label {
+			text-align: right;
+			color: #4b5563;
+		}
+
+		.required {
+			color: var(--danger);
+			margin-right: 3px;
+		}
+
+		.field {
+			height: 32px;
+			width: 100%;
+			border: 1px solid #d8dde3;
+			border-radius: 2px;
+			padding: 0 10px;
+			background: #fff;
+			color: #1f2937;
+		}
+
+		.field[readonly],
+		.field:disabled {
+			background: #f3f5f7;
+			color: #8a95a1;
+			cursor: not-allowed;
+		}
+
+		.textarea {
+			width: 100%;
+			min-height: 66px;
+			border: 1px solid #d8dde3;
+			border-radius: 2px;
+			padding: 8px 10px;
+			resize: vertical;
+		}
+
+		.toggle {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.toggle.clickable {
+			cursor: pointer;
+			user-select: none;
+		}
+
+		.switch {
+			width: 36px;
+			height: 20px;
+			position: relative;
+			border-radius: 999px;
+			background: var(--brand);
+		}
+
+		.toggle.off .switch {
+			background: #cbd5df;
+		}
+
+		.switch::after {
+			content: "";
+			position: absolute;
+			top: 2px;
+			right: 2px;
+			width: 16px;
+			height: 16px;
+			border-radius: 50%;
+			background: #fff;
+			box-shadow: 0 1px 4px rgba(0, 0, 0, .16);
+		}
+
+		.toggle.off .switch::after {
+			right: auto;
+			left: 2px;
+		}
+
+		.mini-table th {
+			height: 38px;
+			font-size: 12px;
+		}
+
+		.mini-table td {
+			height: 42px;
+			font-size: 12px;
+			padding: 0 6px;
+		}
+
+		.mini-table .actions {
+			gap: 8px;
+		}
+
+		.material-item-table td {
+			height: 54px;
+		}
+
+		.material-item-scroll {
+			overflow-x: auto;
+			overflow-y: hidden;
+		}
+
+		.material-item-scroll .material-item-table {
+			min-width: 980px;
+		}
+
+		.item-id {
+			color: #8a96a3;
+			font-family: Consolas, "SFMono-Regular", monospace;
+		}
+
+		.item-name {
+			font-weight: 600;
+			color: #17212b;
+		}
+
+		.item-source {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 6px;
+		}
+
+		.source-tag {
+			display: inline-flex;
+			align-items: center;
+			height: 22px;
+			padding: 0 8px;
+			border-radius: 12px;
+			background: #f2f6f8;
+			color: #4b5563;
+			font-size: 12px;
+			white-space: nowrap;
+		}
+
+		.source-tag.cloud {
+			background: #e7fafa;
+			color: #008b8f;
+		}
+
+		.source-tag.field {
+			background: #eef4ff;
+			color: #2f5fb8;
+		}
+
+		.source-tag.merge {
+			background: #f4f0ff;
+			color: #6f3cc3;
+		}
+
+		.source-plus {
+			color: #98a2b3;
+			font-size: 12px;
+		}
+
+		.table-input {
+			width: 100%;
+			height: 28px;
+			border: 1px solid #d8dde3;
+			border-radius: 2px;
+			padding: 0 8px;
+			background: #fff;
+			color: #111827;
+			font-size: 12px;
+			outline: none;
+		}
+
+		.table-input:focus {
+			border-color: var(--brand);
+			box-shadow: 0 0 0 2px rgba(0, 165, 168, .12);
+		}
+
+		.status {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 42px;
+			height: 22px;
+			padding: 0 8px;
+			border-radius: 12px;
+			font-size: 12px;
+		}
+
+		.status.on {
+			background: #e9fbf3;
+			color: #0f9960;
+		}
+
+		.status.warn {
+			background: #fff7e6;
+			color: #b76e00;
+		}
+
+		.status.off {
+			background: #f2f4f7;
+			color: #667085;
+		}
+
+		.drawer-tabs {
+			display: flex;
+			align-items: center;
+			gap: 18px;
+			margin-bottom: 14px;
+			border-bottom: 1px solid #e7ebef;
+			background: #fff;
+			padding: 0 14px;
+		}
+
+		.plan-actions {
+			margin-left: auto;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.plan-btn {
+			height: 24px;
+			padding: 0 8px;
+			font-size: 12px;
+			border-radius: 2px;
+		}
+
+		.drawer-tab {
+			height: 42px;
+			display: flex;
+			align-items: center;
+			border-bottom: 2px solid transparent;
+			font-size: 14px;
+			color: #4b5563;
+			cursor: pointer;
+		}
+
+		.drawer-tab.active {
+			color: var(--brand-dark);
+			border-color: var(--brand);
+			font-weight: 600;
+		}
+
+		.help {
+			color: var(--weak);
+			font-size: 12px;
+			line-height: 1.8;
+		}
+
+		.config-preview {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 10px;
+			margin-top: 12px;
+		}
+
+		.preview-item {
+			border: 1px solid #e7ebef;
+			background: #fbfcfd;
+			padding: 10px;
+		}
+
+		.preview-label {
+			color: #74808a;
+			font-size: 12px;
+			margin-bottom: 6px;
+		}
+
+		.preview-value {
+			font-size: 13px;
+			color: #111827;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.empty-hint {
+			height: 120px;
+			display: grid;
+			place-items: center;
+			color: #8a95a1;
+			border: 1px dashed #d8dde3;
+			background: #fbfcfd;
+			font-size: 13px;
+		}
+
+		.confirm-mask {
+			position: fixed;
+			inset: 0;
+			display: none;
+			align-items: center;
+			justify-content: center;
+			background: rgba(15, 23, 42, .22);
+			z-index: 50;
+		}
+
+		.confirm-mask.open {
+			display: flex;
+		}
+
+		.confirm-dialog {
+			width: 360px;
+			border-radius: 3px;
+			background: #fff;
+			box-shadow: var(--shadow);
+		}
+
+		.confirm-dialog.large {
+			width: 880px;
+		}
+
+		.confirm-head {
+			height: 46px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 16px;
+			border-bottom: 1px solid var(--line);
+			font-size: 15px;
+			font-weight: 600;
+		}
+
+		.confirm-body {
+			padding: 20px 16px;
+			color: #374151;
+			font-size: 14px;
+			line-height: 1.7;
+		}
+
+		.confirm-body.compact {
+			padding: 16px;
+		}
+
+		.modal-toolbar {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 14px;
+		}
+
+		.modal-toolbar .input {
+			width: 190px;
+		}
+
+		.modal-toolbar .select {
+			min-width: 128px;
+		}
+
+		.field-with-action {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.field-with-action .field {
+			flex: 1;
+		}
+
+		.material-source-control {
+			display: none;
+			grid-column: span 3;
+			align-items: center;
+			gap: 8px;
+			min-width: 0;
+		}
+
+		.material-source-control.visible {
+			display: flex;
+		}
+
+		.material-source-control .field {
+			flex: 1;
+			min-width: 0;
+		}
+
+		.form-config-row {
+			display: none;
+		}
+
+		.form-config-row.visible {
+			display: block;
+		}
+
+		.material-form {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+		}
+
+		.material-group {
+			border: 1px solid #edf0f2;
+			background: #fbfcfd;
+			padding: 14px;
+		}
+
+		.material-group-title {
+			margin-bottom: 12px;
+			color: #111827;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.material-grid {
+			display: grid;
+			grid-template-columns: 100px 1fr 100px 1fr;
+			gap: 12px;
+			align-items: center;
+			font-size: 13px;
+		}
+
+		.modal-note {
+			margin-bottom: 12px;
+			color: #74808a;
+			font-size: 12px;
+		}
+
+		.confirm-footer {
+			height: 56px;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 10px;
+			padding: 0 16px;
+			border-top: 1px solid var(--line);
+		}
+	</style>
+</head>
+<body>
+<header class="topbar">
+	<div class="brand">
+		<div class="logo">Kx</div>
+		<span>跨信通税务管理系统</span>
+	</div>
+	<nav class="main-nav">
+		<div class="nav-item">系统管理</div>
+		<div class="nav-item active">税务管理</div>
+		<div class="nav-item">CRM</div>
+		<div class="nav-item">客服工单</div>
+		<div class="nav-item">测试工具</div>
+		<div class="nav-item">埋点分析平台</div>
+		<div class="nav-item">旧系统</div>
+	</nav>
+	<div class="top-actions">
+		<span>⌕</span>
+		<span>?</span>
+		<div class="user">
+			<div class="avatar"></div>
+			<span>李晨浩</span>
+		</div>
+	</div>
+</header>
+
+<main class="app-shell">
+	<aside class="sidebar">
+		<div class="menu-row">首页 <span>⌄</span></div>
+		<div class="menu-row">风险产品库 <span>⌄</span></div>
+		<div class="menu-row">授权代表案件管理 <span>⌄</span></div>
+		<div class="menu-row">系统管理 <span>⌄</span></div>
+		<div class="menu-row">客户管理 <span>⌄</span></div>
+		<div class="menu-row">营销管理 <span>⌄</span></div>
+		<div class="menu-row">订单管理 <span>⌄</span></div>
+		<div class="menu-row">续费管理 <span>⌄</span></div>
+		<div class="menu-row">优惠券管理 <span>⌄</span></div>
+		<div class="menu-row">商品管理 <span>⌄</span></div>
+		<div class="menu-row">价格管理 <span>⌄</span></div>
+		<div class="menu-row" style="color: var(--brand-dark);">流程管理 <span>⌃</span></div>
+		<div class="menu-row small">节点管理</div>
+		<div class="menu-row small">操作项管理</div>
+		<div class="menu-row small active" data-menu="flows" onclick="showView('flows')">流程列表</div>
+		<div class="menu-row small" data-menu="forms" onclick="showView('forms')">表单管理</div>
+		<div class="menu-row small">显示配置</div>
+		<div class="menu-row small" data-menu="templates" onclick="showView('templates')">资料项列表</div>
+		<div class="menu-row">知识产权 <span>⌄</span></div>
+	</aside>
+
+	<section class="content" id="pageContent" data-view="flows">
+		<div class="page-tabs">
+			<div class="page-tab">表单管理 ×</div>
+			<div class="page-tab">基础服务 ×</div>
+			<div class="page-tab active" id="topTab">流程列表 ×</div>
+		</div>
+
+		<div class="workspace flow-view">
+			<div class="module-tabs">
+				<div class="module-tab active">服务</div>
+				<div class="module-tab">申报</div>
+			</div>
+
+			<div class="toolbar">
+				<input class="input" placeholder="流程ID/流程名称/添加人/更新人">
+				<select class="select"><option>请选择类目</option></select>
+				<select class="select"><option>请选择类型</option></select>
+				<select class="select" style="min-width:120px;"><option>请选择国家</option></select>
+				<select class="select" style="min-width:150px;"><option>请选择资料包配置</option><option>是</option><option>否</option></select>
+				<input class="input" style="width:170px;" placeholder="请选择添加时间">
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+
+			<div class="action-line">
+				<button class="btn primary">添加流程</button>
+			</div>
+
+			<div class="table-wrap">
+				<table>
+					<colgroup>
+						<col style="width:70px">
+						<col style="width:92px">
+						<col style="width:260px">
+						<col style="width:105px">
+						<col style="width:105px">
+						<col style="width:105px">
+						<col style="width:92px">
+						<col style="width:170px">
+						<col style="width:92px">
+						<col style="width:170px">
+						<col style="width:105px">
+						<col style="width:280px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>序号</th>
+						<th>流程ID</th>
+						<th>流程名称</th>
+						<th>所属类目</th>
+						<th>所属类型</th>
+						<th>所属国家</th>
+						<th>添加人</th>
+						<th>添加时间</th>
+						<th>更新人</th>
+						<th>更新时间</th>
+						<th>资料包配置</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>1</td>
+						<td>2192</td>
+						<td>(12136)巴西外观专利注册流程（1）</td>
+						<td>专利</td>
+						<td>注册</td>
+						<td>巴西</td>
+						<td>方小路</td>
+						<td>2026-03-17 09:25:35</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:38:54</td>
+						<td><span class="status on">是</span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>1580</td>
+						<td>加拿大外观专利注册（2）</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>徐如珍</td>
+						<td>2025-12-04 11:01:28</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:35:30</td>
+						<td><span class="status off">否</span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td>1905</td>
+						<td>英国外观专利注册32件系列（2）</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>徐如珍</td>
+						<td>2026-01-08 14:58:02</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:34:42</td>
+						<td><span class="status off">否</span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+					</tr>
+					<tr>
+						<td>4</td>
+						<td>1598</td>
+						<td>欧盟外观专利注册（2）</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>徐如珍</td>
+						<td>2025-12-04 11:03:32</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:33:58</td>
+						<td><span class="status off">否</span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+					</tr>
+					<tr>
+						<td>5</td>
+						<td>1601</td>
+						<td>美国外观专利注册（2）</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>徐如珍</td>
+						<td>2025-12-04 11:03:52</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:33:13</td>
+						<td><span class="status on">是</span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+					</tr>
+					<tr>
+						<td>6</td>
+						<td>1893</td>
+						<td>俄罗斯外观专利注册</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>徐如珍</td>
+						<td>2026-01-04 16:01:00</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:32:22</td>
+						<td><span class="status off">否</span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+					</tr>
+					<tr>
+						<td>7</td>
+						<td>1565</td>
+						<td>澳大利亚外观专利注册</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>徐如珍</td>
+						<td>2025-12-01 15:42:12</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:31:04</td>
+						<td><span class="status off">否</span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+					</tr>
+					<tr>
+						<td>8</td>
+						<td>1574</td>
+						<td>澳大利亚外观专利注册（2）</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>徐如珍</td>
+						<td>2025-12-04 11:00:09</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:30:25</td>
+						<td><span class="status off">否</span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+					</tr>
+					<tr class="selected">
+						<td>9</td>
+						<td>2318</td>
+						<td>(12286)泰国外观专利注册流程</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>方小路</td>
+						<td>2026-04-03 10:02:59</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:29:13</td>
+						<td><span class="status on">是</span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+					</tr>
+					<tr>
+						<td>10</td>
+						<td>1597</td>
+						<td>日本外观专利注册（2）</td>
+						<td>专利</td>
+						<td>注册</td>
+						<td>日本</td>
+						<td>徐如珍</td>
+						<td>2025-12-04 11:03:23</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:27:03</td>
+						<td><span class="status off">否</span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="footer-page">
+				<span>共有 2553 条数据</span>
+				<span class="page-arrow">‹</span>
+				<span class="page-num active">1</span>
+				<span class="page-num">2</span>
+				<span class="page-num">3</span>
+				<span class="page-num">4</span>
+				<span class="page-num">5</span>
+				<span>...</span>
+				<span class="page-num">256</span>
+				<span class="page-arrow">›</span>
+				<select class="select page-size"><option>10条/页</option></select>
+				<span>跳至</span>
+				<input class="field" style="width:48px;">
+				<span>页</span>
+			</div>
+		</div>
+
+		<div class="workspace template-view">
+			<div class="module-tabs">
+				<div class="module-tab active">资料项列表</div>
+			</div>
+
+			<div class="toolbar">
+				<input class="input" placeholder="资料项ID/资料项名称/腾讯云模板ID">
+				<select class="select"><option>通用资料：全部</option><option>通用</option><option>具体表单</option></select>
+				<select class="select"><option>请选择具体表单</option></select>
+				<select class="select"><option>请选择输出格式</option></select>
+				<select class="select"><option>请选择状态</option></select>
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+
+			<div class="action-line">
+				<button class="btn primary" onclick="openDrawer('templateDrawer')">新增资料项</button>
+				<div class="summary-pills">
+					<span class="pill">资料项总数：436</span>
+					<span class="pill">启用：421</span>
+				</div>
+			</div>
+
+			<div class="table-wrap">
+				<table>
+					<colgroup>
+						<col style="width:90px">
+						<col style="width:130px">
+						<col style="width:210px">
+						<col style="width:110px">
+						<col style="width:220px">
+						<col style="width:210px">
+						<col style="width:110px">
+						<col style="width:90px">
+						<col style="width:170px">
+						<col style="width:190px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>序号</th>
+						<th>资料项ID</th>
+						<th>资料项名称</th>
+						<th>资料项类型</th>
+						<th>所属表单</th>
+						<th>腾讯云模板ID/表单资料</th>
+						<th>输出格式</th>
+						<th>状态</th>
+						<th>更新时间</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>1</td>
+						<td>TPL-10021</td>
+						<td>专利申请委托书</td>
+						<td>腾讯云</td>
+						<td>通用</td>
+						<td>tcpl_908321884</td>
+						<td>PDF</td>
+						<td><span class="status on">启用</span></td>
+						<td>2026-06-09 20:12:18</td>
+						<td><span class="actions"><span class="action-text" onclick="openDrawer('templateDrawer')">编辑</span><span class="action-danger">删除</span></span></td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>TPL-10022</td>
+						<td>申请人信息表</td>
+						<td>腾讯云</td>
+						<td>外观专利注册资料表</td>
+						<td>tcpl_908321885</td>
+						<td>Excel</td>
+						<td><span class="status on">启用</span></td>
+						<td>2026-06-09 19:54:32</td>
+						<td><span class="actions"><span class="action-text" onclick="openDrawer('templateDrawer')">编辑</span><span class="action-danger">删除</span></span></td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td>TPL-10023</td>
+						<td>营业执照翻译件模板</td>
+						<td>腾讯云</td>
+						<td>主体资料表单</td>
+						<td>tcpl_908321886</td>
+						<td>Word</td>
+						<td><span class="status off">停用</span></td>
+						<td>2026-06-08 14:36:04</td>
+						<td><span class="actions"><span class="action-text" onclick="openDrawer('templateDrawer')">编辑</span><span class="action-danger">删除</span></span></td>
+					</tr>
+					<tr>
+						<td>4</td>
+						<td>TPL-10024</td>
+						<td>法人身份证翻译件模板</td>
+						<td>腾讯云</td>
+						<td>主体资料表单</td>
+						<td>tcpl_908321887</td>
+						<td>PDF</td>
+						<td><span class="status off">停用</span></td>
+						<td>2026-06-07 11:22:19</td>
+						<td><span class="actions"><span class="action-text" onclick="openDrawer('templateDrawer')">编辑</span><span class="action-danger">删除</span></span></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="workspace form-view">
+			<div class="module-tabs">
+				<div class="module-tab active">表单列表</div>
+			</div>
+
+			<div class="toolbar">
+				<input class="input" placeholder="表单ID/表单名称/添加人">
+				<select class="select"><option>请选择业务类型</option></select>
+				<select class="select"><option>请选择状态</option></select>
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+
+			<div class="action-line">
+				<button class="btn primary">新增表单</button>
+			</div>
+
+			<div class="table-wrap">
+				<table>
+					<colgroup>
+						<col style="width:80px">
+						<col style="width:120px">
+						<col style="width:260px">
+						<col style="width:140px">
+						<col style="width:120px">
+						<col style="width:120px">
+						<col style="width:170px">
+						<col style="width:280px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>序号</th>
+						<th>表单ID</th>
+						<th>表单名称</th>
+						<th>业务类型</th>
+						<th>资料项数量</th>
+						<th>状态</th>
+						<th>更新时间</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>1</td>
+						<td>FORM-1021</td>
+						<td>外观专利注册资料表</td>
+						<td>专利注册</td>
+						<td>8</td>
+						<td><span class="status on">启用</span></td>
+						<td>2026-06-09 20:12:18</td>
+						<td><span class="actions"><span class="action-text">编辑</span><span class="action-text" onclick="openDrawer('formMaterialDrawer')">资料项配置</span><span class="action-danger">删除</span></span></td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>FORM-1022</td>
+						<td>主体资料表单</td>
+						<td>主体信息</td>
+						<td>12</td>
+						<td><span class="status on">启用</span></td>
+						<td>2026-06-08 18:40:35</td>
+						<td><span class="actions"><span class="action-text">编辑</span><span class="action-text" onclick="openDrawer('formMaterialDrawer')">资料项配置</span><span class="action-danger">删除</span></span></td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td>FORM-1023</td>
+						<td>翻译件补充表单</td>
+						<td>翻译资料</td>
+						<td>5</td>
+						<td><span class="status off">停用</span></td>
+						<td>2026-06-07 15:21:06</td>
+						<td><span class="actions"><span class="action-text">编辑</span><span class="action-text" onclick="openDrawer('formMaterialDrawer')">资料项配置</span><span class="action-danger">删除</span></span></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+</main>
+
+<div class="drawer-mask open" id="packageDrawer">
+	<div class="drawer wide">
+		<div class="drawer-header">
+			<div class="drawer-title">导出资料包配置 - (12286)泰国外观专利注册流程</div>
+			<button class="drawer-close" onclick="closeDrawer('packageDrawer')">×</button>
+		</div>
+		<div class="drawer-body">
+			<div class="drawer-tabs">
+				<div class="drawer-tab active" onclick="switchPackagePlan(this)">资料包方案1</div>
+				<div class="drawer-tab" onclick="switchPackagePlan(this)">资料包方案2</div>
+				<div class="plan-actions">
+					<button class="btn small primary plan-btn" onclick="addPackagePlan()">新增方案</button>
+					<button class="btn small ghost plan-btn" onclick="showRenamePackagePlanModal()">改名</button>
+					<button class="btn small ghost plan-btn" onclick="showDeletePackagePlanConfirm()">删除方案</button>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="section-head">基础信息</div>
+				<div class="section-body">
+					<div class="form-grid">
+						<div class="label">所属流程</div>
+						<input class="field" value="(12286)泰国外观专利注册流程" readonly disabled>
+						<div class="label">是否启用</div>
+						<div class="toggle"><span class="switch"></span><span>启用</span></div>
+						<div class="label"><span class="required">*</span>操作项</div>
+						<select class="field"><option selected>导出资料包</option><option>导出资料</option><option>导出海牙资料</option></select>
+						<div class="label"><span class="required">*</span>关联表单</div>
+						<select class="field"><option>外观专利注册资料表</option><option>主体资料表单</option><option>翻译件补充表单</option></select>
+						<div class="label"><span class="required">*</span>缺失资料处理</div>
+						<select class="field"><option>跳过该资料</option><option>阻断导出</option></select>
+					</div>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="section-head">
+					<span>导出资料清单</span>
+					<button class="btn primary small">新增导出资料</button>
+				</div>
+				<div class="section-body" style="padding:0;">
+					<table class="mini-table">
+						<colgroup>
+							<col style="width:44px">
+							<col style="width:240px">
+							<col style="width:202px">
+							<col style="width:118px">
+							<col style="width:122px">
+						</colgroup>
+						<thead>
+						<tr>
+							<th>序号</th>
+							<th>导出文件名</th>
+							<th>资料项</th>
+							<th>是否转换格式</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>1</td>
+							<td><input class="table-input" value="委托书-{公司名称}"></td>
+							<td>专利申请委托书</td>
+							<td>
+								<select class="field"><option selected>否</option><option>PDF</option></select>
+							</td>
+							<td><span class="actions"><span class="action-text">上移</span><span class="action-danger">删除</span></span></td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td><input class="table-input" value="申请人信息表"></td>
+							<td>申请人信息表</td>
+							<td>
+								<select class="field"><option selected>否</option><option>PDF</option></select>
+							</td>
+							<td><span class="actions"><span class="action-text">下移</span><span class="action-danger">删除</span></span></td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td><input class="table-input" value="法人身份证正面"></td>
+							<td>身份证正面</td>
+							<td>
+								<select class="field"><option selected>否</option><option>PDF</option></select>
+							</td>
+							<td><span class="actions"><span class="action-text">下移</span><span class="action-danger">删除</span></span></td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td><input class="table-input" value="法人身份证正反面"></td>
+							<td>身份证正反面合并</td>
+							<td>
+								<select class="field"><option selected>否</option><option>PDF</option></select>
+							</td>
+							<td><span class="actions"><span class="action-text">下移</span><span class="action-danger">删除</span></span></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="section-head">导出设置</div>
+				<div class="section-body">
+					<div class="form-grid">
+						<div class="label">资料包名称</div>
+						<input class="field" style="grid-column: span 3;" value="{公司名称}-{流程名称}-资料包-{导出日期}">
+						<div class="label">打包为ZIP文件</div>
+						<div class="toggle"><span class="switch"></span><span>是</span></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="drawer-footer">
+			<button class="btn ghost" onclick="closeDrawer('packageDrawer')">取消</button>
+			<button class="btn ghost" onclick="openTrialExportModal()">试导出</button>
+			<button class="btn primary">保存配置</button>
+		</div>
+	</div>
+</div>
+
+<div class="drawer-mask" id="formMaterialDrawer">
+	<div class="drawer wide">
+		<div class="drawer-header">
+			<div class="drawer-title">表单资料项配置 - 外观专利注册资料表</div>
+			<button class="drawer-close" onclick="closeDrawer('formMaterialDrawer')">×</button>
+		</div>
+		<div class="drawer-body">
+			<div class="section">
+				<div class="section-head">
+					<span>表单资料项</span>
+					<button class="btn primary small" onclick="openMaterialItemSelectModal()">新增资料项</button>
+				</div>
+				<div class="section-body material-item-scroll" style="padding:0;">
+					<table class="mini-table material-item-table">
+						<colgroup>
+							<col style="width:50px">
+							<col style="width:112px">
+							<col style="width:180px">
+							<col style="width:110px">
+							<col style="width:276px">
+							<col style="width:84px">
+							<col style="width:80px">
+							<col style="width:148px">
+							<col style="width:88px">
+						</colgroup>
+						<thead>
+						<tr>
+							<th>序号</th>
+							<th>资料项ID</th>
+							<th>资料项名称</th>
+							<th>资料项类型</th>
+							<th>腾讯云模板ID/表单资料</th>
+							<th>输出格式</th>
+							<th>状态</th>
+							<th>更新时间</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody id="formMaterialRows">
+						<tr>
+							<td>1</td>
+							<td><span class="item-id">TPL-10021</span></td>
+							<td><span class="item-name">专利申请委托书</span></td>
+							<td>腾讯云</td>
+							<td><span class="item-source"><span>tcpl_908321884</span></span></td>
+							<td>PDF</td>
+							<td><span class="status on">启用</span></td>
+							<td>2026-06-09 20:12:18</td>
+							<td><span class="actions"><span class="action-danger" onclick="deleteInitialFormMaterialRow(this)">删除</span></span></td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td><span class="item-id">TPL-10025</span></td>
+							<td><span class="item-name">身份证正面</span></td>
+							<td>表单资料</td>
+							<td><span class="item-source"><span>legalIdCardFront</span></span></td>
+							<td>PDF</td>
+							<td><span class="status on">启用</span></td>
+							<td>2026-06-09 18:43:02</td>
+							<td><span class="actions"><span class="action-danger" onclick="deleteInitialFormMaterialRow(this)">删除</span></span></td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td><span class="item-id">TPL-10026</span></td>
+							<td><span class="item-name">身份证反面</span></td>
+							<td>表单资料</td>
+							<td><span class="item-source"><span>legalIdCardBack</span></span></td>
+							<td>PDF</td>
+							<td><span class="status on">启用</span></td>
+							<td>2026-06-09 18:41:36</td>
+							<td><span class="actions"><span class="action-danger" onclick="deleteInitialFormMaterialRow(this)">删除</span></span></td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td><span class="item-id">TPL-10027</span></td>
+							<td><span class="item-name">身份证正反面合并</span></td>
+							<td>表单资料</td>
+							<td>
+								<span class="item-source">
+									<span>legalIdCardFront</span>
+									<span class="source-plus">+</span>
+									<span>legalIdCardBack</span>
+								</span>
+							</td>
+							<td>PDF</td>
+							<td><span class="status on">启用</span></td>
+							<td>2026-06-09 18:39:20</td>
+							<td><span class="actions"><span class="action-danger" onclick="deleteInitialFormMaterialRow(this)">删除</span></span></td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="section-head">资料项配置说明</div>
+				<div class="section-body help">
+					<div>表单用于承载业务字段、附件字段及可生成的资料项；资料项挂在一个或多个表单下维护，作为表单可对外输出的标准资料定义。</div>
+					<div>表单资料项挂在表单上统一维护，不只服务于资料包导出，也可被资料下载、合同签署等场景复用。</div>
+					<div>资料项类型为“腾讯云”时，系统按腾讯云模板生成文件；资料项类型为“表单资料”时，直接读取表单附件字段。</div>
+					<div>生成方式为“合并”时，系统按资料来源顺序合并多个资料，例如身份证正反面合并为一个文件。</div>
+					<div>资料包配置挂在流程上，流程关联表单后，可从这些表单已维护的资料项中选择要导出的内容，并按资料包方案配置导出文件名、顺序和格式转换规则。</div>
+				</div>
+			</div>
+		</div>
+		<div class="drawer-footer">
+			<button class="btn ghost" onclick="closeDrawer('formMaterialDrawer')">取消</button>
+			<button class="btn primary">保存资料项配置</button>
+		</div>
+	</div>
+</div>
+
+<div class="drawer-mask" id="templateDrawer">
+	<div class="drawer">
+		<div class="drawer-header">
+			<div class="drawer-title">新增资料项</div>
+			<button class="drawer-close" onclick="closeDrawer('templateDrawer')">×</button>
+		</div>
+		<div class="drawer-body">
+			<div class="section">
+				<div class="section-head">资料项信息</div>
+				<div class="section-body">
+					<div class="material-form">
+						<div class="material-group">
+							<div class="material-group-title">适用范围</div>
+							<div class="material-grid">
+								<div class="label">通用资料</div>
+								<div class="toggle clickable off" id="commonMaterialToggle" style="grid-column: span 3;" onclick="toggleCommonMaterialItem()"><span class="switch"></span><span id="commonMaterialText">否</span></div>
+								<div class="label" id="selectedFormsLabel"><span class="required">*</span>所属表单</div>
+								<div class="field-with-action" id="selectedFormsControl" style="grid-column: span 3;">
+									<input class="field" id="selectedFormsText" value="外观专利注册资料表、主体资料表单" readonly>
+									<button class="btn small ghost" id="selectFormsButton" onclick="openFormSelectModal()">选择表单</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="material-group">
+							<div class="material-group-title">基础信息</div>
+							<div class="material-grid">
+								<div class="label"><span class="required">*</span>资料项名称</div>
+								<input class="field" value="专利申请委托书">
+								<div class="label"><span class="required">*</span>资料项类型</div>
+								<select class="field" id="materialType" onchange="toggleMaterialType()"><option selected>腾讯云</option><option>表单</option></select>
+								<div class="label">状态</div>
+								<div class="toggle"><span class="switch"></span><span>启用</span></div>
+								<div class="label">备注</div>
+								<input class="field" value="用于流程资料包导出时生成专利申请委托书。">
+							</div>
+						</div>
+
+						<div class="material-group">
+							<div class="material-group-title">资料来源</div>
+							<div class="material-grid">
+								<div class="label material-cloud-row">腾讯云模板ID</div>
+								<div class="field-with-action material-cloud-row" style="grid-column: span 3;">
+									<input class="field" id="selectedCloudTemplatesText" value="tcpl_908321884" readonly>
+									<button class="btn small ghost" onclick="openCloudTemplateSelectModal()">选择模板</button>
+								</div>
+								<div class="label form-config-row"><span class="required">*</span>表单资料</div>
+								<div class="material-source-control" id="formFileControl">
+									<input class="field" id="selectedFormFilesText" value="" placeholder="请选择表单资料" readonly>
+									<button class="btn small ghost" onclick="openFormFileSelectModal()">选择资料</button>
+								</div>
+							</div>
+							<table class="mini-table" style="margin-top:12px;">
+								<colgroup>
+									<col style="width:54px">
+									<col style="width:120px">
+									<col style="width:230px">
+									<col style="width:160px">
+								</colgroup>
+								<thead>
+								<tr>
+									<th>序号</th>
+									<th>资料项类型</th>
+									<th>腾讯云模板ID/表单资料</th>
+									<th>操作</th>
+								</tr>
+								</thead>
+								<tbody id="materialSourceRows">
+								<tr>
+									<td>1</td>
+									<td>腾讯云</td>
+									<td>tcpl_908321884</td>
+									<td><span class="actions"><span class="action-text" onclick="moveMaterialSourceItem(0, -1)">上移</span><span class="action-text" onclick="moveMaterialSourceItem(0, 1)">下移</span><span class="action-danger" onclick="deleteMaterialSourceItem(0)">删除</span></span></td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<div class="material-group">
+							<div class="material-group-title">输出设置</div>
+							<div class="material-grid">
+								<div class="label"><span class="required">*</span>输出格式</div>
+								<select class="field"><option>PDF</option><option>Word</option><option>Excel</option></select>
+								<div class="label">生成方式</div>
+								<select class="field"><option selected>单个</option><option>合并</option></select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="drawer-footer">
+			<button class="btn ghost" onclick="closeDrawer('templateDrawer')">取消</button>
+			<button class="btn primary">保存资料项</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="materialItemSelectModal">
+	<div class="confirm-dialog large">
+		<div class="confirm-head">
+			<span>资料项列表</span>
+			<button class="drawer-close" onclick="closeMaterialItemSelectModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="modal-toolbar">
+				<input class="input" placeholder="资料项ID / 资料项名称 / 腾讯云模板ID / 表单资料">
+				<select class="select"><option>全部输出格式</option><option>PDF</option><option>Word</option><option>Excel</option></select>
+				<select class="select"><option>启用</option><option>停用</option><option>全部状态</option></select>
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+			<div class="modal-note">可从资料项列表中多选资料项，确认后关联到当前表单的资料项配置列表。</div>
+			<div class="material-item-scroll">
+			<table class="mini-table material-item-table">
+				<colgroup>
+					<col style="width:54px">
+					<col style="width:112px">
+					<col style="width:160px">
+					<col style="width:110px">
+					<col style="width:246px">
+					<col style="width:84px">
+					<col style="width:80px">
+				</colgroup>
+				<thead>
+				<tr>
+					<th>选择</th>
+					<th>资料项ID</th>
+					<th>资料项名称</th>
+					<th>资料项类型</th>
+					<th>腾讯云模板ID/表单资料</th>
+					<th>输出格式</th>
+					<th>状态</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><input type="checkbox" class="material-item-select-check" data-id="TPL-10021" data-name="专利申请委托书" data-source-type="cloud" data-source="tcpl_908321884" data-format="PDF" checked></td>
+					<td><span class="item-id">TPL-10021</span></td>
+					<td><span class="item-name">专利申请委托书</span></td>
+					<td>腾讯云</td>
+					<td><span class="item-source"><span>tcpl_908321884</span></span></td>
+					<td>PDF</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="material-item-select-check" data-id="TPL-10025" data-name="身份证正面" data-source-type="field" data-source="legalIdCardFront" data-format="PDF" checked></td>
+					<td><span class="item-id">TPL-10025</span></td>
+					<td><span class="item-name">身份证正面</span></td>
+					<td>表单资料</td>
+					<td><span class="item-source"><span>legalIdCardFront</span></span></td>
+					<td>PDF</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="material-item-select-check" data-id="TPL-10026" data-name="身份证反面" data-source-type="field" data-source="legalIdCardBack" data-format="PDF"></td>
+					<td><span class="item-id">TPL-10026</span></td>
+					<td><span class="item-name">身份证反面</span></td>
+					<td>表单资料</td>
+					<td><span class="item-source"><span>legalIdCardBack</span></span></td>
+					<td>PDF</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="material-item-select-check" data-id="TPL-10027" data-name="身份证正反面合并" data-source-type="merge" data-source="legalIdCardFront|legalIdCardBack" data-format="PDF"></td>
+					<td><span class="item-id">TPL-10027</span></td>
+					<td><span class="item-name">身份证正反面合并</span></td>
+					<td>表单资料</td>
+					<td>
+						<span class="item-source">
+							<span>legalIdCardFront</span>
+							<span class="source-plus">+</span>
+							<span>legalIdCardBack</span>
+						</span>
+					</td>
+					<td>PDF</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				</tbody>
+			</table>
+			</div>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeMaterialItemSelectModal()">取消</button>
+			<button class="btn primary" onclick="confirmSelectedMaterialItems()">确认添加</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="formSelectModal">
+	<div class="confirm-dialog large">
+		<div class="confirm-head">
+			<span>选择所属表单</span>
+			<button class="drawer-close" onclick="closeFormSelectModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="modal-toolbar">
+				<input class="input" placeholder="表单ID / 表单名称">
+				<select class="select"><option>全部业务类型</option><option>专利注册</option><option>主体信息</option><option>翻译资料</option></select>
+				<select class="select"><option>启用</option><option>停用</option><option>全部状态</option></select>
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+			<div class="modal-note">所属表单支持多选，资料项可被多个表单复用。</div>
+			<table class="mini-table">
+				<colgroup>
+					<col style="width:54px">
+					<col style="width:120px">
+					<col style="width:260px">
+					<col style="width:140px">
+					<col style="width:90px">
+				</colgroup>
+				<thead>
+				<tr>
+					<th>选择</th>
+					<th>表单ID</th>
+					<th>表单名称</th>
+					<th>业务类型</th>
+					<th>状态</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><input type="checkbox" class="form-select-check" value="外观专利注册资料表" checked></td>
+					<td>FORM-1021</td>
+					<td>外观专利注册资料表</td>
+					<td>专利注册</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="form-select-check" value="主体资料表单" checked></td>
+					<td>FORM-1022</td>
+					<td>主体资料表单</td>
+					<td>主体信息</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="form-select-check" value="翻译件补充表单"></td>
+					<td>FORM-1023</td>
+					<td>翻译件补充表单</td>
+					<td>翻译资料</td>
+					<td><span class="status off">停用</span></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeFormSelectModal()">取消</button>
+			<button class="btn primary" onclick="confirmSelectedForms()">确认选择</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="cloudTemplateSelectModal">
+	<div class="confirm-dialog large">
+		<div class="confirm-head">
+			<span>选择腾讯云模板</span>
+			<button class="drawer-close" onclick="closeCloudTemplateSelectModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="modal-toolbar">
+				<input class="input" placeholder="腾讯云模板ID / 模板名称">
+				<select class="select"><option>全部输出格式</option><option>PDF</option><option>Word</option><option>Excel</option></select>
+				<select class="select"><option>启用</option><option>停用</option><option>全部状态</option></select>
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+			<div class="modal-note">腾讯云模板支持多选；生成方式为“单个”时一个模板生成一个资料项，生成方式为“合并”时多个模板合并生成一个资料项。</div>
+			<table class="mini-table">
+				<colgroup>
+					<col style="width:54px">
+					<col style="width:190px">
+					<col style="width:190px">
+					<col style="width:120px">
+					<col style="width:90px">
+				</colgroup>
+				<thead>
+				<tr>
+					<th>选择</th>
+					<th>腾讯云模板ID</th>
+					<th>模板名称</th>
+					<th>输出格式</th>
+					<th>状态</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><input type="checkbox" class="cloud-template-select-check" data-name="专利申请委托书" value="tcpl_908321884" checked></td>
+					<td>tcpl_908321884</td>
+					<td>专利申请委托书</td>
+					<td>PDF</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="cloud-template-select-check" data-name="申请人信息表" value="tcpl_908321885"></td>
+					<td>tcpl_908321885</td>
+					<td>申请人信息表</td>
+					<td>Excel</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="cloud-template-select-check" data-name="营业执照翻译件模板" value="tcpl_908321886"></td>
+					<td>tcpl_908321886</td>
+					<td>营业执照翻译件模板</td>
+					<td>Word</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeCloudTemplateSelectModal()">取消</button>
+			<button class="btn primary" onclick="confirmSelectedCloudTemplates()">确认选择</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="formFileSelectModal">
+	<div class="confirm-dialog large">
+		<div class="confirm-head">
+			<span>选择表单资料</span>
+			<button class="drawer-close" onclick="closeFormFileSelectModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="modal-toolbar">
+				<input class="input" placeholder="字段编码 / 字段名称">
+				<select class="select"><option>全部表单</option><option>外观专利注册资料表</option><option>主体资料表单</option></select>
+				<select class="select"><option>文件字段</option><option>图片字段</option><option>全部字段</option></select>
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+			<div class="modal-note">表单资料支持多选；生成方式为“单个”时一个字段生成一个资料项，生成方式为“合并”时多个字段合并生成一个资料项。</div>
+			<table class="mini-table">
+				<colgroup>
+					<col style="width:54px">
+					<col style="width:180px">
+					<col style="width:170px">
+					<col style="width:180px">
+					<col style="width:120px">
+				</colgroup>
+				<thead>
+				<tr>
+					<th>选择</th>
+					<th>字段名称</th>
+					<th>字段编码</th>
+					<th>所属表单</th>
+					<th>字段类型</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><input type="checkbox" class="form-file-select-check" value="legalIdCardFront"></td>
+					<td>身份证正面</td>
+					<td>legalIdCardFront</td>
+					<td>主体资料表单</td>
+					<td>图片</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="form-file-select-check" value="legalIdCardBack"></td>
+					<td>身份证反面</td>
+					<td>legalIdCardBack</td>
+					<td>主体资料表单</td>
+					<td>图片</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="form-file-select-check" value="businessLicenseFile"></td>
+					<td>营业执照</td>
+					<td>businessLicenseFile</td>
+					<td>主体资料表单</td>
+					<td>文件</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeFormFileSelectModal()">取消</button>
+			<button class="btn primary" onclick="confirmSelectedFormFiles()">确认选择</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="trialExportModal">
+	<div class="confirm-dialog large">
+		<div class="confirm-head">
+			<span>选择试导出单据</span>
+			<button class="drawer-close" onclick="closeTrialExportModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="modal-toolbar">
+				<input class="input" placeholder="服务单号">
+				<input class="input" placeholder="客户名称 / 公司名称">
+				<select class="select"><option>已完成</option><option>处理中</option><option>全部状态</option></select>
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+			<div class="modal-note">默认仅查询当前流程下的单据，建议选择资料完整的已完成单据进行试导出。</div>
+			<table class="mini-table">
+				<colgroup>
+					<col style="width:54px">
+					<col style="width:120px">
+					<col style="width:160px">
+					<col style="width:170px">
+					<col style="width:80px">
+				</colgroup>
+				<thead>
+				<tr>
+					<th>选择</th>
+					<th>服务单号</th>
+					<th>客户名称</th>
+					<th>公司名称</th>
+					<th>单据状态</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><input type="radio" name="trialOrder" checked></td>
+					<td>SO20260610001</td>
+					<td>星河贸易</td>
+					<td>星河贸易有限公司</td>
+					<td><span class="status on">已完成</span></td>
+				</tr>
+				<tr>
+					<td><input type="radio" name="trialOrder"></td>
+					<td>SO20260609018</td>
+					<td>晨光科技</td>
+					<td>晨光科技有限公司</td>
+					<td><span class="status on">已完成</span></td>
+				</tr>
+				<tr>
+					<td><input type="radio" name="trialOrder"></td>
+					<td>SO20260608006</td>
+					<td>柏森制造</td>
+					<td>柏森制造有限公司</td>
+					<td><span class="status warn">处理中</span></td>
+				</tr>
+				</tbody>
+			</table>
+			<div class="empty-hint" id="trialExportResult" style="height:88px; margin-top:14px; display:none;">
+				已选择 SO20260610001，试导出完成：生成 4 个导出文件，可下载预览资料包。
+			</div>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeTrialExportModal()">取消</button>
+			<button class="btn primary">下载试导出文件</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="renamePlanModal">
+	<div class="confirm-dialog">
+		<div class="confirm-head">
+			<span>修改资料包方案名称</span>
+			<button class="drawer-close" onclick="hideRenamePackagePlanModal()">×</button>
+		</div>
+		<div class="confirm-body">
+			<input class="field" id="renamePlanInput" value="资料包方案1" maxlength="30">
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="hideRenamePackagePlanModal()">取消</button>
+			<button class="btn primary" onclick="confirmRenamePackagePlan()">确认修改</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="deletePlanConfirm">
+	<div class="confirm-dialog">
+		<div class="confirm-head">
+			<span>删除资料包方案</span>
+			<button class="drawer-close" onclick="hideDeletePackagePlanConfirm()">×</button>
+		</div>
+		<div class="confirm-body">
+			确认删除当前选中的资料包方案吗？删除后该方案下的导出资料配置将不再保留。
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="hideDeletePackagePlanConfirm()">取消</button>
+			<button class="btn primary" onclick="confirmDeletePackagePlan()">确认删除</button>
+		</div>
+	</div>
+</div>
+
+<script>
+	let formMaterialItems = [];
+	let materialSourceItems = [
+		{ type: "腾讯云", code: "tcpl_908321884" }
+	];
+	let commonMaterialItemEnabled = false;
+	const selectedFormsDefaultText = "外观专利注册资料表、主体资料表单";
+
+	function openDrawer(id) {
+		document.querySelectorAll(".drawer-mask").forEach(function (el) {
+			el.classList.remove("open");
+		});
+		document.getElementById(id).classList.add("open");
+	}
+
+	function closeDrawer(id) {
+		document.getElementById(id).classList.remove("open");
+	}
+
+	function openTrialExportModal() {
+		document.getElementById("trialExportModal").classList.add("open");
+	}
+
+	function closeTrialExportModal() {
+		document.getElementById("trialExportModal").classList.remove("open");
+	}
+
+	function showTrialExportResult() {
+		document.getElementById("trialExportResult").style.display = "grid";
+	}
+
+	function toggleCommonMaterialItem() {
+		commonMaterialItemEnabled = !commonMaterialItemEnabled;
+		document.getElementById("commonMaterialToggle").classList.toggle("off", !commonMaterialItemEnabled);
+		document.getElementById("commonMaterialText").textContent = commonMaterialItemEnabled ? "是" : "否";
+		document.getElementById("selectedFormsText").value = commonMaterialItemEnabled ? "通用" : selectedFormsDefaultText;
+		document.getElementById("selectedFormsLabel").style.display = commonMaterialItemEnabled ? "none" : "";
+		document.getElementById("selectedFormsControl").style.display = commonMaterialItemEnabled ? "none" : "flex";
+	}
+
+	function openMaterialItemSelectModal() {
+		document.getElementById("materialItemSelectModal").classList.add("open");
+	}
+
+	function closeMaterialItemSelectModal() {
+		document.getElementById("materialItemSelectModal").classList.remove("open");
+	}
+
+	function confirmSelectedMaterialItems() {
+		const selected = Array.from(document.querySelectorAll(".material-item-select-check:checked")).map(function (checkbox) {
+			return {
+				id: checkbox.dataset.id,
+				name: checkbox.dataset.name,
+				sourceType: checkbox.dataset.sourceType,
+				source: checkbox.dataset.source,
+				format: checkbox.dataset.format
+			};
+		});
+		formMaterialItems = selected;
+		renderFormMaterialRows(selected);
+		closeMaterialItemSelectModal();
+	}
+
+	function renderFormMaterialRows(items) {
+		const tbody = document.getElementById("formMaterialRows");
+		if (!items.length) {
+			tbody.innerHTML = '<tr><td colspan="9">请点击“新增资料项”从资料项列表中选择</td></tr>';
+			return;
+		}
+		tbody.innerHTML = items.map(function (item, index) {
+			return '<tr>' +
+				'<td>' + (index + 1) + '</td>' +
+				'<td><span class="item-id">' + item.id + '</span></td>' +
+				'<td><span class="item-name">' + item.name + '</span></td>' +
+				'<td>' + renderItemType(item.sourceType) + '</td>' +
+				'<td>' + renderItemSource(item.sourceType, item.source) + '</td>' +
+				'<td>' + item.format + '</td>' +
+				'<td><span class="status on">启用</span></td>' +
+				'<td>2026-06-10 10:28:36</td>' +
+				'<td><span class="actions"><span class="action-danger" onclick="deleteFormMaterialItem(' + index + ')">删除</span></span></td>' +
+				'</tr>';
+		}).join("");
+	}
+
+	function deleteFormMaterialItem(index) {
+		formMaterialItems.splice(index, 1);
+		renderFormMaterialRows(formMaterialItems);
+	}
+
+	function deleteInitialFormMaterialRow(action) {
+		const row = action.closest("tr");
+		row.remove();
+		Array.from(document.querySelectorAll("#formMaterialRows tr")).forEach(function (item, index) {
+			const firstCell = item.querySelector("td");
+			if (firstCell && item.children.length > 1) {
+				firstCell.textContent = index + 1;
+			}
+		});
+		if (!document.querySelector("#formMaterialRows tr")) {
+			document.getElementById("formMaterialRows").innerHTML = '<tr><td colspan="9">请点击“新增资料项”从资料项列表中选择</td></tr>';
+		}
+	}
+
+	function renderItemType(sourceType) {
+		if (sourceType === "cloud") {
+			return '腾讯云';
+		}
+		if (sourceType === "merge") {
+			return '表单资料';
+		}
+		return '表单资料';
+	}
+
+	function renderItemSource(sourceType, source) {
+		if (sourceType === "cloud") {
+			return '<span class="item-source"><span>' + source + '</span></span>';
+		}
+		if (sourceType === "merge") {
+			return '<span class="item-source">' + source.split("|").map(function (code, index) {
+				const plus = index === 0 ? "" : '<span class="source-plus">+</span>';
+				return plus + '<span>' + code + '</span>';
+			}).join("") + '</span>';
+		}
+		return '<span class="item-source"><span>' + source + '</span></span>';
+	}
+
+	function openFormSelectModal() {
+		document.getElementById("formSelectModal").classList.add("open");
+	}
+
+	function closeFormSelectModal() {
+		document.getElementById("formSelectModal").classList.remove("open");
+	}
+
+	function confirmSelectedForms() {
+		const selected = Array.from(document.querySelectorAll(".form-select-check:checked")).map(function (checkbox) {
+			return checkbox.value;
+		});
+		document.getElementById("selectedFormsText").value = selected.join("、");
+		commonMaterialItemEnabled = false;
+		document.getElementById("commonMaterialToggle").classList.add("off");
+		document.getElementById("commonMaterialText").textContent = "否";
+		document.getElementById("selectedFormsLabel").style.display = "";
+		document.getElementById("selectedFormsControl").style.display = "flex";
+		closeFormSelectModal();
+	}
+
+	function openCloudTemplateSelectModal() {
+		document.getElementById("cloudTemplateSelectModal").classList.add("open");
+	}
+
+	function closeCloudTemplateSelectModal() {
+		document.getElementById("cloudTemplateSelectModal").classList.remove("open");
+	}
+
+	function confirmSelectedCloudTemplates() {
+		const selected = Array.from(document.querySelectorAll(".cloud-template-select-check:checked")).map(function (checkbox) {
+			return {
+				code: checkbox.value,
+				name: checkbox.dataset.name
+			};
+		});
+		document.getElementById("selectedCloudTemplatesText").value = selected.map(function (item) {
+			return item.code;
+		}).join(" + ");
+		materialSourceItems = selected.map(function (item) {
+			return { type: "腾讯云", code: item.code };
+		});
+		renderMaterialSourceRows();
+		closeCloudTemplateSelectModal();
+	}
+
+	function openFormFileSelectModal() {
+		document.getElementById("formFileSelectModal").classList.add("open");
+	}
+
+	function closeFormFileSelectModal() {
+		document.getElementById("formFileSelectModal").classList.remove("open");
+	}
+
+	function confirmSelectedFormFiles() {
+		const selected = Array.from(document.querySelectorAll(".form-file-select-check:checked")).map(function (checkbox) {
+			return {
+				code: checkbox.value,
+				name: checkbox.closest("tr").children[1].textContent
+			};
+		});
+		document.getElementById("selectedFormFilesText").value = selected.map(function (item) {
+			return item.code;
+		}).join(" + ");
+		materialSourceItems = selected.map(function (item) {
+			return { type: "表单资料", code: item.code };
+		});
+		renderMaterialSourceRows();
+		closeFormFileSelectModal();
+	}
+
+	function renderMaterialSourceRows() {
+		const tbody = document.getElementById("materialSourceRows");
+		if (!materialSourceItems.length) {
+			tbody.innerHTML = '<tr><td colspan="4">请选择资料来源</td></tr>';
+			return;
+		}
+		tbody.innerHTML = materialSourceItems.map(function (item, index) {
+			return '<tr>' +
+				'<td>' + (index + 1) + '</td>' +
+				'<td>' + item.type + '</td>' +
+				'<td>' + item.code + '</td>' +
+				'<td><span class="actions">' +
+				'<span class="action-text" onclick="moveMaterialSourceItem(' + index + ', -1)">上移</span>' +
+				'<span class="action-text" onclick="moveMaterialSourceItem(' + index + ', 1)">下移</span>' +
+				'<span class="action-danger" onclick="deleteMaterialSourceItem(' + index + ')">删除</span>' +
+				'</span></td>' +
+				'</tr>';
+		}).join("");
+	}
+
+	function moveMaterialSourceItem(index, direction) {
+		const targetIndex = index + direction;
+		if (targetIndex < 0 || targetIndex >= materialSourceItems.length) {
+			return;
+		}
+		const current = materialSourceItems[index];
+		materialSourceItems[index] = materialSourceItems[targetIndex];
+		materialSourceItems[targetIndex] = current;
+		renderMaterialSourceRows();
+	}
+
+	function deleteMaterialSourceItem(index) {
+		materialSourceItems.splice(index, 1);
+		renderMaterialSourceRows();
+	}
+
+	function toggleMaterialType() {
+		const isForm = document.getElementById("materialType").value === "表单";
+		document.querySelectorAll(".material-cloud-row").forEach(function (el) {
+			el.style.display = isForm ? "none" : "";
+		});
+		document.querySelectorAll(".form-config-row").forEach(function (el) {
+			el.classList.toggle("visible", isForm);
+		});
+		document.getElementById("formFileControl").classList.toggle("visible", isForm);
+	}
+
+	function switchPackagePlan(tab) {
+		document.querySelectorAll("#packageDrawer .drawer-tab").forEach(function (el) {
+			el.classList.remove("active");
+		});
+		tab.classList.add("active");
+	}
+
+	function addPackagePlan() {
+		const tabs = document.querySelector("#packageDrawer .drawer-tabs");
+		const actions = tabs.querySelector(".plan-actions");
+		const planCount = tabs.querySelectorAll(".drawer-tab").length + 1;
+		const tab = document.createElement("div");
+		tab.className = "drawer-tab";
+		tab.setAttribute("onclick", "switchPackagePlan(this)");
+		tab.textContent = "资料包方案" + planCount;
+		tabs.insertBefore(tab, actions);
+		switchPackagePlan(tab);
+	}
+
+	function showRenamePackagePlanModal() {
+		const activeTab = document.querySelector("#packageDrawer .drawer-tab.active");
+		document.getElementById("renamePlanInput").value = activeTab ? activeTab.textContent : "";
+		document.getElementById("renamePlanModal").classList.add("open");
+	}
+
+	function hideRenamePackagePlanModal() {
+		document.getElementById("renamePlanModal").classList.remove("open");
+	}
+
+	function confirmRenamePackagePlan() {
+		const activeTab = document.querySelector("#packageDrawer .drawer-tab.active");
+		const name = document.getElementById("renamePlanInput").value.trim();
+		if (activeTab && name) {
+			activeTab.textContent = name;
+		}
+		hideRenamePackagePlanModal();
+	}
+
+	function showDeletePackagePlanConfirm() {
+		const tabs = document.querySelector("#packageDrawer .drawer-tabs");
+		const planTabs = Array.from(tabs.querySelectorAll(".drawer-tab"));
+		if (planTabs.length <= 1) {
+			return;
+		}
+		document.getElementById("deletePlanConfirm").classList.add("open");
+	}
+
+	function hideDeletePackagePlanConfirm() {
+		document.getElementById("deletePlanConfirm").classList.remove("open");
+	}
+
+	function confirmDeletePackagePlan() {
+		const tabs = document.querySelector("#packageDrawer .drawer-tabs");
+		const planTabs = Array.from(tabs.querySelectorAll(".drawer-tab"));
+		if (planTabs.length <= 1) {
+			hideDeletePackagePlanConfirm();
+			return;
+		}
+		const activeTab = tabs.querySelector(".drawer-tab.active") || planTabs[planTabs.length - 1];
+		const nextTab = activeTab.previousElementSibling && activeTab.previousElementSibling.classList.contains("drawer-tab")
+			? activeTab.previousElementSibling
+			: planTabs.find(function (tab) { return tab !== activeTab; });
+		activeTab.remove();
+		if (nextTab) {
+			switchPackagePlan(nextTab);
+		}
+		hideDeletePackagePlanConfirm();
+	}
+
+	function showView(view) {
+		const content = document.getElementById("pageContent");
+		content.dataset.view = view;
+		document.querySelectorAll(".menu-row.small").forEach(function (row) {
+			row.classList.remove("active");
+		});
+		if (view === "templates") {
+			document.querySelector('[data-menu="templates"]').classList.add("active");
+			document.getElementById("topTab").textContent = "资料项列表 ×";
+			closeDrawer("packageDrawer");
+		} else if (view === "forms") {
+			document.querySelector('[data-menu="forms"]').classList.add("active");
+			document.getElementById("topTab").textContent = "表单管理 ×";
+			closeDrawer("packageDrawer");
+		} else {
+			document.querySelector('[data-menu="flows"]').classList.add("active");
+			document.getElementById("topTab").textContent = "流程列表 ×";
+			openDrawer("packageDrawer");
+		}
+	}
+</script>
+</body>
+</html>
+

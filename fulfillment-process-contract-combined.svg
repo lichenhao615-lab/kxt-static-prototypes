@@ -1,0 +1,294 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1500" viewBox="0 0 2200 1500">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font: 800 40px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 18px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #64748b; }
+      .section { fill: #ffffff; stroke: #dbe5f0; stroke-width: 1.2; rx: 24; filter: url(#softShadow); }
+      .section.config { fill: #f8fbff; }
+      .section.runtime { fill: #fffdf8; }
+      .section.contracts { fill: #fbfff9; }
+      .section.result { fill: #fbf8ff; }
+      .section-title { font: 800 21px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #1e293b; }
+      .section-desc { font: 400 14px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #64748b; }
+      .card { fill: #ffffff; stroke-width: 1.5; rx: 16; filter: url(#cardShadow); }
+      .entry { stroke: #86c7f3; }
+      .core { stroke: #f3ba63; }
+      .flow { stroke: #9db7ee; }
+      .form { stroke: #7fd0a1; }
+      .contract { stroke: #efa2b4; }
+      .result-card { stroke: #b79ce8; }
+      .muted { stroke: #aab9ca; }
+      .header { font: 800 18px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #172033; }
+      .field { font: 400 14px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #334155; }
+      .note { font: 400 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #64748b; }
+      .label { font: 800 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #475569; }
+      .small-label { font: 700 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #64748b; }
+      .pill { rx: 14; }
+      .pill-blue { fill: #eaf3ff; stroke: #b8d9ff; }
+      .pill-green { fill: #eaf9f0; stroke: #b7e5c8; }
+      .pill-pink { fill: #fff0f4; stroke: #f4bdca; }
+      .pill-purple { fill: #f4efff; stroke: #d7c7ff; }
+      .pill-text { font: 800 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif; fill: #334155; }
+      .edge { stroke: #516177; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .edge-soft { stroke: #7b8ca4; stroke-width: 2; fill: none; marker-end: url(#arrowSoft); }
+      .edge-dashed { stroke: #7b8ca4; stroke-width: 2; stroke-dasharray: 8 7; fill: none; marker-end: url(#arrowSoft); }
+      .edge-blue { stroke: #3b82c4; stroke-width: 2.5; fill: none; marker-end: url(#arrowBlue); }
+      .edge-green { stroke: #2f9b67; stroke-width: 2.5; fill: none; marker-end: url(#arrowGreen); }
+      .edge-pink { stroke: #cf5f78; stroke-width: 2.5; fill: none; marker-end: url(#arrowPink); }
+    </style>
+    <filter id="softShadow" x="-4%" y="-8%" width="108%" height="116%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.06"/>
+    </filter>
+    <filter id="cardShadow" x="-6%" y="-10%" width="112%" height="120%">
+      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.07"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#516177"/>
+    </marker>
+    <marker id="arrowSoft" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#7b8ca4"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#3b82c4"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2f9b67"/>
+    </marker>
+    <marker id="arrowPink" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#cf5f78"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="2200" height="1500"/>
+
+  <text class="title" x="70" y="66">履约、流程、表单、合同模板关系总图</text>
+  <text class="subtitle" x="70" y="100">一张图讲清：后台配置如何变成履约单实例，履约状态如何流转，表单数据如何生成合同。</text>
+  <rect class="pill pill-blue" x="1664" y="46" width="460" height="38"/>
+  <text class="pill-text" x="1686" y="71">核心关联键：service_code / flow_id / state_id / perform_id</text>
+
+  <!-- Section 1 -->
+  <rect class="section config" x="58" y="132" width="2084" height="382"/>
+  <text class="section-title" x="84" y="166">1. 后台配置层</text>
+  <text class="section-desc" x="212" y="166">定义“哪类商品走哪个流程、流程里有哪些节点/按钮/条件，以及可用的表单和合同模板”。</text>
+
+  <rect class="card flow" x="86" y="218" width="276" height="138"/>
+  <text class="header" x="110" y="250">流程匹配规则</text>
+  <text class="field" x="110" y="280">kxt_process_rules</text>
+  <text class="field" x="110" y="304">类目 + 类型 + 国家</text>
+  <text class="field" x="110" y="328">匹配 flow_id</text>
+
+  <rect class="card flow" x="430" y="188" width="322" height="178"/>
+  <text class="header" x="454" y="220">流程主体</text>
+  <text class="field" x="454" y="250">kxt_service_process_flow</text>
+  <text class="field" x="454" y="274">id / name</text>
+  <text class="field" x="454" y="298">flow_form_json 当前生效流程</text>
+  <text class="field" x="454" y="322">current_version_id / no</text>
+
+  <rect class="card flow" x="430" y="394" width="322" height="68"/>
+  <text class="header" x="454" y="424">流程版本</text>
+  <text class="field" x="454" y="448">草稿 / 使用中 / 历史快照</text>
+
+  <rect class="card flow" x="820" y="176" width="462" height="296"/>
+  <text class="header" x="848" y="208">流程 JSON：nodes + edges</text>
+
+  <rect class="card muted" x="848" y="238" width="188" height="88"/>
+  <text class="header" x="868" y="266">节点 nodes[]</text>
+  <text class="field" x="868" y="294">stateId / stateCode</text>
+
+  <rect class="card muted" x="1068" y="238" width="188" height="88"/>
+  <text class="header" x="1088" y="266">按钮 children[]</text>
+  <text class="field" x="1088" y="294">operateCode</text>
+
+  <rect class="card muted" x="848" y="354" width="188" height="88"/>
+  <text class="header" x="868" y="382">流转线 edges[]</text>
+  <text class="field" x="868" y="410">targetStateId</text>
+
+  <rect class="card muted" x="1068" y="354" width="188" height="88"/>
+  <text class="header" x="1088" y="382">分支条件</text>
+  <text class="field" x="1088" y="410">fieldLists</text>
+
+  <rect class="card flow" x="1372" y="190" width="292" height="114"/>
+  <text class="header" x="1396" y="222">状态节点库</text>
+  <text class="field" x="1396" y="252">kxt_service_process_state</text>
+  <text class="field" x="1396" y="276">id / code / name</text>
+
+  <rect class="card flow" x="1372" y="346" width="292" height="114"/>
+  <text class="header" x="1396" y="378">操作项库</text>
+  <text class="field" x="1396" y="408">kxt_service_process_operate</text>
+  <text class="field" x="1396" y="432">code / name / 权限开关</text>
+
+  <rect class="card form" x="1748" y="190" width="292" height="114"/>
+  <text class="header" x="1772" y="222">表单模板</text>
+  <text class="field" x="1772" y="252">kxt_service_process_form</text>
+  <text class="field" x="1772" y="276">formJson 表单结构</text>
+
+  <rect class="card flow" x="1748" y="346" width="292" height="114"/>
+  <text class="header" x="1772" y="378">操作权限</text>
+  <text class="field" x="1772" y="408">operate_role / model</text>
+  <text class="field" x="1772" y="432">operateId + roleId + model</text>
+
+  <path class="edge-blue" d="M362 287 L430 287"/>
+  <text class="label" x="380" y="270">flowId</text>
+  <path class="edge-soft" d="M591 394 L591 366"/>
+  <text class="small-label" x="608" y="388">发布后刷新</text>
+  <path class="edge-blue" d="M752 287 L820 287"/>
+  <text class="label" x="764" y="270">保存 JSON</text>
+  <path class="edge-dashed" d="M1036 282 L1372 247"/>
+  <text class="small-label" x="1132" y="252">stateId 引用</text>
+  <path class="edge-dashed" d="M1256 282 L1372 403"/>
+  <text class="small-label" x="1268" y="350">operateCode 引用</text>
+  <path class="edge-dashed" d="M1256 398 L1748 247"/>
+  <text class="small-label" x="1474" y="310">fieldLists 用表单字段判断</text>
+  <path class="edge-dashed" d="M1664 403 L1748 403"/>
+  <text class="small-label" x="1678" y="386">按钮权限</text>
+
+  <!-- Section 2 -->
+  <rect class="section runtime" x="58" y="552" width="2084" height="292"/>
+  <text class="section-title" x="84" y="586">2. 履约实例层</text>
+  <text class="section-desc" x="212" y="586">订单/单据生成履约主单；履约主单保存当前流程、当前状态和前一状态。</text>
+
+  <rect class="card entry" x="86" y="650" width="276" height="126"/>
+  <text class="header" x="110" y="682">订单/单据入口</text>
+  <text class="field" x="110" y="712">ServiceReceiptDTO</text>
+  <text class="field" x="110" y="736">orderNo / itemId / skuId</text>
+  <text class="field" x="110" y="760">类目 / 类型 / 国家</text>
+
+  <rect class="card core" x="430" y="640" width="314" height="146"/>
+  <text class="header" x="454" y="672">履约单据</text>
+  <text class="field" x="454" y="702">kxt_service_receipt</text>
+  <text class="field" x="454" y="726">receipt_code</text>
+  <text class="field" x="454" y="750">service_code</text>
+  <text class="field" x="454" y="774">service_status</text>
+
+  <rect class="card core" x="820" y="618" width="380" height="190"/>
+  <text class="header" x="844" y="650">履约主单</text>
+  <text class="field" x="844" y="680">kxt_service_perform</text>
+  <text class="field" x="844" y="704">service_code 服务单号</text>
+  <text class="field" x="844" y="728">merchand_id 商品ID</text>
+  <text class="field" x="844" y="752">category_id / type_id / country_code</text>
+  <text class="field" x="844" y="776">flow_id / state_id / pre_state_id</text>
+
+  <rect class="card core" x="1290" y="640" width="340" height="146"/>
+  <text class="header" x="1314" y="672">履约明细</text>
+  <text class="field" x="1314" y="702">kxt_service_perform_info</text>
+  <text class="field" x="1314" y="726">perform_id</text>
+  <text class="field" x="1314" y="750">form_data_info 表单数据</text>
+  <text class="field" x="1314" y="774">contract_file / agreement</text>
+
+  <rect class="card muted" x="1748" y="652" width="292" height="122"/>
+  <text class="header" x="1772" y="684">客户/人员信息</text>
+  <text class="field" x="1772" y="714">userId / customerId</text>
+  <text class="field" x="1772" y="738">s_user_id 客户经理</text>
+  <text class="field" x="1772" y="762">c_user_id 客服</text>
+
+  <path class="edge" d="M362 713 L430 713"/>
+  <text class="label" x="376" y="696">生成</text>
+  <path class="edge" d="M744 713 L820 713"/>
+  <text class="label" x="760" y="696">生成</text>
+  <path class="edge" d="M1200 713 L1290 713"/>
+  <text class="label" x="1218" y="696">performId</text>
+  <path class="edge-soft" d="M1630 713 L1748 713"/>
+  <text class="small-label" x="1650" y="696">补充人员</text>
+
+  <rect class="pill pill-blue" x="466" y="532" width="264" height="32"/>
+  <text class="pill-text" x="486" y="553">匹配：类目 + 类型 + 国家 → flowId</text>
+  <path class="edge-dashed" d="M224 650 L224 356"/>
+  <path class="edge-soft" d="M1010 618 L1010 472"/>
+  <text class="small-label" x="1026" y="548">按 start_ 连线初始化 stateId</text>
+  <path class="edge-soft" d="M930 618 C930 546, 591 546, 591 366"/>
+  <text class="small-label" x="650" y="540">flowId 写入履约主单</text>
+
+  <!-- Section 3 -->
+  <rect class="section contracts" x="58" y="882" width="2084" height="304"/>
+  <text class="section-title" x="84" y="916">3. 表单与合同层</text>
+  <text class="section-desc" x="212" y="916">表单模板定义结构，履约明细保存填写后的字段值；合同模板按商品和模板 key 匹配，合同记录用 serviceCode 关联履约单。</text>
+
+  <rect class="card form" x="86" y="994" width="292" height="126"/>
+  <text class="header" x="110" y="1026">表单模板</text>
+  <text class="field" x="110" y="1056">定义字段、组件、校验</text>
+  <text class="field" x="110" y="1080">formJson 表单结构</text>
+
+  <rect class="card form" x="462" y="974" width="342" height="166"/>
+  <text class="header" x="486" y="1006">履约表单数据</text>
+  <text class="field" x="486" y="1036">kxt_service_perform_info.form_data_info</text>
+  <text class="field" x="486" y="1060">客户/后台填写后的字段值</text>
+  <text class="field" x="486" y="1084">公司、法人、店铺、附件等</text>
+  <text class="field" x="486" y="1108">合同填充读取这些字段</text>
+
+  <rect class="card contract" x="890" y="968" width="352" height="178"/>
+  <text class="header" x="914" y="1000">合同模板配置</text>
+  <text class="field" x="914" y="1030">kxt_contract_template_config</text>
+  <text class="field" x="914" y="1054">merchandId 商品ID</text>
+  <text class="field" x="914" y="1078">signerType 签署方类型</text>
+  <text class="field" x="914" y="1102">templateKey → templateId</text>
+  <text class="field" x="914" y="1126">stampKeyWord 盖章关键字</text>
+
+  <rect class="card contract" x="1324" y="958" width="366" height="198"/>
+  <text class="header" x="1348" y="990">合同记录</text>
+  <text class="field" x="1348" y="1020">kxt_contract</text>
+  <text class="field" x="1348" y="1044">service_code 关联履约单</text>
+  <text class="field" x="1348" y="1068">template_id / file_id</text>
+  <text class="field" x="1348" y="1092">sign_flow_id / sign_url</text>
+  <text class="field" x="1348" y="1116">ready_stamp_file_url</text>
+  <text class="field" x="1348" y="1140">stamped_file_url / status</text>
+
+  <rect class="card contract" x="1748" y="994" width="292" height="126"/>
+  <text class="header" x="1772" y="1026">e签宝</text>
+  <text class="field" x="1772" y="1056">docTemplateId 生成文件</text>
+  <text class="field" x="1772" y="1080">signFlowId 发起签署</text>
+  <text class="field" x="1772" y="1104">回调更新合同状态</text>
+
+  <path class="edge-dashed" d="M378 1057 L462 1057"/>
+  <text class="small-label" x="392" y="1038">填写后</text>
+  <path class="edge-green" d="M804 1057 L890 1057"/>
+  <text class="label" x="824" y="1038">字段值</text>
+  <path class="edge-pink" d="M1242 1057 L1324 1057"/>
+  <text class="label" x="1260" y="1038">templateId</text>
+  <path class="edge-pink" d="M1690 1057 L1748 1057"/>
+  <text class="label" x="1700" y="1038">签署</text>
+
+  <rect class="pill pill-green" x="1288" y="858" width="294" height="32"/>
+  <text class="pill-text" x="1308" y="879">formDataInfo 下沉：履约明细 → 合同</text>
+  <path class="edge-soft" d="M1460 786 L1460 958"/>
+  <rect class="pill pill-pink" x="900" y="858" width="310" height="32"/>
+  <text class="pill-text" x="920" y="879">合同模板匹配：商品 + 签署方 + key</text>
+  <path class="edge-soft" d="M1010 808 L1010 968"/>
+  <path class="edge-dashed" d="M1510 958 L1510 842 C1510 822, 1200 822, 1200 776"/>
+  <text class="small-label" x="1530" y="884">serviceCode 关联履约单</text>
+
+  <!-- Section 4 -->
+  <rect class="section result" x="58" y="1224" width="2084" height="202"/>
+  <text class="section-title" x="84" y="1258">4. 状态变化结果层</text>
+  <text class="section-desc" x="252" y="1258">后台点击操作后，按流程 edges[] 更新状态，再通过消息驱动任务、跟单和 SLA。</text>
+
+  <rect class="card result-card" x="86" y="1310" width="292" height="92"/>
+  <text class="header" x="110" y="1342">状态流转</text>
+  <text class="field" x="110" y="1372">preStateId → stateId</text>
+
+  <rect class="card msg" x="462" y="1298" width="342" height="116"/>
+  <text class="header" x="486" y="1330">状态变更消息</text>
+  <text class="field" x="486" y="1360">QUEUE_KXT_STATUS_CHANGE</text>
+  <text class="field" x="486" y="1384">bizCode / bizStatus / operateCode</text>
+
+  <rect class="card result-card" x="890" y="1310" width="292" height="92"/>
+  <text class="header" x="914" y="1342">履约任务</text>
+  <text class="field" x="914" y="1372">kxt_perform_task</text>
+
+  <rect class="card result-card" x="1324" y="1310" width="292" height="92"/>
+  <text class="header" x="1348" y="1342">跟单/质控</text>
+  <text class="field" x="1348" y="1372">operate_track / reject_log</text>
+
+  <rect class="card result-card" x="1748" y="1310" width="292" height="92"/>
+  <text class="header" x="1772" y="1342">SLA/提醒</text>
+  <text class="field" x="1772" y="1372">逾期、提醒、看板统计</text>
+
+  <path class="edge-soft" d="M1010 808 C1010 1202, 232 1202, 232 1310"/>
+  <text class="small-label" x="318" y="1208">按当前 flowId/stateId 执行操作流转</text>
+  <path class="edge" d="M378 1356 L462 1356"/>
+  <path class="edge" d="M804 1356 L890 1356"/>
+  <path class="edge" d="M1182 1356 L1324 1356"/>
+  <path class="edge" d="M1616 1356 L1748 1356"/>
+
+  <text class="hint" x="82" y="1466">讲解口径：流程是配置，履约单是实例；履约单保存 flowId/stateId，履约明细保存 formDataInfo。合同模板不按 flowId 匹配，而按 merchandId + signerType + templateKey 匹配；合同记录用 serviceCode 关联履约单。</text>
+</svg>

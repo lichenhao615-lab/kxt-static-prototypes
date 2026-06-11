@@ -1,0 +1,2390 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>上传资料地址自动拆分原型</title>
+	<style>
+		:root {
+			--brand: #00a5a8;
+			--brand-dark: #008b8f;
+			--brand-soft: #e8f9f9;
+			--nav: #eaf8f8;
+			--sidebar: #eefafa;
+			--line: #e5e8eb;
+			--line-strong: #d5dbe0;
+			--text: #1f2a37;
+			--muted: #6b7280;
+			--weak: #9ca3af;
+			--danger: #ff4d4f;
+			--success: #15b875;
+			--warning: #faad14;
+			--bg: #f5f7f9;
+			--white: #ffffff;
+			--shadow: 0 16px 44px rgba(15, 23, 42, .14);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			min-width: 1180px;
+			color: var(--text);
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+			background: var(--bg);
+			letter-spacing: 0;
+		}
+
+		button,
+		input,
+		textarea,
+		select {
+			font: inherit;
+			letter-spacing: 0;
+		}
+
+		button {
+			cursor: pointer;
+		}
+
+		.topbar {
+			height: 56px;
+			display: flex;
+			align-items: center;
+			border-top: 3px solid #18aeb1;
+			border-bottom: 1px solid #d9eeee;
+			background: var(--nav);
+		}
+
+		.brand {
+			width: 230px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding-left: 30px;
+			font-size: 15px;
+			font-weight: 600;
+			color: #12212b;
+		}
+
+		.logo {
+			width: 20px;
+			height: 20px;
+			display: grid;
+			place-items: center;
+			border: 1px solid #1ba8a8;
+			border-radius: 50%;
+			color: #138f91;
+			font-size: 11px;
+			font-weight: 700;
+		}
+
+		.main-nav {
+			display: flex;
+			align-items: center;
+			gap: 26px;
+			height: 100%;
+			font-size: 14px;
+		}
+
+		.nav-item {
+			height: 100%;
+			display: flex;
+			align-items: center;
+			color: #1f2937;
+			border-bottom: 2px solid transparent;
+		}
+
+		.nav-item.active {
+			color: var(--brand-dark);
+			border-color: var(--brand);
+		}
+
+		.top-actions {
+			margin-left: auto;
+			display: flex;
+			align-items: center;
+			gap: 22px;
+			padding-right: 30px;
+			color: #74808a;
+			font-size: 18px;
+		}
+
+		.avatar {
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			background: linear-gradient(160deg, #ffb347 0%, #293241 48%, #111827 100%);
+			box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5);
+		}
+
+		.app-shell {
+			display: grid;
+			grid-template-columns: 230px 1fr;
+			min-height: calc(100vh - 56px);
+		}
+
+		.sidebar {
+			background: var(--sidebar);
+			border-right: 1px solid #ddecee;
+			padding-top: 12px;
+		}
+
+		.menu-row {
+			height: 53px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 30px;
+			font-size: 15px;
+			color: #1f2937;
+		}
+
+		.menu-row.small {
+			height: 48px;
+			padding-left: 56px;
+			justify-content: flex-start;
+		}
+
+		.menu-row.open {
+			color: #0f7678;
+			font-weight: 600;
+		}
+
+		.menu-row.selected {
+			position: relative;
+			background: #cceeee;
+			color: #058c90;
+		}
+
+		.menu-row.selected::after {
+			content: "";
+			position: absolute;
+			right: 10px;
+			width: 2px;
+			height: 44px;
+			background: var(--brand);
+		}
+
+		.chevron {
+			color: #111827;
+			font-weight: 700;
+		}
+
+		.workspace {
+			overflow: hidden;
+			background: #fff;
+		}
+
+		.tabs {
+			height: 36px;
+			display: flex;
+			align-items: end;
+			gap: 6px;
+			padding-left: 18px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.tab {
+			height: 30px;
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			padding: 0 12px;
+			border: 1px solid var(--line);
+			border-bottom: none;
+			background: #fff;
+			font-size: 13px;
+		}
+
+		.tab.active {
+			background: var(--brand);
+			color: #fff;
+			border-color: var(--brand);
+		}
+
+		.filters {
+			padding: 12px 14px 0;
+			background: #fff;
+		}
+
+		.filter-row {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 12px;
+			min-height: 44px;
+			font-size: 14px;
+		}
+
+		.filter-label {
+			color: #334155;
+			white-space: nowrap;
+		}
+
+		.pill {
+			min-width: 44px;
+			height: 26px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0 11px;
+			border-radius: 4px;
+			background: #eef3f4;
+			color: #34404b;
+		}
+
+		.pill.active {
+			background: var(--brand-soft);
+			color: var(--brand-dark);
+		}
+
+		.input-like {
+			height: 36px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: space-between;
+			min-width: 220px;
+			padding: 0 12px;
+			border: 1px solid var(--line-strong);
+			background: #fff;
+			color: #64748b;
+		}
+
+		.date {
+			min-width: 300px;
+			color: #a6adb5;
+		}
+
+		.search-row {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding-top: 8px;
+		}
+
+		.primary-btn,
+		.ghost-btn,
+		.outline-btn {
+			height: 36px;
+			border-radius: 4px;
+			border: 1px solid transparent;
+			padding: 0 18px;
+			font-size: 14px;
+			font-weight: 500;
+		}
+
+		.primary-btn {
+			background: var(--brand);
+			color: #fff;
+		}
+
+		.primary-btn:hover {
+			background: var(--brand-dark);
+		}
+
+		.primary-btn:disabled {
+			cursor: not-allowed;
+			background: #b7dfe0;
+		}
+
+		.ghost-btn,
+		.outline-btn {
+			background: #fff;
+			border-color: var(--line-strong);
+			color: #243242;
+		}
+
+		.text-btn {
+			border: none;
+			background: transparent;
+			color: var(--brand-dark);
+			font-weight: 600;
+			padding: 0;
+		}
+
+		.status-tabs {
+			display: flex;
+			align-items: center;
+			gap: 18px;
+			margin-top: 16px;
+			padding: 0 10px;
+			height: 42px;
+			white-space: nowrap;
+			border-bottom: 1px solid var(--line);
+			overflow: hidden;
+			font-size: 14px;
+		}
+
+		.status-tab {
+			height: 34px;
+			display: flex;
+			align-items: center;
+			color: #34404b;
+		}
+
+		.status-tab.active {
+			padding: 0 10px;
+			background: var(--brand);
+			color: #fff;
+			font-weight: 600;
+		}
+
+		.selection {
+			height: 34px;
+			display: flex;
+			align-items: center;
+			padding-left: 14px;
+			color: #34404b;
+			font-size: 14px;
+		}
+
+		.table-wrap {
+			margin: 0 14px;
+			border-top: 1px solid var(--line);
+			overflow: auto;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			table-layout: fixed;
+			font-size: 14px;
+		}
+
+		thead {
+			background: #f4f6f8;
+		}
+
+		th,
+		td {
+			height: 53px;
+			border-bottom: 1px solid var(--line);
+			border-right: 1px solid #f0f2f4;
+			text-align: center;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		th {
+			font-weight: 600;
+			color: #111827;
+		}
+
+		.check {
+			width: 18px;
+			height: 18px;
+			display: inline-block;
+			border: 2px solid #d9e0e7;
+			border-radius: 4px;
+			background: #f8fafc;
+		}
+
+		.service-code,
+		.action-link {
+			color: #00a1aa;
+		}
+
+		.action-link {
+			border: none;
+			background: transparent;
+			padding: 0 4px;
+			font-weight: 600;
+		}
+
+		.backdrop {
+			position: fixed;
+			inset: 0;
+			z-index: 30;
+			display: none;
+			background: rgba(17, 24, 39, .48);
+		}
+
+		.backdrop.show {
+			display: block;
+		}
+
+		.drawer {
+			position: fixed;
+			top: 0;
+			right: 0;
+			z-index: 40;
+			width: min(1528px, calc(100vw - 382px));
+			min-width: 1080px;
+			height: 100vh;
+			display: none;
+			background: #fff;
+			overflow: hidden;
+			box-shadow: var(--shadow);
+		}
+
+		.drawer.show {
+			display: grid;
+			grid-template-rows: 60px 1fr;
+		}
+
+		.drawer-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-bottom: 1px solid var(--line);
+			padding: 0 28px;
+		}
+
+		.drawer-title {
+			font-size: 18px;
+			font-weight: 600;
+		}
+
+		.close-btn {
+			width: 32px;
+			height: 32px;
+			display: grid;
+			place-items: center;
+			border: none;
+			background: transparent;
+			color: #6b7280;
+			font-size: 28px;
+			line-height: 1;
+		}
+
+		.drawer-body {
+			display: grid;
+			grid-template-columns: 304px 1fr;
+			height: calc(100vh - 60px);
+			min-height: 0;
+			overflow: hidden;
+		}
+
+		.step-side {
+			padding: 112px 42px 0 28px;
+			border-right: 1px solid var(--line);
+			background: #fff;
+		}
+
+		.steps {
+			position: sticky;
+			top: 34px;
+			width: 234px;
+			border-radius: 6px;
+			background: #fff;
+			box-shadow: 0 20px 42px rgba(15, 23, 42, .08);
+			overflow: hidden;
+		}
+
+		.step {
+			height: 64px;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 0 24px;
+			font-size: 17px;
+			color: #111827;
+		}
+
+		.step.active {
+			background: #edfafa;
+			color: #111827;
+			font-weight: 600;
+		}
+
+		.step-dot {
+			width: 20px;
+			height: 20px;
+			display: grid;
+			place-items: center;
+			border-radius: 50%;
+			background: #d8dadd;
+			color: #fff;
+			font-size: 13px;
+			font-weight: 700;
+		}
+
+		.step.active .step-dot {
+			background: var(--success);
+		}
+
+		.form-pane {
+			min-width: 0;
+			min-height: 0;
+			height: 100%;
+			display: grid;
+			grid-template-rows: auto 1fr;
+			overflow: hidden;
+		}
+
+		.form-toolbar {
+			height: 90px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 28px 0 44px;
+			border-bottom: 1px solid #f1f3f5;
+		}
+
+		.service-title {
+			font-size: 22px;
+			font-weight: 600;
+		}
+
+		.toolbar-actions {
+			display: flex;
+			gap: 12px;
+		}
+
+		.form-scroll {
+			min-height: 0;
+			overflow-y: auto;
+			overflow-x: hidden;
+			padding: 34px 42px 68px 44px;
+		}
+
+		.tip {
+			margin: 0 0 30px;
+			color: var(--danger);
+			font-size: 14px;
+			text-align: center;
+		}
+
+		.form-section {
+			margin-bottom: 58px;
+			scroll-margin-top: 24px;
+		}
+
+		.section-title {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 22px;
+			font-size: 24px;
+			font-weight: 600;
+		}
+
+		.section-title::before {
+			content: "";
+			width: 5px;
+			height: 22px;
+			background: var(--brand);
+		}
+
+		.form-grid {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 30px 26px;
+		}
+
+		.field {
+			min-width: 0;
+		}
+
+		.field.full {
+			grid-column: 1 / -1;
+		}
+
+		.field.compact {
+			max-width: 558px;
+		}
+
+		.label {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			height: 28px;
+			font-size: 15px;
+			color: #273444;
+		}
+
+		.required {
+			color: var(--danger);
+		}
+
+		.help-link {
+			color: var(--brand);
+			font-weight: 600;
+		}
+
+		.question {
+			width: 16px;
+			height: 16px;
+			display: inline-grid;
+			place-items: center;
+			border: 1px solid var(--brand);
+			border-radius: 50%;
+			color: var(--brand);
+			font-size: 12px;
+			line-height: 1;
+		}
+
+		.control {
+			width: 100%;
+			min-width: 0;
+			height: 36px;
+			border: 1px solid var(--line-strong);
+			background: #fff;
+			padding: 0 12px;
+			color: #111827;
+			outline: none;
+		}
+
+		.control::placeholder,
+		textarea::placeholder {
+			color: #bbc1c8;
+		}
+
+		textarea.control {
+			height: 86px;
+			resize: none;
+			padding-top: 10px;
+			line-height: 1.6;
+		}
+
+		.option-group {
+			display: flex;
+			align-items: center;
+			gap: 44px;
+			flex-wrap: wrap;
+		}
+
+		.option-card {
+			position: relative;
+			width: 204px;
+			height: 48px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			border: 1px solid #cfd6dc;
+			background: #fff;
+			color: #111827;
+			font-size: 15px;
+		}
+
+		.option-card.selected {
+			border-color: var(--brand);
+			background: #effcfc;
+			color: var(--brand-dark);
+		}
+
+		.option-card.selected::after {
+			content: "✓";
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			width: 22px;
+			height: 22px;
+			display: grid;
+			place-items: end center;
+			clip-path: polygon(100% 0, 0 100%, 100% 100%);
+			background: var(--brand);
+			color: #fff;
+			font-size: 12px;
+			font-weight: 700;
+			line-height: 1;
+		}
+
+		.upload-pair {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) 146px;
+			gap: 22px;
+			align-items: stretch;
+		}
+
+		.upload-box {
+			min-height: 142px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			border-radius: 4px;
+			background: #f5f5f5;
+			color: #9aa2aa;
+			line-height: 1.9;
+		}
+
+		.upload-box.tall {
+			min-height: 220px;
+		}
+
+		.choose-file {
+			height: 38px;
+			margin-top: 10px;
+			border: none;
+			border-radius: 4px;
+			background: var(--brand);
+			color: #fff;
+			padding: 0 30px;
+			font-weight: 600;
+		}
+
+		.sample-card {
+			min-height: 142px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			border-radius: 4px;
+			background: #f5f5f5;
+			color: #9aa2aa;
+		}
+
+		.sample-card.tall {
+			min-height: 220px;
+		}
+
+		.sample-thumb {
+			position: relative;
+			width: 104px;
+			height: 70px;
+			margin-bottom: 8px;
+			border: 1px solid #d7dce1;
+			background:
+				linear-gradient(90deg, transparent 0 12px, #f1c64d 12px 18px, transparent 18px),
+				repeating-linear-gradient(#eef2f6 0 7px, #fff 7px 14px);
+			box-shadow: inset 0 0 0 8px #fff;
+		}
+
+		.sample-thumb.id {
+			background:
+				radial-gradient(circle at 74px 34px, #334155 0 14px, transparent 15px),
+				linear-gradient(90deg, #fff 0 52px, #f1f5f9 52px),
+				repeating-linear-gradient(#e7edf3 0 7px, transparent 7px 14px);
+		}
+
+		.sample-thumb.store {
+			background:
+				linear-gradient(#263238 0 18px, transparent 18px),
+				repeating-linear-gradient(90deg, #f97316 0 36px, #f8fafc 36px 74px);
+		}
+
+		.sample-thumb.contract {
+			background:
+				linear-gradient(90deg, #fff 0 60%, #f8fafc 60%),
+				repeating-linear-gradient(#dbe3ec 0 5px, transparent 5px 13px);
+		}
+
+		.zoom-dot {
+			position: absolute;
+			right: -8px;
+			bottom: -8px;
+			width: 22px;
+			height: 22px;
+			display: grid;
+			place-items: center;
+			border-radius: 50%;
+			background: #8b929a;
+			color: #fff;
+			font-size: 13px;
+			box-shadow: 0 0 0 2px rgba(255, 255, 255, .8);
+		}
+
+		.inline-note {
+			margin-top: 8px;
+			color: var(--danger);
+			font-size: 14px;
+			line-height: 1.6;
+		}
+
+		.phone-row {
+			display: grid;
+			grid-template-columns: 126px 1fr;
+			gap: 18px;
+		}
+
+		.name-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 18px;
+		}
+
+		.radio-row {
+			height: 36px;
+			display: flex;
+			align-items: center;
+			gap: 18px;
+		}
+
+		.radio {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			color: #1f2937;
+		}
+
+		.radio::before {
+			content: "";
+			width: 16px;
+			height: 16px;
+			border: 1px solid #cfd6dc;
+			border-radius: 50%;
+			background: #fff;
+		}
+
+		.radio.selected::before {
+			border-color: var(--brand);
+			box-shadow: inset 0 0 0 4px #fff;
+			background: var(--brand);
+		}
+
+		.signature-layout {
+			display: grid;
+			grid-template-columns: minmax(280px, 1fr) 220px;
+			gap: 30px;
+			align-items: center;
+		}
+
+		.signature-pad {
+			height: 220px;
+			background: #f5f5f5;
+			border-radius: 4px;
+		}
+
+		.signature-sample {
+			width: 220px;
+			height: 220px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			border-radius: 4px;
+			background: #f5f5f5;
+			color: #9aa2aa;
+		}
+
+		.signature-img {
+			position: relative;
+			width: 176px;
+			height: 112px;
+			display: grid;
+			place-items: center;
+			background: #fff;
+			color: #ff595e;
+			font-size: 30px;
+			font-family: Georgia, "Times New Roman", serif;
+			font-style: italic;
+		}
+
+		.qr-box {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 16px;
+			grid-column: 1 / -1;
+			justify-self: end;
+			color: #3b4450;
+			font-size: 14px;
+		}
+
+		.qr {
+			width: 166px;
+			height: 166px;
+			background:
+				linear-gradient(90deg, #000 10px, transparent 10px 20px, #000 20px 30px, transparent 30px 40px, #000 40px 50px, transparent 50px),
+				linear-gradient(#000 10px, transparent 10px 20px, #000 20px 30px, transparent 30px 40px, #000 40px 50px, transparent 50px),
+				repeating-linear-gradient(45deg, #000 0 5px, #fff 5px 10px);
+			background-blend-mode: difference;
+			border: 8px solid #fff;
+			box-shadow: 0 0 0 1px #d8dee5;
+		}
+
+		.product-box {
+			min-height: 120px;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: center;
+			gap: 10px;
+		}
+
+		.add-btn {
+			height: 36px;
+			border: none;
+			border-radius: 4px;
+			background: var(--brand);
+			color: #fff;
+			padding: 0 18px;
+			font-weight: 600;
+		}
+
+		.bottom-actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 14px;
+			margin-top: 28px;
+			padding-top: 22px;
+			border-top: 1px solid #eef1f4;
+		}
+
+		.address-module {
+			min-width: 0;
+			border: 1px solid #dce7e8;
+			background: #fbfefe;
+			padding: 18px 20px 20px;
+		}
+
+		.address-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 16px;
+			margin-bottom: 12px;
+		}
+
+		.module-title {
+			font-size: 16px;
+			font-weight: 600;
+		}
+
+		.lock-note {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			color: #64748b;
+			font-size: 13px;
+		}
+
+		.address-tools {
+			display: inline-flex;
+			align-items: center;
+			gap: 14px;
+			flex-wrap: wrap;
+			justify-content: flex-end;
+		}
+
+		.translate-toggle {
+			display: inline-grid;
+			grid-template-columns: 1fr 1fr;
+			border: 1px solid #b9dee0;
+			background: #fff;
+		}
+
+		.translate-option {
+			height: 30px;
+			min-width: 58px;
+			border: none;
+			background: transparent;
+			color: #4b5563;
+			font-size: 13px;
+		}
+
+		.translate-option.active {
+			background: var(--brand);
+			color: #fff;
+			font-weight: 600;
+		}
+
+		.lock {
+			width: 16px;
+			height: 16px;
+			display: inline-grid;
+			place-items: center;
+			border-radius: 50%;
+			background: #dbeafe;
+			color: #2563eb;
+			font-size: 11px;
+		}
+
+		.address-hint {
+			margin: 8px 0 12px;
+			color: var(--danger);
+			font-size: 14px;
+			line-height: 1.55;
+		}
+
+		.char-line {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-top: 8px;
+			font-size: 13px;
+			color: #697586;
+		}
+
+		.status {
+			display: inline-flex;
+			align-items: center;
+			gap: 7px;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.status.idle {
+			color: #697586;
+		}
+
+		.status.loading {
+			color: var(--warning);
+		}
+
+		.status.success {
+			color: var(--success);
+		}
+
+		.status.error {
+			color: var(--danger);
+		}
+
+		.spin {
+			width: 12px;
+			height: 12px;
+			border: 2px solid rgba(250, 173, 20, .35);
+			border-top-color: var(--warning);
+			border-radius: 50%;
+			animation: spin .8s linear infinite;
+		}
+
+		@keyframes spin {
+			to {
+				transform: rotate(360deg);
+			}
+		}
+
+		.result-card {
+			min-width: 0;
+			margin-top: 16px;
+			border: 1px solid var(--line);
+			background: #fff;
+		}
+
+		.result-header {
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 14px;
+			border-bottom: 1px solid var(--line);
+			background: #f6fbfb;
+			font-size: 14px;
+			font-weight: 600;
+		}
+
+		.result-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+			gap: 12px;
+			padding: 14px;
+		}
+
+		.result-item {
+			min-height: 74px;
+			border: 1px solid #e2e8f0;
+			background: #f8fafc;
+			padding: 10px 12px;
+		}
+
+		.result-label {
+			margin-bottom: 7px;
+			color: #64748b;
+			font-size: 12px;
+		}
+
+		.result-value {
+			color: #111827;
+			font-size: 14px;
+			line-height: 1.35;
+			word-break: break-word;
+		}
+
+		.result-value.empty {
+			color: #b6bec8;
+		}
+
+		.result-value.editable {
+			display: block;
+		}
+
+		.result-input {
+			width: 100%;
+			min-height: 34px;
+			border: 1px solid #cfd8e3;
+			border-radius: 4px;
+			background: #fff;
+			padding: 7px 9px;
+			color: #111827;
+			font-size: 14px;
+			line-height: 1.35;
+			outline: none;
+		}
+
+		.result-input:focus {
+			border-color: var(--brand);
+			box-shadow: 0 0 0 2px rgba(0, 165, 168, .12);
+		}
+
+		.recommend-warning {
+			display: none;
+			margin-top: 7px;
+			color: #b45309;
+			font-size: 12px;
+			line-height: 1.5;
+		}
+
+		.result-value.modified .recommend-warning {
+			display: block;
+		}
+
+		.use-recommend {
+			margin-top: 4px;
+			border: none;
+			background: transparent;
+			padding: 0;
+			color: #d97706;
+			font-size: 12px;
+			font-weight: 600;
+			text-decoration: underline;
+		}
+
+		.blocked-submit {
+			margin-top: 10px;
+			color: var(--danger);
+			font-size: 13px;
+		}
+
+		.lower-fields {
+			margin-top: 30px;
+		}
+
+		.fake-upload {
+			height: 74px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border: 1px dashed #cbd5e1;
+			background: #fbfcfd;
+			color: #94a3b8;
+		}
+
+		.toast {
+			position: fixed;
+			right: 36px;
+			bottom: 34px;
+			z-index: 60;
+			display: none;
+			min-width: 280px;
+			padding: 13px 16px;
+			border-radius: 4px;
+			background: #1f2937;
+			color: #fff;
+			box-shadow: var(--shadow);
+			font-size: 14px;
+		}
+
+		.toast.show {
+			display: block;
+		}
+
+		.mobile-note {
+			display: none;
+			padding: 10px 14px;
+			background: #fff7e6;
+			border-bottom: 1px solid #ffe0a3;
+			color: #925d00;
+			font-size: 13px;
+		}
+
+		@media (max-width: 900px) {
+			body {
+				min-width: 0;
+			}
+
+			.mobile-note {
+				display: block;
+			}
+
+			.topbar {
+				height: 52px;
+			}
+
+			.brand {
+				width: auto;
+				padding-left: 14px;
+			}
+
+			.main-nav,
+			.top-actions,
+			.sidebar,
+			.filters .filter-row:nth-child(n+2),
+			.status-tabs {
+				display: none;
+			}
+
+			.app-shell {
+				display: block;
+			}
+
+			.tabs {
+				padding-left: 10px;
+			}
+
+			.filters {
+				padding: 10px;
+			}
+
+			.search-row {
+				flex-wrap: wrap;
+			}
+
+			.table-wrap {
+				margin: 0;
+			}
+
+			table {
+				min-width: 960px;
+			}
+
+			.drawer {
+				width: 100vw;
+				min-width: 0;
+				overflow-x: hidden;
+			}
+
+			.drawer.show {
+				display: grid;
+			}
+
+			.drawer-body {
+				grid-template-columns: 1fr;
+			}
+
+			.step-side {
+				display: none;
+			}
+
+			.form-toolbar {
+				height: auto;
+				align-items: flex-start;
+				gap: 16px;
+				flex-direction: column;
+				padding: 18px 16px;
+				max-width: 100vw;
+				overflow-x: hidden;
+			}
+
+			.toolbar-actions {
+				width: 100%;
+				display: grid;
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+				gap: 12px;
+			}
+
+			.toolbar-actions .outline-btn,
+			.toolbar-actions .primary-btn {
+				width: 100%;
+				padding: 0 10px;
+			}
+
+			.form-scroll {
+				padding: 18px 16px 42px;
+				max-width: 100vw;
+				overflow-x: hidden;
+			}
+
+			.tip {
+				margin-bottom: 24px;
+				text-align: left;
+			}
+
+			.form-grid,
+			.result-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.address-head {
+				align-items: flex-start;
+				flex-direction: column;
+				gap: 8px;
+			}
+
+			.service-title {
+				font-size: 18px;
+			}
+
+			.section-title {
+				font-size: 20px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="mobile-note">移动端原型展示为窄屏适配：列表可横向滚动，上传资料抽屉铺满屏幕。</div>
+	<header class="topbar">
+		<div class="brand"><span class="logo">Kx</span>跨信通税务管理系统</div>
+		<nav class="main-nav">
+			<div class="nav-item">系统管理</div>
+			<div class="nav-item active">税务管理</div>
+			<div class="nav-item">CRM</div>
+			<div class="nav-item">客服工单</div>
+			<div class="nav-item">测试工具</div>
+			<div class="nav-item">埋点分析平台</div>
+			<div class="nav-item">旧系统</div>
+		</nav>
+		<div class="top-actions">
+			<span>⌕</span>
+			<span>?</span>
+			<span class="avatar" aria-hidden="true"></span>
+			<span style="font-size:14px;">李晨浩</span>
+		</div>
+	</header>
+
+	<main class="app-shell">
+		<aside class="sidebar">
+			<div class="menu-row">授权代表案件管理 <span class="chevron">⌄</span></div>
+			<div class="menu-row">系统管理 <span class="chevron">⌄</span></div>
+			<div class="menu-row">客户管理 <span class="chevron">⌄</span></div>
+			<div class="menu-row">营销管理 <span class="chevron">⌄</span></div>
+			<div class="menu-row">订单管理 <span class="chevron">⌄</span></div>
+			<div class="menu-row">续费管理 <span class="chevron">⌄</span></div>
+			<div class="menu-row">优惠券管理 <span class="chevron">⌄</span></div>
+			<div class="menu-row">商品管理 <span class="chevron">⌄</span></div>
+			<div class="menu-row">价格管理 <span class="chevron">⌄</span></div>
+			<div class="menu-row">流程管理 <span class="chevron">⌄</span></div>
+			<div class="menu-row">知识产权 <span class="chevron">⌄</span></div>
+			<div class="menu-row open">服务管理 <span class="chevron">⌃</span></div>
+			<div class="menu-row small selected">基础服务</div>
+			<div class="menu-row small">增值服务</div>
+			<div class="menu-row small">追加服务</div>
+			<div class="menu-row small">续费服务</div>
+			<div class="menu-row small">单据列表</div>
+		</aside>
+
+		<section class="workspace">
+			<div class="tabs">
+				<div class="tab">360搜索 ×</div>
+				<div class="tab active">● 基础服务 ×</div>
+			</div>
+
+			<div class="filters">
+				<div class="filter-row">
+					<span class="filter-label">一级类目：</span>
+					<span class="pill">国内工商财税</span>
+					<span class="pill active">VAT</span>
+					<span class="pill">EPR</span>
+					<span class="pill">产品合规</span>
+					<span class="pill">知识产权</span>
+					<span class="pill">海外工商财税</span>
+					<span style="font-size:22px;color:#64748b;">☷</span>
+				</div>
+				<div class="filter-row">
+					<span class="filter-label">二级类目：</span>
+					<span class="pill">全部</span>
+					<span class="pill">其他</span>
+					<span class="pill">IOSS</span>
+					<span class="pill">OSS</span>
+					<span class="pill active">VAT</span>
+				</div>
+				<div class="filter-row">
+					<span class="filter-label">国家：</span>
+					<span class="input-like">德国 <span>⌄</span></span>
+					<span class="filter-label">类型：</span>
+					<span class="input-like">请选择 <span>⌄</span></span>
+				</div>
+				<div class="filter-row">
+					<span class="filter-label">提交资料时间</span>
+					<span class="input-like date">开始时间　→　结束时间　□</span>
+					<span class="filter-label">资料审核通过时间</span>
+					<span class="input-like date">开始时间　→　结束时间　□</span>
+					<span class="filter-label">资料审核驳回时间</span>
+					<span class="input-like date">开始时间　→　结束时间　□</span>
+				</div>
+				<div class="search-row">
+					<button class="primary-btn">搜索</button>
+					<button class="outline-btn">↻ 重置</button>
+					<button class="text-btn">⌄ 展开</button>
+				</div>
+				<div class="search-row">
+					<button class="outline-btn">导出 ⌄</button>
+				</div>
+			</div>
+
+			<div class="status-tabs">
+				<div class="status-tab">全部 (25139)</div>
+				<div class="status-tab active">待上传资料 (1184)</div>
+				<div class="status-tab">待审核 (67)</div>
+				<div class="status-tab">待制作 (11)</div>
+				<div class="status-tab">待提交 (2)</div>
+				<div class="status-tab">处理中 (101)</div>
+				<div class="status-tab">已完成 (15273)</div>
+				<div class="status-tab">资料被驳回 (402)</div>
+				<div class="status-tab">资料支持 (25)</div>
+				<div class="status-tab">已驳回</div>
+				<div class="status-tab">待处理</div>
+			</div>
+
+			<div class="selection">已选择 0 项</div>
+
+			<div class="table-wrap">
+				<table aria-label="基础服务待上传资料列表">
+					<thead>
+						<tr>
+							<th style="width:54px;"><span class="check"></span></th>
+							<th style="width:70px;">序号</th>
+							<th style="width:260px;">基础服务编号</th>
+							<th style="width:110px;">服务类型</th>
+							<th>商品规格</th>
+							<th style="width:90px;">客户级别</th>
+							<th style="width:90px;">数据来源</th>
+							<th style="width:240px;">操作</th>
+						</tr>
+					</thead>
+					<tbody id="serviceRows"></tbody>
+				</table>
+			</div>
+		</section>
+	</main>
+
+	<div class="backdrop" id="backdrop"></div>
+
+	<aside class="drawer" id="drawer" aria-hidden="true">
+		<div class="drawer-header">
+			<div class="drawer-title">上传资料</div>
+			<button class="close-btn" id="closeDrawer" aria-label="关闭上传资料弹窗">×</button>
+		</div>
+
+		<div class="drawer-body">
+			<div class="step-side">
+				<div class="steps">
+					<div class="step active" data-step="company"><span class="step-dot">✓</span>公司信息</div>
+					<div class="step" data-step="legal"><span class="step-dot">✓</span>法人信息</div>
+					<div class="step" data-step="store"><span class="step-dot">✓</span>店铺信息</div>
+					<div class="step" data-step="vat"><span class="step-dot">✓</span>VAT税号信息</div>
+				</div>
+			</div>
+
+			<div class="form-pane">
+				<div class="form-toolbar">
+					<div class="service-title">德国VAT注册+申报（半托管服务）</div>
+					<div class="toolbar-actions">
+						<button class="outline-btn" id="cancelBtn">取消</button>
+						<button class="primary-btn" id="saveBtn" disabled>保存</button>
+						<button class="primary-btn" id="submitBtn" disabled>提交</button>
+					</div>
+				</div>
+
+				<div class="form-scroll" id="formScroll">
+					<section class="form-section" id="companySection" data-section="company">
+						<div class="section-title">公司信息</div>
+						<div class="form-grid">
+							<div class="field full">
+								<label class="label"><span class="required">*</span>公司注册国家</label>
+								<div class="option-group">
+									<div class="option-card selected">中国公司及其他</div>
+									<div class="option-card">香港公司</div>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>营业执照 <span class="question">?</span></label>
+								<div class="inline-note">仅接受加盖工商官方公章的执照，无公章电子执照请至工商局申领纸质版。</div>
+								<div class="upload-pair">
+									<div class="upload-box">
+										<div>可将文件拖至此处</div>
+										<div>JPG/PNG/PDF</div>
+										<button class="choose-file">选择文件</button>
+									</div>
+									<div class="sample-card">
+										<div class="sample-thumb"><span class="zoom-dot">＋</span></div>
+										<div>示例图</div>
+									</div>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>公司注册地</label>
+								<select class="control"><option>请选择</option></select>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>公司名称</label>
+								<input class="control" placeholder="请输入营业执照上的公司名称">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>公司地址 <span class="question">?</span></label>
+								<input class="control" placeholder="请输入营业执照上的公司地址">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>公司营业执照编码</label>
+								<input class="control" placeholder="请输入营业执照上的统一社会信用代码">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>公司登记机关</label>
+								<input class="control" placeholder="请输入营业执照上的登记机构">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>公司成立日期</label>
+								<input class="control" placeholder="请选择营业执照上的成立日期">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>营业执照签发日期 <span class="question">?</span></label>
+								<input class="control" placeholder="请选择营业执照上的签发日期">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>公司注册资本（CNY）</label>
+								<input class="control" placeholder="请输入营业执照上的注册资本">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>公司常用联系邮箱 <span class="question">?</span></label>
+								<input class="control" placeholder="请输入">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>公司常用联系电话</label>
+								<div class="phone-row">
+									<input class="control" placeholder="请输入区号">
+									<input class="control" placeholder="请输入手机号">
+								</div>
+							</div>
+						</div>
+					</section>
+
+					<section class="form-section" id="legalSection" data-section="legal">
+						<div class="section-title">法人信息</div>
+						<div class="form-grid">
+							<div class="field">
+								<label class="label"><span class="required">*</span>法人股权百分比</label>
+								<div class="phone-row">
+									<input class="control" placeholder="请输入">
+									<button class="primary-btn">添加股东</button>
+								</div>
+							</div>
+							<div class="field"></div>
+							<div class="field full">
+								<label class="label"><span class="required">*</span>证件类型</label>
+								<div class="option-group">
+									<button class="option-card selected" type="button" data-legal-doc-type="id">法人身份证</button>
+									<button class="option-card" type="button" data-legal-doc-type="passport">法人护照</button>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>法人身份证文件(正面)</label>
+								<div class="upload-pair">
+									<div class="upload-box">
+										<div>可将文件拖至此处</div>
+										<div>JPG/PNG/JPEG</div>
+										<button class="choose-file">选择文件</button>
+									</div>
+									<div class="sample-card">
+										<div class="sample-thumb id"><span class="zoom-dot">＋</span></div>
+										<div>示例图</div>
+									</div>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>法人身份证文件(反面)</label>
+								<div class="upload-pair">
+									<div class="upload-box">
+										<div>可将文件拖至此处</div>
+										<div>JPG/PNG/JPEG</div>
+										<button class="choose-file">选择文件</button>
+									</div>
+									<div class="sample-card">
+										<div class="sample-thumb id"><span class="zoom-dot">＋</span></div>
+										<div>示例图</div>
+									</div>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>法人姓名</label>
+								<input class="control" placeholder="请输入法人证件上的姓名">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>法人姓名（拼音，先名后姓）</label>
+								<div class="name-row">
+									<input class="control" placeholder="请输入名">
+									<input class="control" placeholder="请输入姓">
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>法人身份证号码</label>
+								<input class="control" placeholder="请输入法人证件上的身份证号码">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>法人出生日期</label>
+								<input class="control" placeholder="请输入法人证件上的出生日期">
+							</div>
+							<div class="field full">
+								<div class="address-module">
+									<div class="address-head">
+										<div class="module-title"><span class="required">*</span> <span id="legalAddressTitle">法人身份证地址（中文详细地址）</span></div>
+										<div class="address-tools">
+											<div class="translate-toggle" id="legalTranslateToggle" aria-label="法人身份证地址识别结果语言">
+												<button class="translate-option active" type="button" data-legal-translate-mode="english">英文</button>
+												<button class="translate-option" type="button" data-legal-translate-mode="pinyin">拼音</button>
+											</div>
+											<div class="lock-note"><span class="lock">锁</span> 解析结果由系统生成，不允许手动修正</div>
+										</div>
+									</div>
+									<textarea id="legalAddressInput" class="control" placeholder="请输入法人身份证上的中文住址，例如：广东省深圳市南山区粤海街道科技园南区科苑南路2601号"></textarea>
+									<div class="address-hint" id="legalAddressHint">提示：只需填写法人身份证上的中文详细地址。系统将自动解析为身份证地址（英文/拼音）、法人城市、法人邮编；如无法识别请优化中文描述。</div>
+									<div class="char-line">
+										<span>当前字符数：<strong id="legalCharCount">0</strong></span>
+										<span class="status idle" id="legalParseStatus">等待输入中文地址</span>
+									</div>
+									<div class="result-card">
+										<div class="result-header">
+											<span>系统识别结果</span>
+										</div>
+										<div class="result-grid">
+											<div class="result-item">
+												<div class="result-label" id="legalAddressResultLabel">身份证地址（英文/拼音）</div>
+												<div class="result-value empty" id="legalAddressValue">自动生成</div>
+											</div>
+											<div class="result-item">
+												<div class="result-label">法人城市</div>
+												<div class="result-value empty" id="legalCityValue">自动生成</div>
+											</div>
+											<div class="result-item">
+												<div class="result-label">法人邮编</div>
+												<div class="result-value empty" id="legalPostCodeValue">自动生成</div>
+											</div>
+										</div>
+									</div>
+									<div class="blocked-submit" id="legalBlockedSubmit">保存 / 提交条件：法人身份证地址识别成功。</div>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>法人性别</label>
+								<div class="radio-row">
+									<span class="radio selected">女</span>
+									<span class="radio">男</span>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>法人国家</label>
+								<select class="control"><option>请选择</option></select>
+							</div>
+							<div class="field full">
+								<label class="label"><span class="required">*</span>法人签字 <span class="required">（拼音：先名后姓）</span> <span class="question">?</span></label>
+								<div class="signature-layout">
+									<div class="signature-pad"></div>
+									<div class="signature-sample">
+										<div class="signature-img">san zhang<span class="zoom-dot">＋</span></div>
+										<div style="margin-top:14px;">示例图</div>
+									</div>
+									<div class="qr-box">
+										<div class="qr"></div>
+										<div>扫描二维码完成签名</div>
+									</div>
+								</div>
+								<div class="inline-note">提示：此签名用于VAT业务（注册 / 转代理 / 注销等）。请微信扫码，用拼音签写（先名后姓）。</div>
+							</div>
+						</div>
+					</section>
+
+					<section class="form-section" id="storeSection" data-section="store">
+						<div class="section-title">店铺信息</div>
+						<div class="form-grid">
+							<div class="field">
+								<label class="label"><span class="required">*</span>主要销售平台</label>
+								<select class="control">
+									<option>Amazon</option>
+								</select>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>店铺链接 <span class="question">?</span> <span class="help-link">查看指引</span></label>
+								<input class="control" value="https://www.amazon.de/sp?seller=A1KXTD20260609">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>店铺名称 <span class="help-link">查看指引</span></label>
+								<input class="control" value="KXT Deutschland Store">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>卖家/商家记号（Seller ID） <span class="help-link">查看指引</span></label>
+								<input class="control" value="A1KXTD20260609">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>店铺后台公司名称(拼音或英文) <span class="question">?</span></label>
+								<input class="control" value="Shenzhen Kuaxintong Technology Co., Ltd.">
+							</div>
+							<div class="field full">
+								<div class="address-module">
+									<div class="address-head">
+										<div class="module-title"><span class="required">*</span> 店铺后台公司地址（中文详细地址）</div>
+										<div class="address-tools">
+											<div class="translate-toggle" aria-label="识别结果语言">
+												<button class="translate-option active" type="button" data-translate-mode="english">英文</button>
+												<button class="translate-option" type="button" data-translate-mode="pinyin">拼音</button>
+											</div>
+											<div class="lock-note"><span class="lock">荐</span> 系统推荐结果，街道和门牌号支持修改</div>
+										</div>
+									</div>
+									<textarea id="addressInput" class="control" placeholder="请输入中文详细地址，例如：广东省深圳市南山区粤海街道科技园南区科苑南路2601号"></textarea>
+									<div class="address-hint">提示：只需填写一个中文详细地址。系统将自动拆分并翻译为税局所需的省份、城市、市区邮编、街道、门牌号；如无法识别请优化中文描述。</div>
+									<div class="char-line">
+										<span>当前字符数：<strong id="charCount">0</strong></span>
+										<span class="status idle" id="parseStatus">等待输入中文地址</span>
+									</div>
+									<div class="result-card">
+										<div class="result-header">
+											<span>系统识别结果</span>
+										</div>
+										<div class="result-grid">
+											<div class="result-item">
+												<div class="result-label">省份</div>
+												<div class="result-value empty" id="provinceValue">自动生成</div>
+											</div>
+											<div class="result-item">
+												<div class="result-label">城市</div>
+												<div class="result-value empty" id="cityValue">自动生成</div>
+											</div>
+											<div class="result-item">
+												<div class="result-label">市区邮编</div>
+												<div class="result-value empty" id="districtValue">自动生成</div>
+											</div>
+											<div class="result-item">
+												<div class="result-label">街道</div>
+												<div class="result-value empty" id="streetValue">自动生成</div>
+											</div>
+											<div class="result-item">
+												<div class="result-label">门牌号</div>
+												<div class="result-value empty" id="houseValue">自动生成</div>
+											</div>
+										</div>
+									</div>
+									<div class="blocked-submit" id="blockedSubmit">保存 / 提交条件：中文地址识别成功。</div>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>预估第一年销售额(欧元) <span class="question">?</span></label>
+								<input class="control" value="12000 EUR">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>预估第二年销售额(欧元) <span class="question">?</span></label>
+								<input class="control" value="18000 EUR">
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>店铺前台信息截图 <span class="question">?</span> <span class="help-link">查看指引</span></label>
+								<div class="upload-pair">
+									<div class="upload-box">
+										<div>可将文件拖至此处</div>
+										<div>JPG/PNG/PDF/JPEG</div>
+										<button class="choose-file">选择文件</button>
+									</div>
+									<div class="sample-card">
+										<div class="sample-thumb store"><span class="zoom-dot">＋</span></div>
+										<div>示例图</div>
+									</div>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>卖家/商家记号截图 <span class="help-link">查看指引</span></label>
+								<div class="upload-pair">
+									<div class="upload-box">
+										<div>可将文件拖至此处</div>
+										<div>JPG/PNG/PDF/JPEG</div>
+										<button class="choose-file">选择文件</button>
+									</div>
+									<div class="sample-card">
+										<div class="sample-thumb store"><span class="zoom-dot">＋</span></div>
+										<div>示例图</div>
+									</div>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>店铺主体信息截图（营业执照）</label>
+								<div class="upload-pair">
+									<div class="upload-box">
+										<div>可将文件拖至此处</div>
+										<div>JPG/PNG/PDF/JPEG</div>
+										<button class="choose-file">选择文件</button>
+									</div>
+									<div class="sample-card">
+										<div class="sample-thumb store"><span class="zoom-dot">＋</span></div>
+										<div>示例图</div>
+									</div>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>店铺销售记录截图</label>
+								<div class="upload-pair">
+									<div class="upload-box">
+										<div>可将文件拖至此处</div>
+										<div>JPG/PNG/PDF/JPEG</div>
+										<button class="choose-file">选择文件</button>
+									</div>
+									<div class="sample-card">
+										<div class="sample-thumb store"><span class="zoom-dot">＋</span></div>
+										<div>示例图</div>
+									</div>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>德国本地仓储管理页面截图</label>
+								<div class="upload-pair">
+									<div class="upload-box">
+										<div>可将文件拖至此处</div>
+										<div>JPG/PNG/PDF/JPEG</div>
+										<button class="choose-file">选择文件</button>
+									</div>
+									<div class="sample-card">
+										<div class="sample-thumb store"><span class="zoom-dot">＋</span></div>
+										<div>示例图</div>
+									</div>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>销售商品类型</label>
+								<div class="product-box">
+									<button class="add-btn">+添加商品类别</button>
+									<div class="inline-note">销售商品类型必填</div>
+								</div>
+							</div>
+							<div class="field">
+								<label class="label"><span class="required">*</span>海外仓储合同 <span class="help-link">下载仓储合同模板</span> <span class="help-link">仓储合同</span></label>
+								<div class="inline-note">提示：请下载“仓储合同”，签名并加盖公章后上传（注意：公章请勿覆盖法人签名）。</div>
+								<div class="upload-pair">
+									<div class="upload-box">
+										<div>可将文件拖至此处</div>
+										<div>DOC/PDF/ZIP/RAR</div>
+										<button class="choose-file">选择文件</button>
+									</div>
+									<div class="sample-card">
+										<div class="sample-thumb contract"><span class="zoom-dot">＋</span></div>
+										<div>示例图</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+
+					<section class="form-section" id="vatSection" data-section="vat">
+						<div class="section-title">VAT税号信息</div>
+						<div class="form-grid">
+							<div class="field compact">
+								<label class="label"><span class="required">*</span>期望税号生效日期 <span class="question">?</span></label>
+								<div class="inline-note">提示：建议填写2个月后的1号（例：6月填写资料时，则期望税号生效日期建议填写为8月1日）</div>
+								<input class="control" value="2026-08-01">
+							</div>
+						</div>
+						<div class="bottom-actions">
+							<button class="outline-btn" id="bottomCancelBtn">取消</button>
+							<button class="primary-btn" id="bottomSaveBtn">保存</button>
+							<button class="primary-btn" id="bottomSubmitBtn">提交</button>
+						</div>
+					</section>
+				</div>
+			</div>
+		</div>
+	</aside>
+
+	<div class="toast" id="toast">已保存当前上传资料草稿。</div>
+
+	<script>
+		const rows = [
+			["SV20260609001301129998", "公司注册地址（中国公司及其他） 服务类型（Saas服务）"],
+			["SV20260608210108140782", "公司注册地址（中国公司及其他） 是否进行ZM申报（否） 服务类型（Saas服务）"],
+			["SV20260608210105192294", "公司注册地址（中国公司及其他） 服务类型（Saas服务）"],
+			["SV20260608210105635002", "公司注册地址（中国公司及其他） 服务类型（Saas服务）"],
+			["SV20260608210105593528", "公司注册地址（中国公司及其他） 服务类型（Saas服务）"],
+			["SV20260608202438611408", "公司注册地址（中国公司及其他） 是否进行ZM申报（否） 服务类型（Saas服务）"],
+			["SV20260608195802161111", "公司注册地址（中国公司及其他） 服务类型（Saas服务）"],
+			["SV20260608195802661534", "公司注册地址（中国公司及其他） 服务类型（Saas服务）"]
+		];
+
+		const tbody = document.getElementById("serviceRows");
+		tbody.innerHTML = rows.map((row, index) => `
+			<tr>
+				<td><span class="check"></span></td>
+				<td>${index + 1}</td>
+				<td><span class="service-code">${row[0]}</span>　⌕ 🔗</td>
+				<td>SAAS服务</td>
+				<td>${row[1]}</td>
+				<td>D</td>
+				<td>线上</td>
+				<td>
+					<button class="action-link upload-action">上传资料</button>
+					<button class="action-link">强制驳回</button>
+					<button class="action-link">停止服务</button>
+				</td>
+			</tr>
+		`).join("");
+
+		const drawer = document.getElementById("drawer");
+		const backdrop = document.getElementById("backdrop");
+		const closeDrawer = document.getElementById("closeDrawer");
+		const cancelBtn = document.getElementById("cancelBtn");
+		const addressInput = document.getElementById("addressInput");
+		const charCount = document.getElementById("charCount");
+		const parseStatus = document.getElementById("parseStatus");
+		const legalAddressInput = document.getElementById("legalAddressInput");
+		const legalAddressTitle = document.getElementById("legalAddressTitle");
+		const legalAddressHint = document.getElementById("legalAddressHint");
+		const legalAddressResultLabel = document.getElementById("legalAddressResultLabel");
+		const legalCharCount = document.getElementById("legalCharCount");
+		const legalParseStatus = document.getElementById("legalParseStatus");
+		const saveBtn = document.getElementById("saveBtn");
+		const submitBtn = document.getElementById("submitBtn");
+		const bottomSaveBtn = document.getElementById("bottomSaveBtn");
+		const bottomSubmitBtn = document.getElementById("bottomSubmitBtn");
+		const bottomCancelBtn = document.getElementById("bottomCancelBtn");
+		const toast = document.getElementById("toast");
+		const blockedSubmit = document.getElementById("blockedSubmit");
+		const legalBlockedSubmit = document.getElementById("legalBlockedSubmit");
+		const formScroll = document.getElementById("formScroll");
+		const translateOptions = Array.from(document.querySelectorAll("[data-translate-mode]"));
+		const legalTranslateOptions = Array.from(document.querySelectorAll("[data-legal-translate-mode]"));
+		const legalDocTypeOptions = Array.from(document.querySelectorAll("[data-legal-doc-type]"));
+		let parseTimer;
+		let legalParseTimer;
+		let translationMode = "english";
+		let legalTranslationMode = "english";
+		let legalDocumentType = "id";
+		let storeAddressValid = false;
+		let legalAddressValid = false;
+		const editableStoreResultIds = new Set(["streetValue", "houseValue"]);
+
+		function openDrawer() {
+			drawer.classList.add("show");
+			backdrop.classList.add("show");
+			drawer.setAttribute("aria-hidden", "false");
+			setTimeout(() => formScroll.scrollTo({ top: 0, behavior: "smooth" }), 80);
+		}
+
+		function hideDrawer() {
+			drawer.classList.remove("show");
+			backdrop.classList.remove("show");
+			drawer.setAttribute("aria-hidden", "true");
+		}
+
+		document.querySelectorAll(".upload-action").forEach((button) => {
+			button.addEventListener("click", openDrawer);
+		});
+		closeDrawer.addEventListener("click", hideDrawer);
+		cancelBtn.addEventListener("click", hideDrawer);
+		bottomCancelBtn.addEventListener("click", hideDrawer);
+		backdrop.addEventListener("click", hideDrawer);
+
+		function setSubmitDisabled(disabled) {
+			saveBtn.disabled = disabled;
+			submitBtn.disabled = disabled;
+			bottomSaveBtn.disabled = disabled;
+			bottomSubmitBtn.disabled = disabled;
+		}
+
+		function refreshSubmitState() {
+			setSubmitDisabled(!(storeAddressValid && legalAddressValid));
+		}
+
+		function legalAddressCopy() {
+			if (legalDocumentType === "passport") {
+				return {
+					title: "法人居住地址（中文）",
+					placeholder: "请输入法人护照场景下的中文居住地址，例如：广东省揭阳市揭东区云路镇田东村田林上四八号",
+					hint: "提示：只需填写法人居住地址（中文）。系统将自动解析为法人居住地址(拼音/英文)、法人城市、法人邮编；如无法识别请优化中文描述。",
+					resultLabel: "法人居住地址(拼音/英文)",
+					blocked: "保存 / 提交条件：法人居住地址识别成功。",
+					success: "保存 / 提交条件已满足：法人居住地址识别成功。",
+				};
+			}
+			return {
+				title: "法人身份证地址（中文详细地址）",
+				placeholder: "请输入法人身份证上的中文住址，例如：广东省深圳市南山区粤海街道科技园南区科苑南路2601号",
+				hint: "提示：只需填写法人身份证上的中文详细地址。系统将自动解析为身份证地址（英文/拼音）、法人城市、法人邮编；如无法识别请优化中文描述。",
+				resultLabel: "身份证地址（英文/拼音）",
+				blocked: "保存 / 提交条件：法人身份证地址识别成功。",
+				success: "保存 / 提交条件已满足：法人身份证地址识别成功。",
+			};
+		}
+
+		function refreshLegalAddressCopy() {
+			const copy = legalAddressCopy();
+			legalAddressTitle.textContent = copy.title;
+			legalAddressInput.placeholder = copy.placeholder;
+			legalAddressHint.textContent = copy.hint;
+			legalAddressResultLabel.textContent = copy.resultLabel;
+			if (!legalAddressValid) {
+				legalBlockedSubmit.textContent = copy.blocked;
+			}
+		}
+
+		function englishProvince(text) {
+			if (text.includes("广东")) return "Guangdong Province";
+			if (text.includes("浙江")) return "Zhejiang Province";
+			if (text.includes("江苏")) return "Jiangsu Province";
+			if (text.includes("上海")) return "Shanghai";
+			if (text.includes("北京")) return "Beijing";
+			return "Recognized Province";
+		}
+
+		function englishCity(text) {
+			if (text.includes("深圳")) return "Shenzhen";
+			if (text.includes("广州")) return "Guangzhou";
+			if (text.includes("杭州")) return "Hangzhou";
+			if (text.includes("苏州")) return "Suzhou";
+			if (text.includes("揭阳")) return "Jieyang";
+			if (text.includes("上海")) return "Shanghai";
+			if (text.includes("北京")) return "Beijing";
+			return "Recognized City";
+		}
+
+		function englishDistrict(text) {
+			if (text.includes("南山")) return "Nanshan District, 518057";
+			if (text.includes("宝安")) return "Bao'an District, 518101";
+			if (text.includes("福田")) return "Futian District, 518000";
+			if (text.includes("天河")) return "Tianhe District, 510630";
+			if (text.includes("滨江")) return "Binjiang District, 310051";
+			if (text.includes("揭东")) return "Jiedong District, 515556";
+			return "Recognized District, Postal Code Pending";
+		}
+
+		function englishStreet(text) {
+			const parts = [];
+			if (text.includes("粤海")) parts.push("Yuehai Street");
+			if (text.includes("科技园")) parts.push("Science and Technology Park");
+			if (text.includes("科苑南路")) parts.push("Keyuan South Road");
+			if (text.includes("软件产业基地")) parts.push("Software Industry Base");
+			if (text.includes("云路")) parts.push("Yunlu Town");
+			if (text.includes("田东村")) parts.push("Tiandong Village");
+			if (text.includes("田林上")) parts.push("Tianlin Shang");
+			return parts.length ? parts.join(", ") : "Recognized Street";
+		}
+
+		function pinyinProvince(text) {
+			if (text.includes("广东")) return "Guangdong Sheng";
+			if (text.includes("浙江")) return "Zhejiang Sheng";
+			if (text.includes("江苏")) return "Jiangsu Sheng";
+			if (text.includes("上海")) return "Shanghai Shi";
+			if (text.includes("北京")) return "Beijing Shi";
+			return "Yishibie Shengfen";
+		}
+
+		function pinyinCity(text) {
+			if (text.includes("深圳")) return "Shenzhen Shi";
+			if (text.includes("广州")) return "Guangzhou Shi";
+			if (text.includes("杭州")) return "Hangzhou Shi";
+			if (text.includes("苏州")) return "Suzhou Shi";
+			if (text.includes("揭阳")) return "Jieyang Shi";
+			if (text.includes("上海")) return "Shanghai Shi";
+			if (text.includes("北京")) return "Beijing Shi";
+			return "Yishibie Chengshi";
+		}
+
+		function pinyinDistrict(text) {
+			if (text.includes("南山")) return "Nanshan Qu, 518057";
+			if (text.includes("宝安")) return "Baoan Qu, 518101";
+			if (text.includes("福田")) return "Futian Qu, 518000";
+			if (text.includes("天河")) return "Tianhe Qu, 510630";
+			if (text.includes("滨江")) return "Binjiang Qu, 310051";
+			if (text.includes("揭东")) return "Jiedong Qu, 515556";
+			return "Yishibie Shiqu, Youbian Daibuding";
+		}
+
+		function pinyinStreet(text) {
+			const parts = [];
+			if (text.includes("粤海")) parts.push("Yuehai Jiedao");
+			if (text.includes("科技园")) parts.push("Kejiyuan");
+			if (text.includes("科苑南路")) parts.push("Keyuan Nan Lu");
+			if (text.includes("软件产业基地")) parts.push("Ruanjian Chanye Jidi");
+			if (text.includes("云路")) parts.push("Yunlu Zhen");
+			if (text.includes("田东村")) parts.push("Tiandong Cun");
+			if (text.includes("田林上")) parts.push("Tianlin Shang");
+			return parts.length ? parts.join(", ") : "Yishibie Jiedao";
+		}
+
+		function translatedAddressParts(text) {
+			if (translationMode === "pinyin") {
+				return {
+					province: pinyinProvince(text),
+					city: pinyinCity(text),
+					district: pinyinDistrict(text),
+					street: pinyinStreet(text),
+				};
+			}
+			return {
+				province: englishProvince(text),
+				city: englishCity(text),
+				district: englishDistrict(text),
+				street: englishStreet(text),
+			};
+		}
+
+		function translatedLegalAddressParts(text) {
+			const mode = legalTranslationMode;
+			const city = mode === "pinyin" ? pinyinCity(text) : englishCity(text);
+			const district = mode === "pinyin" ? pinyinDistrict(text) : englishDistrict(text);
+			const street = mode === "pinyin" ? pinyinStreet(text) : englishStreet(text);
+			const province = mode === "pinyin" ? pinyinProvince(text) : englishProvince(text);
+			const address = [province, city, district, street].filter(Boolean).join(", ");
+			const postCode = (district.match(/\d{6}/) || ["待识别"])[0];
+
+			return {
+				address,
+				city,
+				postCode,
+			};
+		}
+
+		function normalizeDigits(value) {
+			return value.replace(/[０-９]/g, (digit) => String.fromCharCode(digit.charCodeAt(0) - 65248));
+		}
+
+		function houseNumber(text) {
+			const preferredMatch = text.match(/([0-9０-９]+)\s*号/);
+			const fallbackMatches = Array.from(text.matchAll(/[0-9０-９]+/g));
+			const rawNumber = preferredMatch ? preferredMatch[1] : fallbackMatches.at(-1)?.[0];
+			if (!rawNumber) return "";
+			return normalizeDigits(rawNumber);
+		}
+
+		function escapeHtml(value) {
+			return String(value)
+				.replace(/&/g, "&amp;")
+				.replace(/</g, "&lt;")
+				.replace(/>/g, "&gt;")
+				.replace(/"/g, "&quot;")
+				.replace(/'/g, "&#39;");
+		}
+
+		function renderEditableResult(node, id, value) {
+			const escapedValue = escapeHtml(value);
+			const inputAttrs = id === "houseValue" ? ' inputmode="numeric" maxlength="4" pattern="\\d{1,4}"' : "";
+			node.classList.remove("empty", "modified");
+			node.classList.add("editable");
+			node.dataset.originalValue = value;
+			node.innerHTML = `
+				<input class="result-input" value="${escapedValue}" data-result-input="${id}" data-original-value="${escapedValue}"${inputAttrs}>
+				<div class="recommend-warning">
+					<div>已修改系统推荐值</div>
+					<div>系统推荐：${escapedValue}</div>
+					<button class="use-recommend" type="button" data-use-recommend="${id}">采用推荐值</button>
+				</div>
+			`;
+		}
+
+		function setResult(id, value, empty = false) {
+			const node = document.getElementById(id);
+			if (editableStoreResultIds.has(id) && !empty) {
+				renderEditableResult(node, id, value);
+				return;
+			}
+			node.classList.remove("editable", "modified");
+			delete node.dataset.originalValue;
+			node.textContent = value;
+			node.classList.toggle("empty", empty);
+		}
+
+		function clearResult() {
+			["provinceValue", "cityValue", "districtValue", "streetValue", "houseValue"].forEach((id) => {
+				setResult(id, "自动生成", true);
+			});
+			storeAddressValid = false;
+			refreshSubmitState();
+			blockedSubmit.textContent = "保存 / 提交条件：中文地址识别成功。";
+		}
+
+		function clearLegalResult() {
+			["legalAddressValue", "legalCityValue", "legalPostCodeValue"].forEach((id) => {
+				setResult(id, "自动生成", true);
+			});
+			legalAddressValid = false;
+			refreshSubmitState();
+			legalBlockedSubmit.textContent = legalAddressCopy().blocked;
+		}
+
+		function setStatus(type, text) {
+			parseStatus.className = `status ${type}`;
+			parseStatus.innerHTML = type === "loading" ? `<span class="spin"></span>${text}` : text;
+		}
+
+		function setLegalStatus(type, text) {
+			legalParseStatus.className = `status ${type}`;
+			legalParseStatus.innerHTML = type === "loading" ? `<span class="spin"></span>${text}` : text;
+		}
+
+		function parseAddress(text) {
+			const hasChinese = /[\u4e00-\u9fa5]/.test(text);
+			const enoughAddress = /(省|市|自治区|特别行政区)/.test(text) && /(区|县|街道|镇|路)/.test(text) && /(号|[0-9０-９])/.test(text);
+			const parsedHouseNumber = houseNumber(text);
+			if (!text.trim()) {
+				setStatus("idle", "等待输入中文地址");
+				clearResult();
+				return;
+			}
+			if (!hasChinese || !enoughAddress) {
+				setStatus("error", "识别失败，请补充完整中文省市区、街道和门牌号");
+				clearResult();
+				return;
+			}
+			if (!/^\d{1,4}$/.test(parsedHouseNumber)) {
+				setStatus("error", "识别失败，门牌号仅支持1-4位数字");
+				clearResult();
+				return;
+			}
+
+			const translatedParts = translatedAddressParts(text);
+			setResult("provinceValue", translatedParts.province);
+			setResult("cityValue", translatedParts.city);
+			setResult("districtValue", translatedParts.district);
+			setResult("streetValue", translatedParts.street);
+			setResult("houseValue", parsedHouseNumber);
+			setStatus("success", "识别成功，5 个字段已自动生成");
+			storeAddressValid = true;
+			refreshSubmitState();
+			blockedSubmit.textContent = "保存 / 提交条件已满足：系统识别成功，拆分结果将随表单一并提交。";
+		}
+
+		function parseLegalAddress(text) {
+			const hasChinese = /[\u4e00-\u9fa5]/.test(text);
+			const enoughAddress = /(省|市|自治区|特别行政区)/.test(text) && /(区|县|街道|镇|路)/.test(text) && /(号|[0-9０-９])/.test(text);
+			if (!text.trim()) {
+				setLegalStatus("idle", "等待输入中文地址");
+				clearLegalResult();
+				return;
+			}
+			if (!hasChinese || !enoughAddress) {
+				setLegalStatus("error", "识别失败，请补充完整中文省市区、街道和门牌号");
+				clearLegalResult();
+				return;
+			}
+
+			const translatedLegalParts = translatedLegalAddressParts(text);
+			setResult("legalAddressValue", translatedLegalParts.address);
+			setResult("legalCityValue", translatedLegalParts.city);
+			setResult("legalPostCodeValue", translatedLegalParts.postCode);
+			setLegalStatus("success", "识别成功，3 个字段已自动生成");
+			legalAddressValid = true;
+			refreshSubmitState();
+			legalBlockedSubmit.textContent = legalAddressCopy().success;
+		}
+
+		addressInput.addEventListener("input", () => {
+			const value = addressInput.value;
+			charCount.textContent = value.length;
+			setStatus("loading", "系统识别中...");
+			clearTimeout(parseTimer);
+			parseTimer = setTimeout(() => parseAddress(value), 650);
+		});
+
+		legalAddressInput.addEventListener("input", () => {
+			const value = legalAddressInput.value;
+			legalCharCount.textContent = value.length;
+			setLegalStatus("loading", "系统识别中...");
+			clearTimeout(legalParseTimer);
+			legalParseTimer = setTimeout(() => parseLegalAddress(value), 650);
+		});
+
+		document.addEventListener("input", (event) => {
+			const input = event.target.closest("[data-result-input]");
+			if (!input) return;
+			if (input.dataset.resultInput === "houseValue") {
+				input.value = input.value.replace(/\D/g, "").slice(0, 4);
+			}
+			const field = input.closest(".result-value");
+			field.classList.toggle("modified", input.value !== input.dataset.originalValue);
+		});
+
+		document.addEventListener("click", (event) => {
+			const button = event.target.closest("[data-use-recommend]");
+			if (!button) return;
+			const field = button.closest(".result-value");
+			const input = field.querySelector("[data-result-input]");
+			input.value = input.dataset.originalValue;
+			field.classList.remove("modified");
+		});
+
+		translateOptions.forEach((option) => {
+			option.addEventListener("click", () => {
+				translationMode = option.dataset.translateMode;
+				translateOptions.forEach((item) => item.classList.toggle("active", item === option));
+				parseAddress(addressInput.value);
+			});
+		});
+
+		legalTranslateOptions.forEach((option) => {
+			option.addEventListener("click", () => {
+				legalTranslationMode = option.dataset.legalTranslateMode;
+				legalTranslateOptions.forEach((item) => item.classList.toggle("active", item === option));
+				parseLegalAddress(legalAddressInput.value);
+			});
+		});
+
+		legalDocTypeOptions.forEach((option) => {
+			option.addEventListener("click", () => {
+				legalDocumentType = option.dataset.legalDocType;
+				legalDocTypeOptions.forEach((item) => item.classList.toggle("selected", item === option));
+				refreshLegalAddressCopy();
+				parseLegalAddress(legalAddressInput.value);
+			});
+		});
+
+		function showToast(text) {
+			toast.textContent = text;
+			toast.classList.add("show");
+			setTimeout(() => toast.classList.remove("show"), 1800);
+		}
+
+		function translationModeText() {
+			return translationMode === "pinyin" ? "拼音" : "英文";
+		}
+
+		saveBtn.addEventListener("click", () => showToast(`已保存草稿：中文地址及 5 个${translationModeText()}拆分字段已写入，街道和门牌号以当前确认值提交。`));
+		submitBtn.addEventListener("click", () => showToast("已提交审核：系统推荐字段按当前确认值提交。"));
+		bottomSaveBtn.addEventListener("click", () => showToast(`已保存草稿：中文地址及 5 个${translationModeText()}拆分字段已写入，街道和门牌号以当前确认值提交。`));
+		bottomSubmitBtn.addEventListener("click", () => showToast("已提交审核：系统推荐字段按当前确认值提交。"));
+
+		function updateActiveStep() {
+			const sections = Array.from(document.querySelectorAll(".form-section"));
+			const current = sections.reduce((active, section) => {
+				const distance = Math.abs(section.offsetTop - formScroll.scrollTop - 10);
+				return !active || distance < active.distance ? { section, distance } : active;
+			}, null);
+			if (!current) return;
+			document.querySelectorAll(".step").forEach((step) => {
+				step.classList.toggle("active", step.dataset.step === current.section.dataset.section);
+			});
+		}
+
+		formScroll.addEventListener("scroll", updateActiveStep);
+		document.querySelectorAll(".step").forEach((step) => {
+			step.addEventListener("click", () => {
+				const target = document.querySelector(`[data-section="${step.dataset.step}"]`);
+				if (target) {
+					formScroll.scrollTo({ top: target.offsetTop - 10, behavior: "smooth" });
+				}
+			});
+		});
+
+		addressInput.value = "广东省深圳市南山区粤海街道科技园南区科苑南路2601号";
+		charCount.textContent = addressInput.value.length;
+		parseAddress(addressInput.value);
+		refreshLegalAddressCopy();
+		legalAddressInput.value = "广东省深圳市南山区粤海街道科技园南区科苑南路2601号";
+		legalCharCount.textContent = legalAddressInput.value.length;
+		parseLegalAddress(legalAddressInput.value);
+
+		const params = new URLSearchParams(window.location.search);
+		if (params.get("legalDoc") === "passport") {
+			legalDocumentType = "passport";
+			legalDocTypeOptions.forEach((item) => item.classList.toggle("selected", item.dataset.legalDocType === "passport"));
+			refreshLegalAddressCopy();
+			legalAddressInput.value = "广东省揭阳市揭东区云路镇田东村田林上四八号";
+			legalCharCount.textContent = legalAddressInput.value.length;
+			parseLegalAddress(legalAddressInput.value);
+		}
+		if (params.has("address")) {
+			addressInput.value = params.get("address") || "";
+			charCount.textContent = addressInput.value.length;
+			parseAddress(addressInput.value);
+		}
+		if (params.has("legalAddress")) {
+			legalAddressInput.value = params.get("legalAddress") || "";
+			legalCharCount.textContent = legalAddressInput.value.length;
+			parseLegalAddress(legalAddressInput.value);
+		}
+		if (params.get("drawer") === "1") {
+			openDrawer();
+		}
+		const sectionMap = {
+			company: "companySection",
+			legal: "legalSection",
+			store: "storeSection",
+			vat: "vatSection",
+		};
+		const sectionId = sectionMap[params.get("section")];
+		if (sectionId) {
+			openDrawer();
+			setTimeout(() => {
+				formScroll.scrollTo({ top: document.getElementById(sectionId).offsetTop - 10, behavior: "instant" });
+				updateActiveStep();
+			}, 120);
+		}
+		updateActiveStep();
+	</script>
+</body>
+</html>

@@ -697,7 +697,13 @@
 			font-size: 12px;
 		}
 
-		.table-input {
+		.read-only-text {
+		font-size: 13px;
+		color: var(--muted);
+		line-height: 34px;
+	}
+
+	.table-input {
 			width: 100%;
 			height: 28px;
 			border: 1px solid #d8dde3;
@@ -1277,7 +1283,7 @@
 						<th>序号</th>
 						<th>资料项ID</th>
 						<th>资料项名称</th>
-						<th>资料项类型</th>
+						<th>资料项来源</th>
 						<th>所属表单</th>
 						<th>腾讯云模板ID/表单资料</th>
 						<th>输出格式</th>
@@ -1485,7 +1491,7 @@
 							<td>
 								<select class="field"><option selected>否</option><option>PDF</option></select>
 							</td>
-							<td><span class="actions"><span class="action-text">上移</span><span class="action-danger">删除</span></span></td>
+							<td><span class="actions"><span class="action-danger">删除</span></span></td>
 						</tr>
 						<tr>
 							<td>2</td>
@@ -1494,7 +1500,7 @@
 							<td>
 								<select class="field"><option selected>否</option><option>PDF</option></select>
 							</td>
-							<td><span class="actions"><span class="action-text">下移</span><span class="action-danger">删除</span></span></td>
+							<td><span class="actions"><span class="action-danger">删除</span></span></td>
 						</tr>
 						<tr>
 							<td>3</td>
@@ -1503,7 +1509,7 @@
 							<td>
 								<select class="field"><option selected>否</option><option>PDF</option></select>
 							</td>
-							<td><span class="actions"><span class="action-text">下移</span><span class="action-danger">删除</span></span></td>
+							<td><span class="actions"><span class="action-danger">删除</span></span></td>
 						</tr>
 						<tr>
 							<td>4</td>
@@ -1512,7 +1518,7 @@
 							<td>
 								<select class="field"><option selected>否</option><option>PDF</option></select>
 							</td>
-							<td><span class="actions"><span class="action-text">下移</span><span class="action-danger">删除</span></span></td>
+							<td><span class="actions"><span class="action-danger">删除</span></span></td>
 						</tr>
 						</tbody>
 					</table>
@@ -1525,8 +1531,8 @@
 					<div class="form-grid">
 						<div class="label">资料包名称</div>
 						<input class="field" style="grid-column: span 3;" value="{公司名称}-{流程名称}-资料包-{导出日期}">
-						<div class="label">打包为ZIP文件</div>
-						<div class="toggle"><span class="switch"></span><span>是</span></div>
+						<div class="label">打包规则</div>
+						<div class="read-only-text">全部资料包固定打包为 ZIP 文件</div>
 					</div>
 				</div>
 			</div>
@@ -1569,7 +1575,7 @@
 							<th>序号</th>
 							<th>资料项ID</th>
 							<th>资料项名称</th>
-							<th>资料项类型</th>
+							<th>资料项来源</th>
 							<th>腾讯云模板ID/表单资料</th>
 							<th>输出格式</th>
 							<th>状态</th>
@@ -1638,8 +1644,8 @@
 				<div class="section-body help">
 					<div>表单用于承载业务字段、附件字段及可生成的资料项；资料项挂在一个或多个表单下维护，作为表单可对外输出的标准资料定义。</div>
 					<div>表单资料项挂在表单上统一维护，不只服务于资料包导出，也可被资料下载、合同签署等场景复用。</div>
-					<div>资料项类型为“腾讯云”时，系统按腾讯云模板生成文件；资料项类型为“表单资料”时，直接读取表单附件字段。</div>
-					<div>生成方式为“合并”时，系统按资料来源顺序合并多个资料，例如身份证正反面合并为一个文件。</div>
+					<div>资料项来源为“腾讯云”时，系统按腾讯云模板生成文件；资料项来源为“表单资料”时，直接读取表单附件字段。</div>
+					<div>资料项生成方式由资料来源数量自动决定：只有一个文件时仅支持单个生成；存在多个文件时仅支持合并生成，并按资料来源顺序合并。</div>
 					<div>资料包配置挂在流程上，流程关联表单后，可从这些表单已维护的资料项中选择要导出的内容，并按资料包方案配置导出文件名、顺序和格式转换规则。</div>
 				</div>
 			</div>
@@ -1680,7 +1686,7 @@
 							<div class="material-grid">
 								<div class="label"><span class="required">*</span>资料项名称</div>
 								<input class="field" value="专利申请委托书">
-								<div class="label"><span class="required">*</span>资料项类型</div>
+								<div class="label"><span class="required">*</span>资料项来源</div>
 								<select class="field" id="materialType" onchange="toggleMaterialType()"><option selected>腾讯云</option><option>表单</option></select>
 								<div class="label">状态</div>
 								<div class="toggle"><span class="switch"></span><span>启用</span></div>
@@ -1713,7 +1719,7 @@
 								<thead>
 								<tr>
 									<th>序号</th>
-									<th>资料项类型</th>
+									<th>资料项来源</th>
 									<th>腾讯云模板ID/表单资料</th>
 									<th>操作</th>
 								</tr>
@@ -1734,8 +1740,8 @@
 							<div class="material-grid">
 								<div class="label"><span class="required">*</span>输出格式</div>
 								<select class="field"><option>PDF</option><option>Word</option><option>Excel</option></select>
-								<div class="label">生成方式</div>
-								<select class="field"><option selected>单个</option><option>合并</option></select>
+								<div class="label">资料项生成方式</div>
+								<input class="field" id="generationModeText" value="单个" readonly>
 							</div>
 						</div>
 					</div>
@@ -1780,7 +1786,7 @@
 					<th>选择</th>
 					<th>资料项ID</th>
 					<th>资料项名称</th>
-					<th>资料项类型</th>
+					<th>资料项来源</th>
 					<th>腾讯云模板ID/表单资料</th>
 					<th>输出格式</th>
 					<th>状态</th>
@@ -1918,7 +1924,7 @@
 				<button class="btn primary">搜索</button>
 				<button class="btn ghost">重置</button>
 			</div>
-			<div class="modal-note">腾讯云模板支持多选；生成方式为“单个”时一个模板生成一个资料项，生成方式为“合并”时多个模板合并生成一个资料项。</div>
+			<div class="modal-note">腾讯云模板支持多选；仅选择一个模板时只支持单个生成，选择多个模板时只支持合并生成。</div>
 			<table class="mini-table">
 				<colgroup>
 					<col style="width:54px">
@@ -1982,7 +1988,7 @@
 				<button class="btn primary">搜索</button>
 				<button class="btn ghost">重置</button>
 			</div>
-			<div class="modal-note">表单资料支持多选；生成方式为“单个”时一个字段生成一个资料项，生成方式为“合并”时多个字段合并生成一个资料项。</div>
+			<div class="modal-note">表单资料支持多选；仅选择一个表单资料时只支持单个生成，选择多个表单资料时只支持合并生成。</div>
 			<table class="mini-table">
 				<colgroup>
 					<col style="width:54px">
@@ -2299,6 +2305,7 @@
 		materialSourceItems = selected.map(function (item) {
 			return { type: "腾讯云", code: item.code };
 		});
+		updateGenerationMode();
 		renderMaterialSourceRows();
 		closeCloudTemplateSelectModal();
 	}
@@ -2324,6 +2331,7 @@
 		materialSourceItems = selected.map(function (item) {
 			return { type: "表单资料", code: item.code };
 		});
+		updateGenerationMode();
 		renderMaterialSourceRows();
 		closeFormFileSelectModal();
 	}
@@ -2359,8 +2367,17 @@
 		renderMaterialSourceRows();
 	}
 
+	function updateGenerationMode() {
+		const modeText = document.getElementById("generationModeText");
+		if (!modeText) {
+			return;
+		}
+		modeText.value = materialSourceItems.length > 1 ? "合并" : "单个";
+	}
+
 	function deleteMaterialSourceItem(index) {
 		materialSourceItems.splice(index, 1);
+		updateGenerationMode();
 		renderMaterialSourceRows();
 	}
 
@@ -2467,4 +2484,5 @@
 </script>
 </body>
 </html>
+
 

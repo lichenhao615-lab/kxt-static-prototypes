@@ -3,1106 +3,135 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>地址组件解析能力配置原型</title>
+	<title>跨信通静态原型</title>
 	<style>
 		:root {
 			--brand: #00a5a8;
 			--brand-dark: #008f93;
-			--brand-soft: #e6fbfb;
-			--side: #effafa;
+			--bg: #f5f7f9;
 			--line: #dfe5ea;
-			--line-dark: #c9d2d9;
 			--text: #17212b;
 			--muted: #677481;
-			--weak: #a5afb8;
-			--danger: #ff4d4f;
-			--warn-bg: #fff1c7;
-			--active-bg: #cbeff0;
-			--canvas: #f7f7f7;
 			--white: #fff;
 		}
-
 		* {
 			box-sizing: border-box;
 		}
-
 		body {
 			margin: 0;
-			min-width: 1180px;
 			min-height: 100vh;
-			overflow-x: auto;
-			overflow-y: auto;
 			color: var(--text);
 			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
-			background: #fff;
-			letter-spacing: 0;
+			background: var(--bg);
 		}
-
-		button,
-		input,
-		select {
-			font: inherit;
-			letter-spacing: 0;
-		}
-
-		button {
-			cursor: pointer;
-		}
-
-		.topbar {
-			height: 56px;
+		.header {
+			height: 64px;
 			display: flex;
 			align-items: center;
-			border-top: 3px solid #18aeb1;
-			border-bottom: 1px solid #d9eeee;
+			gap: 12px;
+			padding: 0 40px;
+			border-bottom: 1px solid var(--line);
 			background: #eaf8f8;
 		}
-
-		.brand {
-			width: 230px;
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			padding-left: 30px;
-			font-size: 15px;
-			font-weight: 600;
-			color: #12212b;
-		}
-
 		.logo {
-			width: 20px;
-			height: 20px;
+			width: 24px;
+			height: 24px;
 			display: grid;
-			place-items: center;
-			border: 1px solid #1ba8a8;
-			border-radius: 50%;
-			color: #138f91;
-			font-size: 11px;
-			font-weight: 700;
-		}
-
-		.main-nav {
-			display: flex;
-			align-items: center;
-			gap: 26px;
-			height: 100%;
-			font-size: 14px;
-		}
-
-		.nav-item {
-			height: 100%;
-			display: flex;
-			align-items: center;
-			color: #1f2937;
-			border-bottom: 2px solid transparent;
-		}
-
-		.nav-item.active {
-			color: var(--brand-dark);
-			border-color: var(--brand);
-		}
-
-		.top-actions {
-			margin-left: auto;
-			display: flex;
-			align-items: center;
-			gap: 20px;
-			padding-right: 30px;
-			color: #74808a;
-			font-size: 18px;
-		}
-
-		.avatar {
-			width: 32px;
-			height: 32px;
-			border-radius: 50%;
-			background: linear-gradient(160deg, #ffb347 0%, #293241 48%, #111827 100%);
-		}
-
-		.shell {
-			display: grid;
-			grid-template-columns: 230px 1fr;
-			min-height: calc(100vh - 56px);
-		}
-
-		.sidebar {
-			background: var(--side);
-			border-right: 1px solid #d9eced;
-			overflow: auto;
-		}
-
-		.menu-row {
-			height: 53px;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 0 30px;
-			font-size: 15px;
-		}
-
-		.menu-row.small {
-			height: 48px;
-			justify-content: flex-start;
-			padding-left: 56px;
-		}
-
-		.menu-row.open {
-			color: #087d81;
-			font-weight: 600;
-		}
-
-		.menu-row.selected {
-			position: relative;
-			background: #cceeee;
-			color: #058c90;
-		}
-
-		.menu-row.selected::after {
-			content: "";
-			position: absolute;
-			right: 10px;
-			width: 2px;
-			height: 44px;
-			background: var(--brand);
-		}
-
-		.workspace {
-			display: grid;
-			grid-template-rows: 36px 64px auto;
-			min-width: 0;
-			background: #fff;
-		}
-
-		.tabs {
-			display: flex;
-			align-items: end;
-			gap: 6px;
-			padding-left: 18px;
-			border-bottom: 1px solid var(--line);
-		}
-
-		.tab {
-			height: 30px;
-			display: inline-flex;
-			align-items: center;
-			padding: 0 12px;
-			border: 1px solid var(--line);
-			border-bottom: none;
-			background: #fff;
-			font-size: 13px;
-		}
-
-		.tab.active {
-			background: var(--brand);
-			color: #fff;
-			border-color: var(--brand);
-		}
-
-		.config-bar {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			gap: 22px;
-			background: #079ea2;
-			color: #fff;
-			font-size: 22px;
-			font-weight: 600;
-		}
-
-		.config-select {
-			width: 220px;
-			height: 36px;
-			border: none;
-			padding: 0 12px;
-			background: #fff;
-			color: #111827;
-			font-size: 14px;
-		}
-
-		.designer {
-			display: grid;
-			grid-template-columns: 240px minmax(360px, 1fr) 330px;
-			min-height: 720px;
-			background: #f5f6f7;
-		}
-
-		.library {
-			border-right: 1px solid var(--line-dark);
-			background: #fff;
-		}
-
-		.search-row {
-			height: 52px;
-			display: grid;
-			grid-template-columns: 1fr 38px;
-			gap: 8px;
-			padding: 12px 8px 8px;
-			border-bottom: 1px solid var(--line);
-		}
-
-		.search {
-			height: 36px;
-			border: 1px solid var(--line);
-			padding: 0 12px;
-			color: var(--muted);
-		}
-
-		.icon-btn {
-			height: 36px;
-			border: 1px solid var(--line);
-			background: #fff;
-			color: #334155;
-			font-size: 18px;
-		}
-
-		.component-group {
-			padding: 10px 8px 14px;
-			border-bottom: 1px solid var(--line);
-		}
-
-		.group-title {
-			height: 32px;
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			font-size: 15px;
-			color: #1f2937;
-		}
-
-		.component-grid {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 8px;
-		}
-
-		.component {
-			height: 40px;
-			display: flex;
-			align-items: center;
-			padding: 0 14px;
-			border: 1px solid #cfd6dc;
-			border-radius: 3px;
-			background: #fff;
-			font-size: 14px;
-		}
-
-		.component.selected {
-			border-color: var(--brand);
-			background: var(--brand-soft);
-			color: var(--brand-dark);
-			font-weight: 600;
-		}
-
-		.canvas-pane {
-			min-width: 0;
-			display: grid;
-			grid-template-rows: 50px 1fr 52px;
-			background: var(--canvas);
-			border-right: 1px solid var(--line-dark);
-		}
-
-		.canvas-toolbar {
-			display: flex;
-			align-items: center;
-			gap: 18px;
-			padding: 0 22px;
-			border-bottom: 1px solid var(--line);
-			background: #fff;
-			color: #66717c;
-		}
-
-		.canvas {
-			padding: 0 12px 50px;
-		}
-
-		.form-row {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 20px;
-			margin: 0 0 22px;
-		}
-
-		.field-card {
-			position: relative;
-			min-height: 112px;
-			padding: 10px 14px;
-			background: #fff;
-			border: 1px solid transparent;
-		}
-
-		.field-card.active {
-			background: #ccebed;
-			border-color: #51b9bd;
-		}
-
-		.field-card.warn {
-			background: var(--warn-bg);
-		}
-
-		.field-label {
-			height: 26px;
-			display: flex;
-			align-items: center;
-			gap: 6px;
-			font-size: 15px;
-		}
-
-		.required {
-			color: var(--danger);
-		}
-
-		.help-link {
-			color: var(--brand-dark);
-			font-weight: 600;
-		}
-
-		.question {
-			width: 16px;
-			height: 16px;
-			display: inline-grid;
 			place-items: center;
 			border: 1px solid var(--brand);
 			border-radius: 50%;
-			color: var(--brand);
-			font-size: 12px;
-		}
-
-		.input {
-			width: 100%;
-			height: 36px;
-			border: 1px solid #d4d9de;
-			background: #fff;
-			padding: 0 12px;
-			color: #9aa3ad;
-		}
-
-		.field-key {
-			position: absolute;
-			right: 12px;
-			bottom: 8px;
-			max-width: calc(100% - 24px);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
 			color: var(--brand-dark);
+			font-size: 12px;
+			font-weight: 700;
+		}
+		.header h1 {
+			margin: 0;
+			font-size: 18px;
+			font-weight: 650;
+		}
+		.container {
+			max-width: 1080px;
+			margin: 0 auto;
+			padding: 40px;
+		}
+		.intro {
+			margin: 0 0 20px;
+			color: var(--muted);
 			font-size: 14px;
 		}
-
-		.address-preview {
-			margin-top: 8px;
-			border: 1px solid #d6e6e8;
-			background: #f8ffff;
-		}
-
-		.address-preview[hidden] {
-			display: none;
-		}
-
-		.smart-input {
-			height: 42px;
-			display: flex;
-			align-items: center;
-			padding: 0 12px;
-			border-bottom: 1px solid #d6e6e8;
-			background: #fff;
-			color: #9aa3ad;
-		}
-
-		.smart-hint {
-			padding: 8px 12px;
-			color: var(--danger);
-			font-size: 13px;
-			line-height: 1.5;
-		}
-
-		.split-preview {
+		.grid {
 			display: grid;
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: 8px;
-			padding: 10px;
-			border-top: 1px solid #d6e6e8;
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			gap: 16px;
 		}
-
-		.recommend-field {
-			min-width: 0;
-			padding: 8px;
-			border: 1px solid #d6e6e8;
-			background: #fff;
-		}
-
-		.recommend-label {
-			margin-bottom: 6px;
-			color: #64748b;
-			font-size: 12px;
-		}
-
-		.recommend-value,
-		.recommend-input {
-			width: 100%;
-			min-height: 30px;
-			display: flex;
-			align-items: center;
-			border: 1px solid transparent;
-			color: #66717c;
-			font-size: 13px;
-			line-height: 1.4;
-		}
-
-		.recommend-input {
-			border-color: #d4d9de;
-			padding: 0 8px;
-			background: #fff;
-			color: #111827;
-		}
-
-		.recommend-field.modified {
-			border-color: #f6b44b;
-			background: #fffaf1;
-		}
-
-		.recommend-warning {
-			display: none;
-			margin-top: 6px;
-			color: #b45309;
-			font-size: 12px;
-			line-height: 1.45;
-		}
-
-		.recommend-field.modified .recommend-warning {
+		.card {
 			display: block;
-		}
-
-		.use-recommend {
-			margin-top: 5px;
-			border: none;
-			background: transparent;
-			color: #0f8f93;
-			padding: 0;
-			font-size: 12px;
-			font-weight: 600;
-		}
-
-		.legacy-address-grid {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 8px;
-			padding: 10px;
-		}
-
-		.legacy-address-grid .input {
-			height: 34px;
-			font-size: 13px;
-		}
-
-		.bottom-bar {
-			display: flex;
-			justify-content: flex-end;
-			align-items: center;
-			gap: 14px;
-			padding: 0 18px;
-			border-top: 1px solid var(--line);
-			background: #fff;
-		}
-
-		.primary {
-			height: 36px;
-			border: none;
-			border-radius: 3px;
-			padding: 0 24px;
-			background: var(--brand);
-			color: #fff;
-			font-weight: 600;
-		}
-
-		.property {
-			background: #fff;
-		}
-
-		.property-tabs {
-			height: 52px;
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			border-bottom: 1px solid var(--line);
-		}
-
-		.property-tab {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			color: #1f2937;
-			font-size: 16px;
-			font-weight: 600;
-		}
-
-		.property-tab.active {
-			color: var(--brand-dark);
-			border-bottom: 2px solid var(--brand);
-		}
-
-		.property-body {
-			padding: 18px 20px 32px;
-		}
-
-		.prop-row {
-			display: grid;
-			grid-template-columns: auto 1fr;
-			gap: 10px;
-			align-items: center;
-			min-height: 48px;
-			border-bottom: 1px solid var(--line);
-		}
-
-		.prop-label {
-			white-space: nowrap;
-			font-size: 15px;
-		}
-
-		.switch {
-			width: 52px;
-			height: 28px;
-			border: 1px solid #cbd5dc;
-			border-radius: 4px;
-			background: #f8fafc;
-			color: #66717c;
-			font-size: 12px;
-			font-weight: 700;
-			box-shadow: inset 3px 0 0 transparent;
-		}
-
-		.switch.on {
-			border-color: #78d3d6;
-			background: #e9fbfb;
-			color: var(--brand-dark);
-			box-shadow: inset 3px 0 0 var(--brand);
-		}
-
-		.switch:focus-visible {
-			outline: 2px solid rgba(0, 165, 168, .25);
-			outline-offset: 2px;
-		}
-
-		.prop-input,
-		.prop-select {
-			width: 100%;
-			height: 36px;
+			min-height: 132px;
+			padding: 20px;
 			border: 1px solid var(--line);
-			padding: 0 10px;
-			color: #111827;
-			background: #fff;
+			border-radius: 8px;
+			background: var(--white);
+			color: inherit;
+			text-decoration: none;
+			transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
 		}
-
-		.slider {
-			height: 3px;
-			background: linear-gradient(90deg, var(--brand) 0 82%, #d7dee4 82%);
-			border-radius: 3px;
+		.card:hover {
+			border-color: var(--brand);
+			box-shadow: 0 10px 24px rgba(15, 23, 42, .08);
+			transform: translateY(-2px);
 		}
-
-		.analysis-card {
-			margin-top: 20px;
-			border: 1px solid #bde7e9;
-			background: #f5ffff;
-		}
-
-		.analysis-header {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 14px 16px;
-			border-bottom: 1px solid #d9eff0;
-		}
-
-		.analysis-title {
+		.card-title {
+			margin: 0 0 10px;
 			font-size: 16px;
-			font-weight: 700;
-			color: #0f5960;
+			font-weight: 650;
 		}
-
-		.analysis-desc {
-			margin: 14px 16px;
-			padding: 10px 12px;
-			border-left: 3px solid var(--brand);
-			background: #fff;
-			color: #50606f;
+		.card-desc {
+			margin: 0 0 18px;
+			color: var(--muted);
 			font-size: 13px;
-			line-height: 1.55;
+			line-height: 1.6;
 		}
-
-		.config-block {
-			margin: 0 16px 14px;
-			padding: 14px;
-			border: 1px solid #d9eff0;
-			background: #fff;
-		}
-
-		.config-title {
-			margin-bottom: 10px;
-			font-weight: 700;
-			color: #22313f;
-		}
-
-		.config-head {
-			display: grid;
-			grid-template-columns: minmax(76px, 1fr) 76px 86px;
-			gap: 6px;
-			margin-bottom: 6px;
-			color: #7a8793;
-			font-size: 12px;
-		}
-
-		.check-row {
-			display: grid;
-			grid-template-columns: minmax(76px, 1fr) 76px 86px;
-			align-items: center;
-			gap: 6px;
-			min-height: 36px;
-			font-size: 14px;
-		}
-
-		.check-row[hidden] {
-			display: none;
-		}
-
-		.check-label {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-		}
-
-		.check-label input {
-			width: 16px;
-			height: 16px;
-			accent-color: var(--brand);
-		}
-
-		.required-select {
-			width: 100%;
-			height: 28px;
-			border: 1px solid var(--line);
-			color: #334155;
-		}
-
-		.toast {
-			position: fixed;
-			right: 24px;
-			bottom: 24px;
-			display: none;
-			padding: 12px 16px;
-			border-radius: 4px;
-			background: #1f2937;
-			color: #fff;
-			box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
-		}
-
-		.toast.show {
-			display: block;
+		.card-link {
+			color: var(--brand-dark);
+			font-size: 13px;
+			font-weight: 600;
 		}
 	</style>
 </head>
 <body>
-	<header class="topbar">
-		<div class="brand"><span class="logo">Kx</span>跨信通税务管理系统</div>
-		<nav class="main-nav">
-			<div class="nav-item">系统管理</div>
-			<div class="nav-item active">税务管理</div>
-			<div class="nav-item">CRM</div>
-			<div class="nav-item">客服工单</div>
-			<div class="nav-item">测试工具</div>
-			<div class="nav-item">埋点分析平台</div>
-			<div class="nav-item">旧系统</div>
-		</nav>
-		<div class="top-actions">
-			<span>⌕</span>
-			<span>?</span>
-			<span class="avatar"></span>
-			<span style="font-size:14px;">李晨浩</span>
-		</div>
+	<header class="header">
+		<div class="logo">Kx</div>
+		<h1>跨信通静态原型</h1>
 	</header>
-
-	<main class="shell">
-		<aside class="sidebar">
-			<div class="menu-row">授权代表案件管理 <span>⌄</span></div>
-			<div class="menu-row">系统管理 <span>⌄</span></div>
-			<div class="menu-row">客户管理 <span>⌄</span></div>
-			<div class="menu-row">营销管理 <span>⌄</span></div>
-			<div class="menu-row">订单管理 <span>⌄</span></div>
-			<div class="menu-row">续费管理 <span>⌄</span></div>
-			<div class="menu-row">优惠券管理 <span>⌄</span></div>
-			<div class="menu-row">商品管理 <span>⌄</span></div>
-			<div class="menu-row">价格管理 <span>⌄</span></div>
-			<div class="menu-row open">流程管理 <span>⌃</span></div>
-			<div class="menu-row small">节点管理</div>
-			<div class="menu-row small">操作项管理</div>
-			<div class="menu-row small">流程列表</div>
-			<div class="menu-row small selected">表单管理</div>
-			<div class="menu-row small">显示配置</div>
-			<div class="menu-row small">模板列表</div>
-			<div class="menu-row">知识产权 <span>⌄</span></div>
-		</aside>
-
-		<section class="workspace">
-			<div class="tabs">
-				<div class="tab">360搜索 ×</div>
-				<div class="tab">基础服务 ×</div>
-				<div class="tab">节点管理 ×</div>
-				<div class="tab">流程列表 ×</div>
-				<div class="tab active">● 表单管理 ×</div>
-			</div>
-			<div class="config-bar">
-				<span>类型</span>
-				<select class="config-select"><option>服务</option></select>
-				<span>操作名称</span>
-				<select class="config-select" style="width:330px;"><option>德国VAT注册（新）</option></select>
-			</div>
-
-			<div class="designer">
-				<aside class="library">
-					<div class="search-row">
-						<input class="search" placeholder="搜索组件">
-						<button class="icon-btn">↗</button>
-					</div>
-					<div class="component-group">
-						<div class="component-grid">
-							<div class="component">单选框</div>
-							<div class="component">时间选择</div>
-							<div class="component">树形选择</div>
-							<div class="component">级联选择</div>
-							<div class="component">上传组件</div>
-						</div>
-					</div>
-					<div class="component-group">
-						<div class="group-title">⌄ 自定义控件</div>
-						<div class="component-grid">
-							<div class="component">输入框按钮</div>
-							<div class="component">输入框（多个）</div>
-							<div class="component">德国电池选项</div>
-							<div class="component">德国WEEE选项</div>
-							<div class="component">补申报周期</div>
-							<div class="component">变更时间</div>
-							<div class="component">字段显示</div>
-							<div class="component">提示文案</div>
-							<div class="component">签名</div>
-							<div class="component">签名-新</div>
-							<div class="component">公司名称中文</div>
-							<div class="component">公司名称中文-新</div>
-							<div class="component">VAT税号组件</div>
-							<div class="component selected">地址输入框</div>
-							<div class="component">地址输入框(美代)</div>
-							<div class="component">股权占比</div>
-						</div>
-					</div>
-				</aside>
-
-				<section class="canvas-pane">
-					<div class="canvas-toolbar">▷ ⬆ ▭ ◈ 🗑　↶　↷</div>
-					<div class="canvas">
-						<div class="form-row">
-							<div class="field-card">
-								<div class="field-label"><span class="required">*</span>店铺名称 <span class="help-link">查看指引</span></div>
-								<input class="input" placeholder="请输入">
-								<div class="field-key">input/storeInfoStoreName</div>
-							</div>
-							<div class="field-card">
-								<div class="field-label"><span class="required">*</span>卖家/商家记号（Seller ID） <span class="help-link">查看指引</span></div>
-								<input class="input" placeholder="请输入">
-								<div class="field-key">input/storeInfoSellerId</div>
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="field-card warn">
-								<div class="field-label"><span class="required">*</span>店铺后台公司名称(拼音或英文) <span class="question">?</span></div>
-								<input class="input" placeholder="请输入">
-								<div class="field-key">input/storeInfoBackName</div>
-							</div>
-							<div class="field-card active">
-								<div class="field-label"><span class="required">*</span><span id="canvasAddressLabel">店铺后台地址（中文详细地址）</span> <span class="question">?</span></div>
-								<div class="address-preview" id="canvasAddressPreview">
-									<div class="smart-input">请输入中文详细地址</div>
-									<div class="smart-hint" id="canvasHint">提示：只需填写一个中文详细地址。系统将自动拆分并翻译为税局所需的省份、城市、市区邮编、街道、门牌号；如无法识别请优化中文描述。</div>
-									<div class="split-preview" id="canvasSplitPreview"></div>
-								</div>
-								<div class="address-preview" id="legacyAddressPreview" hidden>
-									<div class="legacy-address-grid">
-										<input class="input" placeholder="省份">
-										<input class="input" placeholder="城市">
-										<input class="input" placeholder="市区邮编">
-										<input class="input" placeholder="街道">
-										<input class="input" placeholder="门牌号">
-									</div>
-								</div>
-								<div class="field-key" id="canvasAddressKey">SmartAddressInput/storeInfoStoreAddressCn</div>
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="field-card">
-								<div class="field-label"><span class="required">*</span>预估第一年销售额(欧元) <span class="question">?</span></div>
-								<input class="input" placeholder="预估值需大于1000，小于该金额不具备注册VAT的条件">
-								<div class="field-key">input/storeInfoEstimatedSales</div>
-							</div>
-							<div class="field-card">
-								<div class="field-label"><span class="required">*</span>预估第二年销售额(欧元) <span class="question">?</span></div>
-								<input class="input" placeholder="预估值需大于6000，小于该金额不具备注册VAT的条件">
-								<div class="field-key">input/storeInfoEstimatedSales2</div>
-							</div>
-						</div>
-					</div>
-					<div class="bottom-bar">
-						<button class="primary">修改表单</button>
-						<button class="primary">保存为新表单</button>
-					</div>
-				</section>
-
-				<aside class="property">
-					<div class="property-tabs">
-						<div class="property-tab">控件属性</div>
-						<div class="property-tab active">组件属性</div>
-					</div>
-					<div class="property-body">
-						<div class="prop-row">
-							<div class="prop-label">栅格数：</div>
-							<div class="slider"></div>
-						</div>
-						<div class="prop-row">
-							<div class="prop-label">是否校验：</div>
-							<button class="switch on">开</button>
-						</div>
-						<div class="prop-row">
-							<div class="prop-label">是否显示国家：</div>
-							<button class="switch">关</button>
-						</div>
-						<div class="prop-row">
-							<div class="prop-label">是否显示街道：</div>
-							<button class="switch on" data-address-toggle="街道">开</button>
-						</div>
-						<div class="prop-row">
-							<div class="prop-label">是否显示建筑：</div>
-							<button class="switch">关</button>
-						</div>
-						<div class="prop-row">
-							<div class="prop-label">是否显示门牌号：</div>
-							<button class="switch on" data-address-toggle="门牌号">开</button>
-						</div>
-						<div class="prop-row">
-							<div class="prop-label">总字数：</div>
-							<input class="prop-input" value="200">
-						</div>
-
-						<div class="analysis-card">
-							<div class="analysis-header">
-								<div class="analysis-title">地址解析能力</div>
-								<button class="switch on" id="analysisSwitch">开</button>
-							</div>
-							<div class="analysis-desc">
-								开启后，用户只填写中文详细地址；系统按所选字段自动拆分并翻译。关闭后沿用旧地址组件。
-							</div>
-							<div class="config-block" id="analysisConfig">
-								<div class="config-title">拆分字段配置</div>
-								<div class="config-head">
-									<span>字段</span>
-									<span>必填</span>
-									<span>可修改</span>
-								</div>
-								<div class="check-row" data-config-row="省份">
-									<label class="check-label"><input type="checkbox" data-field="省份" checked>省份</label>
-									<select class="required-select"><option>必填</option></select>
-									<select class="required-select" data-editable-field="省份"><option>不可修改</option><option>可修改</option></select>
-								</div>
-								<div class="check-row" data-config-row="城市">
-									<label class="check-label"><input type="checkbox" data-field="城市" checked>城市</label>
-									<select class="required-select"><option>必填</option></select>
-									<select class="required-select" data-editable-field="城市"><option>不可修改</option><option selected>可修改</option></select>
-								</div>
-								<div class="check-row" data-config-row="市区邮编">
-									<label class="check-label"><input type="checkbox" data-field="市区邮编" checked>市区邮编</label>
-									<select class="required-select"><option>必填</option></select>
-									<select class="required-select" data-editable-field="市区邮编"><option>不可修改</option><option>可修改</option></select>
-								</div>
-								<div class="check-row" data-config-row="街道">
-									<label class="check-label"><input type="checkbox" data-field="街道" checked>街道</label>
-									<select class="required-select"><option>非必填</option><option>必填</option></select>
-									<select class="required-select" data-editable-field="街道"><option>不可修改</option><option selected>可修改</option></select>
-								</div>
-								<div class="check-row" data-config-row="门牌号">
-									<label class="check-label"><input type="checkbox" data-field="门牌号" checked>门牌号</label>
-									<select class="required-select"><option>非必填</option><option>必填</option></select>
-									<select class="required-select" data-editable-field="门牌号"><option>不可修改</option><option selected>可修改</option></select>
-								</div>
-							</div>
-
-						</div>
-					</div>
-				</aside>
-			</div>
-		</section>
+	<main class="container">
+		<p class="intro">当前仓库已发布的原型页面，点击后可直接查看。</p>
+		<div class="grid">
+			<a class="card" href="./process-export-package-config-prototype.html">
+				<h2 class="card-title">流程导出资料包配置</h2>
+				<p class="card-desc">流程列表、资料包方案、资料项列表、表单资料项配置相关原型。</p>
+				<span class="card-link">打开页面</span>
+			</a>
+			<a class="card" href="./export-material-download-demo.html">
+				<h2 class="card-title">资料导出下载场景</h2>
+				<p class="card-desc">导出资料、下载完整资料包、资料包选择确认相关 demo。</p>
+				<span class="card-link">打开页面</span>
+			</a>
+			<a class="card" href="./fulfillment-entity-galaxy.html">
+				<h2 class="card-title">履约实体关系图</h2>
+				<p class="card-desc">履约业务实体关系、流程与合同组合图。</p>
+				<span class="card-link">打开页面</span>
+			</a>
+			<a class="card" href="./vat-upload-address-prototype.html">
+				<h2 class="card-title">VAT 上传地址配置</h2>
+				<p class="card-desc">VAT 上传地址相关配置原型。</p>
+				<span class="card-link">打开页面</span>
+			</a>
+			<a class="card" href="./address-component-property-prototype.html">
+				<h2 class="card-title">地址组件属性配置</h2>
+				<p class="card-desc">地址组件解析能力和属性配置原型。</p>
+				<span class="card-link">打开页面</span>
+			</a>
+		</div>
 	</main>
-
-	<div class="toast" id="toast">组件配置已更新</div>
-
-	<script>
-		const analysisSwitch = document.getElementById("analysisSwitch");
-		const analysisConfig = document.getElementById("analysisConfig");
-		const canvasAddressLabel = document.getElementById("canvasAddressLabel");
-		const canvasAddressPreview = document.getElementById("canvasAddressPreview");
-		const legacyAddressPreview = document.getElementById("legacyAddressPreview");
-		const canvasAddressKey = document.getElementById("canvasAddressKey");
-		const canvasSplitPreview = document.getElementById("canvasSplitPreview");
-		const canvasHint = document.getElementById("canvasHint");
-		const toast = document.getElementById("toast");
-		const checkboxes = Array.from(document.querySelectorAll("[data-field]"));
-		const addressToggles = Array.from(document.querySelectorAll("[data-address-toggle]"));
-		const editableSelects = Array.from(document.querySelectorAll("[data-editable-field]"));
-		let smartEnabled = true;
-		const recommendedValues = {
-			"省份": "Guangdong Province",
-			"城市": "Shenzhen",
-			"市区邮编": "Nanshan District, 518057",
-			"街道": "Yuehai Street, Science and Technology Park, Keyuan South Road",
-			"门牌号": "2601",
-		};
-
-		function showToast() {
-			toast.classList.add("show");
-			setTimeout(() => toast.classList.remove("show"), 1200);
-		}
-
-		function enabledFields() {
-			return checkboxes
-				.filter((item) => item.checked && !item.closest(".check-row").hidden)
-				.map((item) => item.dataset.field);
-		}
-
-		function isFieldEditable(field) {
-			const select = document.querySelector(`[data-editable-field="${field}"]`);
-			return select?.value === "可修改";
-		}
-
-		function escapeAttr(value) {
-			return String(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
-		}
-
-		function escapeText(value) {
-			return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;");
-		}
-
-		function syncSwitchText(switchNode) {
-			switchNode.textContent = switchNode.classList.contains("on") ? "开" : "关";
-		}
-
-		function syncAddressFieldRows() {
-			addressToggles.forEach((toggle) => {
-				const field = toggle.dataset.addressToggle;
-				const visible = toggle.classList.contains("on");
-				const row = document.querySelector(`[data-config-row="${field}"]`);
-				const checkbox = row?.querySelector("[data-field]");
-
-				if (row) {
-					row.hidden = !visible;
-				}
-				if (checkbox && !visible) {
-					checkbox.checked = false;
-				}
-				syncSwitchText(toggle);
-			});
-		}
-
-		function renderPreview() {
-			syncAddressFieldRows();
-			const fields = enabledFields();
-			analysisSwitch.classList.toggle("on", smartEnabled);
-			syncSwitchText(analysisSwitch);
-			analysisConfig.style.display = smartEnabled ? "block" : "none";
-
-			if (!smartEnabled) {
-				canvasAddressLabel.textContent = "店铺后台地址";
-				canvasAddressPreview.hidden = true;
-				legacyAddressPreview.hidden = false;
-				canvasAddressKey.textContent = "AddressInput/storeInfoStoreAddress";
-				canvasSplitPreview.innerHTML = "";
-				return;
-			}
-
-			const fieldText = fields.length ? fields.join("、") : "未选择拆分字段";
-			canvasAddressLabel.textContent = "店铺后台地址（中文详细地址）";
-			canvasAddressPreview.hidden = false;
-			legacyAddressPreview.hidden = true;
-			canvasAddressKey.textContent = "SmartAddressInput/storeInfoStoreAddressCn";
-			canvasHint.textContent = `提示：只需填写一个中文详细地址。系统将自动拆分并翻译为税局所需的${fieldText}；如无法识别请优化中文描述。`;
-			canvasSplitPreview.innerHTML = fields.map((field) => {
-				const recommended = recommendedValues[field] || "自动生成";
-				const recommendedAttr = escapeAttr(recommended);
-				const recommendedText = escapeText(recommended);
-				if (!isFieldEditable(field)) {
-					return `
-						<div class="recommend-field" data-recommend-field="${field}">
-							<div class="recommend-label">${field}</div>
-							<div class="recommend-value">${recommendedText}</div>
-						</div>
-					`;
-				}
-				return `
-					<div class="recommend-field" data-recommend-field="${field}" data-original-value="${recommendedAttr}">
-						<div class="recommend-label">${field}</div>
-						<input class="recommend-input" value="${recommendedAttr}" data-recommend-input="${field}">
-						<div class="recommend-warning">
-							<div>已修改系统推荐值</div>
-							<div>系统推荐：${recommendedText}</div>
-							<button class="use-recommend" type="button" data-use-recommend="${field}">采用推荐值</button>
-						</div>
-					</div>
-				`;
-			}).join("");
-		}
-
-		function refreshRecommendModifiedState(input) {
-			const fieldCard = input.closest(".recommend-field");
-			const originalValue = fieldCard.dataset.originalValue;
-			fieldCard.classList.toggle("modified", input.value !== originalValue);
-		}
-
-		analysisSwitch.addEventListener("click", () => {
-			smartEnabled = !smartEnabled;
-			renderPreview();
-			showToast();
-		});
-
-		addressToggles.forEach((toggle) => {
-			toggle.addEventListener("click", () => {
-				toggle.classList.toggle("on");
-				renderPreview();
-				showToast();
-			});
-		});
-
-		checkboxes.forEach((checkbox) => {
-			checkbox.addEventListener("change", () => {
-				renderPreview();
-				showToast();
-			});
-		});
-
-		editableSelects.forEach((select) => {
-			select.addEventListener("change", () => {
-				renderPreview();
-				showToast();
-			});
-		});
-
-		canvasSplitPreview.addEventListener("input", (event) => {
-			if (event.target.matches("[data-recommend-input]")) {
-				refreshRecommendModifiedState(event.target);
-			}
-		});
-
-		canvasSplitPreview.addEventListener("click", (event) => {
-			const button = event.target.closest("[data-use-recommend]");
-			if (!button) return;
-			const fieldCard = button.closest(".recommend-field");
-			const input = fieldCard.querySelector("[data-recommend-input]");
-			input.value = fieldCard.dataset.originalValue;
-			refreshRecommendModifiedState(input);
-			showToast();
-		});
-
-		renderPreview();
-	</script>
 </body>
 </html>

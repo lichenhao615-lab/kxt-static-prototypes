@@ -1,0 +1,1087 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>导出资料优化 Demo</title>
+	<style>
+		:root {
+			--brand: #009fa3;
+			--brand-dark: #00888c;
+			--brand-soft: #e9fbfb;
+			--nav: #eaf8f8;
+			--sidebar: #eefafa;
+			--line: #e6eaee;
+			--line-strong: #d8dee5;
+			--text: #17212b;
+			--muted: #667582;
+			--weak: #a7b0ba;
+			--danger: #ff4d4f;
+			--success: #18b978;
+			--warning: #f59e0b;
+			--blue: #2f80ed;
+			--bg: #f5f7f9;
+			--white: #fff;
+			--shadow: 0 18px 52px rgba(15, 23, 42, .18);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			min-width: 1280px;
+			color: var(--text);
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+			background: var(--bg);
+			letter-spacing: 0;
+		}
+
+		button,
+		input,
+		select {
+			font: inherit;
+			letter-spacing: 0;
+		}
+
+		button {
+			cursor: pointer;
+		}
+
+		.topbar {
+			height: 52px;
+			display: flex;
+			align-items: center;
+			border-bottom: 1px solid #d9eeee;
+			background: var(--nav);
+		}
+
+		.brand {
+			width: 210px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding-left: 28px;
+			font-size: 15px;
+			font-weight: 600;
+		}
+
+		.logo {
+			width: 20px;
+			height: 20px;
+			display: grid;
+			place-items: center;
+			border: 1px solid #1ba8a8;
+			border-radius: 50%;
+			color: #138f91;
+			font-size: 11px;
+			font-weight: 700;
+		}
+
+		.main-nav {
+			display: flex;
+			align-items: center;
+			gap: 24px;
+			height: 100%;
+			font-size: 14px;
+		}
+
+		.nav-item {
+			height: 100%;
+			display: flex;
+			align-items: center;
+			border-bottom: 2px solid transparent;
+			color: #1f2937;
+		}
+
+		.nav-item.active {
+			color: var(--brand-dark);
+			border-color: var(--brand);
+		}
+
+		.app-shell {
+			display: grid;
+			grid-template-columns: 210px 1fr;
+			min-height: calc(100vh - 52px);
+		}
+
+		.sidebar {
+			background: var(--sidebar);
+			border-right: 1px solid #ddecee;
+			padding-top: 10px;
+		}
+
+		.menu-row {
+			height: 48px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 28px;
+			color: #0f172a;
+			font-size: 14px;
+		}
+
+		.menu-row.small {
+			height: 44px;
+			padding-left: 52px;
+			color: #1f2937;
+		}
+
+		.menu-row.active {
+			position: relative;
+			background: #cceaea;
+			color: var(--brand-dark);
+		}
+
+		.menu-row.active::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			right: 10px;
+			width: 3px;
+			height: 100%;
+			background: var(--brand);
+		}
+
+		.content {
+			position: relative;
+			min-height: calc(100vh - 52px);
+			overflow: hidden;
+			background: #fff;
+		}
+
+		.mock-list {
+			padding: 18px 20px;
+		}
+
+		.breadcrumb {
+			height: 34px;
+			display: inline-flex;
+			align-items: center;
+			padding: 0 12px;
+			border: 1px solid #dfe5ea;
+			border-radius: 2px;
+			color: #344050;
+			font-size: 13px;
+			background: #fafafa;
+		}
+
+		.filter-card {
+			margin-top: 18px;
+			padding: 16px;
+			border: 1px solid var(--line);
+			background: #fff;
+		}
+
+		.filter-line {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			color: #4b5563;
+			font-size: 14px;
+		}
+
+		.field {
+			height: 36px;
+			border: 1px solid #d8dee5;
+			border-radius: 2px;
+			background: #fff;
+			color: #334155;
+			padding: 0 10px;
+			outline: none;
+		}
+
+		.btn {
+			height: 36px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			padding: 0 16px;
+			border: 1px solid #d8dee5;
+			border-radius: 2px;
+			background: #fff;
+			color: #26323f;
+			font-weight: 500;
+		}
+
+		.btn.primary {
+			border-color: var(--brand);
+			background: var(--brand);
+			color: #fff;
+		}
+
+		.btn.primary:hover {
+			background: var(--brand-dark);
+		}
+
+		.btn.ghost {
+			background: #fff;
+		}
+
+		.btn.small {
+			height: 28px;
+			padding: 0 10px;
+			font-size: 13px;
+		}
+
+		.btn.link {
+			height: auto;
+			padding: 0;
+			border: 0;
+			background: transparent;
+			color: var(--brand-dark);
+		}
+
+		.table-wrap {
+			margin-top: 16px;
+			border: 1px solid var(--line);
+			overflow: hidden;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 14px;
+		}
+
+		th {
+			height: 42px;
+			background: #f7f8fa;
+			color: #44515f;
+			font-weight: 600;
+			text-align: left;
+			border-bottom: 1px solid var(--line);
+			padding: 0 12px;
+			white-space: nowrap;
+		}
+
+		td {
+			height: 54px;
+			border-bottom: 1px solid #edf0f3;
+			padding: 0 12px;
+			color: #25303b;
+		}
+
+		tr:last-child td {
+			border-bottom: 0;
+		}
+
+		.status {
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
+			color: var(--success);
+		}
+
+		.status::before {
+			content: "";
+			width: 7px;
+			height: 7px;
+			border-radius: 50%;
+			background: currentColor;
+		}
+
+		.drawer-mask {
+			position: absolute;
+			inset: 0;
+			background: rgba(0, 0, 0, .42);
+			z-index: 10;
+		}
+
+		.material-drawer {
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: calc(100vw - 310px);
+			min-width: 1040px;
+			height: 100%;
+			background: #fff;
+			box-shadow: var(--shadow);
+		}
+
+		.drawer-header {
+			height: 54px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 24px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.drawer-title {
+			font-size: 16px;
+			font-weight: 600;
+		}
+
+		.close {
+			width: 30px;
+			height: 30px;
+			border: 0;
+			background: transparent;
+			color: #8b949e;
+			font-size: 28px;
+			line-height: 1;
+		}
+
+		.drawer-top {
+			height: 92px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 30px 0 24px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.service-title {
+			font-size: 22px;
+			font-weight: 600;
+			color: #202a36;
+		}
+
+		.action-bar {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.scenario-panel {
+			margin: 0 30px;
+			padding: 12px 14px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border: 1px solid #c9eeee;
+			border-radius: 2px;
+			background: #f3ffff;
+		}
+
+		.scenario-title {
+			display: flex;
+			align-items: center;
+			gap: 9px;
+			font-size: 13px;
+			color: #475569;
+		}
+
+		.scenario-title strong {
+			color: #0f172a;
+		}
+
+		.segment {
+			display: inline-flex;
+			border: 1px solid #c8d2dc;
+			border-radius: 2px;
+			background: #fff;
+			overflow: hidden;
+		}
+
+		.segment button {
+			height: 30px;
+			padding: 0 12px;
+			border: 0;
+			border-right: 1px solid #d9e1e8;
+			background: #fff;
+			color: #526170;
+			font-size: 13px;
+		}
+
+		.segment button:last-child {
+			border-right: 0;
+		}
+
+		.segment button.active {
+			background: var(--brand);
+			color: #fff;
+		}
+
+		.drawer-body {
+			height: calc(100% - 54px - 92px);
+			overflow: auto;
+			padding: 22px 30px 40px;
+		}
+
+		.form-layout {
+			margin-top: 24px;
+			display: grid;
+			grid-template-columns: 250px 1fr;
+			gap: 34px;
+		}
+
+		.step-card {
+			position: sticky;
+			top: 0;
+			align-self: start;
+			border-radius: 4px;
+			background: #fff;
+			box-shadow: 0 18px 46px rgba(15, 23, 42, .10);
+			overflow: hidden;
+		}
+
+		.step {
+			height: 56px;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 0 24px;
+			font-size: 17px;
+			color: #26323f;
+		}
+
+		.step.active {
+			background: #eefcfd;
+			border-left: 4px solid #29c7c8;
+		}
+
+		.check {
+			width: 19px;
+			height: 19px;
+			display: grid;
+			place-items: center;
+			border-radius: 50%;
+			background: #21c77b;
+			color: #fff;
+			font-size: 13px;
+			font-weight: 700;
+		}
+
+		.check.muted {
+			background: #d9dde2;
+		}
+
+		.section {
+			border-left: 1px solid var(--line);
+			padding-left: 44px;
+		}
+
+		.section-title {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			font-size: 24px;
+			font-weight: 600;
+			margin-bottom: 26px;
+		}
+
+		.section-title::before {
+			content: "";
+			width: 5px;
+			height: 24px;
+			background: #27bfc0;
+		}
+
+		.form-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 30px;
+			row-gap: 24px;
+		}
+
+		.form-item label {
+			display: block;
+			margin-bottom: 10px;
+			color: #2f3a45;
+			font-size: 14px;
+		}
+
+		.required {
+			color: var(--danger);
+			margin-right: 4px;
+		}
+
+		.fake-input {
+			height: 36px;
+			display: flex;
+			align-items: center;
+			padding: 0 12px;
+			border: 1px solid #d7dde3;
+			border-radius: 2px;
+			background: #f7f7f7;
+			color: #b0b8c0;
+		}
+
+		.option-row {
+			display: flex;
+			gap: 24px;
+		}
+
+		.select-box {
+			width: 220px;
+			height: 44px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border: 1px solid #d1d7de;
+			border-radius: 4px;
+			color: #b7bec7;
+			background: #fff;
+		}
+
+		.select-box.active {
+			position: relative;
+			border-color: #29c7c8;
+			background: #effbfc;
+		}
+
+		.select-box.active::after {
+			content: "✓";
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			width: 28px;
+			height: 24px;
+			display: grid;
+			place-items: center;
+			background: #41bfc1;
+			color: #fff;
+			clip-path: polygon(100% 0, 100% 100%, 0 100%);
+			font-size: 14px;
+			padding-left: 10px;
+			padding-top: 4px;
+		}
+
+		.file-strip {
+			display: flex;
+			gap: 18px;
+		}
+
+		.file-card {
+			width: 220px;
+			height: 162px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 12px;
+			background: #f5f5f5;
+			color: #647180;
+		}
+
+		.file-thumb {
+			width: 88px;
+			height: 64px;
+			display: grid;
+			place-items: center;
+			border: 1px solid #e1e5ea;
+			background: #fff;
+			color: #c0c7cf;
+			font-weight: 700;
+		}
+
+		.toast {
+			position: fixed;
+			top: 72px;
+			left: 50%;
+			z-index: 30;
+			transform: translateX(-50%) translateY(-10px);
+			min-width: 360px;
+			max-width: 620px;
+			padding: 12px 16px;
+			display: none;
+			align-items: flex-start;
+			gap: 10px;
+			border-radius: 3px;
+			box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
+			background: #fff;
+			border-left: 4px solid var(--brand);
+			color: #25303b;
+		}
+
+		.toast.show {
+			display: flex;
+		}
+
+		.toast.success {
+			border-left-color: var(--success);
+		}
+
+		.toast.warn {
+			border-left-color: var(--warning);
+		}
+
+		.toast-dot {
+			width: 18px;
+			height: 18px;
+			display: grid;
+			place-items: center;
+			flex: 0 0 auto;
+			margin-top: 1px;
+			border-radius: 50%;
+			background: var(--brand);
+			color: #fff;
+			font-size: 12px;
+		}
+
+		.toast.success .toast-dot {
+			background: var(--success);
+		}
+
+		.toast.warn .toast-dot {
+			background: var(--warning);
+		}
+
+		.modal-mask {
+			position: fixed;
+			inset: 0;
+			z-index: 25;
+			display: none;
+			align-items: center;
+			justify-content: center;
+			background: rgba(15, 23, 42, .42);
+		}
+
+		.modal-mask.show {
+			display: flex;
+		}
+
+		.modal {
+			width: 760px;
+			background: #fff;
+			border-radius: 3px;
+			box-shadow: var(--shadow);
+		}
+
+		.modal-header {
+			height: 54px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 20px;
+			border-bottom: 1px solid var(--line);
+			font-size: 16px;
+			font-weight: 600;
+		}
+
+		.modal-body {
+			padding: 18px 20px 20px;
+		}
+
+		.modal-tip {
+			margin-bottom: 14px;
+			padding: 10px 12px;
+			border: 1px solid #cfeff0;
+			background: #f2ffff;
+			color: #465565;
+			font-size: 13px;
+			line-height: 1.6;
+		}
+
+		.package-table td,
+		.package-table th {
+			height: 46px;
+		}
+
+		.radio {
+			width: 16px;
+			height: 16px;
+			vertical-align: -3px;
+			accent-color: var(--brand);
+		}
+
+		.badge {
+			display: inline-flex;
+			align-items: center;
+			height: 22px;
+			padding: 0 8px;
+			border-radius: 2px;
+			font-size: 12px;
+			color: var(--brand-dark);
+			background: var(--brand-soft);
+		}
+
+		.badge.gray {
+			color: #667582;
+			background: #f0f2f4;
+		}
+
+		.modal-footer {
+			height: 58px;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 10px;
+			padding: 0 20px;
+			border-top: 1px solid var(--line);
+		}
+
+		.logic-card {
+			margin-top: 18px;
+			border: 1px solid var(--line);
+			background: #fff;
+		}
+
+		.logic-title {
+			height: 42px;
+			display: flex;
+			align-items: center;
+			padding: 0 14px;
+			border-bottom: 1px solid var(--line);
+			font-weight: 600;
+		}
+
+		.logic-steps {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 12px;
+			padding: 14px;
+		}
+
+		.logic-step {
+			border: 1px solid #e2e8f0;
+			padding: 12px;
+			min-height: 86px;
+			background: #fafafa;
+		}
+
+		.logic-step strong {
+			display: block;
+			margin-bottom: 8px;
+			font-size: 14px;
+		}
+
+		.logic-step span {
+			display: block;
+			color: #667582;
+			font-size: 13px;
+			line-height: 1.55;
+		}
+	</style>
+</head>
+<body>
+<div class="topbar">
+	<div class="brand"><span class="logo">Kc</span><span>跨信通税务管理系统</span></div>
+	<div class="main-nav">
+		<div class="nav-item">系统管理</div>
+		<div class="nav-item active">税务履约</div>
+		<div class="nav-item">服务管理</div>
+	</div>
+</div>
+
+<div class="app-shell">
+	<aside class="sidebar">
+		<div class="menu-row">商品管理 <span>⌄</span></div>
+		<div class="menu-row">价格管理 <span>⌄</span></div>
+		<div class="menu-row">流程管理 <span>⌃</span></div>
+		<div class="menu-row small">节点管理</div>
+		<div class="menu-row small">操作项管理</div>
+		<div class="menu-row small">流程列表</div>
+		<div class="menu-row small">表单管理</div>
+		<div class="menu-row small">显示配置</div>
+		<div class="menu-row small">模板列表</div>
+		<div class="menu-row">知识产权 <span>⌄</span></div>
+		<div class="menu-row">服务管理 <span>⌃</span></div>
+		<div class="menu-row small active">基础服务</div>
+		<div class="menu-row small">增值服务</div>
+		<div class="menu-row small">追加服务</div>
+		<div class="menu-row small">续费服务</div>
+		<div class="menu-row small">单据列表</div>
+		<div class="menu-row">任务管理 <span>⌄</span></div>
+	</aside>
+
+	<main class="content">
+		<div class="mock-list">
+			<div class="breadcrumb">履约工作台 ×</div>
+			<div class="filter-card">
+				<div class="filter-line">
+					<span>一级类目：</span><select class="field"><option>知识产权</option></select>
+					<span>二级类目：</span><select class="field"><option>专利注册</option></select>
+					<span>国家：</span><select class="field"><option>西班牙</option></select>
+					<button class="btn primary">搜索</button>
+					<button class="btn ghost">重置</button>
+				</div>
+			</div>
+
+			<div class="logic-card">
+				<div class="logic-title">导出资料按钮校验逻辑</div>
+				<div class="logic-steps">
+					<div class="logic-step">
+						<strong>无启用资料包</strong>
+						<span>继续走以前的导出资料逻辑，不弹资料包确认弹窗。</span>
+					</div>
+					<div class="logic-step">
+						<strong>仅 1 个启用资料包</strong>
+						<span>直接触发该资料包配置下载，不需要用户二次选择。</span>
+					</div>
+					<div class="logic-step">
+						<strong>多个启用资料包</strong>
+						<span>弹出资料包确认弹窗，用户单选一个资料包后确认下载。</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="table-wrap">
+				<table>
+					<thead>
+					<tr>
+						<th style="width:70px;">序号</th>
+						<th>服务单号</th>
+						<th>服务名称</th>
+						<th>流程</th>
+						<th>状态</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>1</td>
+						<td>SO20260611001</td>
+						<td>西班牙包装法注册+申报（2026年度，免海牙）</td>
+						<td>西班牙包装法注册资料流程</td>
+						<td><span class="status">已完成</span></td>
+						<td><button class="btn link">查看资料</button></td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td>SO20260611002</td>
+						<td>泰国外观专利注册</td>
+						<td>泰国外观专利注册流程</td>
+						<td><span class="status">已完成</span></td>
+						<td><button class="btn link">查看资料</button></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="drawer-mask">
+			<section class="material-drawer">
+				<header class="drawer-header">
+					<div class="drawer-title">查看资料</div>
+					<button class="close" aria-label="关闭">×</button>
+				</header>
+
+				<div class="drawer-top">
+					<div class="service-title">西班牙包装法注册+申报（2026年度，免海牙）</div>
+					<div class="action-bar">
+						<button class="btn ghost">取消</button>
+						<button class="btn primary" onclick="handleExport('导出资料')">导出资料</button>
+						<button class="btn primary" onclick="handleExport('通用版导出资料')">通用版导出资料</button>
+					</div>
+				</div>
+
+				<div class="drawer-body">
+					<div class="scenario-panel">
+						<div class="scenario-title">
+							<strong>模拟资料包配置：</strong>
+							<span id="scenarioText">当前流程下存在多个启用中的资料包配置</span>
+						</div>
+						<div class="segment" aria-label="模拟资料包配置数量">
+							<button type="button" data-mode="none" onclick="switchScenario('none')">无启用资料包</button>
+							<button type="button" data-mode="single" onclick="switchScenario('single')">仅 1 个启用</button>
+							<button type="button" data-mode="multiple" class="active" onclick="switchScenario('multiple')">多个启用</button>
+						</div>
+					</div>
+
+					<div class="form-layout">
+						<div class="step-card">
+							<div class="step active"><span class="check">✓</span>公司信息</div>
+							<div class="step"><span class="check muted">✓</span>法人信息</div>
+							<div class="step"><span class="check muted">✓</span>店铺信息/产品信息</div>
+						</div>
+
+						<section class="section">
+							<div class="section-title">公司信息</div>
+							<div class="form-grid">
+								<div class="form-item" style="grid-column: span 2;">
+									<label><span class="required">*</span>公司注册国家</label>
+									<div class="option-row">
+										<div class="select-box active">中国公司及其他</div>
+										<div class="select-box">香港公司</div>
+									</div>
+								</div>
+								<div class="form-item">
+									<label><span class="required">*</span>营业执照</label>
+									<div class="file-strip">
+										<div class="file-card">
+											<div class="file-thumb">执照</div>
+											<div>（已压缩）维思博副本_01....</div>
+										</div>
+										<div class="file-card">
+											<div class="file-thumb">示例</div>
+											<div>示例图</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-item">
+									<label><span class="required">*</span>公司信用报告 <button class="btn link">查看指引</button></label>
+									<div class="file-strip">
+										<div class="file-card">
+											<div class="file-thumb">PDF</div>
+											<div>长沙市维思博科技有限公...</div>
+										</div>
+										<div class="file-card">
+											<div class="file-thumb">示例</div>
+											<div>示例图</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-item">
+									<label><span class="required">*</span>公司名称</label>
+									<div class="fake-input">长沙市维思博科技有限公司</div>
+								</div>
+								<div class="form-item">
+									<label><span class="required">*</span>公司地址</label>
+									<div class="fake-input">长沙市雨花区高桥街道火焰社区火焰大市场13区2栋2号1楼</div>
+								</div>
+								<div class="form-item">
+									<label><span class="required">*</span>公司营业执照编码</label>
+									<div class="fake-input">91430111MAEAOUAGON</div>
+								</div>
+								<div class="form-item">
+									<label><span class="required">*</span>公司成立日期</label>
+									<div class="fake-input">2025-01-13</div>
+								</div>
+								<div class="form-item">
+									<label><span class="required">*</span>公司常用联系电话</label>
+									<div class="fake-input">86　19129392389</div>
+								</div>
+								<div class="form-item">
+									<label><span class="required">*</span>公司常用联系邮箱</label>
+									<div class="fake-input">eu@wisebot.store</div>
+								</div>
+							</div>
+						</section>
+					</div>
+				</div>
+			</section>
+		</div>
+	</main>
+</div>
+
+<div class="toast" id="toast">
+	<div class="toast-dot">✓</div>
+	<div id="toastText"></div>
+</div>
+
+<div class="modal-mask" id="packageModal">
+	<div class="modal" role="dialog" aria-modal="true" aria-labelledby="packageModalTitle">
+		<div class="modal-header">
+			<span id="packageModalTitle">资料包确认</span>
+			<button class="close" onclick="closePackageModal()" aria-label="关闭">×</button>
+		</div>
+		<div class="modal-body">
+			<div class="modal-tip">
+				当前流程存在多个启用中的资料包配置，请选择本次要下载的资料包。资料包只能单选，点击确认后按所选资料包配置下载。
+			</div>
+			<table class="package-table">
+				<thead>
+				<tr>
+					<th style="width:58px;">选择</th>
+					<th>资料包方案</th>
+					<th>操作项</th>
+					<th>状态</th>
+					<th>更新时间</th>
+				</tr>
+				</thead>
+				<tbody id="packageRows"></tbody>
+			</table>
+		</div>
+		<div class="modal-footer">
+			<button class="btn ghost" onclick="closePackageModal()">取消</button>
+			<button class="btn primary" onclick="confirmPackage()">确认</button>
+		</div>
+	</div>
+</div>
+
+<script>
+	const packages = [
+		{
+			id: "pkg-01",
+			name: "资料包方案1 - 常规注册资料包",
+			action: "下载完整资料包",
+			enabled: true,
+			updatedAt: "2026-06-10 18:22"
+		},
+		{
+			id: "pkg-02",
+			name: "资料包方案2 - 海牙资料包",
+			action: "导出海牙资料",
+			enabled: true,
+			updatedAt: "2026-06-10 19:04"
+		},
+		{
+			id: "pkg-03",
+			name: "资料包方案3 - 内部核验资料",
+			action: "导出资料",
+			enabled: false,
+			updatedAt: "2026-06-09 15:36"
+		}
+	];
+
+	let scenario = "multiple";
+	let currentAction = "导出资料";
+	let selectedPackageId = "pkg-01";
+	let toastTimer = null;
+
+	function switchScenario(nextScenario) {
+		scenario = nextScenario;
+		document.querySelectorAll(".segment button").forEach(function (button) {
+			button.classList.toggle("active", button.dataset.mode === nextScenario);
+		});
+		const text = {
+			none: "当前流程下没有启用中的资料包配置",
+			single: "当前流程下有且仅有一个启用中的资料包配置",
+			multiple: "当前流程下存在多个启用中的资料包配置"
+		};
+		document.getElementById("scenarioText").textContent = text[nextScenario];
+	}
+
+	function handleExport(actionName) {
+		currentAction = actionName;
+		if (scenario === "none") {
+			showToast("未查询到启用中的资料包配置，继续执行原「" + actionName + "」逻辑。", "warn");
+			return;
+		}
+		if (scenario === "single") {
+			showToast("查询到 1 个启用资料包：资料包方案1 - 常规注册资料包，已触发该配置下载。", "success");
+			return;
+		}
+		openPackageModal();
+	}
+
+	function openPackageModal() {
+		const rows = document.getElementById("packageRows");
+		rows.innerHTML = packages.map(function (item, index) {
+			const disabled = item.enabled ? "" : "disabled";
+			const checked = item.id === selectedPackageId ? "checked" : "";
+			return "<tr>" +
+				"<td><input class=\"radio\" type=\"radio\" name=\"package\" value=\"" + item.id + "\" " + checked + " " + disabled + "></td>" +
+				"<td>" + item.name + "</td>" +
+				"<td>" + item.action + "</td>" +
+				"<td><span class=\"badge " + (item.enabled ? "" : "gray") + "\">" + (item.enabled ? "启用" : "停用") + "</span></td>" +
+				"<td>" + item.updatedAt + "</td>" +
+				"</tr>";
+		}).join("");
+		rows.querySelectorAll("input[name='package']").forEach(function (radio) {
+			radio.addEventListener("change", function () {
+				selectedPackageId = radio.value;
+			});
+		});
+		document.getElementById("packageModal").classList.add("show");
+	}
+
+	function closePackageModal() {
+		document.getElementById("packageModal").classList.remove("show");
+	}
+
+	function confirmPackage() {
+		const selected = packages.find(function (item) {
+			return item.id === selectedPackageId;
+		});
+		closePackageModal();
+		showToast("已选择「" + selected.name + "」，触发「" + currentAction + "」下载。", "success");
+	}
+
+	function showToast(message, type) {
+		const toast = document.getElementById("toast");
+		document.getElementById("toastText").textContent = message;
+		toast.className = "toast show " + (type || "");
+		window.clearTimeout(toastTimer);
+		toastTimer = window.setTimeout(function () {
+			toast.className = "toast";
+		}, 3200);
+	}
+</script>
+</body>
+</html>

@@ -1,0 +1,2249 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>批量上传税号 Demo</title>
+	<style>
+		:root {
+			--brand: #009aa6;
+			--brand-dark: #00828d;
+			--bg: #f5f8fa;
+			--side: #eaf6f8;
+			--surface: #ffffff;
+			--line: #e5eaf0;
+			--text: #1f2933;
+			--muted: #758291;
+			--danger: #f04438;
+			--success: #18a058;
+			--warning: #f59f00;
+			--shadow: 0 14px 36px rgba(15, 35, 52, .12);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			background: var(--bg);
+			color: var(--text);
+			font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+			font-size: 14px;
+		}
+
+		button,
+		input,
+		select {
+			font: inherit;
+		}
+
+		button {
+			cursor: pointer;
+		}
+
+		.shell {
+			min-height: 100vh;
+			display: grid;
+			grid-template-columns: 210px 1fr;
+			grid-template-rows: 52px 1fr;
+		}
+
+		.topbar {
+			grid-column: 1 / -1;
+			display: flex;
+			align-items: center;
+			gap: 24px;
+			padding: 0 28px;
+			background: #eff9fb;
+			border-bottom: 1px solid #dce8ed;
+		}
+
+		.logo {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-weight: 700;
+		}
+
+		.logo-mark {
+			width: 18px;
+			height: 18px;
+			border: 2px solid var(--brand);
+			border-radius: 50%;
+			color: var(--brand);
+			font-size: 10px;
+			line-height: 14px;
+			text-align: center;
+		}
+
+		.topnav {
+			display: flex;
+			align-items: center;
+			gap: 24px;
+			height: 100%;
+		}
+
+		.topnav span {
+			height: 100%;
+			display: flex;
+			align-items: center;
+			color: #111827;
+		}
+
+		.topnav .active {
+			color: var(--brand);
+			border-bottom: 2px solid var(--brand);
+		}
+
+		.userbar {
+			margin-left: auto;
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			color: #596675;
+		}
+
+		.avatar {
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			background: linear-gradient(135deg, #172554, #f59e0b);
+		}
+
+		.sidebar {
+			background: var(--side);
+			padding: 14px 0;
+			border-right: 1px solid #deedf0;
+		}
+
+		.menu-item {
+			height: 48px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 28px;
+			color: #0f172a;
+		}
+
+		.menu-item.small {
+			height: 44px;
+			padding-left: 52px;
+		}
+
+		.main {
+			overflow: auto;
+			padding: 0 20px 36px;
+			background: linear-gradient(180deg, #ffffff 0, #fbfdff 160px, #ffffff 100%);
+		}
+
+		.tabs {
+			height: 32px;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			border-bottom: 1px solid #e6edf2;
+		}
+
+		.tab {
+			height: 28px;
+			display: inline-flex;
+			align-items: center;
+			padding: 0 10px;
+			background: #fff;
+			border: 1px solid #d8e2e8;
+			font-size: 12px;
+		}
+
+		.tab.active {
+			background: var(--brand);
+			border-color: var(--brand);
+			color: #fff;
+		}
+
+		.back-link {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			margin: 20px 0 10px;
+			color: var(--brand);
+			font-weight: 500;
+		}
+
+		.search-card {
+			height: 196px;
+			padding: 20px 18px;
+			background: var(--surface);
+			border: 1px solid #e4edf2;
+			border-radius: 10px;
+			box-shadow: 0 10px 30px rgba(15, 45, 70, .06);
+			display: grid;
+			grid-template-columns: 260px 1fr;
+		}
+
+		.search-title {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			font-weight: 700;
+			font-size: 16px;
+		}
+
+		.search-icon {
+			width: 36px;
+			height: 36px;
+			display: grid;
+			place-items: center;
+			border-radius: 10px;
+			background: #d9fbff;
+			color: var(--brand);
+			font-weight: 700;
+		}
+
+		.search-area {
+			align-self: start;
+			justify-self: center;
+			width: 640px;
+		}
+
+		.filters-top {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 28px;
+			margin: 6px 0 14px;
+			color: #6b7280;
+		}
+
+		.filters-top .active {
+			color: var(--brand);
+			font-weight: 600;
+		}
+
+		.search-line {
+			display: flex;
+		}
+
+		.search-line input {
+			flex: 1;
+			height: 48px;
+			padding: 0 16px;
+			border: 1px solid #d9e1e8;
+			border-right: 0;
+			outline: 0;
+			color: #6b7280;
+		}
+
+		.search-line button {
+			width: 48px;
+			border: 0;
+			background: var(--brand);
+			color: #fff;
+			display: grid;
+			place-items: center;
+		}
+
+		.history {
+			margin-top: 14px;
+			font-size: 12px;
+			color: #6b7280;
+		}
+
+		.history-tag {
+			display: inline-flex;
+			align-items: center;
+			height: 28px;
+			margin-top: 8px;
+			padding: 0 12px;
+			border: 1px solid #dbe4ea;
+			border-radius: 16px;
+			background: #f7f9fc;
+			color: #4b5563;
+		}
+
+		.workbench {
+			margin-top: 26px;
+		}
+
+		.section-tabs {
+			height: 34px;
+			display: flex;
+			align-items: center;
+			gap: 30px;
+			border-bottom: 1px solid #d9e3ea;
+		}
+
+		.section-tab {
+			height: 34px;
+			color: #6b7280;
+		}
+
+		.section-tab.active {
+			color: var(--brand);
+			font-weight: 700;
+			border-bottom: 2px solid var(--brand);
+		}
+
+		.sub-tabs {
+			margin-top: 16px;
+			display: flex;
+		}
+
+		.sub-tab {
+			height: 32px;
+			min-width: 108px;
+			display: grid;
+			place-items: center;
+			border: 1px solid #d9e1e8;
+			background: #fff;
+		}
+
+		.sub-tab.active {
+			color: var(--brand);
+			border-color: var(--brand);
+		}
+
+		.timeout-line {
+			display: flex;
+			gap: 38px;
+			margin: 16px 0 14px;
+		}
+
+		.timeout-line span {
+			color: var(--muted);
+		}
+
+		.timeout-line b {
+			margin-left: 8px;
+			font-size: 18px;
+			font-weight: 400;
+		}
+
+		.danger-text {
+			color: var(--danger);
+		}
+
+		.warning-text {
+			color: var(--warning);
+		}
+
+		.success-text {
+			color: #00b050;
+		}
+
+		.toolbar {
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			margin-bottom: 4px;
+		}
+
+		.select,
+		.input {
+			height: 32px;
+			border: 1px solid #d9e1e8;
+			background: #fff;
+			color: #7b8794;
+			padding: 0 12px;
+		}
+
+		.input.wide {
+			width: 220px;
+		}
+
+		.select {
+			min-width: 100px;
+		}
+
+		.btn {
+			height: 32px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			border: 1px solid #d7e2e8;
+			background: #fff;
+			color: #1f2937;
+			padding: 0 14px;
+			border-radius: 4px;
+			white-space: nowrap;
+		}
+
+		.btn svg {
+			width: 15px;
+			height: 15px;
+			stroke-width: 2;
+		}
+
+		.btn.primary {
+			border-color: var(--brand);
+			background: var(--brand);
+			color: #fff;
+		}
+
+		.btn.primary:hover {
+			background: var(--brand-dark);
+		}
+
+		.btn.outline-brand {
+			border-color: var(--brand);
+			color: var(--brand);
+			background: #fff;
+		}
+
+		.btn.text {
+			border-color: transparent;
+			color: var(--brand);
+			background: transparent;
+			padding: 0 6px;
+		}
+
+		.btn.danger {
+			border-color: #ffd6d2;
+			color: var(--danger);
+			background: #fff;
+		}
+
+		.batch-action-row {
+			display: flex;
+			align-items: center;
+			min-height: 42px;
+			border-top: 1px solid transparent;
+		}
+
+		.table-wrap {
+			border: 1px solid #edf1f5;
+			background: #fff;
+			overflow-x: auto;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			min-width: 1380px;
+		}
+
+		th,
+		td {
+			height: 48px;
+			border-bottom: 1px solid #edf1f5;
+			padding: 0 14px;
+			text-align: left;
+			white-space: nowrap;
+		}
+
+		th {
+			background: #f7f9fb;
+			color: #111827;
+			font-weight: 700;
+		}
+
+		td.empty {
+			height: 48px;
+			text-align: center;
+			color: #a3adb9;
+		}
+
+		.pager {
+			height: 58px;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 12px;
+			color: #111827;
+		}
+
+		.modal-mask {
+			position: fixed;
+			inset: 0;
+			display: none;
+			align-items: center;
+			justify-content: center;
+			background: rgba(15, 23, 42, .38);
+			z-index: 20;
+		}
+
+		.modal-mask.show {
+			display: flex;
+		}
+
+		.modal {
+			width: min(940px, calc(100vw - 24px));
+			max-height: calc(100vh - 54px);
+			background: #fff;
+			border-radius: 6px;
+			box-shadow: var(--shadow);
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+		}
+
+		.modal-header {
+			height: 56px;
+			padding: 0 22px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-bottom: 1px solid var(--line);
+			font-size: 16px;
+			font-weight: 700;
+		}
+
+		.icon-button {
+			width: 32px;
+			height: 32px;
+			border: 0;
+			background: transparent;
+			color: #6b7280;
+			display: grid;
+			place-items: center;
+			border-radius: 4px;
+		}
+
+		.icon-button:hover {
+			background: #f3f6f8;
+		}
+
+		.modal-body {
+			padding: 18px 20px;
+			overflow: auto;
+		}
+
+		.form-row {
+			display: grid;
+			grid-template-columns: 92px 260px 1fr;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 18px;
+		}
+
+		.label {
+			color: #374151;
+			font-weight: 600;
+		}
+
+		.required {
+			color: var(--danger);
+			margin-right: 4px;
+		}
+
+		.form-row select {
+			height: 34px;
+			border: 1px solid #d7e2e8;
+			padding: 0 10px;
+			background: #fff;
+			color: #111827;
+			border-radius: 4px;
+		}
+
+		.template-panel {
+			border: 1px solid #dfe8ee;
+			border-radius: 6px;
+			background: #fbfdff;
+			overflow: hidden;
+		}
+
+		.template-header {
+			padding: 14px 16px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-bottom: 1px solid #e5edf3;
+			background: #f7fbfc;
+		}
+
+		.template-title {
+			font-weight: 700;
+		}
+
+		.badge {
+			height: 24px;
+			display: inline-flex;
+			align-items: center;
+			border-radius: 12px;
+			padding: 0 10px;
+			background: #e7fbf8;
+			color: var(--brand);
+			font-size: 12px;
+		}
+
+		.template-body {
+			padding: 16px;
+		}
+
+		.template-panel.is-hidden {
+			display: none;
+		}
+
+		.standard-tip {
+			margin-bottom: 16px;
+			padding: 14px;
+			border: 1px solid #bce7ef;
+			border-radius: 6px;
+			background: #f2fcfe;
+			color: #164e63;
+			line-height: 1.8;
+		}
+
+		.standard-tip b {
+			color: var(--brand);
+		}
+
+		.standard-upload-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px;
+		}
+
+		.standard-card {
+			min-width: 0;
+			padding: 14px;
+			border: 1px solid #e2eaf0;
+			border-radius: 8px;
+			background: #fff;
+		}
+
+		.standard-card-head {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 12px;
+			margin-bottom: 14px;
+		}
+
+		.standard-card-title {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-weight: 700;
+		}
+
+		.step-badge {
+			width: 24px;
+			height: 24px;
+			display: inline-grid;
+			place-items: center;
+			border-radius: 50%;
+			background: var(--brand);
+			color: #fff;
+			font-size: 13px;
+			font-weight: 700;
+			flex: 0 0 auto;
+		}
+
+		.template-link {
+			border: 0;
+			background: transparent;
+			color: var(--brand);
+			font-weight: 700;
+			padding: 0;
+		}
+
+		.standard-card-desc {
+			margin: 0 0 12px 34px;
+			color: var(--muted);
+			font-size: 12px;
+			line-height: 1.8;
+		}
+
+		.standard-card .upload-zone {
+			min-height: 176px;
+			background: #f7fbff;
+		}
+
+		.spain-extra-panel,
+		.france-extra-panel,
+		.poland-extra-panel,
+		.germany-eu-vat-panel {
+			margin-bottom: 16px;
+		}
+
+		.spain-extra-panel.is-hidden,
+		.france-extra-panel.is-hidden,
+		.poland-extra-panel.is-hidden,
+		#countryFileUploadPanel.is-hidden,
+		.germany-eu-vat-panel.is-hidden,
+		.country-upload-note.is-hidden {
+			display: none;
+		}
+
+		.country-upload-note {
+			margin-bottom: 12px;
+			padding: 12px 14px;
+			border: 1px solid #bce7ef;
+			border-radius: 6px;
+			background: #f2fcfe;
+			color: #164e63;
+			line-height: 1.8;
+		}
+
+		.country-choice-panel {
+			display: none;
+			margin-bottom: 16px;
+			padding: 12px 14px;
+			border: 1px solid #dbe6f3;
+			border-radius: 6px;
+			background: #f8fbff;
+		}
+
+		.country-choice-panel.show {
+			display: block;
+		}
+
+		.country-choice-options {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+
+		.choice-option {
+			position: relative;
+		}
+
+		.choice-option input {
+			position: absolute;
+			opacity: 0;
+			pointer-events: none;
+		}
+
+		.choice-option span {
+			display: inline-flex;
+			align-items: center;
+			height: 34px;
+			padding: 0 14px;
+			border: 1px solid #d7e2ee;
+			border-radius: 6px;
+			background: #fff;
+			color: #4b5563;
+			font-size: 13px;
+			font-weight: 700;
+			cursor: pointer;
+		}
+
+		.choice-option input:checked + span {
+			border-color: var(--brand);
+			background: #edf6ff;
+			color: var(--brand);
+		}
+
+		.standard-file-stack {
+			margin-top: 14px;
+			display: grid;
+			gap: 8px;
+		}
+
+		.standard-file-row {
+			min-height: 38px;
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) auto;
+			align-items: center;
+			gap: 12px;
+			padding: 0 10px;
+			border: 1px solid #dce7ee;
+			border-radius: 4px;
+			background: #fbfdff;
+		}
+
+		.standard-file-row span:first-child {
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.status.success {
+			width: auto;
+			min-width: 64px;
+			padding: 0 10px;
+			background: #e9f9f0;
+			color: var(--success);
+		}
+
+		.rule-list {
+			margin-top: 16px;
+			display: grid;
+			gap: 8px;
+		}
+
+		.rule-item {
+			padding: 10px 12px;
+			border: 1px solid #e4edf2;
+			border-radius: 6px;
+			background: #fff;
+			line-height: 1.7;
+			color: #344054;
+		}
+
+		.rule-item b {
+			color: #111827;
+		}
+
+
+		.upload-zone {
+			min-height: 168px;
+			border: 1px dashed #9ad9df;
+			border-radius: 6px;
+			background: #f8feff;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+			padding: 20px;
+		}
+
+		.upload-zone svg {
+			width: 34px;
+			height: 34px;
+			color: var(--brand);
+			margin-bottom: 12px;
+		}
+
+		.upload-main {
+			font-weight: 700;
+			margin-bottom: 6px;
+		}
+
+		.upload-sub {
+			color: var(--muted);
+			font-size: 12px;
+			line-height: 1.8;
+		}
+
+		.result-tip {
+			margin-top: 4px;
+			color: #4b5563;
+			font-size: 12px;
+			line-height: 1.8;
+		}
+
+		.file-input {
+			display: none;
+		}
+
+		.file-list {
+			margin-top: 16px;
+			border: 1px solid #edf1f5;
+			border-radius: 6px;
+			background: #fff;
+			overflow-x: auto;
+			overflow-y: hidden;
+		}
+
+		.file-list-header,
+		.file-row {
+			display: grid;
+			grid-template-columns: minmax(260px, 1fr) 100px 140px;
+			align-items: center;
+			gap: 12px;
+			min-width: 640px;
+			min-height: 44px;
+			padding: 0 14px;
+		}
+
+		.file-list-header > div,
+		.file-row > div {
+			min-width: 0;
+			white-space: nowrap;
+		}
+
+		.file-list-header {
+			background: #f8fafc;
+			color: #6b7280;
+			font-size: 12px;
+			border-bottom: 1px solid #edf1f5;
+		}
+
+		.file-row + .file-row {
+			border-top: 1px solid #edf1f5;
+		}
+
+		.file-name {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			min-width: 0;
+		}
+
+		.file-name span:last-child {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.status {
+			height: 24px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 68px;
+			border-radius: 12px;
+			background: #fff7e6;
+			color: #b7791f;
+			font-size: 12px;
+		}
+
+		.empty-list {
+			height: 56px;
+			min-width: 640px;
+			display: grid;
+			place-items: center;
+			color: #9ca3af;
+		}
+
+		.preview {
+			margin-top: 16px;
+			display: none;
+			border: 1px solid #dce7ee;
+			border-radius: 6px;
+			background: #fff;
+			overflow: hidden;
+		}
+
+		.preview.show {
+			display: block;
+		}
+
+		.preview-header {
+			height: 40px;
+			padding: 0 14px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			background: #f7fafc;
+			border-bottom: 1px solid #e6edf3;
+			font-weight: 700;
+		}
+
+		.preview-body {
+			min-height: 180px;
+			padding: 18px;
+			display: grid;
+			place-items: center;
+			background: #f9fbfd;
+			color: #6b7280;
+		}
+
+		.preview-body img {
+			max-width: 100%;
+			max-height: 260px;
+			border: 1px solid #e5e7eb;
+			background: #fff;
+		}
+
+		.document-preview {
+			width: min(360px, 100%);
+			min-height: 150px;
+			border: 1px solid #e5e7eb;
+			background: #fff;
+			padding: 18px;
+			box-shadow: 0 8px 18px rgba(17, 24, 39, .06);
+		}
+
+		.doc-line {
+			height: 8px;
+			border-radius: 8px;
+			background: #dce4eb;
+			margin-bottom: 12px;
+		}
+
+		.doc-line.short {
+			width: 58%;
+		}
+
+		.doc-line.mid {
+			width: 78%;
+		}
+
+		.doc-stamp {
+			width: 72px;
+			height: 72px;
+			margin-top: 12px;
+			margin-left: auto;
+			border: 3px solid #d94b4b;
+			border-radius: 50%;
+			color: #d94b4b;
+			display: grid;
+			place-items: center;
+			font-size: 12px;
+			font-weight: 700;
+		}
+
+		.result-panel {
+			margin-top: 16px;
+			display: none;
+			padding: 14px;
+			border: 1px solid #bfe7d1;
+			border-radius: 6px;
+			background: #f2fff7;
+			color: #126b3a;
+		}
+
+		.result-panel.show {
+			display: block;
+		}
+
+		.result-panel strong {
+			color: #0f5132;
+		}
+
+		.modal-footer {
+			height: 60px;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 12px;
+			padding: 0 22px;
+			border-top: 1px solid var(--line);
+			background: #fff;
+		}
+
+		.modal-footer .btn[disabled] {
+			opacity: .45;
+			cursor: not-allowed;
+		}
+
+		.toast {
+			position: fixed;
+			top: 74px;
+			left: 50%;
+			transform: translateX(-50%) translateY(-12px);
+			display: none;
+			min-width: 360px;
+			max-width: calc(100vw - 48px);
+			padding: 12px 16px;
+			border-radius: 4px;
+			background: #f0fff5;
+			border: 1px solid #b7ebc6;
+			color: #126b3a;
+			box-shadow: var(--shadow);
+			z-index: 30;
+		}
+
+		.toast.show {
+			display: block;
+			animation: toastIn .18s ease-out both;
+		}
+
+		@keyframes toastIn {
+			from {
+				opacity: 0;
+				transform: translateX(-50%) translateY(-12px);
+			}
+			to {
+				opacity: 1;
+				transform: translateX(-50%) translateY(0);
+			}
+		}
+
+		@media (max-width: 900px) {
+			.shell {
+				grid-template-columns: 1fr;
+			}
+
+			.sidebar {
+				display: none;
+			}
+
+			.topnav {
+				display: none;
+			}
+
+			.search-card {
+				height: auto;
+				grid-template-columns: 1fr;
+				gap: 18px;
+			}
+
+			.search-area {
+				width: 100%;
+			}
+
+			.toolbar {
+				flex-wrap: wrap;
+			}
+
+			.form-row {
+				grid-template-columns: 1fr;
+			}
+
+			.file-list-header,
+			.file-row {
+				grid-template-columns: minmax(260px, 1fr) 100px 80px 140px;
+				gap: 12px;
+				padding: 0 14px;
+			}
+		}
+
+		@media (max-width: 680px) {
+			.standard-upload-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		.country-file-upload-grid.is-germany {
+			grid-template-columns: 1fr;
+		}
+
+		.country-file-upload-grid {
+			grid-template-columns: 1fr;
+		}
+	</style>
+</head>
+<body>
+	<div class="shell">
+		<header class="topbar">
+			<div class="logo">
+				<div class="logo-mark">Kx</div>
+				<span>跨信通税务管理系统</span>
+			</div>
+			<nav class="topnav">
+				<span>系统管理</span>
+				<span class="active">税务管理</span>
+				<span>CRM</span>
+				<span>客服工单</span>
+				<span>测试平台</span>
+				<span>埋点分析平台</span>
+				<span>旧系统</span>
+			</nav>
+			<div class="userbar">
+				<span>⌕</span>
+				<span>?</span>
+				<div class="avatar"></div>
+				<span>李晨浩</span>
+			</div>
+		</header>
+
+		<aside class="sidebar">
+			<div class="menu-item">首页 <span>⌃</span></div>
+			<div class="menu-item small">履约工作台</div>
+			<div class="menu-item small">我的任务</div>
+			<div class="menu-item small">导出审核</div>
+			<div class="menu-item">风险产品库 <span>⌄</span></div>
+			<div class="menu-item">授权代表案件管理 <span>⌄</span></div>
+			<div class="menu-item">系统管理 <span>⌄</span></div>
+			<div class="menu-item">客户管理 <span>⌄</span></div>
+			<div class="menu-item">营销管理 <span>⌄</span></div>
+			<div class="menu-item">订单管理 <span>⌄</span></div>
+			<div class="menu-item">续费管理 <span>⌄</span></div>
+			<div class="menu-item">优惠券管理 <span>⌄</span></div>
+			<div class="menu-item">商品管理 <span>⌄</span></div>
+			<div class="menu-item">价格管理 <span>⌄</span></div>
+			<div class="menu-item">流程管理 <span>⌄</span></div>
+			<div class="menu-item">知识产权 <span>⌄</span></div>
+			<div class="menu-item">服务管理 <span>⌄</span></div>
+			<div class="menu-item">任务管理 <span>⌄</span></div>
+			<div class="menu-item">SLA管理 <span>⌄</span></div>
+		</aside>
+
+		<main class="main">
+			<div class="tabs">
+				<div class="tab">履约工作台 ×</div>
+				<div class="tab active">● 履约工作台详情 ×</div>
+			</div>
+
+			<div class="back-link">≪ 返回工作台首页</div>
+
+			<section class="search-card">
+				<div class="search-title">
+					<div class="search-icon">Kx</div>
+					<div>360搜索</div>
+				</div>
+				<div class="search-area">
+					<div class="filters-top">
+						<span class="active">全部查询</span>
+						<span>服务类型选择⌄</span>
+						<span>服务类目选择⌄</span>
+						<span>国家选择⌄</span>
+					</div>
+					<div class="search-line">
+						<input value="" placeholder="请输入公司名称、订单号、服务编号（增值服务单）、申报编号查询">
+						<button aria-label="搜索">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+								<circle cx="11" cy="11" r="7"></circle>
+								<path d="m20 20-3.5-3.5"></path>
+							</svg>
+						</button>
+					</div>
+					<div class="history">
+						历史搜索
+						<div class="history-tag">SV20260422134902289909 ×</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="workbench">
+				<div class="section-tabs">
+					<div class="section-tab active">☰ 我的待办</div>
+					<div class="section-tab">⌁ 我的效能</div>
+				</div>
+				<div class="sub-tabs">
+					<div class="sub-tab active">我的任务 (0)</div>
+					<div class="sub-tab">我的协同 (0)</div>
+					<div class="sub-tab">我的异常 (0)</div>
+				</div>
+				<div class="timeout-line">
+					<span>已超时：<b class="danger-text">0</b></span>
+					<span>即将超时：<b class="warning-text">0</b></span>
+					<span>正常时效：<b class="success-text">0</b></span>
+				</div>
+				<div class="toolbar">
+					<select class="select">
+						<option>所属业务</option>
+					</select>
+					<input class="input wide" placeholder="请输入">
+					<input class="input" placeholder="类目">
+					<input class="input" placeholder="类型">
+					<select class="select">
+						<option>全部国家</option>
+					</select>
+					<select class="select">
+						<option>时效状态</option>
+					</select>
+					<select class="select">
+						<option>客户级别</option>
+					</select>
+					<button class="btn">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+							<circle cx="11" cy="11" r="7"></circle>
+							<path d="m20 20-3.5-3.5"></path>
+						</svg>
+						搜索
+					</button>
+					<button class="btn">重置</button>
+					<button class="btn text">⌄ 展开</button>
+				</div>
+
+				<div class="batch-action-row">
+					<button class="btn outline-brand" id="openBatchModal">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+							<path d="m17 8-5-5-5 5"></path>
+							<path d="M12 3v12"></path>
+						</svg>
+						批量上传VAT税号
+					</button>
+				</div>
+
+				<div class="table-wrap">
+					<table>
+						<thead>
+							<tr>
+								<th>任务ID</th>
+								<th>时效状态</th>
+								<th>要求时效</th>
+								<th>任务类型</th>
+								<th>所属业务</th>
+								<th>业务状态</th>
+								<th>公司名称</th>
+								<th>客户级别</th>
+								<th>客户ID</th>
+								<th>注册账号</th>
+								<th>商品名称</th>
+								<th>商品规格</th>
+								<th>所属类目</th>
+								<th>所属类型</th>
+								<th>所属国家</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="taskTableBody">
+							<tr>
+								<td class="empty" colspan="16">暂无数据</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="pager">
+					<span id="taskCountText">共有 0 条数据</span>
+					<button class="btn">‹</button>
+					<button class="btn">1</button>
+					<button class="btn">›</button>
+					<select class="select">
+						<option>10条/页</option>
+					</select>
+				</div>
+			</section>
+		</main>
+	</div>
+
+	<div class="modal-mask" id="batchModal">
+		<section class="modal" role="dialog" aria-modal="true" aria-labelledby="batchModalTitle">
+			<header class="modal-header">
+				<div id="batchModalTitle">批量上传税号</div>
+				<button class="icon-button" id="closeBatchModal" aria-label="关闭">
+					<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor">
+						<path d="M18 6 6 18"></path>
+						<path d="m6 6 12 12"></path>
+					</svg>
+				</button>
+			</header>
+			<div class="modal-body">
+				<div class="form-row">
+					<div class="label"><span class="required">*</span>选择国家</div>
+					<select id="countrySelect">
+						<option value="GENERAL">通用</option>
+						<option value="DE">德国</option>
+						<option value="ES">西班牙</option>
+						<option value="FR">法国</option>
+						<option value="PL">波兰</option>
+						<option value="CZ">捷克</option>
+					</select>
+					<span class="badge">目前已支持：通用、德国、西班牙、法国、波兰、捷克</span>
+				</div>
+
+				<div class="template-panel" id="standardTemplate">
+					<div class="template-header">
+						<div>
+							<div class="template-title">批量上传通用税号</div>
+							<div class="upload-sub">标准模板：左侧上传税号信息表格，右侧可上传多个 ZIP 税号文件。</div>
+						<div class="result-tip">系统使用表格中的国家和公司名称匹配多个 ZIP 税号文件，批量录入税号结果进入我的任务下载。</div>
+						</div>
+						<span class="badge">通用</span>
+					</div>
+					<div class="template-body">
+						<div class="standard-tip">
+							请先下载标准模板填写税号信息，再上传对应的一个或多个 ZIP 税号文件，确认文件后即可批量上传。
+						</div>
+						<div class="standard-upload-grid">
+							<section class="standard-card">
+								<div class="standard-card-head">
+									<div class="standard-card-title"><span class="step-badge">1</span>上传税号信息表格</div>
+									<button class="template-link" id="generalTemplateLink" type="button">下载标准模板</button>
+								</div>
+								<p class="standard-card-desc">表格中每一行代表一家公司，系统使用“国家+公司名”匹配对应 ZIP 税号文件，公司名取表格中的“公司名称”。支持批量匹配多个 ZIP。</p>
+								<label class="upload-zone" for="taxInfoInput">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+										<path d="m17 8-5-5-5 5"></path>
+										<path d="M12 3v12"></path>
+									</svg>
+									<div class="upload-main">点击或将表格拖拽到此上传</div>
+									<div class="upload-sub">仅支持 .xlsx 文件，限制文件大小 20M</div>
+									<div style="margin-top: 12px;">
+										<span class="btn primary">选择表格</span>
+									</div>
+								</label>
+								<input class="file-input" id="taxInfoInput" type="file" accept=".xlsx">
+								<div class="standard-file-stack" id="taxInfoRows">
+									<div class="standard-file-row">
+										<span>通用税号批量上传表格.xlsx</span>
+									</div>
+								</div>
+							</section>
+
+							<section class="standard-card">
+								<div class="standard-card-head">
+									<div class="standard-card-title"><span class="step-badge">2</span>上传 ZIP 税号文件</div>
+								</div>
+								<p class="standard-card-desc">ZIP 文件命名规则为国家+公司名，每次仅支持上传一个 ZIP，系统按文件名匹配表格中的国家和公司名称。</p>
+								<label class="upload-zone" for="taxArchiveInput">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+										<path d="m17 8-5-5-5 5"></path>
+										<path d="M12 3v12"></path>
+									</svg>
+									<div class="upload-main">点击或将 ZIP 文件拖拽到此上传</div>
+									<div class="upload-sub">仅支持 .zip 文件，单个文件限制大小 20M</div>
+									<div style="margin-top: 12px;">
+										<span class="btn primary">选择 ZIP 文件</span>
+									</div>
+								</label>
+								<input class="file-input" id="taxArchiveInput" type="file" accept=".zip">
+								<div class="standard-file-stack" id="taxArchiveRows">
+									<div class="standard-file-row">
+										<span>德国+深圳跨信通公司.zip</span>
+									</div>
+									<div class="standard-file-row">
+										<span>法国+广州跨信通公司.zip</span>
+									</div>
+								</div>
+							</section>
+						</div>
+						<div class="rule-list">
+							<div class="rule-item"><b>文件命名规则：</b>每个 ZIP 税号文件必须以“国家+公司名”命名，例如 <b>德国+深圳跨信通公司.zip</b>。</div>
+							<div class="rule-item"><b>匹配规则：</b>系统使用表格中的国家和公司名称匹配多个 ZIP 税号文件名。</div>
+							<div class="rule-item"><b>必填字段说明：</b>gateway 账号、gateway 密码为英国特有字段；Organisationsummer 号为瑞典特有字段；波兰IBAN/阿联酋IBAN为波兰和阿联酋特有字段；其他国家按标准模板填写通用字段。</div>
+						</div>
+						<div class="result-panel" id="standardResultPanel">
+							<strong>已创建批量录入税号任务</strong>
+							<span id="standardResultText">请前往我的任务下载查看结果。</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="template-panel is-hidden" id="countryTemplate">
+					<div class="template-header">
+						<div>
+							<div class="template-title" id="templateTitle">批量上传德国税号</div>
+							<div class="upload-sub" id="countryUploadSub">仅上传税号文件，系统确认后创建 OCR 匹配任务。</div>
+							<div class="result-tip" id="countryResultTip">匹配结果、失败原因和未匹配文件进入我的任务下载。</div>
+						</div>
+						<span class="badge" id="templateCountryBadge">德国</span>
+					</div>
+					<div class="template-body">
+						<section class="standard-card spain-extra-panel is-hidden" id="spainEffectiveDatePanel">
+							<div class="standard-card-head">
+								<div class="standard-card-title"><span class="step-badge">1</span>上传税号生效时间表格</div>
+								<button class="template-link" id="spainEffectiveTemplateLink" type="button">下载生效时间模板</button>
+							</div>
+							<p class="standard-card-desc">表格维护税号与税号生效日期对应关系。系统 OCR 识别税号文件中的税号后，按税号匹配对应的税号生效日期。</p>
+							<label class="upload-zone" for="spainEffectiveDateInput">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+									<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+									<path d="m17 8-5-5-5 5"></path>
+									<path d="M12 3v12"></path>
+								</svg>
+								<div class="upload-main">点击或将生效时间表格拖拽到此上传</div>
+								<div class="upload-sub">仅支持 .xlsx 文件，表格字段包含税号、税号生效日期</div>
+								<div style="margin-top: 12px;">
+									<span class="btn primary">选择表格</span>
+								</div>
+							</label>
+							<input class="file-input" id="spainEffectiveDateInput" type="file" accept=".xlsx">
+							<div class="standard-file-stack" id="spainEffectiveDateRows">
+								<div class="standard-file-row">
+									<span>请上传税号生效时间表格</span>
+								</div>
+							</div>
+						</section>
+
+						<div class="country-choice-panel" id="countryUploadChoicePanel">
+							<div class="country-choice-options">
+								<label class="choice-option">
+									<input type="radio" name="countryUploadMode" value="info" checked>
+									<span>上传税号信息</span>
+								</label>
+								<label class="choice-option">
+									<input type="radio" name="countryUploadMode" value="file">
+									<span>上传税号文件</span>
+								</label>
+							</div>
+						</div>
+
+						<section class="standard-card france-extra-panel is-hidden" id="franceTaxInfoPanel">
+							<div class="standard-card-head">
+								<div class="standard-card-title"><span class="step-badge">1</span>上传法国税号信息表格</div>
+								<button class="template-link" id="franceTaxInfoTemplateLink" type="button">下载税号录入模板</button>
+							</div>
+							<p class="standard-card-desc">选择“上传税号信息”时，仅上传该表格完成法人税号录入；如选择“上传税号文件”，则上传 ZIP 文件走 OCR 解析。</p>
+							<label class="upload-zone" for="franceTaxInfoInput">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+									<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+									<path d="m17 8-5-5-5 5"></path>
+									<path d="M12 3v12"></path>
+								</svg>
+								<div class="upload-main">点击或将税号信息表格拖拽到此上传</div>
+								<div class="upload-sub">仅支持 .xlsx 文件，表格字段包含公司名称、法人税号</div>
+								<div style="margin-top: 12px;">
+									<span class="btn primary">选择表格</span>
+								</div>
+							</label>
+							<input class="file-input" id="franceTaxInfoInput" type="file" accept=".xlsx">
+							<div class="standard-file-stack" id="franceTaxInfoRows">
+								<div class="standard-file-row">
+									<span>请上传法国税号信息表格</span>
+								</div>
+							</div>
+						</section>
+
+						<section class="standard-card poland-extra-panel is-hidden" id="polandTaxInfoPanel">
+							<div class="standard-card-head">
+								<div class="standard-card-title"><span class="step-badge">1</span>上传波兰税号信息表格</div>
+								<button class="template-link" id="polandTaxInfoTemplateLink" type="button">下载税号录入模板</button>
+							</div>
+							<p class="standard-card-desc">表格维护公司名称与本土税号。系统以本土税号调用波兰接口补齐税号生效日期、IBAN 和 VAT 号。</p>
+							<label class="upload-zone" for="polandTaxInfoInput">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+									<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+									<path d="m17 8-5-5-5 5"></path>
+									<path d="M12 3v12"></path>
+								</svg>
+								<div class="upload-main">点击或将波兰税号信息表格拖拽到此上传</div>
+								<div class="upload-sub">仅支持 .xlsx 文件，表格字段包含公司名称、本土税号</div>
+								<div style="margin-top: 12px;">
+									<span class="btn primary">选择表格</span>
+								</div>
+							</label>
+							<input class="file-input" id="polandTaxInfoInput" type="file" accept=".xlsx">
+							<div class="standard-file-stack" id="polandTaxInfoRows">
+								<div class="standard-file-row">
+									<span>请上传波兰税号信息表格</span>
+								</div>
+							</div>
+						</section>
+
+						<div class="country-upload-note is-hidden" id="spainMatchRule">
+							西班牙匹配规则：系统通过 OCR 获取税号文件中的税号，再使用税号到生效时间表格中取得对应的税号生效日期。
+						</div>
+
+						<div class="country-upload-note is-hidden" id="franceUploadRule">
+							法国支持二选一上传：税号信息表格用于直接录入公司对应税号；税号文件 ZIP 用于 OCR 解析与字段回填。
+						</div>
+
+						<div class="country-upload-note is-hidden" id="polandUploadRule">
+							波兰支持二选一上传：税号信息表格用于录入公司名称和本土税号并调用接口补齐信息；税号文件 ZIP 用于文件解析。波兰均为月报，初次申报周期取税号生效日期当月。
+						</div>
+
+						<div class="country-upload-note is-hidden" id="czechUploadRule">
+							捷克只需上传税号文件；系统通过 OCR 识别税号文件中的公司英文名称、税号生效日期、本土税号和 VAT 号。捷克固定为月报，首次申报周期取税号生效日期当月。
+						</div>
+
+						<div class="standard-upload-grid country-file-upload-grid">
+							<section class="standard-card" id="countryFileUploadPanel">
+								<div class="standard-card-head">
+									<div class="standard-card-title"><span class="step-badge">1</span><span id="countryFileUploadTitle">上传税号文件</span></div>
+								</div>
+								<label class="upload-zone" for="taxFileInput">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+										<path d="m17 8-5-5-5 5"></path>
+										<path d="M12 3v12"></path>
+									</svg>
+									<div class="upload-main" id="countryFileUploadMain">上传税号文件</div>
+									<div class="upload-sub" id="countryFileUploadSub">仅支持 .zip 文件；可一次选择多个文件。</div>
+									<div style="margin-top: 12px;">
+										<span class="btn primary" id="countryFileUploadButton">选择文件</span>
+									</div>
+								</label>
+								<input class="file-input" id="taxFileInput" type="file" multiple accept=".zip">
+								<div class="file-list" id="fileList">
+									<div class="file-list-header">
+										<div>已上传资料</div>
+										<div>文件大小</div>
+										<div>操作</div>
+									</div>
+									<div class="empty-list" id="emptyList">暂无已上传资料</div>
+								</div>
+							</section>
+
+							<section class="standard-card germany-eu-vat-panel is-hidden" id="germanyEuVatPanel">
+								<div class="standard-card-head">
+									<div class="standard-card-title"><span class="step-badge">2</span>上传欧盟 VAT 税号文件</div>
+								</div>
+								<label class="upload-zone" for="germanyEuVatInput">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+										<path d="m17 8-5-5-5 5"></path>
+										<path d="M12 3v12"></path>
+									</svg>
+									<div class="upload-main">上传欧盟 VAT 税号文件</div>
+									<div class="upload-sub">仅支持 .zip 文件；OCR 识别公司英文名及 VAT 税号。</div>
+									<div style="margin-top: 12px;">
+										<span class="btn primary">选择欧盟 VAT 文件</span>
+									</div>
+								</label>
+								<input class="file-input" id="germanyEuVatInput" type="file" multiple accept=".zip">
+								<div class="file-list germany-eu-vat-panel is-hidden" id="germanyEuVatFileList">
+									<div class="file-list-header">
+										<div>已上传资料</div>
+										<div>文件大小</div>
+										<div>操作</div>
+									</div>
+									<div class="empty-list" id="germanyEuVatEmpty">暂无已上传资料</div>
+									<div id="germanyEuVatRows"></div>
+								</div>
+							</section>
+						</div>
+
+						<div class="preview" id="preview">
+							<div class="preview-header">
+								<span id="previewTitle">文件预览</span>
+								<button class="icon-button" id="closePreview" aria-label="关闭预览">
+									<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor">
+										<path d="M18 6 6 18"></path>
+										<path d="m6 6 12 12"></path>
+									</svg>
+								</button>
+							</div>
+							<div class="preview-body" id="previewBody"></div>
+						</div>
+
+						<div class="result-panel" id="resultPanel">
+							<strong>已创建批量录入税号任务</strong>
+							<span id="resultText">请前往我的任务下载查看结果。</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer class="modal-footer">
+				<button class="btn" id="cancelBatchModal">取消</button>
+				<button class="btn primary" id="confirmBatchUpload" disabled>
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+						<path d="M20 6 9 17l-5-5"></path>
+					</svg>
+					确定上传
+				</button>
+			</footer>
+		</section>
+	</div>
+
+	<div class="toast" id="toast">已创建批量录入税号任务，请前往我的任务下载查看结果。</div>
+
+	<script>
+		const batchModal = document.getElementById("batchModal");
+		const openBatchModal = document.getElementById("openBatchModal");
+		const closeBatchModal = document.getElementById("closeBatchModal");
+		const cancelBatchModal = document.getElementById("cancelBatchModal");
+		const taxFileInput = document.getElementById("taxFileInput");
+		const fileList = document.getElementById("fileList");
+		const emptyList = document.getElementById("emptyList");
+		const confirmBatchUpload = document.getElementById("confirmBatchUpload");
+		const toast = document.getElementById("toast");
+		const preview = document.getElementById("preview");
+		const previewTitle = document.getElementById("previewTitle");
+		const previewBody = document.getElementById("previewBody");
+		const closePreview = document.getElementById("closePreview");
+		const resultPanel = document.getElementById("resultPanel");
+		const resultText = document.getElementById("resultText");
+		const taskTableBody = document.getElementById("taskTableBody");
+		const taskCountText = document.getElementById("taskCountText");
+		const countrySelect = document.getElementById("countrySelect");
+		const batchModalTitle = document.getElementById("batchModalTitle");
+		const standardTemplate = document.getElementById("standardTemplate");
+		const countryTemplate = document.getElementById("countryTemplate");
+		const templateTitle = document.getElementById("templateTitle");
+		const templateCountryBadge = document.getElementById("templateCountryBadge");
+		const countryUploadSub = document.getElementById("countryUploadSub");
+		const countryResultTip = document.getElementById("countryResultTip");
+		const countryFileUploadGrid = document.querySelector(".country-file-upload-grid");
+		const countryFileUploadTitle = document.getElementById("countryFileUploadTitle");
+		const countryFileUploadMain = document.getElementById("countryFileUploadMain");
+		const countryFileUploadButton = document.getElementById("countryFileUploadButton");
+		const countryFileUploadSub = document.getElementById("countryFileUploadSub");
+		const countryUploadChoicePanel = document.getElementById("countryUploadChoicePanel");
+		const countryUploadModeInputs = document.querySelectorAll("input[name='countryUploadMode']");
+		const countryFileUploadPanel = document.getElementById("countryFileUploadPanel");
+		const spainEffectiveDatePanel = document.getElementById("spainEffectiveDatePanel");
+		const spainEffectiveDateInput = document.getElementById("spainEffectiveDateInput");
+		const spainEffectiveDateRows = document.getElementById("spainEffectiveDateRows");
+		const spainEffectiveTemplateLink = document.getElementById("spainEffectiveTemplateLink");
+		const spainMatchRule = document.getElementById("spainMatchRule");
+		const franceTaxInfoPanel = document.getElementById("franceTaxInfoPanel");
+		const franceTaxInfoInput = document.getElementById("franceTaxInfoInput");
+		const franceTaxInfoRows = document.getElementById("franceTaxInfoRows");
+		const franceTaxInfoTemplateLink = document.getElementById("franceTaxInfoTemplateLink");
+		const franceUploadRule = document.getElementById("franceUploadRule");
+		const polandTaxInfoPanel = document.getElementById("polandTaxInfoPanel");
+		const polandTaxInfoInput = document.getElementById("polandTaxInfoInput");
+		const polandTaxInfoRows = document.getElementById("polandTaxInfoRows");
+		const polandTaxInfoTemplateLink = document.getElementById("polandTaxInfoTemplateLink");
+		const polandUploadRule = document.getElementById("polandUploadRule");
+		const czechUploadRule = document.getElementById("czechUploadRule");
+		const germanyEuVatPanel = document.getElementById("germanyEuVatPanel");
+		const germanyEuVatFileList = document.getElementById("germanyEuVatFileList");
+		const germanyEuVatInput = document.getElementById("germanyEuVatInput");
+		const germanyEuVatRows = document.getElementById("germanyEuVatRows");
+		const germanyEuVatEmpty = document.getElementById("germanyEuVatEmpty");
+		const taxInfoInput = document.getElementById("taxInfoInput");
+		const taxArchiveInput = document.getElementById("taxArchiveInput");
+		const taxInfoRows = document.getElementById("taxInfoRows");
+		const taxArchiveRows = document.getElementById("taxArchiveRows");
+		const generalTemplateLink = document.getElementById("generalTemplateLink");
+		const standardResultPanel = document.getElementById("standardResultPanel");
+		const standardResultText = document.getElementById("standardResultText");
+
+		let uploadedFiles = [];
+		let uploadedGermanyEuVatFiles = [];
+		let uploadedInfoFile = { name: "通用税号批量上传表格.xlsx", size: 81355 };
+		let uploadedArchiveFiles = [
+			{ name: "德国+深圳跨信通公司.zip", size: 2146304 },
+			{ name: "法国+广州跨信通公司.zip", size: 1982464 },
+		];
+		let uploadedSpainEffectiveDateFile = { name: "西班牙税号生效时间表.xlsx", size: 64218 };
+		let uploadedFranceTaxInfoFile = null;
+		let uploadedPolandTaxInfoFile = null;
+		let countryUploadMode = "info";
+		let toastTimer = null;
+		const countryMap = {
+			GENERAL: { name: "通用", taskName: "通用税号批量文件", serviceName: "税号批量录入" },
+			DE: { name: "德国", taskName: "德国VAT批量文件", serviceName: "德国VAT注册" },
+			ES: { name: "西班牙", taskName: "西班牙VAT批量文件", serviceName: "西班牙VAT注册" },
+			FR: { name: "法国", taskName: "法国VAT批量文件", serviceName: "法国VAT注册" },
+			PL: { name: "波兰", taskName: "波兰VAT批量文件", serviceName: "波兰VAT注册" },
+			CZ: { name: "捷克", taskName: "捷克VAT批量文件", serviceName: "捷克VAT注册" },
+		};
+
+		function getSelectedCountry() {
+			return countryMap[countrySelect.value] || countryMap.DE;
+		}
+
+		function updateCountryTemplate() {
+			const country = getSelectedCountry();
+			const isGeneral = countrySelect.value === "GENERAL";
+			const isGermany = countrySelect.value === "DE";
+			const isSpain = countrySelect.value === "ES";
+			const isFrance = countrySelect.value === "FR";
+			const isPoland = countrySelect.value === "PL";
+			const isChoiceCountry = isFrance || isPoland;
+			const isCzech = countrySelect.value === "CZ";
+			batchModalTitle.textContent = isGeneral ? "批量上传税号" : `批量上传${country.name}税号`;
+			standardTemplate.classList.toggle("is-hidden", !isGeneral);
+			countryTemplate.classList.toggle("is-hidden", isGeneral);
+			if (!isGeneral) {
+				templateTitle.textContent = `批量上传${country.name}税号`;
+				templateCountryBadge.textContent = country.name;
+				countryFileUploadTitle.textContent = isGermany ? "上传本土税号文件" : "上传税号文件";
+				countryFileUploadMain.textContent = isGermany ? "上传本土税号文件" : "上传税号文件";
+				countryFileUploadButton.textContent = isGermany ? "选择本土税号文件" : "选择文件";
+				if (isGermany) {
+					countryUploadSub.textContent = "德国本土税号文件和欧盟 VAT 税号文件分开上传；可先上传本土税号，后续再补传欧盟 VAT 税号。";
+					countryResultTip.textContent = "只上传德国本土税号时单据状态为部分完成；只上传欧盟 VAT 税号会录入失败；两类文件同时上传后单据状态为已完成。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件；OCR 识别申报周期、税号生效日期和本土税号。";
+				} else if (isSpain) {
+					countryUploadSub.textContent = "上传税号文件和税号生效时间表格，系统确认后创建 OCR 匹配任务。";
+					countryResultTip.textContent = "系统通过 OCR 识别税号文件中的税号，并到表格匹配税号生效日期；批量录入税号结果进入我的任务下载。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件；OCR 识别税号后匹配生效时间表格。";
+				} else if (isFrance) {
+					countryUploadSub.textContent = "选择一种上传方式：税号信息表格或税号文件 ZIP。";
+					countryResultTip.textContent = "法国支持二选一上传，结果进入我的任务下载。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件；OCR 解析与字段回填逻辑不变。";
+				} else if (isPoland) {
+					countryUploadSub.textContent = "选择一种上传方式：税号信息表格或税号文件 ZIP。";
+					countryResultTip.textContent = "波兰支持二选一上传，结果进入我的任务下载。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件。";
+				} else if (isCzech) {
+					countryUploadSub.textContent = "仅上传税号文件，系统确认后创建 OCR 匹配任务。";
+					countryResultTip.textContent = "系统识别公司英文名称、税号生效日期、本土税号和VAT号；捷克固定月报，首次申报周期取税号生效日期当月。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件；可一次选择多个文件。";
+				} else {
+					countryUploadSub.textContent = "仅上传税号文件，系统确认后创建 OCR 匹配任务。";
+					countryResultTip.textContent = "匹配结果、失败原因和未匹配文件进入我的任务下载。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件；可一次选择多个文件。";
+				}
+			}
+			spainEffectiveDatePanel.classList.toggle("is-hidden", !isSpain);
+			spainMatchRule.classList.toggle("is-hidden", !isSpain);
+			countryUploadChoicePanel.classList.toggle("show", isChoiceCountry);
+			franceTaxInfoPanel.classList.toggle("is-hidden", !(isFrance && countryUploadMode === "info"));
+			franceUploadRule.classList.toggle("is-hidden", !isFrance);
+			polandTaxInfoPanel.classList.toggle("is-hidden", !(isPoland && countryUploadMode === "info"));
+			polandUploadRule.classList.toggle("is-hidden", !isPoland);
+			czechUploadRule.classList.toggle("is-hidden", !isCzech);
+			taxFileInput.toggleAttribute("multiple", !isChoiceCountry);
+			countryFileUploadGrid.classList.toggle("is-germany", isGermany);
+			countryFileUploadPanel.classList.toggle("is-hidden", isChoiceCountry && countryUploadMode !== "file");
+			germanyEuVatPanel.classList.toggle("is-hidden", !isGermany);
+			germanyEuVatFileList.classList.toggle("is-hidden", !isGermany);
+			updateConfirmState();
+		}
+
+		function openModal() {
+			updateCountryTemplate();
+			batchModal.classList.add("show");
+			resultPanel.classList.remove("show");
+			standardResultPanel.classList.remove("show");
+		}
+
+		function closeModal() {
+			batchModal.classList.remove("show");
+			preview.classList.remove("show");
+		}
+
+		function formatSize(size) {
+			if (size < 1024) {
+				return size + " B";
+			}
+			if (size < 1024 * 1024) {
+				return (size / 1024).toFixed(1) + " KB";
+			}
+			return (size / 1024 / 1024).toFixed(1) + " MB";
+		}
+
+		function iconFile() {
+			return '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg>';
+		}
+
+		function renderFiles() {
+			fileList.querySelectorAll(".file-row").forEach((row) => row.remove());
+			emptyList.style.display = uploadedFiles.length ? "none" : "grid";
+			updateConfirmState();
+			uploadedFiles.forEach((item, index) => {
+				const row = document.createElement("div");
+				row.className = "file-row";
+				row.innerHTML = `
+					<div class="file-name">${iconFile()}<span title="${item.file.name}">${item.file.name}</span></div>
+					<div>${formatSize(item.file.size)}</div>
+					<div>
+						<button class="btn text" data-preview="${index}">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+							预览
+						</button>
+						<button class="btn text danger-text" data-delete="${index}">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="m19 6-1 14H6L5 6"></path></svg>
+							删除
+						</button>
+					</div>
+				`;
+				fileList.appendChild(row);
+			});
+		}
+
+		function renderGermanyEuVatFiles() {
+			germanyEuVatEmpty.style.display = uploadedGermanyEuVatFiles.length ? "none" : "grid";
+			germanyEuVatRows.innerHTML = uploadedGermanyEuVatFiles.map((item, index) => `
+				<div class="file-row">
+					<div class="file-name">${iconFile()}<span title="${item.file.name}">${item.file.name}</span></div>
+					<div>${formatSize(item.file.size)}</div>
+					<div>
+						<button class="btn text" data-germany-eu-preview="${index}">预览</button>
+						<button class="btn text danger-text" data-germany-eu-delete="${index}">删除</button>
+					</div>
+				</div>
+			`).join("");
+			updateConfirmState();
+		}
+
+		function renderStandardUploads() {
+			taxInfoRows.innerHTML = uploadedInfoFile ? `
+				<div class="standard-file-row">
+					<span title="${uploadedInfoFile.name}">${uploadedInfoFile.name}</span>
+				</div>
+			` : `
+				<div class="standard-file-row">
+					<span>请上传税号信息表格</span>
+				</div>
+			`;
+			taxArchiveRows.innerHTML = uploadedArchiveFiles.length ? uploadedArchiveFiles.map((item, index) => `
+				<div class="standard-file-row">
+					<span title="${item.name}">${item.name}</span>
+					<button class="btn text danger-text" data-standard-archive-delete="${index}">删除</button>
+				</div>
+			`).join("") : `
+				<div class="standard-file-row">
+					<span>请上传 ZIP 税号文件</span>
+				</div>
+			`;
+			updateConfirmState();
+		}
+
+		function renderSpainEffectiveDateUpload() {
+			spainEffectiveDateRows.innerHTML = uploadedSpainEffectiveDateFile ? `
+				<div class="standard-file-row">
+					<span title="${uploadedSpainEffectiveDateFile.name}">${uploadedSpainEffectiveDateFile.name}</span>
+				</div>
+			` : `
+				<div class="standard-file-row">
+					<span>请上传税号生效时间表格</span>
+				</div>
+			`;
+			updateConfirmState();
+		}
+
+		function renderFranceTaxInfoUpload() {
+			franceTaxInfoRows.innerHTML = uploadedFranceTaxInfoFile ? `
+				<div class="standard-file-row">
+					<span title="${uploadedFranceTaxInfoFile.name}">${uploadedFranceTaxInfoFile.name}</span>
+				</div>
+			` : `
+				<div class="standard-file-row">
+					<span>请上传法国税号信息表格</span>
+				</div>
+			`;
+			updateConfirmState();
+		}
+
+		function renderPolandTaxInfoUpload() {
+			polandTaxInfoRows.innerHTML = uploadedPolandTaxInfoFile ? `
+				<div class="standard-file-row">
+					<span title="${uploadedPolandTaxInfoFile.name}">${uploadedPolandTaxInfoFile.name}</span>
+				</div>
+			` : `
+				<div class="standard-file-row">
+					<span>请上传波兰税号信息表格</span>
+				</div>
+			`;
+			updateConfirmState();
+		}
+
+		function setStandardInfoFile(file) {
+			if (!file) return;
+			uploadedInfoFile = { name: file.name, size: file.size };
+			renderStandardUploads();
+		}
+
+		function addStandardArchiveFiles(files) {
+			if (!files.length) return;
+			const file = files[0];
+			uploadedArchiveFiles = [{ name: file.name, size: file.size }];
+			renderStandardUploads();
+		}
+
+		function setSpainEffectiveDateFile(file) {
+			if (!file) return;
+			uploadedSpainEffectiveDateFile = { name: file.name, size: file.size };
+			renderSpainEffectiveDateUpload();
+		}
+
+		function setFranceTaxInfoFile(file) {
+			if (!file) return;
+			uploadedFranceTaxInfoFile = { name: file.name, size: file.size };
+			renderFranceTaxInfoUpload();
+		}
+
+		function setPolandTaxInfoFile(file) {
+			if (!file) return;
+			uploadedPolandTaxInfoFile = { name: file.name, size: file.size };
+			renderPolandTaxInfoUpload();
+		}
+
+		function updateConfirmState() {
+			if (countrySelect.value === "GENERAL") {
+				confirmBatchUpload.disabled = !(uploadedInfoFile && uploadedArchiveFiles.length);
+				return;
+			}
+			if (countrySelect.value === "DE") {
+				confirmBatchUpload.disabled = !(uploadedFiles.length || uploadedGermanyEuVatFiles.length);
+				return;
+			}
+			if (countrySelect.value === "ES") {
+				confirmBatchUpload.disabled = !(uploadedSpainEffectiveDateFile && uploadedFiles.length);
+				return;
+			}
+			if (countrySelect.value === "FR") {
+				confirmBatchUpload.disabled = countryUploadMode === "info"
+					? !uploadedFranceTaxInfoFile
+					: !uploadedFiles.length;
+				return;
+			}
+			if (countrySelect.value === "PL") {
+				confirmBatchUpload.disabled = countryUploadMode === "info"
+					? !uploadedPolandTaxInfoFile
+					: !uploadedFiles.length;
+				return;
+			}
+			confirmBatchUpload.disabled = uploadedFiles.length === 0;
+		}
+
+		function setCountryUploadMode(mode) {
+			countryUploadMode = mode;
+			countryUploadModeInputs.forEach((input) => {
+				input.checked = input.value === mode;
+			});
+			if (mode === "info") {
+				uploadedFiles = [];
+				preview.classList.remove("show");
+				renderFiles();
+			} else {
+				if (countrySelect.value === "FR") {
+					uploadedFranceTaxInfoFile = null;
+					renderFranceTaxInfoUpload();
+				}
+				if (countrySelect.value === "PL") {
+					uploadedPolandTaxInfoFile = null;
+					renderPolandTaxInfoUpload();
+				}
+			}
+			updateCountryTemplate();
+		}
+
+		function previewFile(index) {
+			const item = uploadedFiles[index];
+			if (!item) return;
+			previewTitle.textContent = item.file.name;
+			previewBody.innerHTML = "";
+			if (item.file.type.startsWith("image/")) {
+				const image = document.createElement("img");
+				image.src = URL.createObjectURL(item.file);
+				image.alt = item.file.name;
+				previewBody.appendChild(image);
+			} else {
+				const doc = document.createElement("div");
+				doc.className = "document-preview";
+				doc.innerHTML = `
+					<div class="doc-line mid"></div>
+					<div class="doc-line"></div>
+					<div class="doc-line short"></div>
+					<div class="doc-line mid"></div>
+					<div class="doc-stamp">税局文件</div>
+				`;
+				previewBody.appendChild(doc);
+			}
+			preview.classList.add("show");
+		}
+
+		function deleteFile(index) {
+			uploadedFiles.splice(index, 1);
+			renderFiles();
+			if (!uploadedFiles.length) {
+				preview.classList.remove("show");
+			}
+		}
+
+		function showToast(message) {
+			toast.textContent = message;
+			toast.classList.add("show");
+			clearTimeout(toastTimer);
+			toastTimer = setTimeout(() => toast.classList.remove("show"), 3600);
+		}
+
+		function downloadTemplate(fileName) {
+			const link = document.createElement("a");
+			link.href = encodeURI(fileName);
+			link.download = fileName;
+			document.body.appendChild(link);
+			link.click();
+			link.remove();
+		}
+
+		function getGermanySubmitResult() {
+			if (countrySelect.value !== "DE") {
+				return null;
+			}
+			const hasLocalTaxFile = uploadedFiles.length > 0;
+			const hasEuVatFile = uploadedGermanyEuVatFiles.length > 0;
+			if (hasLocalTaxFile && hasEuVatFile) {
+				return {
+					status: "已完成",
+					statusClass: "success-text",
+					processStatus: "OCR匹配完成",
+					message: "德国本土税号和欧盟 VAT 税号文件已同时上传，单据状态变为已完成。",
+					toast: "已创建批量录入税号任务，德国单据状态已完成。"
+				};
+			}
+			if (hasLocalTaxFile) {
+				return {
+					status: "部分完成",
+					statusClass: "warning-text",
+					processStatus: "待补传欧盟 VAT 税号",
+					message: "已录入德国本土税号，单据状态变为部分完成。后续可补传欧盟 VAT 税号文件。",
+					toast: "已创建德国本土税号录入任务，单据状态为部分完成。"
+				};
+			}
+			return {
+				status: "录入失败",
+				statusClass: "danger-text",
+				processStatus: "失败",
+				message: "只上传欧盟 VAT 税号文件无法匹配德国本土税号，录入失败。",
+				toast: "只上传欧盟 VAT 税号文件会录入失败，请先上传德国本土税号文件。"
+			};
+		}
+
+		function addTaskRow(taskNo, override = {}) {
+			const country = getSelectedCountry();
+			const isFranceFileMode = countrySelect.value === "FR" && countryUploadMode === "file";
+			const isPolandFileMode = countrySelect.value === "PL" && countryUploadMode === "file";
+			const templateName = countrySelect.value === "GENERAL"
+				? "标准模板"
+				: (countrySelect.value === "ES" ? "西班牙模板" : (countrySelect.value === "FR" ? (isFranceFileMode ? "法国税号文件ZIP" : "法国税号Excel模板") : (countrySelect.value === "PL" ? (isPolandFileMode ? "波兰税号文件ZIP" : "波兰税号Excel模板") : "模板1")));
+			const statusText = override.status || "正常";
+			const statusClass = override.statusClass || "success-text";
+			const processStatus = override.processStatus || "OCR匹配中";
+			taskTableBody.innerHTML = `
+				<tr>
+					<td>${taskNo}</td>
+					<td><span class="${statusClass}">${statusText}</span></td>
+					<td>系统异步处理</td>
+					<td>批量录入税号</td>
+					<td>履约工作台</td>
+					<td>${processStatus}</td>
+					<td>${country.taskName}</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+					<td>${country.serviceName}</td>
+					<td>${templateName}</td>
+					<td>VAT</td>
+					<td>基础服务</td>
+					<td>${country.name}</td>
+					<td><button class="btn text">去我的任务下载</button></td>
+				</tr>
+			`;
+			taskCountText.textContent = "共有 1 条数据";
+		}
+
+		openBatchModal.addEventListener("click", openModal);
+		closeBatchModal.addEventListener("click", closeModal);
+		cancelBatchModal.addEventListener("click", closeModal);
+		closePreview.addEventListener("click", () => preview.classList.remove("show"));
+		countrySelect.addEventListener("change", () => {
+			if (countrySelect.value === "FR" || countrySelect.value === "PL") {
+				countryUploadMode = "info";
+				countryUploadModeInputs.forEach((input) => {
+					input.checked = input.value === "info";
+				});
+			}
+			updateCountryTemplate();
+		});
+
+		batchModal.addEventListener("click", (event) => {
+			if (event.target === batchModal) {
+				closeModal();
+			}
+		});
+
+		taxFileInput.addEventListener("change", (event) => {
+			const isSingleZipCountry = countrySelect.value === "FR" || countrySelect.value === "PL";
+			if (isSingleZipCountry) {
+				countryUploadMode = "file";
+				countryUploadModeInputs.forEach((input) => {
+					input.checked = input.value === "file";
+				});
+				uploadedFranceTaxInfoFile = null;
+				uploadedPolandTaxInfoFile = null;
+				renderFranceTaxInfoUpload();
+				renderPolandTaxInfoUpload();
+			}
+			const files = Array.from(event.target.files || []);
+			if (isSingleZipCountry) {
+				uploadedFiles = files.slice(0, 1).map((file) => ({ file }));
+			} else {
+				files.forEach((file) => {
+					uploadedFiles.push({ file });
+				});
+			}
+			event.target.value = "";
+			renderFiles();
+			updateCountryTemplate();
+		});
+
+		germanyEuVatInput.addEventListener("change", (event) => {
+			const files = Array.from(event.target.files || []);
+			files.forEach((file) => {
+				uploadedGermanyEuVatFiles.push({ file });
+			});
+			event.target.value = "";
+			renderGermanyEuVatFiles();
+		});
+
+		taxInfoInput.addEventListener("change", (event) => {
+			setStandardInfoFile((event.target.files || [])[0]);
+			event.target.value = "";
+		});
+
+		taxArchiveInput.addEventListener("change", (event) => {
+			addStandardArchiveFiles(Array.from(event.target.files || []));
+			event.target.value = "";
+		});
+
+		taxArchiveRows.addEventListener("click", (event) => {
+			const deleteButton = event.target.closest("[data-standard-archive-delete]");
+			if (!deleteButton) return;
+			uploadedArchiveFiles.splice(Number(deleteButton.dataset.standardArchiveDelete), 1);
+			renderStandardUploads();
+		});
+
+		spainEffectiveDateInput.addEventListener("change", (event) => {
+			setSpainEffectiveDateFile((event.target.files || [])[0]);
+			event.target.value = "";
+		});
+
+		franceTaxInfoInput.addEventListener("change", (event) => {
+			countryUploadMode = "info";
+			countryUploadModeInputs.forEach((input) => {
+				input.checked = input.value === "info";
+			});
+			uploadedFiles = [];
+			renderFiles();
+			setFranceTaxInfoFile((event.target.files || [])[0]);
+			event.target.value = "";
+			updateCountryTemplate();
+		});
+
+		polandTaxInfoInput.addEventListener("change", (event) => {
+			countryUploadMode = "info";
+			countryUploadModeInputs.forEach((input) => {
+				input.checked = input.value === "info";
+			});
+			uploadedFiles = [];
+			renderFiles();
+			setPolandTaxInfoFile((event.target.files || [])[0]);
+			event.target.value = "";
+			updateCountryTemplate();
+		});
+
+		countryUploadModeInputs.forEach((input) => {
+			input.addEventListener("change", () => {
+				if (input.checked) {
+					setCountryUploadMode(input.value);
+				}
+			});
+		});
+
+		generalTemplateLink.addEventListener("click", () => {
+			downloadTemplate("通用税号批量上传表格.xlsx");
+			showToast("已下载通用税号批量上传标准模板（Demo）。");
+		});
+
+		spainEffectiveTemplateLink.addEventListener("click", () => {
+			downloadTemplate("西班牙税号生效时间模板.xlsx");
+			showToast("已下载西班牙税号生效时间模板（Demo）。");
+		});
+
+		franceTaxInfoTemplateLink.addEventListener("click", () => {
+			downloadTemplate("法国税号录入模板.xlsx");
+			showToast("已下载法国税号录入模板（Demo）。");
+		});
+
+		polandTaxInfoTemplateLink.addEventListener("click", () => {
+			downloadTemplate("波兰税号录入模板.xlsx");
+			showToast("已下载波兰税号录入模板（Demo）。");
+		});
+
+		fileList.addEventListener("click", (event) => {
+			const previewButton = event.target.closest("[data-preview]");
+			const deleteButton = event.target.closest("[data-delete]");
+			if (previewButton) {
+				previewFile(Number(previewButton.dataset.preview));
+			}
+			if (deleteButton) {
+				deleteFile(Number(deleteButton.dataset.delete));
+			}
+		});
+
+		germanyEuVatRows.addEventListener("click", (event) => {
+			const previewButton = event.target.closest("[data-germany-eu-preview]");
+			const deleteButton = event.target.closest("[data-germany-eu-delete]");
+			if (previewButton) {
+				const item = uploadedGermanyEuVatFiles[Number(previewButton.dataset.germanyEuPreview)];
+				if (!item) return;
+				const previewIndex = uploadedFiles.push(item) - 1;
+				previewFile(previewIndex);
+				uploadedFiles.splice(previewIndex, 1);
+				renderFiles();
+			}
+			if (deleteButton) {
+				uploadedGermanyEuVatFiles.splice(Number(deleteButton.dataset.germanyEuDelete), 1);
+				renderGermanyEuVatFiles();
+			}
+		});
+
+		confirmBatchUpload.addEventListener("click", () => {
+			const isGeneral = countrySelect.value === "GENERAL";
+			const isGermany = countrySelect.value === "DE";
+			const isSpain = countrySelect.value === "ES";
+			const isFrance = countrySelect.value === "FR";
+			const isPoland = countrySelect.value === "PL";
+			if (isGeneral && !(uploadedInfoFile && uploadedArchiveFiles.length)) return;
+			if (isGermany && !(uploadedFiles.length || uploadedGermanyEuVatFiles.length)) return;
+			if (isSpain && !(uploadedSpainEffectiveDateFile && uploadedFiles.length)) return;
+			if (isFrance && countryUploadMode === "info" && !uploadedFranceTaxInfoFile) return;
+			if (isFrance && countryUploadMode === "file" && !uploadedFiles.length) return;
+			if (isPoland && countryUploadMode === "info" && !uploadedPolandTaxInfoFile) return;
+			if (isPoland && countryUploadMode === "file" && !uploadedFiles.length) return;
+			if (!isGeneral && !isGermany && !isSpain && !isFrance && !isPoland && !uploadedFiles.length) return;
+			const taskNo = "BTAX" + new Date().toISOString().replace(/\D/g, "").slice(0, 14);
+			const germanySubmitResult = getGermanySubmitResult();
+			if (isGeneral) {
+				standardResultText.textContent = "，任务号：" + taskNo + "。请前往我的任务下载查看结果。";
+				standardResultPanel.classList.add("show");
+			} else {
+				resultText.textContent = germanySubmitResult
+					? "，任务号：" + taskNo + "。" + germanySubmitResult.message
+					: "，任务号：" + taskNo + "。请前往我的任务下载查看结果。";
+				resultPanel.classList.add("show");
+			}
+			addTaskRow(taskNo, germanySubmitResult || {});
+			showToast(germanySubmitResult ? germanySubmitResult.toast : "已创建批量录入税号任务，请前往我的任务下载查看结果。");
+			setTimeout(closeModal, 800);
+		});
+
+		renderFiles();
+		renderGermanyEuVatFiles();
+		renderStandardUploads();
+		renderSpainEffectiveDateUpload();
+		renderFranceTaxInfoUpload();
+		renderPolandTaxInfoUpload();
+	</script>
+</body>
+</html>

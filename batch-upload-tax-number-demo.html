@@ -653,13 +653,16 @@
 
 		.spain-extra-panel,
 		.france-extra-panel,
-		.poland-extra-panel {
+		.poland-extra-panel,
+		.germany-eu-vat-panel {
 			margin-bottom: 16px;
 		}
 
 		.spain-extra-panel.is-hidden,
 		.france-extra-panel.is-hidden,
 		.poland-extra-panel.is-hidden,
+		#countryFileUploadPanel.is-hidden,
+		.germany-eu-vat-panel.is-hidden,
 		.country-upload-note.is-hidden {
 			display: none;
 		}
@@ -672,6 +675,55 @@
 			background: #f2fcfe;
 			color: #164e63;
 			line-height: 1.8;
+		}
+
+		.country-choice-panel {
+			display: none;
+			margin-bottom: 16px;
+			padding: 12px 14px;
+			border: 1px solid #dbe6f3;
+			border-radius: 6px;
+			background: #f8fbff;
+		}
+
+		.country-choice-panel.show {
+			display: block;
+		}
+
+		.country-choice-options {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+
+		.choice-option {
+			position: relative;
+		}
+
+		.choice-option input {
+			position: absolute;
+			opacity: 0;
+			pointer-events: none;
+		}
+
+		.choice-option span {
+			display: inline-flex;
+			align-items: center;
+			height: 34px;
+			padding: 0 14px;
+			border: 1px solid #d7e2ee;
+			border-radius: 6px;
+			background: #fff;
+			color: #4b5563;
+			font-size: 13px;
+			font-weight: 700;
+			cursor: pointer;
+		}
+
+		.choice-option input:checked + span {
+			border-color: var(--brand);
+			background: #edf6ff;
+			color: var(--brand);
 		}
 
 		.standard-file-stack {
@@ -781,7 +833,7 @@
 		.file-list-header,
 		.file-row {
 			display: grid;
-			grid-template-columns: minmax(260px, 1fr) 100px 80px 140px;
+			grid-template-columns: minmax(260px, 1fr) 100px 140px;
 			align-items: center;
 			gap: 12px;
 			min-width: 640px;
@@ -1028,6 +1080,14 @@
 				grid-template-columns: 1fr;
 			}
 		}
+
+		.country-file-upload-grid.is-germany {
+			grid-template-columns: 1fr;
+		}
+
+		.country-file-upload-grid {
+			grid-template-columns: 1fr;
+		}
 	</style>
 </head>
 <body>
@@ -1236,14 +1296,14 @@
 					<div class="template-header">
 						<div>
 							<div class="template-title">批量上传通用税号</div>
-							<div class="upload-sub">标准模板：左侧上传税号信息表格，右侧上传税号文件压缩包。</div>
-						<div class="result-tip">系统使用表格中的公司名称匹配压缩包内税号文件，批量录入税号结果进入我的任务下载。</div>
+							<div class="upload-sub">标准模板：左侧上传税号信息表格，右侧可上传多个 ZIP 税号文件。</div>
+						<div class="result-tip">系统使用表格中的国家和公司名称匹配多个 ZIP 税号文件，批量录入税号结果进入我的任务下载。</div>
 						</div>
 						<span class="badge">通用</span>
 					</div>
 					<div class="template-body">
 						<div class="standard-tip">
-							请先下载标准模板填写税号信息，再上传对应税号文件压缩包。<b>税号信息表格校验成功</b> 且 <b>税号文件匹配成功</b> 后，才允许批量上传。
+							请先下载标准模板填写税号信息，再上传对应的一个或多个 ZIP 税号文件，确认文件后即可批量上传。
 						</div>
 						<div class="standard-upload-grid">
 							<section class="standard-card">
@@ -1251,7 +1311,7 @@
 									<div class="standard-card-title"><span class="step-badge">1</span>上传税号信息表格</div>
 									<button class="template-link" id="generalTemplateLink" type="button">下载标准模板</button>
 								</div>
-								<p class="standard-card-desc">表格中每一行代表一家公司，系统使用“公司名称”匹配压缩包内对应税号文件。</p>
+								<p class="standard-card-desc">表格中每一行代表一家公司，系统使用“国家+公司名”匹配对应 ZIP 税号文件，公司名取表格中的“公司名称”。支持批量匹配多个 ZIP。</p>
 								<label class="upload-zone" for="taxInfoInput">
 									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
 										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1268,40 +1328,41 @@
 								<div class="standard-file-stack" id="taxInfoRows">
 									<div class="standard-file-row">
 										<span>通用税号批量上传表格.xlsx</span>
-										<span class="status success">校验成功 1 条，失败 0 条</span>
 									</div>
 								</div>
 							</section>
 
 							<section class="standard-card">
 								<div class="standard-card-head">
-									<div class="standard-card-title"><span class="step-badge">2</span>上传税号文件压缩包</div>
+									<div class="standard-card-title"><span class="step-badge">2</span>上传 ZIP 税号文件</div>
 								</div>
-								<p class="standard-card-desc">压缩包内文件命名规则为公司名称，系统按文件名匹配表格中的公司名称。</p>
+								<p class="standard-card-desc">ZIP 文件命名规则为国家+公司名，每次仅支持上传一个 ZIP，系统按文件名匹配表格中的国家和公司名称。</p>
 								<label class="upload-zone" for="taxArchiveInput">
 									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
 										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
 										<path d="m17 8-5-5-5 5"></path>
 										<path d="M12 3v12"></path>
 									</svg>
-									<div class="upload-main">点击或将压缩包拖拽到此上传</div>
-									<div class="upload-sub">仅支持 .zip 文件，限制文件大小 20M</div>
+									<div class="upload-main">点击或将 ZIP 文件拖拽到此上传</div>
+									<div class="upload-sub">仅支持 .zip 文件，单个文件限制大小 20M</div>
 									<div style="margin-top: 12px;">
-										<span class="btn primary">选择压缩包</span>
+										<span class="btn primary">选择 ZIP 文件</span>
 									</div>
 								</label>
 								<input class="file-input" id="taxArchiveInput" type="file" accept=".zip">
 								<div class="standard-file-stack" id="taxArchiveRows">
 									<div class="standard-file-row">
-										<span>tax_number_files_20260617.zip</span>
-										<span class="status success">匹配成功 1 份，失败 0 份</span>
+										<span>德国+深圳跨信通公司.zip</span>
+									</div>
+									<div class="standard-file-row">
+										<span>法国+广州跨信通公司.zip</span>
 									</div>
 								</div>
 							</section>
 						</div>
 						<div class="rule-list">
-							<div class="rule-item"><b>文件命名规则：</b>压缩包内每个税号文件必须以公司名称命名，例如 <b>深圳市呱唧电子商务有限公司.pdf</b>、<b>深圳市呱唧电子商务有限公司.png</b>。</div>
-							<div class="rule-item"><b>匹配规则：</b>系统使用表格中的公司名称匹配压缩包内文件名。</div>
+							<div class="rule-item"><b>文件命名规则：</b>每个 ZIP 税号文件必须以“国家+公司名”命名，例如 <b>德国+深圳跨信通公司.zip</b>。</div>
+							<div class="rule-item"><b>匹配规则：</b>系统使用表格中的国家和公司名称匹配多个 ZIP 税号文件名。</div>
 							<div class="rule-item"><b>必填字段说明：</b>gateway 账号、gateway 密码为英国特有字段；Organisationsummer 号为瑞典特有字段；波兰IBAN/阿联酋IBAN为波兰和阿联酋特有字段；其他国家按标准模板填写通用字段。</div>
 						</div>
 						<div class="result-panel" id="standardResultPanel">
@@ -1343,17 +1404,29 @@
 							<div class="standard-file-stack" id="spainEffectiveDateRows">
 								<div class="standard-file-row">
 									<span>请上传税号生效时间表格</span>
-									<span class="status">待校验</span>
 								</div>
 							</div>
 						</section>
+
+						<div class="country-choice-panel" id="countryUploadChoicePanel">
+							<div class="country-choice-options">
+								<label class="choice-option">
+									<input type="radio" name="countryUploadMode" value="info" checked>
+									<span>上传税号信息</span>
+								</label>
+								<label class="choice-option">
+									<input type="radio" name="countryUploadMode" value="file">
+									<span>上传税号文件</span>
+								</label>
+							</div>
+						</div>
 
 						<section class="standard-card france-extra-panel is-hidden" id="franceTaxInfoPanel">
 							<div class="standard-card-head">
 								<div class="standard-card-title"><span class="step-badge">1</span>上传法国税号信息表格</div>
 								<button class="template-link" id="franceTaxInfoTemplateLink" type="button">下载税号录入模板</button>
 							</div>
-							<p class="standard-card-desc">表格维护公司名称与法人税号的对应关系。法国可先只上传该表格完成法人税号录入，税号文件可后续再上传并沿用原 OCR 解析逻辑。</p>
+							<p class="standard-card-desc">选择“上传税号信息”时，仅上传该表格完成法人税号录入；如选择“上传税号文件”，则上传 ZIP 文件走 OCR 解析。</p>
 							<label class="upload-zone" for="franceTaxInfoInput">
 								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
 									<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1370,7 +1443,6 @@
 							<div class="standard-file-stack" id="franceTaxInfoRows">
 								<div class="standard-file-row">
 									<span>请上传法国税号信息表格</span>
-									<span class="status">待校验</span>
 								</div>
 							</div>
 						</section>
@@ -1397,7 +1469,6 @@
 							<div class="standard-file-stack" id="polandTaxInfoRows">
 								<div class="standard-file-row">
 									<span>请上传波兰税号信息表格</span>
-									<span class="status">待校验</span>
 								</div>
 							</div>
 						</section>
@@ -1407,39 +1478,72 @@
 						</div>
 
 						<div class="country-upload-note is-hidden" id="franceUploadRule">
-							法国支持先上传税号信息表格，只录入公司对应税号；税号文件可后续上传，后续上传后的 OCR 解析与字段回填逻辑不变。
+							法国支持二选一上传：税号信息表格用于直接录入公司对应税号；税号文件 ZIP 用于 OCR 解析与字段回填。
 						</div>
 
 						<div class="country-upload-note is-hidden" id="polandUploadRule">
-							波兰支持先上传税号信息表格，仅需录入公司名称和本土税号；系统使用税局接口，查询税号信息并录入系统。波兰均为月报，初次申报周期取税号生效日期当月。
+							波兰支持二选一上传：税号信息表格用于录入公司名称和本土税号并调用接口补齐信息；税号文件 ZIP 用于文件解析。波兰均为月报，初次申报周期取税号生效日期当月。
 						</div>
 
 						<div class="country-upload-note is-hidden" id="czechUploadRule">
 							捷克只需上传税号文件；系统通过 OCR 识别税号文件中的公司英文名称、税号生效日期、本土税号和 VAT 号。捷克固定为月报，首次申报周期取税号生效日期当月。
 						</div>
 
-						<label class="upload-zone" for="taxFileInput">
-							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-								<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-								<path d="m17 8-5-5-5 5"></path>
-								<path d="M12 3v12"></path>
-							</svg>
-							<div class="upload-main">上传税号文件</div>
-							<div class="upload-sub" id="countryFileUploadSub">支持图片、PDF、压缩包等税局返回文件；可一次选择多个文件。</div>
-							<div style="margin-top: 12px;">
-								<span class="btn primary">选择文件</span>
-							</div>
-						</label>
-						<input class="file-input" id="taxFileInput" type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.zip,.rar,.7z">
+						<div class="standard-upload-grid country-file-upload-grid">
+							<section class="standard-card" id="countryFileUploadPanel">
+								<div class="standard-card-head">
+									<div class="standard-card-title"><span class="step-badge">1</span><span id="countryFileUploadTitle">上传税号文件</span></div>
+								</div>
+								<label class="upload-zone" for="taxFileInput">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+										<path d="m17 8-5-5-5 5"></path>
+										<path d="M12 3v12"></path>
+									</svg>
+									<div class="upload-main" id="countryFileUploadMain">上传税号文件</div>
+									<div class="upload-sub" id="countryFileUploadSub">仅支持 .zip 文件；可一次选择多个文件。</div>
+									<div style="margin-top: 12px;">
+										<span class="btn primary" id="countryFileUploadButton">选择文件</span>
+									</div>
+								</label>
+								<input class="file-input" id="taxFileInput" type="file" multiple accept=".zip">
+								<div class="file-list" id="fileList">
+									<div class="file-list-header">
+										<div>已上传资料</div>
+										<div>文件大小</div>
+										<div>操作</div>
+									</div>
+									<div class="empty-list" id="emptyList">暂无已上传资料</div>
+								</div>
+							</section>
 
-						<div class="file-list" id="fileList">
-							<div class="file-list-header">
-								<div>已上传文件</div>
-								<div>文件大小</div>
-								<div>状态</div>
-								<div>操作</div>
-							</div>
-							<div class="empty-list" id="emptyList">暂无已上传文件</div>
+							<section class="standard-card germany-eu-vat-panel is-hidden" id="germanyEuVatPanel">
+								<div class="standard-card-head">
+									<div class="standard-card-title"><span class="step-badge">2</span>上传欧盟 VAT 税号文件</div>
+								</div>
+								<label class="upload-zone" for="germanyEuVatInput">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+										<path d="m17 8-5-5-5 5"></path>
+										<path d="M12 3v12"></path>
+									</svg>
+									<div class="upload-main">上传欧盟 VAT 税号文件</div>
+									<div class="upload-sub">仅支持 .zip 文件；OCR 识别公司英文名及 VAT 税号。</div>
+									<div style="margin-top: 12px;">
+										<span class="btn primary">选择欧盟 VAT 文件</span>
+									</div>
+								</label>
+								<input class="file-input" id="germanyEuVatInput" type="file" multiple accept=".zip">
+								<div class="file-list germany-eu-vat-panel is-hidden" id="germanyEuVatFileList">
+									<div class="file-list-header">
+										<div>已上传资料</div>
+										<div>文件大小</div>
+										<div>操作</div>
+									</div>
+									<div class="empty-list" id="germanyEuVatEmpty">暂无已上传资料</div>
+									<div id="germanyEuVatRows"></div>
+								</div>
+							</section>
 						</div>
 
 						<div class="preview" id="preview">
@@ -1502,7 +1606,14 @@
 		const templateCountryBadge = document.getElementById("templateCountryBadge");
 		const countryUploadSub = document.getElementById("countryUploadSub");
 		const countryResultTip = document.getElementById("countryResultTip");
+		const countryFileUploadGrid = document.querySelector(".country-file-upload-grid");
+		const countryFileUploadTitle = document.getElementById("countryFileUploadTitle");
+		const countryFileUploadMain = document.getElementById("countryFileUploadMain");
+		const countryFileUploadButton = document.getElementById("countryFileUploadButton");
 		const countryFileUploadSub = document.getElementById("countryFileUploadSub");
+		const countryUploadChoicePanel = document.getElementById("countryUploadChoicePanel");
+		const countryUploadModeInputs = document.querySelectorAll("input[name='countryUploadMode']");
+		const countryFileUploadPanel = document.getElementById("countryFileUploadPanel");
 		const spainEffectiveDatePanel = document.getElementById("spainEffectiveDatePanel");
 		const spainEffectiveDateInput = document.getElementById("spainEffectiveDateInput");
 		const spainEffectiveDateRows = document.getElementById("spainEffectiveDateRows");
@@ -1519,6 +1630,11 @@
 		const polandTaxInfoTemplateLink = document.getElementById("polandTaxInfoTemplateLink");
 		const polandUploadRule = document.getElementById("polandUploadRule");
 		const czechUploadRule = document.getElementById("czechUploadRule");
+		const germanyEuVatPanel = document.getElementById("germanyEuVatPanel");
+		const germanyEuVatFileList = document.getElementById("germanyEuVatFileList");
+		const germanyEuVatInput = document.getElementById("germanyEuVatInput");
+		const germanyEuVatRows = document.getElementById("germanyEuVatRows");
+		const germanyEuVatEmpty = document.getElementById("germanyEuVatEmpty");
 		const taxInfoInput = document.getElementById("taxInfoInput");
 		const taxArchiveInput = document.getElementById("taxArchiveInput");
 		const taxInfoRows = document.getElementById("taxInfoRows");
@@ -1528,11 +1644,16 @@
 		const standardResultText = document.getElementById("standardResultText");
 
 		let uploadedFiles = [];
+		let uploadedGermanyEuVatFiles = [];
 		let uploadedInfoFile = { name: "通用税号批量上传表格.xlsx", size: 81355 };
-		let uploadedArchiveFile = { name: "tax_number_files_20260617.zip", size: 2146304 };
+		let uploadedArchiveFiles = [
+			{ name: "德国+深圳跨信通公司.zip", size: 2146304 },
+			{ name: "法国+广州跨信通公司.zip", size: 1982464 },
+		];
 		let uploadedSpainEffectiveDateFile = { name: "西班牙税号生效时间表.xlsx", size: 64218 };
 		let uploadedFranceTaxInfoFile = null;
 		let uploadedPolandTaxInfoFile = null;
+		let countryUploadMode = "info";
 		let toastTimer = null;
 		const countryMap = {
 			GENERAL: { name: "通用", taskName: "通用税号批量文件", serviceName: "税号批量录入" },
@@ -1550,9 +1671,11 @@
 		function updateCountryTemplate() {
 			const country = getSelectedCountry();
 			const isGeneral = countrySelect.value === "GENERAL";
+			const isGermany = countrySelect.value === "DE";
 			const isSpain = countrySelect.value === "ES";
 			const isFrance = countrySelect.value === "FR";
 			const isPoland = countrySelect.value === "PL";
+			const isChoiceCountry = isFrance || isPoland;
 			const isCzech = countrySelect.value === "CZ";
 			batchModalTitle.textContent = isGeneral ? "批量上传税号" : `批量上传${country.name}税号`;
 			standardTemplate.classList.toggle("is-hidden", !isGeneral);
@@ -1560,35 +1683,48 @@
 			if (!isGeneral) {
 				templateTitle.textContent = `批量上传${country.name}税号`;
 				templateCountryBadge.textContent = country.name;
-				if (isSpain) {
+				countryFileUploadTitle.textContent = isGermany ? "上传本土税号文件" : "上传税号文件";
+				countryFileUploadMain.textContent = isGermany ? "上传本土税号文件" : "上传税号文件";
+				countryFileUploadButton.textContent = isGermany ? "选择本土税号文件" : "选择文件";
+				if (isGermany) {
+					countryUploadSub.textContent = "德国本土税号文件和欧盟 VAT 税号文件分开上传；可先上传本土税号，后续再补传欧盟 VAT 税号。";
+					countryResultTip.textContent = "只上传德国本土税号时单据状态为部分完成；只上传欧盟 VAT 税号会录入失败；两类文件同时上传后单据状态为已完成。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件；OCR 识别申报周期、税号生效日期和本土税号。";
+				} else if (isSpain) {
 					countryUploadSub.textContent = "上传税号文件和税号生效时间表格，系统确认后创建 OCR 匹配任务。";
 					countryResultTip.textContent = "系统通过 OCR 识别税号文件中的税号，并到表格匹配税号生效日期；批量录入税号结果进入我的任务下载。";
-					countryFileUploadSub.textContent = "支持图片、PDF、压缩包等税局返回文件；OCR 识别税号后匹配生效时间表格。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件；OCR 识别税号后匹配生效时间表格。";
 				} else if (isFrance) {
-					countryUploadSub.textContent = "可先上传税号信息表格只录入税号；税号文件可后续上传，解析逻辑不变。";
-					countryResultTip.textContent = "法国税号信息表格录入结果、后续税号文件 OCR 解析结果进入我的任务下载。";
-					countryFileUploadSub.textContent = "支持后续上传图片、PDF、压缩包等税局返回文件；OCR 解析与字段回填逻辑不变。";
+					countryUploadSub.textContent = "选择一种上传方式：税号信息表格或税号文件 ZIP。";
+					countryResultTip.textContent = "法国支持二选一上传，结果进入我的任务下载。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件；OCR 解析与字段回填逻辑不变。";
 				} else if (isPoland) {
-					countryUploadSub.textContent = "可先上传税号信息表格只录入公司名称和本土税号；系统调用波兰接口补齐必填信息。";
-					countryResultTip.textContent = "系统通过波兰白名单接口取得税号生效日期、IBAN、VAT号，并生成月报和首次申报月份。";
-					countryFileUploadSub.textContent = "支持后续上传图片、PDF、压缩包等税局返回文件；上传后仍沿用原 OCR 解析逻辑。";
+					countryUploadSub.textContent = "选择一种上传方式：税号信息表格或税号文件 ZIP。";
+					countryResultTip.textContent = "波兰支持二选一上传，结果进入我的任务下载。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件。";
 				} else if (isCzech) {
 					countryUploadSub.textContent = "仅上传税号文件，系统确认后创建 OCR 匹配任务。";
 					countryResultTip.textContent = "系统识别公司英文名称、税号生效日期、本土税号和VAT号；捷克固定月报，首次申报周期取税号生效日期当月。";
-					countryFileUploadSub.textContent = "支持图片、PDF、压缩包等税局返回文件；可一次选择多个文件。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件；可一次选择多个文件。";
 				} else {
 					countryUploadSub.textContent = "仅上传税号文件，系统确认后创建 OCR 匹配任务。";
 					countryResultTip.textContent = "匹配结果、失败原因和未匹配文件进入我的任务下载。";
-					countryFileUploadSub.textContent = "支持图片、PDF、压缩包等税局返回文件；可一次选择多个文件。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件；可一次选择多个文件。";
 				}
 			}
 			spainEffectiveDatePanel.classList.toggle("is-hidden", !isSpain);
 			spainMatchRule.classList.toggle("is-hidden", !isSpain);
-			franceTaxInfoPanel.classList.toggle("is-hidden", !isFrance);
+			countryUploadChoicePanel.classList.toggle("show", isChoiceCountry);
+			franceTaxInfoPanel.classList.toggle("is-hidden", !(isFrance && countryUploadMode === "info"));
 			franceUploadRule.classList.toggle("is-hidden", !isFrance);
-			polandTaxInfoPanel.classList.toggle("is-hidden", !isPoland);
+			polandTaxInfoPanel.classList.toggle("is-hidden", !(isPoland && countryUploadMode === "info"));
 			polandUploadRule.classList.toggle("is-hidden", !isPoland);
 			czechUploadRule.classList.toggle("is-hidden", !isCzech);
+			taxFileInput.toggleAttribute("multiple", !isChoiceCountry);
+			countryFileUploadGrid.classList.toggle("is-germany", isGermany);
+			countryFileUploadPanel.classList.toggle("is-hidden", isChoiceCountry && countryUploadMode !== "file");
+			germanyEuVatPanel.classList.toggle("is-hidden", !isGermany);
+			germanyEuVatFileList.classList.toggle("is-hidden", !isGermany);
 			updateConfirmState();
 		}
 
@@ -1628,7 +1764,6 @@
 				row.innerHTML = `
 					<div class="file-name">${iconFile()}<span title="${item.file.name}">${item.file.name}</span></div>
 					<div>${formatSize(item.file.size)}</div>
-					<div><span class="status">待匹配</span></div>
 					<div>
 						<button class="btn text" data-preview="${index}">
 							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -1644,30 +1779,41 @@
 			});
 		}
 
+		function renderGermanyEuVatFiles() {
+			germanyEuVatEmpty.style.display = uploadedGermanyEuVatFiles.length ? "none" : "grid";
+			germanyEuVatRows.innerHTML = uploadedGermanyEuVatFiles.map((item, index) => `
+				<div class="file-row">
+					<div class="file-name">${iconFile()}<span title="${item.file.name}">${item.file.name}</span></div>
+					<div>${formatSize(item.file.size)}</div>
+					<div>
+						<button class="btn text" data-germany-eu-preview="${index}">预览</button>
+						<button class="btn text danger-text" data-germany-eu-delete="${index}">删除</button>
+					</div>
+				</div>
+			`).join("");
+			updateConfirmState();
+		}
+
 		function renderStandardUploads() {
 			taxInfoRows.innerHTML = uploadedInfoFile ? `
 				<div class="standard-file-row">
 					<span title="${uploadedInfoFile.name}">${uploadedInfoFile.name}</span>
-					<span class="status success">校验成功 1 条，失败 0 条</span>
 				</div>
 			` : `
 				<div class="standard-file-row">
 					<span>请上传税号信息表格</span>
-					<span class="status">待校验</span>
 				</div>
 			`;
-			taxArchiveRows.innerHTML = uploadedArchiveFile ? `
+			taxArchiveRows.innerHTML = uploadedArchiveFiles.length ? uploadedArchiveFiles.map((item, index) => `
 				<div class="standard-file-row">
-					<span title="${uploadedArchiveFile.name}">${uploadedArchiveFile.name}</span>
-					<span class="status success">匹配成功 1 份，失败 0 份</span>
+					<span title="${item.name}">${item.name}</span>
+					<button class="btn text danger-text" data-standard-archive-delete="${index}">删除</button>
 				</div>
-			` : `
+			`).join("") : `
 				<div class="standard-file-row">
-					<span>请上传税号文件压缩包</span>
-					<span class="status">待匹配</span>
+					<span>请上传 ZIP 税号文件</span>
 				</div>
 			`;
-			const ready = Boolean(uploadedInfoFile && uploadedArchiveFile);
 			updateConfirmState();
 		}
 
@@ -1675,12 +1821,10 @@
 			spainEffectiveDateRows.innerHTML = uploadedSpainEffectiveDateFile ? `
 				<div class="standard-file-row">
 					<span title="${uploadedSpainEffectiveDateFile.name}">${uploadedSpainEffectiveDateFile.name}</span>
-					<span class="status success">校验成功 1 条，失败 0 条</span>
 				</div>
 			` : `
 				<div class="standard-file-row">
 					<span>请上传税号生效时间表格</span>
-					<span class="status">待校验</span>
 				</div>
 			`;
 			updateConfirmState();
@@ -1690,12 +1834,10 @@
 			franceTaxInfoRows.innerHTML = uploadedFranceTaxInfoFile ? `
 				<div class="standard-file-row">
 					<span title="${uploadedFranceTaxInfoFile.name}">${uploadedFranceTaxInfoFile.name}</span>
-					<span class="status success">校验成功 1 条，失败 0 条</span>
 				</div>
 			` : `
 				<div class="standard-file-row">
 					<span>请上传法国税号信息表格</span>
-					<span class="status">待校验</span>
 				</div>
 			`;
 			updateConfirmState();
@@ -1705,12 +1847,10 @@
 			polandTaxInfoRows.innerHTML = uploadedPolandTaxInfoFile ? `
 				<div class="standard-file-row">
 					<span title="${uploadedPolandTaxInfoFile.name}">${uploadedPolandTaxInfoFile.name}</span>
-					<span class="status success">校验成功 1 条，失败 0 条</span>
 				</div>
 			` : `
 				<div class="standard-file-row">
 					<span>请上传波兰税号信息表格</span>
-					<span class="status">待校验</span>
 				</div>
 			`;
 			updateConfirmState();
@@ -1722,9 +1862,10 @@
 			renderStandardUploads();
 		}
 
-		function setStandardArchiveFile(file) {
-			if (!file) return;
-			uploadedArchiveFile = { name: file.name, size: file.size };
+		function addStandardArchiveFiles(files) {
+			if (!files.length) return;
+			const file = files[0];
+			uploadedArchiveFiles = [{ name: file.name, size: file.size }];
 			renderStandardUploads();
 		}
 
@@ -1748,7 +1889,11 @@
 
 		function updateConfirmState() {
 			if (countrySelect.value === "GENERAL") {
-				confirmBatchUpload.disabled = !(uploadedInfoFile && uploadedArchiveFile);
+				confirmBatchUpload.disabled = !(uploadedInfoFile && uploadedArchiveFiles.length);
+				return;
+			}
+			if (countrySelect.value === "DE") {
+				confirmBatchUpload.disabled = !(uploadedFiles.length || uploadedGermanyEuVatFiles.length);
 				return;
 			}
 			if (countrySelect.value === "ES") {
@@ -1756,14 +1901,40 @@
 				return;
 			}
 			if (countrySelect.value === "FR") {
-				confirmBatchUpload.disabled = !(uploadedFranceTaxInfoFile || uploadedFiles.length);
+				confirmBatchUpload.disabled = countryUploadMode === "info"
+					? !uploadedFranceTaxInfoFile
+					: !uploadedFiles.length;
 				return;
 			}
 			if (countrySelect.value === "PL") {
-				confirmBatchUpload.disabled = !(uploadedPolandTaxInfoFile || uploadedFiles.length);
+				confirmBatchUpload.disabled = countryUploadMode === "info"
+					? !uploadedPolandTaxInfoFile
+					: !uploadedFiles.length;
 				return;
 			}
 			confirmBatchUpload.disabled = uploadedFiles.length === 0;
+		}
+
+		function setCountryUploadMode(mode) {
+			countryUploadMode = mode;
+			countryUploadModeInputs.forEach((input) => {
+				input.checked = input.value === mode;
+			});
+			if (mode === "info") {
+				uploadedFiles = [];
+				preview.classList.remove("show");
+				renderFiles();
+			} else {
+				if (countrySelect.value === "FR") {
+					uploadedFranceTaxInfoFile = null;
+					renderFranceTaxInfoUpload();
+				}
+				if (countrySelect.value === "PL") {
+					uploadedPolandTaxInfoFile = null;
+					renderPolandTaxInfoUpload();
+				}
+			}
+			updateCountryTemplate();
 		}
 
 		function previewFile(index) {
@@ -1815,19 +1986,57 @@
 			link.remove();
 		}
 
-		function addTaskRow(taskNo) {
+		function getGermanySubmitResult() {
+			if (countrySelect.value !== "DE") {
+				return null;
+			}
+			const hasLocalTaxFile = uploadedFiles.length > 0;
+			const hasEuVatFile = uploadedGermanyEuVatFiles.length > 0;
+			if (hasLocalTaxFile && hasEuVatFile) {
+				return {
+					status: "已完成",
+					statusClass: "success-text",
+					processStatus: "OCR匹配完成",
+					message: "德国本土税号和欧盟 VAT 税号文件已同时上传，单据状态变为已完成。",
+					toast: "已创建批量录入税号任务，德国单据状态已完成。"
+				};
+			}
+			if (hasLocalTaxFile) {
+				return {
+					status: "部分完成",
+					statusClass: "warning-text",
+					processStatus: "待补传欧盟 VAT 税号",
+					message: "已录入德国本土税号，单据状态变为部分完成。后续可补传欧盟 VAT 税号文件。",
+					toast: "已创建德国本土税号录入任务，单据状态为部分完成。"
+				};
+			}
+			return {
+				status: "录入失败",
+				statusClass: "danger-text",
+				processStatus: "失败",
+				message: "只上传欧盟 VAT 税号文件无法匹配德国本土税号，录入失败。",
+				toast: "只上传欧盟 VAT 税号文件会录入失败，请先上传德国本土税号文件。"
+			};
+		}
+
+		function addTaskRow(taskNo, override = {}) {
 			const country = getSelectedCountry();
+			const isFranceFileMode = countrySelect.value === "FR" && countryUploadMode === "file";
+			const isPolandFileMode = countrySelect.value === "PL" && countryUploadMode === "file";
 			const templateName = countrySelect.value === "GENERAL"
 				? "标准模板"
-				: (countrySelect.value === "ES" ? "西班牙模板" : (countrySelect.value === "FR" ? "法国税号Excel模板" : (countrySelect.value === "PL" ? "波兰税号Excel模板" : "模板1")));
+				: (countrySelect.value === "ES" ? "西班牙模板" : (countrySelect.value === "FR" ? (isFranceFileMode ? "法国税号文件ZIP" : "法国税号Excel模板") : (countrySelect.value === "PL" ? (isPolandFileMode ? "波兰税号文件ZIP" : "波兰税号Excel模板") : "模板1")));
+			const statusText = override.status || "正常";
+			const statusClass = override.statusClass || "success-text";
+			const processStatus = override.processStatus || "OCR匹配中";
 			taskTableBody.innerHTML = `
 				<tr>
 					<td>${taskNo}</td>
-					<td><span class="success-text">正常</span></td>
+					<td><span class="${statusClass}">${statusText}</span></td>
 					<td>系统异步处理</td>
 					<td>批量录入税号</td>
 					<td>履约工作台</td>
-					<td>OCR匹配中</td>
+					<td>${processStatus}</td>
 					<td>${country.taskName}</td>
 					<td>-</td>
 					<td>-</td>
@@ -1847,7 +2056,15 @@
 		closeBatchModal.addEventListener("click", closeModal);
 		cancelBatchModal.addEventListener("click", closeModal);
 		closePreview.addEventListener("click", () => preview.classList.remove("show"));
-		countrySelect.addEventListener("change", updateCountryTemplate);
+		countrySelect.addEventListener("change", () => {
+			if (countrySelect.value === "FR" || countrySelect.value === "PL") {
+				countryUploadMode = "info";
+				countryUploadModeInputs.forEach((input) => {
+					input.checked = input.value === "info";
+				});
+			}
+			updateCountryTemplate();
+		});
 
 		batchModal.addEventListener("click", (event) => {
 			if (event.target === batchModal) {
@@ -1856,12 +2073,37 @@
 		});
 
 		taxFileInput.addEventListener("change", (event) => {
+			const isSingleZipCountry = countrySelect.value === "FR" || countrySelect.value === "PL";
+			if (isSingleZipCountry) {
+				countryUploadMode = "file";
+				countryUploadModeInputs.forEach((input) => {
+					input.checked = input.value === "file";
+				});
+				uploadedFranceTaxInfoFile = null;
+				uploadedPolandTaxInfoFile = null;
+				renderFranceTaxInfoUpload();
+				renderPolandTaxInfoUpload();
+			}
 			const files = Array.from(event.target.files || []);
-			files.forEach((file) => {
-				uploadedFiles.push({ file });
-			});
+			if (isSingleZipCountry) {
+				uploadedFiles = files.slice(0, 1).map((file) => ({ file }));
+			} else {
+				files.forEach((file) => {
+					uploadedFiles.push({ file });
+				});
+			}
 			event.target.value = "";
 			renderFiles();
+			updateCountryTemplate();
+		});
+
+		germanyEuVatInput.addEventListener("change", (event) => {
+			const files = Array.from(event.target.files || []);
+			files.forEach((file) => {
+				uploadedGermanyEuVatFiles.push({ file });
+			});
+			event.target.value = "";
+			renderGermanyEuVatFiles();
 		});
 
 		taxInfoInput.addEventListener("change", (event) => {
@@ -1870,8 +2112,15 @@
 		});
 
 		taxArchiveInput.addEventListener("change", (event) => {
-			setStandardArchiveFile((event.target.files || [])[0]);
+			addStandardArchiveFiles(Array.from(event.target.files || []));
 			event.target.value = "";
+		});
+
+		taxArchiveRows.addEventListener("click", (event) => {
+			const deleteButton = event.target.closest("[data-standard-archive-delete]");
+			if (!deleteButton) return;
+			uploadedArchiveFiles.splice(Number(deleteButton.dataset.standardArchiveDelete), 1);
+			renderStandardUploads();
 		});
 
 		spainEffectiveDateInput.addEventListener("change", (event) => {
@@ -1880,13 +2129,35 @@
 		});
 
 		franceTaxInfoInput.addEventListener("change", (event) => {
+			countryUploadMode = "info";
+			countryUploadModeInputs.forEach((input) => {
+				input.checked = input.value === "info";
+			});
+			uploadedFiles = [];
+			renderFiles();
 			setFranceTaxInfoFile((event.target.files || [])[0]);
 			event.target.value = "";
+			updateCountryTemplate();
 		});
 
 		polandTaxInfoInput.addEventListener("change", (event) => {
+			countryUploadMode = "info";
+			countryUploadModeInputs.forEach((input) => {
+				input.checked = input.value === "info";
+			});
+			uploadedFiles = [];
+			renderFiles();
 			setPolandTaxInfoFile((event.target.files || [])[0]);
 			event.target.value = "";
+			updateCountryTemplate();
+		});
+
+		countryUploadModeInputs.forEach((input) => {
+			input.addEventListener("change", () => {
+				if (input.checked) {
+					setCountryUploadMode(input.value);
+				}
+			});
 		});
 
 		generalTemplateLink.addEventListener("click", () => {
@@ -1920,30 +2191,55 @@
 			}
 		});
 
+		germanyEuVatRows.addEventListener("click", (event) => {
+			const previewButton = event.target.closest("[data-germany-eu-preview]");
+			const deleteButton = event.target.closest("[data-germany-eu-delete]");
+			if (previewButton) {
+				const item = uploadedGermanyEuVatFiles[Number(previewButton.dataset.germanyEuPreview)];
+				if (!item) return;
+				const previewIndex = uploadedFiles.push(item) - 1;
+				previewFile(previewIndex);
+				uploadedFiles.splice(previewIndex, 1);
+				renderFiles();
+			}
+			if (deleteButton) {
+				uploadedGermanyEuVatFiles.splice(Number(deleteButton.dataset.germanyEuDelete), 1);
+				renderGermanyEuVatFiles();
+			}
+		});
+
 		confirmBatchUpload.addEventListener("click", () => {
 			const isGeneral = countrySelect.value === "GENERAL";
+			const isGermany = countrySelect.value === "DE";
 			const isSpain = countrySelect.value === "ES";
 			const isFrance = countrySelect.value === "FR";
 			const isPoland = countrySelect.value === "PL";
-			if (isGeneral && !(uploadedInfoFile && uploadedArchiveFile)) return;
+			if (isGeneral && !(uploadedInfoFile && uploadedArchiveFiles.length)) return;
+			if (isGermany && !(uploadedFiles.length || uploadedGermanyEuVatFiles.length)) return;
 			if (isSpain && !(uploadedSpainEffectiveDateFile && uploadedFiles.length)) return;
-			if (isFrance && !(uploadedFranceTaxInfoFile || uploadedFiles.length)) return;
-			if (isPoland && !(uploadedPolandTaxInfoFile || uploadedFiles.length)) return;
-			if (!isGeneral && !isSpain && !isFrance && !isPoland && !uploadedFiles.length) return;
+			if (isFrance && countryUploadMode === "info" && !uploadedFranceTaxInfoFile) return;
+			if (isFrance && countryUploadMode === "file" && !uploadedFiles.length) return;
+			if (isPoland && countryUploadMode === "info" && !uploadedPolandTaxInfoFile) return;
+			if (isPoland && countryUploadMode === "file" && !uploadedFiles.length) return;
+			if (!isGeneral && !isGermany && !isSpain && !isFrance && !isPoland && !uploadedFiles.length) return;
 			const taskNo = "BTAX" + new Date().toISOString().replace(/\D/g, "").slice(0, 14);
+			const germanySubmitResult = getGermanySubmitResult();
 			if (isGeneral) {
 				standardResultText.textContent = "，任务号：" + taskNo + "。请前往我的任务下载查看结果。";
 				standardResultPanel.classList.add("show");
 			} else {
-				resultText.textContent = "，任务号：" + taskNo + "。请前往我的任务下载查看结果。";
+				resultText.textContent = germanySubmitResult
+					? "，任务号：" + taskNo + "。" + germanySubmitResult.message
+					: "，任务号：" + taskNo + "。请前往我的任务下载查看结果。";
 				resultPanel.classList.add("show");
 			}
-			addTaskRow(taskNo);
-			showToast("已创建批量录入税号任务，请前往我的任务下载查看结果。");
+			addTaskRow(taskNo, germanySubmitResult || {});
+			showToast(germanySubmitResult ? germanySubmitResult.toast : "已创建批量录入税号任务，请前往我的任务下载查看结果。");
 			setTimeout(closeModal, 800);
 		});
 
 		renderFiles();
+		renderGermanyEuVatFiles();
 		renderStandardUploads();
 		renderSpainEffectiveDateUpload();
 		renderFranceTaxInfoUpload();

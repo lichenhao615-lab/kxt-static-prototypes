@@ -464,7 +464,11 @@
 		}
 
 		.drawer.wide {
-			width: 860px;
+			width: min(1040px, calc(100vw - 40px));
+		}
+
+		.drawer.template-editor-drawer {
+			width: min(1180px, calc(100vw - 32px));
 		}
 
 		.drawer-header {
@@ -901,6 +905,110 @@
 			flex: 1;
 		}
 
+		.esign-editor {
+			display: grid;
+			grid-template-columns: 170px minmax(0, 1fr) 210px;
+			gap: 12px;
+			min-height: 460px;
+		}
+
+		.esign-panel,
+		.esign-canvas,
+		.esign-props {
+			border: 1px solid #e7ebef;
+			background: #fff;
+		}
+
+		.esign-panel,
+		.esign-props {
+			padding: 12px;
+		}
+
+		.esign-section-title {
+			margin-bottom: 10px;
+			color: #111827;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.esign-tool {
+			height: 32px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 8px;
+			padding: 0 10px;
+			border: 1px solid #d8dde3;
+			background: #fbfcfd;
+			color: #344054;
+			font-size: 12px;
+		}
+
+		.esign-canvas {
+			display: flex;
+			flex-direction: column;
+			min-width: 0;
+		}
+
+		.esign-toolbar {
+			height: 42px;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 0 12px;
+			border-bottom: 1px solid #edf0f2;
+			background: #f7f9fb;
+			color: #4b5563;
+			font-size: 12px;
+		}
+
+		.esign-page {
+			position: relative;
+			width: 420px;
+			min-height: 540px;
+			margin: 18px auto;
+			padding: 28px 34px;
+			border: 1px solid #e1e6eb;
+			background: #fff;
+			box-shadow: 0 6px 20px rgba(15, 23, 42, .08);
+			line-height: 1.9;
+			font-size: 13px;
+		}
+
+		.esign-placeholder {
+			color: #667085;
+			border-bottom: 1px solid #d0d5dd;
+		}
+
+		.esign-control {
+			position: absolute;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border: 1px dashed var(--brand-dark);
+			background: rgba(0, 165, 168, .08);
+			color: var(--brand-dark);
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.esign-control.stamp {
+			border-color: #dc6803;
+			background: rgba(255, 250, 235, .9);
+			color: #b54708;
+		}
+
+		.esign-prop-row {
+			display: grid;
+			gap: 6px;
+			margin-bottom: 10px;
+			font-size: 12px;
+		}
+
+		.esign-prop-row span {
+			color: #74808a;
+		}
+
 		.material-source-control {
 			display: none;
 			grid-column: span 3;
@@ -959,6 +1067,260 @@
 			font-size: 12px;
 		}
 
+		.template-edit-shell {
+			display: block;
+		}
+
+		.template-edit-main {
+			border: 1px solid #e7ebef;
+			background: #fff;
+		}
+
+		.template-edit-main {
+			min-width: 0;
+		}
+
+		.editor-tabs {
+			height: 42px;
+			display: flex;
+			align-items: center;
+			gap: 18px;
+			padding: 0 14px;
+			border-bottom: 1px solid #edf0f2;
+			background: #fafafa;
+		}
+
+		.editor-tab {
+			height: 42px;
+			display: flex;
+			align-items: center;
+			border-bottom: 2px solid transparent;
+			color: #4b5563;
+			cursor: pointer;
+		}
+
+		.editor-tab.active {
+			border-color: var(--brand);
+			color: var(--brand-dark);
+			font-weight: 600;
+		}
+
+		.editor-panel {
+			display: none;
+			padding: 16px;
+		}
+
+		.editor-panel.active {
+			display: block;
+		}
+
+		.template-meta-strip {
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			gap: 10px;
+			margin-bottom: 14px;
+		}
+
+		.template-meta-card {
+			min-height: 62px;
+			padding: 10px 12px;
+			border: 1px solid #e7ebef;
+			background: #fbfcfd;
+		}
+
+		.template-meta-card span {
+			display: block;
+			margin-bottom: 6px;
+			color: #74808a;
+			font-size: 12px;
+		}
+
+		.template-meta-card strong {
+			display: block;
+			overflow: hidden;
+			color: #111827;
+			font-size: 14px;
+			font-weight: 600;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.template-workbench {
+			display: block;
+		}
+
+		.template-preview-card {
+			border: 1px solid #e7ebef;
+			background: #fff;
+		}
+
+		.template-preview-head {
+			min-height: 42px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 0 12px;
+			border-bottom: 1px solid #edf0f2;
+			background: #fafafa;
+			color: #111827;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.template-preview-head span {
+			color: #74808a;
+			font-size: 12px;
+			font-weight: 400;
+		}
+
+		.template-toolbar {
+			min-height: 40px;
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 8px;
+			padding: 8px 10px;
+			border: 1px solid #e1e6eb;
+			background: #f7f9fb;
+			color: #4b5563;
+			font-size: 12px;
+		}
+
+		.template-toolbar.inline {
+			border: 0;
+			border-bottom: 1px solid #edf0f2;
+		}
+
+		.tool-chip {
+			min-width: 28px;
+			height: 24px;
+			display: inline-grid;
+			place-items: center;
+			border: 1px solid #d8dde3;
+			background: #fff;
+			color: #111827;
+			font-weight: 600;
+		}
+
+		.template-document {
+			min-height: 360px;
+			padding: 28px 36px;
+			border: 0;
+			background: #fff;
+			box-shadow: inset 0 0 0 1px #f7f9fb;
+			line-height: 2;
+			font-size: 14px;
+		}
+
+		.placeholder-chip-list {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+		}
+
+		.placeholder-chip {
+			height: 24px;
+			display: inline-flex;
+			align-items: center;
+			padding: 0 8px;
+			border: 1px solid #cfeeee;
+			border-radius: 2px;
+			background: #f2fbfb;
+			color: var(--brand-dark);
+			font-family: Consolas, "SFMono-Regular", monospace;
+			font-size: 12px;
+		}
+
+		.placeholder-board-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			margin-bottom: 10px;
+		}
+
+		.placeholder-count {
+			color: #74808a;
+			font-size: 12px;
+			font-weight: 400;
+		}
+
+		.import-warning {
+			display: grid;
+			grid-template-columns: 34px minmax(0, 1fr);
+			gap: 10px;
+			align-items: start;
+			padding: 12px;
+			border: 1px solid #ffe1b3;
+			background: #fff8eb;
+			color: #7a4a00;
+			font-size: 13px;
+			line-height: 1.7;
+		}
+
+		.import-warning-mark {
+			width: 28px;
+			height: 28px;
+			display: grid;
+			place-items: center;
+			border-radius: 50%;
+			background: #faad14;
+			color: #fff;
+			font-weight: 700;
+		}
+
+		.import-file-name {
+			margin-left: auto;
+			color: #74808a;
+			font-size: 12px;
+		}
+
+		.placeholder-token {
+			display: inline-flex;
+			align-items: center;
+			height: 22px;
+			padding: 0 6px;
+			border-radius: 3px;
+			background: #e7fafa;
+			color: var(--brand-dark);
+			font-family: Consolas, "SFMono-Regular", monospace;
+			line-height: 22px;
+		}
+
+		.status-flow {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 8px;
+			margin-bottom: 14px;
+		}
+
+		.status-step {
+			min-height: 58px;
+			padding: 10px;
+			border: 1px solid #e7ebef;
+			background: #fbfcfd;
+		}
+
+		.status-step strong {
+			display: block;
+			margin-bottom: 4px;
+			color: #111827;
+			font-size: 13px;
+		}
+
+		.status-step span {
+			color: #74808a;
+			font-size: 12px;
+		}
+
+		.editor-tip {
+			margin-bottom: 10px;
+			color: #74808a;
+			font-size: 12px;
+			line-height: 1.6;
+		}
+
 		.confirm-footer {
 			height: 56px;
 			display: flex;
@@ -987,7 +1349,7 @@
 	</nav>
 	<div class="top-actions">
 		<span>⌕</span>
-		<span>?</span>
+		<span>Help</span>
 		<div class="user">
 			<div class="avatar"></div>
 			<span>李晨浩</span>
@@ -1247,10 +1609,10 @@
 			</div>
 
 			<div class="toolbar">
-				<input class="input" placeholder="资料项ID/资料项名称/腾讯云模板ID">
+				<input class="input" placeholder="资料项ID/资料项名称/模板CODE">
 				<select class="select"><option>通用资料：全部</option><option>通用</option><option>具体表单</option></select>
 				<select class="select"><option>请选择具体表单</option></select>
-				<select class="select"><option>请选择输出格式</option></select>
+				<select class="select"><option>请选择文件格式</option></select>
 				<select class="select"><option>请选择状态</option></select>
 				<button class="btn primary">搜索</button>
 				<button class="btn ghost">重置</button>
@@ -1269,24 +1631,24 @@
 					<colgroup>
 						<col style="width:90px">
 						<col style="width:130px">
-						<col style="width:210px">
+						<col style="width:170px">
 						<col style="width:110px">
 						<col style="width:220px">
 						<col style="width:210px">
 						<col style="width:110px">
 						<col style="width:90px">
 						<col style="width:170px">
-						<col style="width:190px">
+						<col style="width:230px">
 					</colgroup>
 					<thead>
 					<tr>
 						<th>序号</th>
 						<th>资料项ID</th>
 						<th>资料项名称</th>
-						<th>资料项来源</th>
+						<th>资料项类型</th>
 						<th>所属表单</th>
-						<th>腾讯云模板ID/表单资料</th>
-						<th>输出格式</th>
+						<th>模板CODE/表单资料</th>
+						<th>文件格式</th>
 						<th>状态</th>
 						<th>更新时间</th>
 						<th>操作</th>
@@ -1297,7 +1659,7 @@
 						<td>1</td>
 						<td>TPL-10021</td>
 						<td>专利申请委托书</td>
-						<td>腾讯云</td>
+						<td>模板</td>
 						<td>通用</td>
 						<td>tcpl_908321884</td>
 						<td>PDF</td>
@@ -1309,7 +1671,7 @@
 						<td>2</td>
 						<td>TPL-10022</td>
 						<td>申请人信息表</td>
-						<td>腾讯云</td>
+						<td>模板</td>
 						<td>外观专利注册资料表</td>
 						<td>tcpl_908321885</td>
 						<td>Excel</td>
@@ -1321,7 +1683,7 @@
 						<td>3</td>
 						<td>TPL-10023</td>
 						<td>营业执照翻译件模板</td>
-						<td>腾讯云</td>
+						<td>模板</td>
 						<td>主体资料表单</td>
 						<td>tcpl_908321886</td>
 						<td>Word</td>
@@ -1333,7 +1695,7 @@
 						<td>4</td>
 						<td>TPL-10024</td>
 						<td>法人身份证翻译件模板</td>
-						<td>腾讯云</td>
+						<td>模板</td>
 						<td>主体资料表单</td>
 						<td>tcpl_908321887</td>
 						<td>PDF</td>
@@ -1575,9 +1937,9 @@
 							<th>序号</th>
 							<th>资料项ID</th>
 							<th>资料项名称</th>
-							<th>资料项来源</th>
-							<th>腾讯云模板ID/表单资料</th>
-							<th>输出格式</th>
+							<th>资料项类型</th>
+							<th>模板CODE/表单资料</th>
+							<th>文件格式</th>
 							<th>状态</th>
 							<th>更新时间</th>
 							<th>操作</th>
@@ -1588,7 +1950,7 @@
 							<td>1</td>
 							<td><span class="item-id">TPL-10021</span></td>
 							<td><span class="item-name">专利申请委托书</span></td>
-							<td>腾讯云</td>
+							<td>模板</td>
 							<td><span class="item-source"><span>tcpl_908321884</span></span></td>
 							<td>PDF</td>
 							<td><span class="status on">启用</span></td>
@@ -1644,7 +2006,8 @@
 				<div class="section-body help">
 					<div>表单用于承载业务字段、附件字段及可生成的资料项；资料项挂在一个或多个表单下维护，作为表单可对外输出的标准资料定义。</div>
 					<div>表单资料项挂在表单上统一维护，不只服务于资料包导出，也可被资料下载、合同签署等场景复用。</div>
-					<div>资料项来源为“腾讯云”时，系统按腾讯云模板生成文件；资料项来源为“表单资料”时，直接读取表单附件字段。</div>
+					<div>资料项类型为“模板”时，系统按模板 CODE 生成文件；资料项类型为“表单资料”时，直接读取表单附件字段。</div>
+					<div>资料项正文由系统模板能力维护，可通过导入 Excel、Word、PDF 文件覆盖当前正文；签署区和签名、盖章、签署日期等控件通过腾讯电子签嵌入式编辑页配置；系统保存资料项、模板 CODE、占位符和版本关系。</div>
 					<div>资料项生成方式由资料来源数量自动决定：只有一个文件时仅支持单个生成；存在多个文件时仅支持合并生成，并按资料来源顺序合并。</div>
 					<div>资料包配置挂在流程上，流程关联表单后，可从这些表单已维护的资料项中选择要导出的内容，并按资料包方案配置导出文件名、顺序和格式转换规则。</div>
 				</div>
@@ -1686,8 +2049,8 @@
 							<div class="material-grid">
 								<div class="label"><span class="required">*</span>资料项名称</div>
 								<input class="field" value="专利申请委托书">
-								<div class="label"><span class="required">*</span>资料项来源</div>
-								<select class="field" id="materialType" onchange="toggleMaterialType()"><option selected>腾讯云</option><option>表单</option></select>
+								<div class="label"><span class="required">*</span>资料项类型</div>
+								<select class="field" id="materialType" onchange="toggleMaterialType()"><option selected>模板</option><option>表单资料</option></select>
 								<div class="label">状态</div>
 								<div class="toggle"><span class="switch"></span><span>启用</span></div>
 								<div class="label">备注</div>
@@ -1698,10 +2061,11 @@
 						<div class="material-group">
 							<div class="material-group-title">资料来源</div>
 							<div class="material-grid">
-								<div class="label material-cloud-row">腾讯云模板ID</div>
+								<div class="label material-cloud-row">模板CODE</div>
 								<div class="field-with-action material-cloud-row" style="grid-column: span 3;">
 									<input class="field" id="selectedCloudTemplatesText" value="tcpl_908321884" readonly>
 									<button class="btn small ghost" onclick="openCloudTemplateSelectModal()">选择模板</button>
+									<button class="btn small ghost" onclick="openTemplateEditorDrawer('新建资料项模板')">在线新增模板</button>
 								</div>
 								<div class="label form-config-row"><span class="required">*</span>表单资料</div>
 								<div class="material-source-control" id="formFileControl">
@@ -1719,17 +2083,17 @@
 								<thead>
 								<tr>
 									<th>序号</th>
-									<th>资料项来源</th>
-									<th>腾讯云模板ID/表单资料</th>
+									<th>资料项类型</th>
+									<th>模板CODE/表单资料</th>
 									<th>操作</th>
 								</tr>
 								</thead>
 								<tbody id="materialSourceRows">
 								<tr>
 									<td>1</td>
-									<td>腾讯云</td>
+									<td>模板</td>
 									<td>tcpl_908321884</td>
-									<td><span class="actions"><span class="action-text" onclick="moveMaterialSourceItem(0, -1)">上移</span><span class="action-text" onclick="moveMaterialSourceItem(0, 1)">下移</span><span class="action-danger" onclick="deleteMaterialSourceItem(0)">删除</span></span></td>
+									<td><span class="actions"><span class="action-text" onclick="moveMaterialSourceItem(0, -1)">上移</span><span class="action-text" onclick="moveMaterialSourceItem(0, 1)">下移</span><span class="action-text" onclick="openTemplateEditorDrawer('专利申请委托书')">在线编辑模板</span><span class="action-danger" onclick="deleteMaterialSourceItem(0)">删除</span></span></td>
 								</tr>
 								</tbody>
 							</table>
@@ -1738,7 +2102,7 @@
 						<div class="material-group">
 							<div class="material-group-title">输出设置</div>
 							<div class="material-grid">
-								<div class="label"><span class="required">*</span>输出格式</div>
+								<div class="label"><span class="required">*</span>文件格式</div>
 								<select class="field"><option>PDF</option><option>Word</option><option>Excel</option></select>
 								<div class="label">资料项生成方式</div>
 								<input class="field" id="generationModeText" value="单个" readonly>
@@ -1755,6 +2119,239 @@
 	</div>
 </div>
 
+<div class="drawer-mask" id="templateEditorDrawer">
+	<div class="drawer wide template-editor-drawer">
+		<div class="drawer-header">
+			<div class="drawer-title">资料项在线编辑 - <span id="editingTemplateName">专利申请委托书</span></div>
+		</div>
+		<div class="drawer-body">
+			<div class="template-edit-shell">
+				<div class="template-edit-main">
+					<div class="editor-panel active" id="templateEditorUnifiedPanel">
+						<div class="material-group">
+							<div class="placeholder-board-head">
+								<div class="material-group-title" style="margin-bottom:0;">基础信息</div>
+							</div>
+							<div class="material-grid">
+								<div class="label">模板名称</div>
+								<input class="field" id="templateEditorNameInput" value="专利申请委托书">
+								<div class="label">文件格式</div>
+								<select class="field"><option>Excel</option><option>Word</option><option>PDF</option></select>
+								<div class="label">模板CODE</div>
+								<input class="field" value="tcpl_908321884" readonly>
+								<div class="label">所属资料项</div>
+								<input class="field" value="专利申请委托书" readonly>
+							</div>
+						</div>
+						<div class="material-group" style="margin-top:14px;">
+							<div class="placeholder-board-head">
+								<div class="material-group-title" style="margin-bottom:0;">在线编辑模板</div>
+								<div>
+									<button class="btn small ghost" onclick="triggerTemplateImport()">导入文件</button>
+									<input type="file" id="templateImportFile" accept=".xls,.xlsx,.pdf,.doc,.docx" style="display:none;" onchange="prepareTemplateImport(this)">
+								</div>
+							</div>
+						<div class="editor-tip">正文由系统模板能力维护；导入 Excel、Word、PDF 文件后会覆盖当前正文，并重新识别正文中的 {{field_code}} 占位符。</div>
+						<div class="template-workbench">
+							<div class="template-preview-card">
+								<div class="template-preview-head">
+									<div>模板正文预览 <span>导入文件后自动刷新</span></div>
+								</div>
+								<div class="template-toolbar inline">
+									<span>当前文件：专利申请委托书.docx</span>
+									<span class="tool-chip">PDF</span>
+									<span class="tool-chip">V3</span>
+									<span class="import-file-name" id="templateImportFileName">支持 Excel / Word / PDF，导入后覆盖当前正文</span>
+								</div>
+								<div class="template-document" id="templateBodyPreview">
+									<p style="text-align:center;font-weight:700;font-size:18px;margin:0 0 18px;">专利申请委托书</p>
+									<p>委托方：<span class="placeholder-token">{{company_name}}</span></p>
+									<p>英文名称：<span class="placeholder-token">{{company_en_name}}</span></p>
+									<p>联系人：<span class="placeholder-token">{{contact_name}}</span>，联系电话：<span class="placeholder-token">{{contact_phone}}</span></p>
+									<p>委托事项：委托代理机构办理<span class="placeholder-token">{{process_name}}</span>相关申请资料准备、递交及后续沟通事项。</p>
+									<p>委托日期：<span class="placeholder-token">{{export_date}}</span></p>
+									<p style="margin-top:48px;">签章区域：签名、盖章、签署日期在需要签署时交由腾讯电子签控件处理。</p>
+								</div>
+							</div>
+						</div>
+						</div>
+						<div class="material-group" style="margin-top:14px;">
+							<div class="placeholder-board-head">
+								<div class="material-group-title" style="margin-bottom:0;">现有占位符</div>
+								<div style="display:flex;align-items:center;gap:10px;">
+									<div class="placeholder-count">当前正文识别 6 个</div>
+									<button class="btn small ghost" onclick="openPlaceholderDictionaryModal()">占位符字典</button>
+								</div>
+							</div>
+							<div class="editor-tip">展示当前正文中已经存在的占位符，用于确认模板正文中已引用的系统字段。</div>
+							<table class="mini-table">
+								<colgroup>
+									<col style="width:70px">
+									<col style="width:260px">
+									<col style="width:240px">
+									<col style="width:140px">
+								</colgroup>
+								<thead>
+								<tr>
+									<th>序号</th>
+									<th>占位符</th>
+									<th>字段名称</th>
+									<th>来源</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr><td>1</td><td>{{company_name}}</td><td>公司名称</td><td>主体资料表单</td></tr>
+								<tr><td>2</td><td>{{company_en_name}}</td><td>公司英文名称</td><td>主体资料表单</td></tr>
+								<tr><td>3</td><td>{{contact_name}}</td><td>联系人</td><td>手动补充字段</td></tr>
+								<tr><td>4</td><td>{{contact_phone}}</td><td>联系电话</td><td>手动补充字段</td></tr>
+								<tr><td>5</td><td>{{process_name}}</td><td>流程名称</td><td>系统字段</td></tr>
+								<tr><td>6</td><td>{{export_date}}</td><td>导出日期</td><td>系统字段</td></tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="drawer-footer">
+			<button class="btn ghost" onclick="openSignControlModal()">配置签署区和控件</button>
+			<button class="btn primary">保存模板</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="placeholderDictionaryModal">
+	<div class="confirm-dialog large">
+		<div class="confirm-head">
+			<span>占位符字典</span>
+			<button class="drawer-close" onclick="closePlaceholderDictionaryModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="modal-toolbar">
+				<input class="input" placeholder="占位符 / 字段名称">
+				<select class="select"><option>全部来源</option><option>系统字段</option><option>表单字段</option><option>手动补充字段</option></select>
+				<button class="btn primary">查询</button>
+				<button class="btn ghost">重置</button>
+			</div>
+			<div class="modal-note">可复制占位符后放入模板正文。</div>
+			<table class="mini-table">
+				<colgroup>
+					<col style="width:70px">
+					<col style="width:260px">
+					<col style="width:220px">
+					<col style="width:150px">
+					<col style="width:120px">
+				</colgroup>
+				<thead>
+				<tr>
+					<th>序号</th>
+					<th>占位符</th>
+					<th>字段名称</th>
+					<th>来源</th>
+					<th>操作</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr><td>1</td><td>{{company_name}}</td><td>公司名称</td><td>表单字段</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>2</td><td>{{company_en_name}}</td><td>公司英文名称</td><td>表单字段</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>3</td><td>{{export_date}}</td><td>导出日期</td><td>系统字段</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>4</td><td>{{legal_representative}}</td><td>法人姓名</td><td>表单字段</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>5</td><td>{{manual_remark}}</td><td>手动备注</td><td>手动补充字段</td><td><span class="action-text">复制</span></td></tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closePlaceholderDictionaryModal()">关闭</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="templateImportConfirmModal">
+	<div class="confirm-dialog">
+		<div class="confirm-head">
+			<span>导入文件</span>
+			<button class="drawer-close" onclick="closeTemplateImportConfirm()">×</button>
+		</div>
+		<div class="confirm-body">
+			<div class="import-warning">
+				<div class="import-warning-mark">!</div>
+				<div>
+					<div><strong>导入文件会覆盖当前正文内容，是否继续？</strong></div>
+					<div>确认后系统会用新文件替换当前模板正文，并重新识别正文中的占位符。取消后当前正文不变。</div>
+				</div>
+			</div>
+			<div class="modal-note" style="margin-top:10px;margin-bottom:0;">支持 Excel、Word、PDF 格式。</div>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeTemplateImportConfirm()">取消</button>
+			<button class="btn primary" onclick="confirmTemplateImport()">确认导入</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="signControlModal">
+	<div class="confirm-dialog large">
+		<div class="confirm-head">
+			<span>腾讯电子签在线配置</span>
+			<button class="drawer-close" onclick="closeSignControlModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="modal-toolbar">
+				<button class="btn primary">保存腾讯配置</button>
+				<button class="btn ghost">预览签署流程</button>
+				<button class="btn ghost">重新加载腾讯编辑页</button>
+			</div>
+			<div class="modal-note">该区域模拟腾讯电子签嵌入式模板编辑页。签署区、签名、盖章、签署日期等控件由腾讯侧自由拖拽编辑，系统只保存资料项、模板 CODE、控件配置及版本关系；实际发起时按业务单据带入对应对象。</div>
+			<div class="esign-editor">
+				<div class="esign-panel">
+					<div class="esign-section-title">控件</div>
+					<div class="esign-tool">签名控件<span>拖入</span></div>
+					<div class="esign-tool">盖章控件<span>拖入</span></div>
+					<div class="esign-tool">签署日期<span>拖入</span></div>
+					<div class="esign-tool">文本填写<span>拖入</span></div>
+					<div class="esign-section-title" style="margin-top:16px;">模板信息</div>
+					<div class="esign-tool">模板CODE<span>已绑定</span></div>
+					<div class="esign-tool">控件配置<span>可覆盖</span></div>
+				</div>
+				<div class="esign-canvas">
+					<div class="esign-toolbar">
+						<span>腾讯电子签模板编辑页</span>
+						<span class="tool-chip">-</span>
+						<span>100%</span>
+						<span class="tool-chip">+</span>
+						<span>模板CODE：tcpl_908321884</span>
+					</div>
+					<div class="esign-page">
+						<p style="text-align:center;font-weight:700;font-size:17px;margin:0 0 18px;">专利申请委托书</p>
+						<p>委托方：<span class="esign-placeholder">{{company_name}}</span></p>
+						<p>英文名称：<span class="esign-placeholder">{{company_en_name}}</span></p>
+						<p>联系人：<span class="esign-placeholder">{{contact_name}}</span></p>
+						<p>委托事项：办理外观专利注册资料准备、递交及后续沟通事项。</p>
+						<p style="margin-top:220px;">签署区域：</p>
+						<div class="esign-control" style="left:42px;bottom:86px;width:128px;height:38px;">客户签名</div>
+						<div class="esign-control stamp" style="right:58px;bottom:86px;width:120px;height:58px;">代理机构盖章</div>
+						<div class="esign-control" style="left:42px;bottom:42px;width:128px;height:30px;">签署日期</div>
+					</div>
+				</div>
+				<div class="esign-props">
+					<div class="esign-section-title">控件属性</div>
+					<div class="esign-prop-row"><span>当前控件</span><strong>客户签名</strong></div>
+					<div class="esign-prop-row"><span>来源规则</span><input class="field" value="发起时自动带入" readonly></div>
+					<div class="esign-prop-row"><span>控件类型</span><input class="field" value="签名" readonly></div>
+					<div class="esign-prop-row"><span>页码</span><input class="field" value="第 1 页"></div>
+					<div class="esign-prop-row"><span>位置</span><input class="field" value="X:42, Y:454"></div>
+					<div class="esign-prop-row"><span>尺寸</span><input class="field" value="128 x 38"></div>
+					<div class="esign-prop-row"><span>必填</span><select class="field"><option>是</option><option>否</option></select></div>
+				</div>
+			</div>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeSignControlModal()">取消</button>
+			<button class="btn primary" onclick="closeSignControlModal()">保存并返回</button>
+		</div>
+	</div>
+</div>
+
 <div class="confirm-mask" id="materialItemSelectModal">
 	<div class="confirm-dialog large">
 		<div class="confirm-head">
@@ -1763,8 +2360,8 @@
 		</div>
 		<div class="confirm-body compact">
 			<div class="modal-toolbar">
-				<input class="input" placeholder="资料项ID / 资料项名称 / 腾讯云模板ID / 表单资料">
-				<select class="select"><option>全部输出格式</option><option>PDF</option><option>Word</option><option>Excel</option></select>
+				<input class="input" placeholder="资料项ID / 资料项名称 / 模板CODE / 表单资料">
+				<select class="select"><option>全部文件格式</option><option>PDF</option><option>Word</option><option>Excel</option></select>
 				<select class="select"><option>启用</option><option>停用</option><option>全部状态</option></select>
 				<button class="btn primary">搜索</button>
 				<button class="btn ghost">重置</button>
@@ -1786,9 +2383,9 @@
 					<th>选择</th>
 					<th>资料项ID</th>
 					<th>资料项名称</th>
-					<th>资料项来源</th>
-					<th>腾讯云模板ID/表单资料</th>
-					<th>输出格式</th>
+					<th>资料项类型</th>
+					<th>模板CODE/表单资料</th>
+					<th>文件格式</th>
 					<th>状态</th>
 				</tr>
 				</thead>
@@ -1797,7 +2394,7 @@
 					<td><input type="checkbox" class="material-item-select-check" data-id="TPL-10021" data-name="专利申请委托书" data-source-type="cloud" data-source="tcpl_908321884" data-format="PDF" checked></td>
 					<td><span class="item-id">TPL-10021</span></td>
 					<td><span class="item-name">专利申请委托书</span></td>
-					<td>腾讯云</td>
+					<td>模板</td>
 					<td><span class="item-source"><span>tcpl_908321884</span></span></td>
 					<td>PDF</td>
 					<td><span class="status on">启用</span></td>
@@ -1913,18 +2510,18 @@
 <div class="confirm-mask" id="cloudTemplateSelectModal">
 	<div class="confirm-dialog large">
 		<div class="confirm-head">
-			<span>选择腾讯云模板</span>
+			<span>选择模板</span>
 			<button class="drawer-close" onclick="closeCloudTemplateSelectModal()">×</button>
 		</div>
 		<div class="confirm-body compact">
 			<div class="modal-toolbar">
-				<input class="input" placeholder="腾讯云模板ID / 模板名称">
-				<select class="select"><option>全部输出格式</option><option>PDF</option><option>Word</option><option>Excel</option></select>
+				<input class="input" placeholder="模板CODE / 模板名称">
+				<select class="select"><option>全部文件格式</option><option>PDF</option><option>Word</option><option>Excel</option></select>
 				<select class="select"><option>启用</option><option>停用</option><option>全部状态</option></select>
 				<button class="btn primary">搜索</button>
 				<button class="btn ghost">重置</button>
 			</div>
-			<div class="modal-note">腾讯云模板支持多选；仅选择一个模板时只支持单个生成，选择多个模板时只支持合并生成。</div>
+			<div class="modal-note">模板支持多选；仅选择一个模板时只支持单个生成，选择多个模板时只支持合并生成。</div>
 			<table class="mini-table">
 				<colgroup>
 					<col style="width:54px">
@@ -1936,9 +2533,9 @@
 				<thead>
 				<tr>
 					<th>选择</th>
-					<th>腾讯云模板ID</th>
+					<th>模板CODE</th>
 					<th>模板名称</th>
-					<th>输出格式</th>
+					<th>文件格式</th>
 					<th>状态</th>
 				</tr>
 				</thead>
@@ -2140,9 +2737,10 @@
 <script>
 	let formMaterialItems = [];
 	let materialSourceItems = [
-		{ type: "腾讯云", code: "tcpl_908321884" }
+		{ type: "模板", code: "tcpl_908321884" }
 	];
 	let commonMaterialItemEnabled = false;
+	let pendingTemplateImportFileName = "";
 	const selectedFormsDefaultText = "外观专利注册资料表、主体资料表单";
 
 	function openDrawer(id) {
@@ -2154,6 +2752,57 @@
 
 	function closeDrawer(id) {
 		document.getElementById(id).classList.remove("open");
+	}
+
+	function openTemplateEditorDrawer(name) {
+		document.getElementById("editingTemplateName").textContent = name;
+		document.getElementById("templateEditorNameInput").value = name;
+		openDrawer("templateEditorDrawer");
+	}
+
+	function openPlaceholderDictionaryModal() {
+		document.getElementById("placeholderDictionaryModal").classList.add("open");
+	}
+
+	function closePlaceholderDictionaryModal() {
+		document.getElementById("placeholderDictionaryModal").classList.remove("open");
+	}
+
+	function triggerTemplateImport() {
+		document.getElementById("templateImportFile").click();
+	}
+
+	function prepareTemplateImport(input) {
+		const file = input.files && input.files[0];
+		if (!file) {
+			return;
+		}
+		pendingTemplateImportFileName = file.name;
+		document.getElementById("templateImportFileName").textContent = "已选择：" + file.name;
+		document.getElementById("templateImportConfirmModal").classList.add("open");
+	}
+
+	function closeTemplateImportConfirm() {
+		document.getElementById("templateImportConfirmModal").classList.remove("open");
+	}
+
+	function confirmTemplateImport() {
+		const fileName = pendingTemplateImportFileName || "导入文件";
+		document.getElementById("templateBodyPreview").innerHTML =
+			'<p style="text-align:center;font-weight:700;font-size:18px;margin:0 0 18px;">' + fileName + '</p>' +
+			'<p>已导入文件内容，并覆盖当前正文。</p>' +
+			'<p>系统将基于导入后的模板内容重新识别正文中的占位符。</p>' +
+			'<p>导入格式支持 Excel、Word、PDF。</p>' +
+			'<p style="margin-top:24px;">示例占位符：<span class="placeholder-token">{{company_name}}</span> <span class="placeholder-token">{{export_date}}</span></p>';
+		closeTemplateImportConfirm();
+	}
+
+	function openSignControlModal() {
+		document.getElementById("signControlModal").classList.add("open");
+	}
+
+	function closeSignControlModal() {
+		document.getElementById("signControlModal").classList.remove("open");
 	}
 
 	function openTrialExportModal() {
@@ -2242,7 +2891,7 @@
 
 	function renderItemType(sourceType) {
 		if (sourceType === "cloud") {
-			return '腾讯云';
+			return '模板';
 		}
 		if (sourceType === "merge") {
 			return '表单资料';
@@ -2303,7 +2952,7 @@
 			return item.code;
 		}).join(" + ");
 		materialSourceItems = selected.map(function (item) {
-			return { type: "腾讯云", code: item.code };
+			return { type: "模板", code: item.code };
 		});
 		updateGenerationMode();
 		renderMaterialSourceRows();
@@ -2343,6 +2992,9 @@
 			return;
 		}
 		tbody.innerHTML = materialSourceItems.map(function (item, index) {
+			const editTemplateAction = item.type === "模板"
+				? '<span class="action-text" onclick="openTemplateEditorDrawer(&quot;' + item.code + '&quot;)">在线编辑模板</span>'
+				: "";
 			return '<tr>' +
 				'<td>' + (index + 1) + '</td>' +
 				'<td>' + item.type + '</td>' +
@@ -2350,6 +3002,7 @@
 				'<td><span class="actions">' +
 				'<span class="action-text" onclick="moveMaterialSourceItem(' + index + ', -1)">上移</span>' +
 				'<span class="action-text" onclick="moveMaterialSourceItem(' + index + ', 1)">下移</span>' +
+				editTemplateAction +
 				'<span class="action-danger" onclick="deleteMaterialSourceItem(' + index + ')">删除</span>' +
 				'</span></td>' +
 				'</tr>';
@@ -2382,7 +3035,7 @@
 	}
 
 	function toggleMaterialType() {
-		const isForm = document.getElementById("materialType").value === "表单";
+		const isForm = document.getElementById("materialType").value === "表单资料";
 		document.querySelectorAll(".material-cloud-row").forEach(function (el) {
 			el.style.display = isForm ? "none" : "";
 		});
@@ -2484,5 +3137,7 @@
 </script>
 </body>
 </html>
+
+
 
 

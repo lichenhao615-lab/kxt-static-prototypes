@@ -198,6 +198,7 @@
 			background: #fff;
 			font-size: 13px;
 			color: #1f2937;
+			cursor: pointer;
 		}
 
 		.page-tab.active {
@@ -334,6 +335,7 @@
 		}
 
 		.table-wrap {
+			overflow-x: auto;
 			border: 1px solid #edf0f2;
 			border-bottom: none;
 			background: #fff;
@@ -417,12 +419,18 @@
 		}
 
 		.template-view,
-		.form-view {
+		.form-view,
+		.collaboration-view,
+		.service-view,
+		.service-addon-view {
 			display: none;
 		}
 
 		.content[data-view="templates"] .flow-view,
-		.content[data-view="forms"] .flow-view {
+		.content[data-view="forms"] .flow-view,
+		.content[data-view="collaboration"] .flow-view,
+		.content[data-view="services"] .flow-view,
+		.content[data-view="addonServices"] .flow-view {
 			display: none;
 		}
 
@@ -434,9 +442,840 @@
 			display: block;
 		}
 
+		.content[data-view="collaboration"] .collaboration-view,
+		.content[data-view="services"] .service-view,
+		.content[data-view="addonServices"] .service-addon-view {
+			display: block;
+		}
+
 		.content[data-view="templates"] .menu-row[data-menu="flows"] {
 			background: transparent;
 			color: #1f2937;
+		}
+
+		.service-filter-card {
+			margin-top: 16px;
+			padding: 16px;
+			border: 1px solid var(--line);
+			border-radius: 4px;
+			background: #fff;
+		}
+
+		.category-line {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 12px;
+			font-size: 13px;
+		}
+
+		.category-line:last-child {
+			margin-bottom: 0;
+		}
+
+		.category-label {
+			width: 72px;
+			color: var(--muted);
+			text-align: right;
+		}
+
+		.category-chip {
+			height: 28px;
+			display: inline-flex;
+			align-items: center;
+			padding: 0 12px;
+			border-radius: 2px;
+			color: #334155;
+		}
+
+		.category-chip.active {
+			background: var(--brand-soft);
+			color: var(--brand-dark);
+			font-weight: 600;
+		}
+
+		.status-tabs {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			margin-top: 14px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.status-tab {
+			height: 38px;
+			display: flex;
+			align-items: center;
+			padding: 0 14px;
+			border-bottom: 2px solid transparent;
+			font-size: 13px;
+			color: #4b5563;
+		}
+
+		.status-tab.active {
+			color: var(--brand-dark);
+			border-color: var(--brand);
+			font-weight: 600;
+		}
+
+		.service-toolbar-line {
+			height: 42px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			color: var(--muted);
+			font-size: 13px;
+		}
+
+		.service-name-cell,
+		.child-indent {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.service-name-cell {
+			flex-wrap: wrap;
+		}
+
+		.merge-toggle {
+			width: 18px;
+			height: 18px;
+			display: inline-grid;
+			place-items: center;
+			border: 1px solid #d7e6e8;
+			border-radius: 50%;
+			background: #fff;
+			color: var(--brand-dark);
+			cursor: pointer;
+			font-size: 12px;
+		}
+
+		.child-line {
+			width: 22px;
+			height: 22px;
+			display: inline-block;
+			border-left: 1px solid #c9d6dc;
+			border-bottom: 1px solid #c9d6dc;
+			border-radius: 0 0 0 6px;
+		}
+
+		.service-row-child {
+			background: #f8fafb;
+		}
+
+		.service-row-child.collapsed {
+			display: none;
+		}
+
+		.service-row-main td {
+			height: 58px;
+			background: #fbfefe;
+			border-top: 1px solid rgba(0, 165, 168, .16);
+		}
+
+		.service-row-child td {
+			height: 52px;
+			border-top: 1px solid #edf0f2;
+			color: #475467;
+		}
+
+		.merge-detail {
+			display: inline-flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 4px;
+			line-height: 1.3;
+			white-space: normal;
+		}
+
+		.merge-badge {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 22px;
+			padding: 0 8px;
+			border-radius: 2px;
+			background: var(--brand-soft);
+			color: var(--brand-dark);
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.merge-count-tag {
+			display: inline-flex;
+			align-items: center;
+			height: 22px;
+			padding: 0 8px;
+			border-radius: 12px;
+			background: var(--brand-soft);
+			color: var(--brand-dark);
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.child-flow-name {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			color: #27313d;
+			font-weight: 600;
+		}
+
+		.child-flow-type {
+			display: inline-flex;
+			align-items: center;
+			height: 22px;
+			padding: 0 8px;
+			border-radius: 12px;
+			background: #eef2f6;
+			color: #64748b;
+			font-size: 12px;
+			font-weight: 400;
+		}
+
+		.merge-badge.gray {
+			background: #eef2f6;
+			color: #64748b;
+		}
+
+		.merge-badge.light {
+			background: #f6f7f9;
+			color: #94a3b8;
+			font-weight: 400;
+		}
+
+		.copy-icon {
+			color: #6b7280;
+			font-size: 14px;
+		}
+
+		.link-text {
+			color: var(--brand-dark);
+		}
+
+		.assignee-select {
+			height: 32px;
+			min-width: 110px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			border: 1px solid #d9dde2;
+			border-radius: 3px;
+			background: #f7f7f7;
+			color: #9aa3ad;
+		}
+
+		.rule-flow-tags {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 6px;
+			white-space: normal;
+		}
+
+		.rule-mini-tag {
+			display: inline-flex;
+			align-items: center;
+			height: 24px;
+			padding: 0 8px;
+			border-radius: 12px;
+			background: #f2f6f8;
+			color: #475467;
+			font-size: 12px;
+		}
+
+		.rule-mini-tag.main {
+			background: var(--brand-soft);
+			color: var(--brand-dark);
+			font-weight: 600;
+		}
+
+		.rule-card {
+			margin-top: 16px;
+			border: 1px solid var(--line);
+			border-radius: 4px;
+			background: #fff;
+			overflow: hidden;
+		}
+
+		.rule-card-header {
+			height: 46px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 16px;
+			border-bottom: 1px solid var(--line);
+			background: #fbfcfd;
+			font-size: 14px;
+			font-weight: 600;
+		}
+
+		.rule-actions {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.rule-card-body {
+			padding: 16px;
+		}
+
+		.rule-grid {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 14px;
+		}
+
+		.rule-item {
+			min-height: 80px;
+			padding: 14px;
+			border: 1px solid var(--line);
+			border-radius: 4px;
+			background: #fff;
+		}
+
+		.rule-title {
+			margin-bottom: 8px;
+			font-size: 13px;
+			font-weight: 600;
+			color: #27313d;
+		}
+
+		.rule-desc {
+			color: var(--muted);
+			font-size: 13px;
+			line-height: 1.7;
+		}
+
+		.rule-config-card {
+			margin-top: 16px;
+			border: 1px solid var(--line);
+			border-radius: 4px;
+			background: #fff;
+			overflow: hidden;
+		}
+
+		.config-card-header {
+			min-height: 50px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 16px;
+			padding: 0 16px;
+			border-bottom: 1px solid var(--line);
+			background: #fbfcfd;
+		}
+
+		.config-card-title {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-size: 14px;
+			font-weight: 600;
+			color: #17212b;
+		}
+
+		.config-card-body {
+			padding: 16px;
+		}
+
+		.config-section {
+			margin-bottom: 14px;
+			padding: 16px;
+			border: 1px solid #edf0f2;
+			border-radius: 4px;
+			background: #fff;
+		}
+
+		.config-section:first-child {
+			padding-top: 16px;
+		}
+
+		.config-section:last-child {
+			margin-bottom: 0;
+		}
+
+		.config-section-title {
+			margin-bottom: 14px;
+			font-size: 13px;
+			font-weight: 600;
+			color: #27313d;
+		}
+
+		.config-section-desc {
+			margin: -6px 0 14px;
+			color: #667085;
+			font-size: 12px;
+			line-height: 1.6;
+		}
+
+		.rule-form-grid {
+			display: grid;
+			grid-template-columns: 112px minmax(0, 1fr) 112px minmax(0, 1fr);
+			gap: 14px 12px;
+			align-items: center;
+			font-size: 13px;
+		}
+
+		.rule-form-grid .field,
+		.rule-form-grid .select,
+		.rule-info-grid .field,
+		.rule-info-grid .select,
+		.task-row .field,
+		.task-row .select,
+		.condition-row .field,
+		.condition-row .select {
+			height: 32px;
+			width: 100%;
+		}
+
+		.rule-info-layout {
+			display: grid;
+			gap: 14px;
+		}
+
+		.rule-info-group {
+			padding: 12px;
+			border: 1px solid #edf0f2;
+			border-radius: 4px;
+			background: #fcfdfd;
+		}
+
+		.rule-info-group-title {
+			margin-bottom: 10px;
+			color: #667085;
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.rule-info-grid {
+			display: grid;
+			grid-template-columns: 96px minmax(0, 1fr) 96px minmax(0, 1fr);
+			gap: 12px 10px;
+			align-items: center;
+			font-size: 13px;
+		}
+
+		.rule-info-grid.flow-scope {
+			grid-template-columns: 96px minmax(0, 1fr);
+		}
+
+		.rule-info-grid.single-field {
+			grid-template-columns: 96px minmax(0, 360px);
+		}
+
+		.flow-picker {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) 280px;
+			gap: 14px;
+			align-items: stretch;
+		}
+
+		.flow-picker.merged {
+			grid-template-columns: 1fr;
+			margin-top: 14px;
+		}
+
+		.selected-flow-box {
+			min-height: auto;
+			padding: 12px;
+			border: 1px solid #edf0f2;
+			border-radius: 4px;
+			background: #fcfdfd;
+		}
+
+		.flow-chip-list {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+
+		.flow-chip {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			height: 28px;
+			padding: 0 10px;
+			border: 1px solid #dce6ea;
+			border-radius: 14px;
+			background: #fff;
+			color: #334155;
+			font-size: 12px;
+		}
+
+		.flow-chip.main {
+			border-color: rgba(0, 180, 184, .35);
+			background: var(--brand-soft);
+			color: var(--brand-dark);
+			font-weight: 600;
+		}
+
+		.flow-chip .close {
+			color: #94a3b8;
+		}
+
+		.flow-multi-select {
+			min-height: 38px;
+			display: grid;
+			grid-template-columns: auto minmax(0, 1fr) 18px;
+			align-items: center;
+			gap: 8px;
+			padding: 0 10px;
+			border: 1px solid #d8dde3;
+			border-radius: 2px;
+			background: #fff;
+			color: #17212b;
+			font-size: 13px;
+			cursor: pointer;
+		}
+
+		.flow-multi-select:hover {
+			border-color: var(--brand);
+			box-shadow: 0 0 0 2px rgba(0, 165, 168, .08);
+		}
+
+		.flow-select-count {
+			display: inline-flex;
+			align-items: center;
+			height: 24px;
+			padding: 0 8px;
+			border-radius: 12px;
+			background: var(--brand-soft);
+			color: var(--brand-dark);
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.selected-flow-summary {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+			align-items: center;
+			min-width: 0;
+			padding: 5px 0;
+		}
+
+		.flow-select-arrow {
+			color: #98a2b3;
+			font-size: 12px;
+			text-align: right;
+		}
+
+		.rule-pill-switch {
+			display: inline-flex;
+			align-items: center;
+			width: fit-content;
+			padding: 3px;
+			border: 1px solid #dce6ea;
+			border-radius: 999px;
+			background: #f6f8fa;
+		}
+
+		.rule-pill-option {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 54px;
+			height: 26px;
+			padding: 0 12px;
+			border-radius: 999px;
+			color: #667085;
+			font-size: 12px;
+			cursor: pointer;
+		}
+
+		.rule-pill-option.active {
+			background: var(--brand);
+			color: #fff;
+			font-weight: 600;
+			box-shadow: 0 1px 3px rgba(0, 165, 168, .24);
+		}
+
+		.match-panel {
+			padding: 12px;
+			border: 1px solid #edf0f2;
+			border-radius: 4px;
+			background: #fff;
+		}
+
+		.match-panel .label {
+			margin-bottom: 8px;
+			text-align: left;
+		}
+
+		.task-config {
+			display: grid;
+			gap: 12px;
+		}
+
+		.task-split {
+			display: grid;
+			grid-template-columns: 232px minmax(0, 1fr);
+			gap: 14px;
+			align-items: start;
+		}
+
+		.task-flow-list {
+			border: 1px solid #edf0f2;
+			border-radius: 4px;
+			background: #fcfdfd;
+			overflow: hidden;
+		}
+
+		.task-flow-title {
+			height: 40px;
+			display: flex;
+			align-items: center;
+			padding: 0 12px;
+			border-bottom: 1px solid #edf0f2;
+			background: #fbfcfd;
+			color: #27313d;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.task-flow-item {
+			padding: 12px 14px;
+			border-bottom: 1px solid #edf0f2;
+			cursor: pointer;
+		}
+
+		.task-flow-item:last-child {
+			border-bottom: none;
+		}
+
+		.task-flow-item.active {
+			background: var(--brand-soft);
+			box-shadow: inset 3px 0 0 var(--brand);
+		}
+
+		.task-flow-name {
+			display: block;
+			margin-bottom: 6px;
+			color: #17212b;
+			font-size: 13px;
+			font-weight: 600;
+			line-height: 1.4;
+		}
+
+		.task-flow-meta {
+			display: block;
+			color: #667085;
+			font-size: 12px;
+			line-height: 1.4;
+		}
+
+		.task-detail-panel {
+			display: grid;
+			gap: 12px;
+		}
+
+		.task-block {
+			border: 1px solid #edf0f2;
+			border-radius: 4px;
+			background: #fff;
+			overflow: hidden;
+		}
+
+		.task-block-head {
+			min-height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			padding: 0 12px;
+			border-bottom: 1px solid #edf0f2;
+			background: #fbfcfd;
+			font-size: 13px;
+			font-weight: 600;
+			color: #27313d;
+		}
+
+		.task-row {
+			display: grid;
+			grid-template-columns: 78px minmax(0, 260px);
+			gap: 10px;
+			align-items: center;
+			padding: 12px;
+			border-bottom: 1px solid #edf0f2;
+			font-size: 13px;
+		}
+
+		.condition-area {
+			padding: 12px;
+			background: #fcfdfd;
+		}
+
+		.condition-row {
+			display: grid;
+			grid-template-columns: 78px 120px minmax(0, 1fr) 36px;
+			gap: 8px;
+			align-items: center;
+			margin-bottom: 10px;
+			padding: 10px;
+			border: 1px solid #edf0f2;
+			border-radius: 4px;
+			background: #fff;
+			font-size: 13px;
+		}
+
+		.condition-row:last-child {
+			margin-bottom: 0;
+		}
+
+		.condition-target {
+			display: grid;
+			grid-template-columns: 72px minmax(0, 1fr) 72px minmax(0, 1fr);
+			gap: 8px;
+			align-items: center;
+		}
+
+		.condition-target.company-info {
+			grid-template-columns: 96px minmax(0, 220px);
+		}
+
+		.form-mapping-panel {
+			display: grid;
+			gap: 12px;
+		}
+
+		.form-mapping-summary {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 10px;
+		}
+
+		.form-mapping-card {
+			padding: 12px;
+			border: 1px solid #edf0f2;
+			border-radius: 4px;
+			background: #fcfdfd;
+		}
+
+		.form-mapping-label {
+			margin-bottom: 6px;
+			color: #667085;
+			font-size: 12px;
+		}
+
+		.form-mapping-value {
+			color: #17212b;
+			font-size: 13px;
+			font-weight: 600;
+			line-height: 1.45;
+		}
+
+		.mapping-table {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 13px;
+		}
+
+		.mapping-table th,
+		.mapping-table td {
+			padding: 10px 12px;
+			border: 1px solid #edf0f2;
+			text-align: left;
+			vertical-align: middle;
+		}
+
+		.mapping-table th {
+			background: #fbfcfd;
+			color: #667085;
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.mapping-arrow {
+			color: var(--brand-dark);
+			font-weight: 600;
+			text-align: center;
+		}
+
+		.condition-delete {
+			justify-self: end;
+			white-space: nowrap;
+		}
+
+		.condition-relation-row {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin: -2px 0 8px 10px;
+			font-size: 13px;
+		}
+
+		.condition-relation-row .field {
+			width: 84px;
+			height: 32px;
+		}
+
+		.connector {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 28px;
+			height: 24px;
+			border-radius: 2px;
+			background: #eef5f6;
+			color: var(--brand-dark);
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.inline-action {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			margin-top: 10px;
+			color: var(--brand-dark);
+			font-size: 13px;
+			cursor: pointer;
+		}
+
+		@media (max-width: 1280px) {
+			.rule-form-grid {
+				grid-template-columns: 112px minmax(0, 1fr) 112px minmax(0, 1fr);
+			}
+
+			.rule-info-grid,
+			.rule-info-grid.flow-scope {
+				grid-template-columns: 96px minmax(0, 1fr);
+			}
+
+			.flow-picker {
+				grid-template-columns: 1fr;
+			}
+
+			.task-split {
+				grid-template-columns: 1fr;
+			}
+
+			.task-row,
+			.condition-row {
+				grid-template-columns: 96px minmax(0, 1fr) 96px minmax(0, 1fr);
+			}
+
+			.flow-multi-select {
+				grid-template-columns: 1fr 18px;
+			}
+
+			.flow-select-count {
+				grid-column: 1 / -1;
+				width: fit-content;
+			}
+
+			.condition-target,
+			.condition-target.company-info {
+				grid-column: 1 / -1;
+				grid-template-columns: 96px minmax(0, 1fr) 96px minmax(0, 1fr);
+			}
+
+			.condition-delete {
+				grid-column: 1 / -1;
+				justify-self: start;
+			}
 		}
 
 		.drawer-mask {
@@ -1373,18 +2212,22 @@
 		<div class="menu-row" style="color: var(--brand-dark);">流程管理 <span>⌃</span></div>
 		<div class="menu-row small">节点管理</div>
 		<div class="menu-row small">操作项管理</div>
-		<div class="menu-row small active" data-menu="flows" onclick="showView('flows')">流程列表</div>
+		<div class="menu-row small" data-menu="flows" onclick="showView('flows')">流程列表</div>
 		<div class="menu-row small" data-menu="forms" onclick="showView('forms')">表单管理</div>
 		<div class="menu-row small">显示配置</div>
 		<div class="menu-row small" data-menu="templates" onclick="showView('templates')">资料项列表</div>
+		<div class="menu-row small active" data-menu="collaboration" onclick="showView('collaboration')">协同交付规则</div>
 		<div class="menu-row">知识产权 <span>⌄</span></div>
+		<div class="menu-row" style="color: var(--brand-dark);">服务管理 <span>⌃</span></div>
+		<div class="menu-row small" data-menu="services" onclick="showView('services')">基础服务</div>
+		<div class="menu-row small" data-menu="addonServices" onclick="showView('addonServices')">增值服务</div>
 	</aside>
 
-	<section class="content" id="pageContent" data-view="flows">
+	<section class="content" id="pageContent" data-view="collaboration">
 		<div class="page-tabs">
-			<div class="page-tab">表单管理 ×</div>
-			<div class="page-tab">基础服务 ×</div>
-			<div class="page-tab active" id="topTab">流程列表 ×</div>
+			<div class="page-tab" data-tab="forms" onclick="showView('forms')">表单管理 ×</div>
+			<div class="page-tab" data-tab="services" onclick="showView('services')">基础服务 ×</div>
+			<div class="page-tab active" id="topTab">协同交付规则 ×</div>
 		</div>
 
 		<div class="workspace flow-view">
@@ -1784,10 +2627,613 @@
 				</table>
 			</div>
 		</div>
+
+		<div class="workspace collaboration-view">
+			<div class="module-tabs">
+				<div class="module-tab active">协同交付规则</div>
+			</div>
+			<div class="toolbar">
+				<input class="input" placeholder="规则ID / 规则名称 / 流程名称">
+				<select class="select"><option>请选择流程</option><option>西班牙VAT注册+申报流程</option><option>西班牙海牙认证流程</option><option>法人税号030递交流程</option></select>
+				<select class="select"><option>请选择匹配方式</option><option>按客户+公司名称匹配同一组流程</option><option>购买套餐绑定</option></select>
+				<select class="select"><option>请选择状态</option><option>启用</option><option>停用</option></select>
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+
+			<div class="action-line">
+				<button class="btn primary" onclick="openCollaborationRuleDrawer('新增协同交付规则')">新增协同交付规则</button>
+			</div>
+
+			<div class="table-wrap">
+				<table style="min-width:1500px;">
+					<colgroup>
+						<col style="width:52px">
+						<col style="width:150px">
+						<col style="width:220px">
+						<col style="width:300px">
+						<col style="width:230px">
+						<col style="width:100px">
+						<col style="width:120px">
+						<col style="width:180px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>序号</th>
+						<th>规则ID</th>
+						<th>规则名称</th>
+						<th>参与流程</th>
+						<th>匹配方式</th>
+						<th>合并展示</th>
+						<th>状态</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>1</td>
+						<td><span class="service-no">CDR-20260701001</span></td>
+						<td>西班牙VAT注册协同规则</td>
+						<td>
+							<div class="rule-flow-tags">
+								<span class="rule-mini-tag main">西班牙VAT注册+申报流程</span>
+								<span class="rule-mini-tag">西班牙海牙认证流程</span>
+								<span class="rule-mini-tag">法人税号030递交流程</span>
+							</div>
+						</td>
+						<td>按客户+公司名称匹配同一组流程</td>
+						<td><span class="status on">是</span></td>
+						<td><span class="status on">启用</span></td>
+						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-danger">停用</span></span></td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td><span class="service-no">CDR-20260701002</span></td>
+						<td>西班牙资料上传协同规则</td>
+						<td>
+							<div class="rule-flow-tags">
+								<span class="rule-mini-tag main">西班牙VAT注册+申报流程</span>
+							</div>
+						</td>
+						<td>按客户+公司名称匹配同一组流程</td>
+						<td><span class="status off">否</span></td>
+						<td><span class="status on">启用</span></td>
+						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-danger">停用</span></span></td>
+					</tr>
+					<tr>
+						<td>3</td>
+						<td><span class="service-no">CDR-20260701003</span></td>
+						<td>德国VAT套餐协同规则</td>
+						<td>
+							<div class="rule-flow-tags">
+								<span class="rule-mini-tag main">德国VAT注册流程</span>
+								<span class="rule-mini-tag">德国税务授权流程</span>
+							</div>
+						</td>
+						<td>购买套餐绑定</td>
+						<td><span class="status off">否</span></td>
+						<td><span class="status off">停用</span></td>
+						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-text">启用</span></span></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="workspace service-view">
+			<div class="module-tabs">
+				<div class="module-tab active">基础服务</div>
+			</div>
+
+			<div class="service-filter-card">
+				<div class="category-line">
+					<div class="category-label">一级类目：</div>
+					<span class="category-chip active">VAT</span>
+					<span class="category-chip">国内工商财税</span>
+					<span class="category-chip">EPR</span>
+					<span class="category-chip">产品合规</span>
+					<span class="category-chip">知识产权</span>
+					<span class="category-chip">海外工商财税</span>
+				</div>
+				<div class="category-line">
+					<div class="category-label">二级类目：</div>
+					<span class="category-chip active">全部</span>
+					<span class="category-chip">其他</span>
+					<span class="category-chip">IOSS</span>
+					<span class="category-chip">OSS</span>
+					<span class="category-chip">VAT</span>
+				</div>
+				<div class="category-line">
+					<div class="category-label">筛选：</div>
+					<select class="select"><option>请选择国家</option><option>西班牙</option><option>德国</option><option>波兰</option></select>
+					<select class="select"><option>请选择类型</option><option>注册+申报</option><option>转代理+申报</option></select>
+					<input class="input" placeholder="服务编号 / 订单号 / 客户名称" style="width:260px">
+					<button class="btn primary">搜索</button>
+					<button class="btn ghost">重置</button>
+				</div>
+			</div>
+
+			<div class="toolbar">
+				<button class="btn primary">导出</button>
+				<button class="btn ghost">批量分配</button>
+			</div>
+
+			<div class="status-tabs">
+				<div class="status-tab active">全部</div>
+				<div class="status-tab">待上传资料</div>
+				<div class="status-tab">待审核</div>
+				<div class="status-tab">待制作</div>
+				<div class="status-tab">待提交</div>
+				<div class="status-tab">处理中</div>
+				<div class="status-tab">部分完成</div>
+				<div class="status-tab">已完成</div>
+				<div class="status-tab">资料被驳回</div>
+				<div class="status-tab">资料支持</div>
+			</div>
+
+			<div class="service-toolbar-line">
+				<span>已选择 0 项</span>
+			</div>
+
+			<div class="table-wrap">
+				<table style="min-width:1360px;">
+					<colgroup>
+						<col style="width:42px">
+						<col style="width:60px">
+						<col style="width:230px">
+						<col style="width:110px">
+						<col style="width:390px">
+						<col style="width:90px">
+						<col style="width:90px">
+						<col style="width:160px">
+						<col style="width:130px">
+						<col style="width:260px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th><input type="checkbox"></th>
+						<th>序号</th>
+						<th>基础服务编号</th>
+						<th>服务类型</th>
+						<th>商品规格</th>
+						<th>客户级别</th>
+						<th>数据来源</th>
+						<th>订单号</th>
+						<th>当前节点</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr class="service-row-main">
+						<td><input type="checkbox"></td>
+						<td>1</td>
+						<td>
+							<div class="service-name-cell">
+								<span class="merge-toggle" onclick="toggleMergedRows(this)">▾</span>
+								<span class="service-no">SV20260701180825260147</span>
+								<span class="merge-count-tag">合并 2</span>
+							</div>
+						</td>
+						<td>SAAS服务</td>
+						<td>国家（西班牙） 服务类型（VAT注册+申报）</td>
+						<td>D</td>
+						<td>线上</td>
+						<td><span class="service-no">DD260701735326</span></td>
+						<td><span class="status off">等待海牙完成</span></td>
+						<td><span class="actions"><span class="action-text">上传资料</span><span class="action-text" onclick="toggleMergedRows(this)">收起关联</span></span></td>
+					</tr>
+					<tr class="service-row-child merge-group-row">
+						<td></td>
+						<td></td>
+						<td>
+							<div class="child-indent">
+								<span class="child-line"></span>
+								<span class="service-no">SV-HAG-260701001</span>
+							</div>
+						</td>
+						<td><span class="child-flow-type">关联流程</span></td>
+						<td>
+							<div class="child-indent">
+								<span class="child-line"></span>
+								<span class="child-flow-name">西班牙海牙认证流程</span>
+							</div>
+						</td>
+						<td>D</td>
+						<td>系统</td>
+						<td><span class="service-no">DD260701735326</span></td>
+						<td><span class="status on">海牙认证完成</span></td>
+						<td><span class="actions"><span class="action-text">查看资料</span><span class="action-text">查看流程</span></span></td>
+					</tr>
+					<tr class="service-row-child merge-group-row">
+						<td></td>
+						<td></td>
+						<td>
+							<div class="child-indent">
+								<span class="child-line"></span>
+								<span class="service-no">SV-030-260701001</span>
+							</div>
+						</td>
+						<td><span class="child-flow-type">关联流程</span></td>
+						<td>
+							<div class="child-indent">
+								<span class="child-line"></span>
+								<span class="child-flow-name">法人税号030递交流程</span>
+							</div>
+						</td>
+						<td>D</td>
+						<td>系统</td>
+						<td><span class="service-no">DD260701735326</span></td>
+						<td><span class="status off">030下号中</span></td>
+						<td><span class="actions"><span class="action-text">查看资料</span><span class="action-text">查看流程</span></span></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox"></td>
+						<td>2</td>
+						<td><span class="service-no">SV20260701175313125983</span></td>
+						<td>SAAS服务</td>
+						<td>公司注册地（中国公司及其他） 是否进行ZM申报（否） 服务类型（Saas服务）</td>
+						<td>C</td>
+						<td>线上</td>
+						<td><span class="service-no">DD260701318432</span></td>
+						<td><span class="status off">待审核</span></td>
+						<td><span class="actions"><span class="action-text">上传资料</span><span class="action-text">强制驳回</span><span class="action-text">更多</span></span></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox"></td>
+						<td>3</td>
+						<td><span class="service-no">SV20260701175229626916</span></td>
+						<td>SAAS服务</td>
+						<td>公司注册地（中国公司） 服务类型（SaaS服务）</td>
+						<td>D</td>
+						<td>线上</td>
+						<td><span class="service-no">DD260305389052</span></td>
+						<td><span class="status off">待上传资料</span></td>
+						<td><span class="actions"><span class="action-text">上传资料</span><span class="action-text">上传完整资料包</span><span class="action-text">更多</span></span></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox"></td>
+						<td>4</td>
+						<td><span class="service-no">SV20260701174409820498</span></td>
+						<td>SAAS服务</td>
+						<td>国家（爱尔兰） 服务类型（SaaS服务）</td>
+						<td>D</td>
+						<td>线上</td>
+						<td><span class="service-no">DD260701703235</span></td>
+						<td><span class="status on">已完成</span></td>
+						<td><span class="actions"><span class="action-text">查看资料</span><span class="action-text">更多</span></span></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="workspace service-addon-view">
+			<div class="module-tabs">
+				<div class="module-tab active">增值服务</div>
+			</div>
+			<div class="toolbar">
+				<input class="input" placeholder="服务编号 / 客户 / 订单号">
+				<select class="select"><option>请选择国家</option><option>西班牙</option></select>
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+			<div class="table-wrap" style="margin-top:16px;">
+				<table style="min-width:1200px;">
+					<thead>
+					<tr>
+						<th>序号</th>
+						<th>增值服务编号</th>
+						<th>服务名称</th>
+						<th>关联基础服务</th>
+						<th>当前节点</th>
+						<th>状态</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>1</td>
+						<td><span class="service-no">AV202607010001</span></td>
+						<td>西班牙海牙认证</td>
+						<td><span class="service-no">SV20260701180825260147</span></td>
+						<td>海牙认证完成</td>
+						<td><span class="status on">已完成</span></td>
+						<td><span class="actions"><span class="action-text">查看资料</span></span></td>
+					</tr>
+					<tr>
+						<td>2</td>
+						<td><span class="service-no">AV202607010002</span></td>
+						<td>法人税号030递交</td>
+						<td><span class="service-no">SV20260701180825260147</span></td>
+						<td>030下号中</td>
+						<td><span class="status off">处理中</span></td>
+						<td><span class="actions"><span class="action-text">查看资料</span></span></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</section>
 </main>
 
-<div class="drawer-mask open" id="packageDrawer">
+<div class="drawer-mask" id="collaborationRuleDrawer">
+	<div class="drawer wide">
+		<div class="drawer-header">
+			<div class="drawer-title" id="collaborationRuleDrawerTitle">新增协同交付规则</div>
+			<button class="drawer-close" onclick="closeDrawer('collaborationRuleDrawer')">×</button>
+		</div>
+		<div class="drawer-body">
+			<div class="config-card-body">
+					<div class="config-section">
+						<div class="config-section-title">协同交付信息</div>
+						<div class="rule-info-layout">
+							<div class="rule-info-group">
+								<div class="rule-info-group-title">基础规则</div>
+								<div class="rule-info-grid">
+									<div class="label"><span class="required">*</span>规则名称</div>
+									<input class="field" value="西班牙VAT注册协同规则">
+									<div class="label">规则状态</div>
+									<div class="rule-pill-switch">
+										<span class="rule-pill-option active">启用</span>
+										<span class="rule-pill-option">停用</span>
+									</div>
+									<div class="label">是否合并</div>
+									<div class="rule-pill-switch">
+										<span class="rule-pill-option active">是</span>
+										<span class="rule-pill-option">否</span>
+									</div>
+								</div>
+							</div>
+							<div class="rule-info-group">
+								<div class="rule-info-group-title">流程范围</div>
+								<div class="rule-info-grid flow-scope">
+									<div class="label"><span class="required">*</span>选择流程</div>
+									<div class="flow-multi-select" onclick="openCollaborationFlowSelectModal()">
+										<span class="flow-select-count" id="collaborationFlowSelectText">已选 3</span>
+										<div class="selected-flow-summary" id="collaborationSelectedFlowSummary">
+											<span class="flow-chip">西班牙VAT注册+申报流程 <span class="close">×</span></span>
+											<span class="flow-chip">西班牙海牙认证流程 <span class="close">×</span></span>
+											<span class="flow-chip">法人税号030递交流程 <span class="close">×</span></span>
+										</div>
+										<span class="flow-select-arrow">⌄</span>
+									</div>
+									<div class="label"><span class="required">*</span>主流程</div>
+									<select class="field" id="collaborationMainFlowSelect"><option selected>西班牙VAT注册+申报流程</option><option>西班牙海牙认证流程</option><option>法人税号030递交流程</option></select>
+								</div>
+							</div>
+							<div class="rule-info-group">
+								<div class="rule-info-group-title">执行配置</div>
+								<div class="rule-info-grid single-field">
+									<div class="label"><span class="required">*</span>匹配方式</div>
+									<select class="field">
+										<option selected>按客户+公司名称匹配同一组流程</option>
+										<option>购买套餐绑定</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="config-section">
+						<div class="config-section-title">节点与放行条件</div>
+						<div class="config-section-desc">按流程配置需要协同的节点；条件满足后只放行当前节点。</div>
+						<div class="task-split">
+							<div class="task-flow-list">
+								<div class="task-flow-title">流程</div>
+								<div class="task-flow-item active">
+									<span class="task-flow-name">西班牙VAT注册+申报流程</span>
+									<span class="task-flow-meta">2 个节点</span>
+								</div>
+								<div class="task-flow-item">
+									<span class="task-flow-name">西班牙海牙认证流程</span>
+									<span class="task-flow-meta">0 个节点</span>
+								</div>
+								<div class="task-flow-item">
+									<span class="task-flow-name">法人税号030递交流程</span>
+									<span class="task-flow-meta">0 个节点</span>
+								</div>
+							</div>
+							<div class="task-detail-panel">
+								<div class="task-block">
+									<div class="task-block-head">
+										<span>等待海牙完成</span>
+									</div>
+									<div class="task-row">
+										<div class="label"><span class="required">*</span>节点</div>
+										<select class="field"><option selected>等待海牙完成</option><option>用户上传资料</option><option>待提交</option><option>处理中</option></select>
+									</div>
+									<div class="condition-area">
+										<div class="condition-row">
+											<div class="label"><span class="required">*</span>完成条件</div>
+											<select class="field"><option selected>等待节点完成</option><option>公司信息</option></select>
+											<div class="condition-target">
+												<div class="label">选择流程</div>
+												<select class="field"><option selected>西班牙海牙认证流程</option><option>法人税号030递交流程</option></select>
+												<div class="label">选择节点</div>
+												<select class="field"><option selected>海牙认证完成</option><option>海牙认证中</option><option>待客户签回</option></select>
+											</div>
+											<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
+										</div>
+										<div class="condition-relation-row">
+											<div class="label">条件关系</div>
+											<select class="field"><option selected>且</option><option>或</option></select>
+										</div>
+										<div class="condition-row">
+											<div class="label"><span class="required">*</span>完成条件</div>
+											<select class="field"><option selected>等待节点完成</option><option>公司信息</option></select>
+											<div class="condition-target">
+												<div class="label">选择流程</div>
+												<select class="field"><option selected>法人税号030递交流程</option><option>西班牙海牙认证流程</option></select>
+												<div class="label">选择节点</div>
+												<select class="field"><option selected>030下号完成</option><option>待提交</option><option>处理中</option></select>
+											</div>
+											<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
+										</div>
+										<div class="inline-action">+ 添加完成条件</div>
+									</div>
+								</div>
+
+								<div class="task-block">
+									<div class="task-block-head">
+										<span>用户上传资料</span>
+									</div>
+									<div class="task-row">
+										<div class="label"><span class="required">*</span>节点</div>
+										<select class="field"><option selected>用户上传资料</option><option>等待海牙完成</option><option>待提交</option><option>处理中</option></select>
+									</div>
+									<div class="condition-area">
+										<div class="condition-row">
+											<div class="label"><span class="required">*</span>完成条件</div>
+											<select class="field"><option selected>公司信息</option><option>等待节点完成</option></select>
+											<div class="condition-target company-info">
+												<div class="label">公司信息字段</div>
+												<select class="field"><option selected>法人税号</option><option>本土税号</option></select>
+											</div>
+											<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
+										</div>
+										<div class="inline-action">+ 添加完成条件</div>
+									</div>
+								</div>
+								<div class="inline-action">+ 添加节点</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="config-section">
+						<div class="config-section-title">表单信息映射</div>
+						<div class="config-section-desc">是否合并为“是”时，关联服务单的表单内容使用主服务表单内容进行映射；映射关系通过表单数据字段关系配置。</div>
+						<div class="form-mapping-panel">
+							<div class="form-mapping-summary">
+								<div class="form-mapping-card">
+									<div class="form-mapping-label">主服务表单</div>
+									<div class="form-mapping-value">西班牙VAT注册资料表</div>
+								</div>
+								<div class="form-mapping-card">
+									<div class="form-mapping-label">关联服务单</div>
+									<div class="form-mapping-value">西班牙海牙认证 / 法人税号030递交</div>
+								</div>
+								<div class="form-mapping-card">
+									<div class="form-mapping-label">映射方式</div>
+									<div class="form-mapping-value">按表单数据字段关系映射</div>
+								</div>
+							</div>
+							<table class="mapping-table">
+								<thead>
+								<tr>
+									<th>主服务字段</th>
+									<th></th>
+									<th>关联服务字段</th>
+									<th>适用关联流程</th>
+									<th>操作</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td>公司名称</td>
+									<td class="mapping-arrow">→</td>
+									<td>认证主体名称</td>
+									<td>西班牙海牙认证流程</td>
+									<td><span class="actions"><span class="action-text">编辑</span><span class="action-danger">删除</span></span></td>
+								</tr>
+								<tr>
+									<td>法人姓名</td>
+									<td class="mapping-arrow">→</td>
+									<td>签署人姓名</td>
+									<td>西班牙海牙认证流程</td>
+									<td><span class="actions"><span class="action-text">编辑</span><span class="action-danger">删除</span></span></td>
+								</tr>
+								<tr>
+									<td>本土税号</td>
+									<td class="mapping-arrow">→</td>
+									<td>税号信息</td>
+									<td>法人税号030递交流程</td>
+									<td><span class="actions"><span class="action-text">编辑</span><span class="action-danger">删除</span></span></td>
+								</tr>
+								</tbody>
+							</table>
+							<div class="inline-action">+ 添加字段映射</div>
+						</div>
+					</div>
+			</div>
+		</div>
+		<div class="drawer-footer">
+			<button class="btn ghost" onclick="closeDrawer('collaborationRuleDrawer')">取消</button>
+			<button class="btn primary">保存规则</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="collaborationFlowSelectModal">
+	<div class="confirm-dialog large">
+		<div class="confirm-head">
+			<span>选择流程</span>
+			<button class="drawer-close" onclick="closeCollaborationFlowSelectModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="modal-toolbar">
+				<input class="input" placeholder="流程ID / 流程名称">
+				<select class="select"><option>全部国家</option><option>西班牙</option><option>德国</option><option>法国</option></select>
+				<select class="select"><option>全部状态</option><option>启用</option><option>停用</option></select>
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+			<table class="mini-table">
+				<colgroup>
+					<col style="width:54px">
+					<col style="width:120px">
+					<col style="width:300px">
+					<col style="width:100px">
+					<col style="width:100px">
+				</colgroup>
+				<thead>
+				<tr>
+					<th>选择</th>
+					<th>流程ID</th>
+					<th>流程名称</th>
+					<th>国家</th>
+					<th>状态</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><input type="checkbox" class="collaboration-flow-check" value="西班牙VAT注册+申报流程" checked></td>
+					<td>FLOW-12291</td>
+					<td>西班牙VAT注册+申报流程</td>
+					<td>西班牙</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="collaboration-flow-check" value="西班牙海牙认证流程" checked></td>
+					<td>FLOW-12292</td>
+					<td>西班牙海牙认证流程</td>
+					<td>西班牙</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="collaboration-flow-check" value="法人税号030递交流程" checked></td>
+					<td>FLOW-12293</td>
+					<td>法人税号030递交流程</td>
+					<td>西班牙</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="collaboration-flow-check" value="德国VAT注册流程"></td>
+					<td>FLOW-12108</td>
+					<td>德国VAT注册流程</td>
+					<td>德国</td>
+					<td><span class="status on">启用</span></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeCollaborationFlowSelectModal()">取消</button>
+			<button class="btn primary" onclick="confirmCollaborationFlows()">确认选择</button>
+		</div>
+	</div>
+</div>
+
+<div class="drawer-mask" id="packageDrawer">
 	<div class="drawer wide">
 		<div class="drawer-header">
 			<div class="drawer-title">导出资料包配置 - (12286)泰国外观专利注册流程</div>
@@ -2754,6 +4200,47 @@
 		document.getElementById(id).classList.remove("open");
 	}
 
+	function openCollaborationRuleDrawer(title) {
+		document.getElementById("collaborationRuleDrawerTitle").textContent = title;
+		openDrawer("collaborationRuleDrawer");
+	}
+
+	function deleteConditionRow(action) {
+		const row = action.closest(".condition-row");
+		if (row) {
+			const prev = row.previousElementSibling;
+			const next = row.nextElementSibling;
+			if (prev && prev.classList.contains("condition-relation-row")) {
+				prev.remove();
+			} else if (next && next.classList.contains("condition-relation-row")) {
+				next.remove();
+			}
+			row.remove();
+		}
+	}
+
+	function openCollaborationFlowSelectModal() {
+		document.getElementById("collaborationFlowSelectModal").classList.add("open");
+	}
+
+	function closeCollaborationFlowSelectModal() {
+		document.getElementById("collaborationFlowSelectModal").classList.remove("open");
+	}
+
+	function confirmCollaborationFlows() {
+		const selected = Array.from(document.querySelectorAll(".collaboration-flow-check:checked")).map(function (checkbox) {
+			return checkbox.value;
+		});
+		document.getElementById("collaborationFlowSelectText").textContent = selected.length ? "已选 " + selected.length : "请选择";
+		document.getElementById("collaborationSelectedFlowSummary").innerHTML = selected.map(function (flow) {
+			return '<span class="flow-chip">' + flow + ' <span class="close">×</span></span>';
+		}).join("");
+		document.getElementById("collaborationMainFlowSelect").innerHTML = selected.map(function (flow, index) {
+			return '<option' + (index === 0 ? ' selected' : '') + '>' + flow + '</option>';
+		}).join("");
+		closeCollaborationFlowSelectModal();
+	}
+
 	function openTemplateEditorDrawer(name) {
 		document.getElementById("editingTemplateName").textContent = name;
 		document.getElementById("templateEditorNameInput").value = name;
@@ -3120,19 +4607,60 @@
 		document.querySelectorAll(".menu-row.small").forEach(function (row) {
 			row.classList.remove("active");
 		});
+		document.querySelectorAll(".page-tab").forEach(function (tab) {
+			tab.classList.remove("active");
+		});
 		if (view === "templates") {
 			document.querySelector('[data-menu="templates"]').classList.add("active");
 			document.getElementById("topTab").textContent = "资料项列表 ×";
+			document.getElementById("topTab").classList.add("active");
 			closeDrawer("packageDrawer");
 		} else if (view === "forms") {
 			document.querySelector('[data-menu="forms"]').classList.add("active");
-			document.getElementById("topTab").textContent = "表单管理 ×";
+			document.getElementById("topTab").textContent = "协同交付规则 ×";
+			document.querySelector('[data-tab="forms"]').classList.add("active");
+			closeDrawer("packageDrawer");
+		} else if (view === "collaboration") {
+			document.querySelector('[data-menu="collaboration"]').classList.add("active");
+			document.getElementById("topTab").textContent = "协同交付规则 ×";
+			document.getElementById("topTab").classList.add("active");
+			closeDrawer("packageDrawer");
+		} else if (view === "services") {
+			document.querySelector('[data-menu="services"]').classList.add("active");
+			document.getElementById("topTab").textContent = "协同交付规则 ×";
+			document.querySelector('[data-tab="services"]').classList.add("active");
+			const serviceTable = document.querySelector(".service-view .table-wrap");
+			if (serviceTable) {
+				serviceTable.scrollLeft = 0;
+			}
+			closeDrawer("packageDrawer");
+		} else if (view === "addonServices") {
+			document.querySelector('[data-menu="addonServices"]').classList.add("active");
+			document.getElementById("topTab").textContent = "增值服务 ×";
+			document.getElementById("topTab").classList.add("active");
 			closeDrawer("packageDrawer");
 		} else {
 			document.querySelector('[data-menu="flows"]').classList.add("active");
 			document.getElementById("topTab").textContent = "流程列表 ×";
+			document.getElementById("topTab").classList.add("active");
 			openDrawer("packageDrawer");
 		}
+	}
+
+	function toggleMergedRows(trigger) {
+		const rows = document.querySelectorAll(".merge-group-row");
+		const collapsed = rows.length > 0 && !rows[0].classList.contains("collapsed");
+		rows.forEach(function (row) {
+			row.classList.toggle("collapsed", collapsed);
+		});
+		document.querySelectorAll(".merge-toggle").forEach(function (toggle) {
+			toggle.textContent = collapsed ? "▸" : "▾";
+		});
+		document.querySelectorAll(".service-view .actions .action-text").forEach(function (action) {
+			if (action.textContent === "收起关联" || action.textContent === "展开关联流程") {
+				action.textContent = collapsed ? "展开关联流程" : "收起关联";
+			}
+		});
 	}
 </script>
 </body>

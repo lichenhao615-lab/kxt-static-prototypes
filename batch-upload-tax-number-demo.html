@@ -1412,11 +1412,11 @@
 							<div class="country-choice-options">
 								<label class="choice-option">
 									<input type="radio" name="countryUploadMode" value="info" checked>
-									<span>上传税号信息</span>
+									<span id="countryUploadModeInfoText">上传税号信息</span>
 								</label>
 								<label class="choice-option">
 									<input type="radio" name="countryUploadMode" value="file">
-									<span>上传税号文件</span>
+									<span id="countryUploadModeFileText">上传税号文件</span>
 								</label>
 							</div>
 						</div>
@@ -1519,7 +1519,7 @@
 
 							<section class="standard-card germany-eu-vat-panel is-hidden" id="germanyEuVatPanel">
 								<div class="standard-card-head">
-									<div class="standard-card-title"><span class="step-badge">2</span>上传欧盟 VAT 税号文件</div>
+									<div class="standard-card-title"><span class="step-badge">1</span>上传欧盟 VAT 税号文件</div>
 								</div>
 								<label class="upload-zone" for="germanyEuVatInput">
 									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -1613,6 +1613,8 @@
 		const countryFileUploadSub = document.getElementById("countryFileUploadSub");
 		const countryUploadChoicePanel = document.getElementById("countryUploadChoicePanel");
 		const countryUploadModeInputs = document.querySelectorAll("input[name='countryUploadMode']");
+		const countryUploadModeInfoText = document.getElementById("countryUploadModeInfoText");
+		const countryUploadModeFileText = document.getElementById("countryUploadModeFileText");
 		const countryFileUploadPanel = document.getElementById("countryFileUploadPanel");
 		const spainEffectiveDatePanel = document.getElementById("spainEffectiveDatePanel");
 		const spainEffectiveDateInput = document.getElementById("spainEffectiveDateInput");
@@ -1675,7 +1677,7 @@
 			const isSpain = countrySelect.value === "ES";
 			const isFrance = countrySelect.value === "FR";
 			const isPoland = countrySelect.value === "PL";
-			const isChoiceCountry = isFrance || isPoland;
+			const isChoiceCountry = isGermany || isFrance || isPoland;
 			const isCzech = countrySelect.value === "CZ";
 			batchModalTitle.textContent = isGeneral ? "批量上传税号" : `批量上传${country.name}税号`;
 			standardTemplate.classList.toggle("is-hidden", !isGeneral);
@@ -1686,9 +1688,11 @@
 				countryFileUploadTitle.textContent = isGermany ? "上传本土税号文件" : "上传税号文件";
 				countryFileUploadMain.textContent = isGermany ? "上传本土税号文件" : "上传税号文件";
 				countryFileUploadButton.textContent = isGermany ? "选择本土税号文件" : "选择文件";
+				countryUploadModeInfoText.textContent = isGermany ? "上传德国本土税号文件" : "上传税号信息";
+				countryUploadModeFileText.textContent = isGermany ? "上传欧盟 VAT 税号文件" : "上传税号文件";
 				if (isGermany) {
-					countryUploadSub.textContent = "德国本土税号文件和欧盟 VAT 税号文件分开上传；可先上传本土税号，后续再补传欧盟 VAT 税号。";
-					countryResultTip.textContent = "只上传德国本土税号时单据状态为部分完成；只上传欧盟 VAT 税号会录入失败；两类文件同时上传后单据状态为已完成。";
+					countryUploadSub.textContent = "德国参考法国的分开上传模式：先选择上传德国本土税号文件或欧盟 VAT 税号文件，再进入对应上传框。";
+					countryResultTip.textContent = "上传德国本土税号后单据状态变成部分完成，部分完成单据上传 VAT 税号文件后会变成完成。";
 					countryFileUploadSub.textContent = "仅支持 .zip 文件；OCR 识别申报周期、税号生效日期和本土税号。";
 				} else if (isSpain) {
 					countryUploadSub.textContent = "上传税号文件和税号生效时间表格，系统确认后创建 OCR 匹配任务。";
@@ -1722,9 +1726,9 @@
 			czechUploadRule.classList.toggle("is-hidden", !isCzech);
 			taxFileInput.toggleAttribute("multiple", !isChoiceCountry);
 			countryFileUploadGrid.classList.toggle("is-germany", isGermany);
-			countryFileUploadPanel.classList.toggle("is-hidden", isChoiceCountry && countryUploadMode !== "file");
-			germanyEuVatPanel.classList.toggle("is-hidden", !isGermany);
-			germanyEuVatFileList.classList.toggle("is-hidden", !isGermany);
+			countryFileUploadPanel.classList.toggle("is-hidden", (isGermany && countryUploadMode !== "info") || ((isFrance || isPoland) && countryUploadMode !== "file"));
+			germanyEuVatPanel.classList.toggle("is-hidden", !(isGermany && countryUploadMode === "file"));
+			germanyEuVatFileList.classList.toggle("is-hidden", !(isGermany && countryUploadMode === "file"));
 			updateConfirmState();
 		}
 
@@ -1917,13 +1921,16 @@
 
 		function setCountryUploadMode(mode) {
 			countryUploadMode = mode;
+			const isGermany = countrySelect.value === "DE";
 			countryUploadModeInputs.forEach((input) => {
 				input.checked = input.value === mode;
 			});
 			if (mode === "info") {
-				uploadedFiles = [];
-				preview.classList.remove("show");
-				renderFiles();
+				if (!isGermany) {
+					uploadedFiles = [];
+					preview.classList.remove("show");
+					renderFiles();
+				}
 			} else {
 				if (countrySelect.value === "FR") {
 					uploadedFranceTaxInfoFile = null;
@@ -2021,11 +2028,15 @@
 
 		function addTaskRow(taskNo, override = {}) {
 			const country = getSelectedCountry();
+			const isGermany = countrySelect.value === "DE";
 			const isFranceFileMode = countrySelect.value === "FR" && countryUploadMode === "file";
 			const isPolandFileMode = countrySelect.value === "PL" && countryUploadMode === "file";
+			const germanyTemplateName = uploadedFiles.length && uploadedGermanyEuVatFiles.length
+				? "德国本土税号文件+欧盟VAT税号文件"
+				: (uploadedGermanyEuVatFiles.length ? "德国欧盟VAT税号文件" : "德国本土税号文件");
 			const templateName = countrySelect.value === "GENERAL"
 				? "标准模板"
-				: (countrySelect.value === "ES" ? "西班牙模板" : (countrySelect.value === "FR" ? (isFranceFileMode ? "法国税号文件ZIP" : "法国税号Excel模板") : (countrySelect.value === "PL" ? (isPolandFileMode ? "波兰税号文件ZIP" : "波兰税号Excel模板") : "模板1")));
+				: (countrySelect.value === "ES" ? "西班牙模板" : (isGermany ? germanyTemplateName : (countrySelect.value === "FR" ? (isFranceFileMode ? "法国税号文件ZIP" : "法国税号Excel模板") : (countrySelect.value === "PL" ? (isPolandFileMode ? "波兰税号文件ZIP" : "波兰税号Excel模板") : "模板1"))));
 			const statusText = override.status || "正常";
 			const statusClass = override.statusClass || "success-text";
 			const processStatus = override.processStatus || "OCR匹配中";
@@ -2057,7 +2068,7 @@
 		cancelBatchModal.addEventListener("click", closeModal);
 		closePreview.addEventListener("click", () => preview.classList.remove("show"));
 		countrySelect.addEventListener("change", () => {
-			if (countrySelect.value === "FR" || countrySelect.value === "PL") {
+			if (countrySelect.value === "DE" || countrySelect.value === "FR" || countrySelect.value === "PL") {
 				countryUploadMode = "info";
 				countryUploadModeInputs.forEach((input) => {
 					input.checked = input.value === "info";

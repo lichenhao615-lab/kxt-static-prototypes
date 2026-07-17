@@ -1382,32 +1382,6 @@
 						<span class="badge" id="templateCountryBadge">德国</span>
 					</div>
 					<div class="template-body">
-						<section class="standard-card spain-extra-panel is-hidden" id="spainEffectiveDatePanel">
-							<div class="standard-card-head">
-								<div class="standard-card-title"><span class="step-badge">1</span>上传税号生效时间表格</div>
-								<button class="template-link" id="spainEffectiveTemplateLink" type="button">下载生效时间模板</button>
-							</div>
-							<p class="standard-card-desc">表格维护税号与税号生效日期对应关系。系统 OCR 识别税号文件中的税号后，按税号匹配对应的税号生效日期。</p>
-							<label class="upload-zone" for="spainEffectiveDateInput">
-								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-									<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-									<path d="m17 8-5-5-5 5"></path>
-									<path d="M12 3v12"></path>
-								</svg>
-								<div class="upload-main">点击或将生效时间表格拖拽到此上传</div>
-								<div class="upload-sub">仅支持 .xlsx 文件，表格字段包含税号、税号生效日期</div>
-								<div style="margin-top: 12px;">
-									<span class="btn primary">选择表格</span>
-								</div>
-							</label>
-							<input class="file-input" id="spainEffectiveDateInput" type="file" accept=".xlsx">
-							<div class="standard-file-stack" id="spainEffectiveDateRows">
-								<div class="standard-file-row">
-									<span>请上传税号生效时间表格</span>
-								</div>
-							</div>
-						</section>
-
 						<div class="country-choice-panel" id="countryUploadChoicePanel">
 							<div class="country-choice-options">
 								<label class="choice-option">
@@ -1474,7 +1448,7 @@
 						</section>
 
 						<div class="country-upload-note is-hidden" id="spainMatchRule">
-							西班牙匹配规则：系统通过 OCR 获取税号文件中的税号，再使用税号到生效时间表格中取得对应的税号生效日期。
+							西班牙匹配规则：系统通过 OCR 获取税号文件中的税号信息，批量录入结果进入我的任务下载。
 						</div>
 
 						<div class="country-upload-note is-hidden" id="franceUploadRule">
@@ -1616,10 +1590,6 @@
 		const countryUploadModeInfoText = document.getElementById("countryUploadModeInfoText");
 		const countryUploadModeFileText = document.getElementById("countryUploadModeFileText");
 		const countryFileUploadPanel = document.getElementById("countryFileUploadPanel");
-		const spainEffectiveDatePanel = document.getElementById("spainEffectiveDatePanel");
-		const spainEffectiveDateInput = document.getElementById("spainEffectiveDateInput");
-		const spainEffectiveDateRows = document.getElementById("spainEffectiveDateRows");
-		const spainEffectiveTemplateLink = document.getElementById("spainEffectiveTemplateLink");
 		const spainMatchRule = document.getElementById("spainMatchRule");
 		const franceTaxInfoPanel = document.getElementById("franceTaxInfoPanel");
 		const franceTaxInfoInput = document.getElementById("franceTaxInfoInput");
@@ -1652,7 +1622,6 @@
 			{ name: "德国+深圳跨信通公司.zip", size: 2146304 },
 			{ name: "法国+广州跨信通公司.zip", size: 1982464 },
 		];
-		let uploadedSpainEffectiveDateFile = { name: "西班牙税号生效时间表.xlsx", size: 64218 };
 		let uploadedFranceTaxInfoFile = null;
 		let uploadedPolandTaxInfoFile = null;
 		let countryUploadMode = "info";
@@ -1695,9 +1664,9 @@
 					countryResultTip.textContent = "上传德国本土税号后单据状态变成部分完成，部分完成单据上传 VAT 税号文件后会变成完成。";
 					countryFileUploadSub.textContent = "仅支持 .zip 文件；OCR 识别申报周期、税号生效日期和本土税号。";
 				} else if (isSpain) {
-					countryUploadSub.textContent = "上传税号文件和税号生效时间表格，系统确认后创建 OCR 匹配任务。";
-					countryResultTip.textContent = "系统通过 OCR 识别税号文件中的税号，并到表格匹配税号生效日期；批量录入税号结果进入我的任务下载。";
-					countryFileUploadSub.textContent = "仅支持 .zip 文件；OCR 识别税号后匹配生效时间表格。";
+					countryUploadSub.textContent = "上传税号文件，系统确认后创建 OCR 匹配任务。";
+					countryResultTip.textContent = "系统通过 OCR 识别税号文件内容，批量录入税号结果进入我的任务下载。";
+					countryFileUploadSub.textContent = "仅支持 .zip 文件；OCR 识别税号文件内容。";
 				} else if (isFrance) {
 					countryUploadSub.textContent = "选择一种上传方式：税号信息表格或税号文件 ZIP。";
 					countryResultTip.textContent = "法国支持二选一上传，结果进入我的任务下载。";
@@ -1716,7 +1685,6 @@
 					countryFileUploadSub.textContent = "仅支持 .zip 文件；可一次选择多个文件。";
 				}
 			}
-			spainEffectiveDatePanel.classList.toggle("is-hidden", !isSpain);
 			spainMatchRule.classList.toggle("is-hidden", !isSpain);
 			countryUploadChoicePanel.classList.toggle("show", isChoiceCountry);
 			franceTaxInfoPanel.classList.toggle("is-hidden", !(isFrance && countryUploadMode === "info"));
@@ -1821,19 +1789,6 @@
 			updateConfirmState();
 		}
 
-		function renderSpainEffectiveDateUpload() {
-			spainEffectiveDateRows.innerHTML = uploadedSpainEffectiveDateFile ? `
-				<div class="standard-file-row">
-					<span title="${uploadedSpainEffectiveDateFile.name}">${uploadedSpainEffectiveDateFile.name}</span>
-				</div>
-			` : `
-				<div class="standard-file-row">
-					<span>请上传税号生效时间表格</span>
-				</div>
-			`;
-			updateConfirmState();
-		}
-
 		function renderFranceTaxInfoUpload() {
 			franceTaxInfoRows.innerHTML = uploadedFranceTaxInfoFile ? `
 				<div class="standard-file-row">
@@ -1873,12 +1828,6 @@
 			renderStandardUploads();
 		}
 
-		function setSpainEffectiveDateFile(file) {
-			if (!file) return;
-			uploadedSpainEffectiveDateFile = { name: file.name, size: file.size };
-			renderSpainEffectiveDateUpload();
-		}
-
 		function setFranceTaxInfoFile(file) {
 			if (!file) return;
 			uploadedFranceTaxInfoFile = { name: file.name, size: file.size };
@@ -1901,7 +1850,7 @@
 				return;
 			}
 			if (countrySelect.value === "ES") {
-				confirmBatchUpload.disabled = !(uploadedSpainEffectiveDateFile && uploadedFiles.length);
+				confirmBatchUpload.disabled = !uploadedFiles.length;
 				return;
 			}
 			if (countrySelect.value === "FR") {
@@ -2134,11 +2083,6 @@
 			renderStandardUploads();
 		});
 
-		spainEffectiveDateInput.addEventListener("change", (event) => {
-			setSpainEffectiveDateFile((event.target.files || [])[0]);
-			event.target.value = "";
-		});
-
 		franceTaxInfoInput.addEventListener("change", (event) => {
 			countryUploadMode = "info";
 			countryUploadModeInputs.forEach((input) => {
@@ -2174,11 +2118,6 @@
 		generalTemplateLink.addEventListener("click", () => {
 			downloadTemplate("通用税号批量上传表格.xlsx");
 			showToast("已下载通用税号批量上传标准模板（Demo）。");
-		});
-
-		spainEffectiveTemplateLink.addEventListener("click", () => {
-			downloadTemplate("西班牙税号生效时间模板.xlsx");
-			showToast("已下载西班牙税号生效时间模板（Demo）。");
 		});
 
 		franceTaxInfoTemplateLink.addEventListener("click", () => {
@@ -2227,7 +2166,7 @@
 			const isPoland = countrySelect.value === "PL";
 			if (isGeneral && !(uploadedInfoFile && uploadedArchiveFiles.length)) return;
 			if (isGermany && !(uploadedFiles.length || uploadedGermanyEuVatFiles.length)) return;
-			if (isSpain && !(uploadedSpainEffectiveDateFile && uploadedFiles.length)) return;
+			if (isSpain && !uploadedFiles.length) return;
 			if (isFrance && countryUploadMode === "info" && !uploadedFranceTaxInfoFile) return;
 			if (isFrance && countryUploadMode === "file" && !uploadedFiles.length) return;
 			if (isPoland && countryUploadMode === "info" && !uploadedPolandTaxInfoFile) return;
@@ -2252,7 +2191,6 @@
 		renderFiles();
 		renderGermanyEuVatFiles();
 		renderStandardUploads();
-		renderSpainEffectiveDateUpload();
 		renderFranceTaxInfoUpload();
 		renderPolandTaxInfoUpload();
 	</script>

@@ -1234,6 +1234,26 @@
 			font-weight: 600;
 		}
 
+		.release-action-empty {
+			display: none;
+			align-items: center;
+			min-height: 38px;
+			padding: 0 12px;
+			border: 1px dashed #d8dde3;
+			border-radius: 4px;
+			background: #f7f8fa;
+			color: #98a2b3;
+			font-size: 13px;
+		}
+
+		.release-action-area.release-action-off .release-action-content {
+			display: none;
+		}
+
+		.release-action-area.release-action-off .release-action-empty {
+			display: flex;
+		}
+
 		.release-action-control {
 			display: inline-flex;
 			align-items: center;
@@ -1242,59 +1262,74 @@
 
 		.release-action-card {
 			display: grid;
-			gap: 12px;
-			padding: 12px;
+			gap: 10px;
+			padding: 10px 12px;
 			border: 1px solid #edf0f2;
 			border-radius: 4px;
 			background: #fcfdfd;
 		}
 
 		.release-action-toolbar {
-			display: grid;
-			grid-template-columns: 78px minmax(0, 220px);
-			gap: 8px;
+			display: flex;
 			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			padding-bottom: 10px;
+			border-bottom: 1px solid #edf0f2;
 			font-size: 13px;
 		}
 
 		.release-action-content {
 			display: grid;
-			gap: 12px;
-		}
-
-		.release-action-content.disabled {
-			opacity: .48;
-		}
-
-		.release-action-content.disabled select {
-			pointer-events: none;
+			gap: 10px;
 		}
 
 		.release-action-map {
 			display: grid;
-			grid-template-columns: minmax(0, 1fr) 68px minmax(0, 1fr);
+			grid-template-columns: minmax(0, 1fr) 54px minmax(0, 1fr);
 			gap: 10px;
 			align-items: stretch;
 		}
 
-		.release-field-box {
+		.release-map-panel {
 			display: grid;
-			gap: 10px;
-			padding: 12px;
+			gap: 8px;
+			padding: 10px;
 			border: 1px solid #e5ebef;
 			border-radius: 4px;
 			background: #fff;
 		}
 
-		.release-field-title {
+		.release-panel-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8px;
 			color: #667085;
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.release-source-badge {
+			display: inline-flex;
+			align-items: center;
+			height: 22px;
+			padding: 0 8px;
+			border-radius: 11px;
+			background: var(--brand-soft);
+			color: var(--brand-dark);
 			font-size: 12px;
 			font-weight: 600;
 		}
 
 		.release-field-grid {
 			display: grid;
-			grid-template-columns: 72px minmax(0, 1fr) 72px minmax(0, 1fr);
+			gap: 8px;
+		}
+
+		.release-field-line {
+			display: grid;
+			grid-template-columns: 64px minmax(0, 1fr);
 			gap: 8px;
 			align-items: center;
 			font-size: 13px;
@@ -1310,9 +1345,20 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--brand-dark);
+			color: #667085;
 			font-size: 12px;
 			font-weight: 600;
+		}
+
+		.release-map-arrow span {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 42px;
+			height: 24px;
+			border-radius: 12px;
+			background: #eef5f6;
+			color: var(--brand-dark);
 		}
 
 		.connector {
@@ -1384,8 +1430,12 @@
 				flex-direction: column;
 			}
 
-			.release-action-toolbar,
-			.release-field-grid {
+			.release-action-toolbar {
+				align-items: flex-start;
+				flex-direction: column;
+			}
+
+			.release-field-line {
 				grid-template-columns: 96px minmax(0, 1fr);
 			}
 
@@ -3296,27 +3346,42 @@
 												</div>
 											</div>
 										</div>
+										<div class="release-action-empty">不触发放行后操作</div>
 										<div class="release-action-card release-action-content">
 											<div class="release-action-toolbar">
 												<div class="label">取值来源</div>
-												<select class="field release-source-type-select" onchange="updateReleaseSource(this)"><option>表单字段</option><option selected>税号信息</option></select>
+												<div class="rule-pill-switch release-source-switch">
+													<span class="rule-pill-option" data-source="表单字段" onclick="updateReleaseSource(this, '表单字段')">表单字段</span>
+													<span class="rule-pill-option active" data-source="税号信息" onclick="updateReleaseSource(this, '税号信息')">税号信息</span>
+												</div>
 											</div>
 											<div class="release-action-map">
-												<div class="release-field-box">
-													<div class="release-field-title">来源字段</div>
+												<div class="release-map-panel">
+													<div class="release-panel-head">
+														<span>来源</span>
+														<span class="release-source-badge">税号信息</span>
+													</div>
 													<div class="release-field-grid release-source-fields tax-source">
-														<div class="label">税号信息</div>
-														<select class="field"><option selected>VAT</option><option>本土税号</option></select>
+														<div class="release-field-line">
+															<div class="label">税号信息</div>
+															<select class="field"><option selected>VAT</option><option>本土税号</option></select>
+														</div>
 													</div>
 												</div>
-												<div class="release-map-arrow">赋予给</div>
-												<div class="release-field-box">
-													<div class="release-field-title">表单字段</div>
+												<div class="release-map-arrow"><span>写入</span></div>
+												<div class="release-map-panel">
+													<div class="release-panel-head">
+														<span>表单字段</span>
+													</div>
 													<div class="release-field-grid">
-														<div class="label">选择表单</div>
-														<select class="field"><option selected>西班牙VAT注册资料表</option><option>主体资料表单</option></select>
-														<div class="label">选择字段</div>
-														<select class="field"><option selected>西班牙VAT税号</option><option>本土税号</option><option>税号备注</option></select>
+														<div class="release-field-line">
+															<div class="label">选择表单</div>
+															<select class="field"><option selected>西班牙VAT注册资料表</option><option>主体资料表单</option></select>
+														</div>
+														<div class="release-field-line">
+															<div class="label">选择字段</div>
+															<select class="field"><option selected>西班牙VAT税号</option><option>本土税号</option><option>税号备注</option></select>
+														</div>
 													</div>
 												</div>
 											</div>
@@ -3357,29 +3422,46 @@
 												</div>
 											</div>
 										</div>
+										<div class="release-action-empty">不触发放行后操作</div>
 										<div class="release-action-card release-action-content">
 											<div class="release-action-toolbar">
 												<div class="label">取值来源</div>
-												<select class="field release-source-type-select" onchange="updateReleaseSource(this)"><option selected>表单字段</option><option>税号信息</option></select>
+												<div class="rule-pill-switch release-source-switch">
+													<span class="rule-pill-option active" data-source="表单字段" onclick="updateReleaseSource(this, '表单字段')">表单字段</span>
+													<span class="rule-pill-option" data-source="税号信息" onclick="updateReleaseSource(this, '税号信息')">税号信息</span>
+												</div>
 											</div>
 											<div class="release-action-map">
-												<div class="release-field-box">
-													<div class="release-field-title">来源字段</div>
+												<div class="release-map-panel">
+													<div class="release-panel-head">
+														<span>来源</span>
+														<span class="release-source-badge">表单字段</span>
+													</div>
 													<div class="release-field-grid release-source-fields form-source">
-														<div class="label">选择表单</div>
-														<select class="field"><option selected>主体资料表单</option><option>西班牙VAT注册资料表</option></select>
-														<div class="label">选择字段</div>
-														<select class="field"><option selected>公司名称</option><option>公司英文名称</option><option>法人姓名</option></select>
+														<div class="release-field-line">
+															<div class="label">选择表单</div>
+															<select class="field"><option selected>主体资料表单</option><option>西班牙VAT注册资料表</option></select>
+														</div>
+														<div class="release-field-line">
+															<div class="label">选择字段</div>
+															<select class="field"><option selected>公司名称</option><option>公司英文名称</option><option>法人姓名</option></select>
+														</div>
 													</div>
 												</div>
-												<div class="release-map-arrow">赋予给</div>
-												<div class="release-field-box">
-													<div class="release-field-title">表单字段</div>
+												<div class="release-map-arrow"><span>写入</span></div>
+												<div class="release-map-panel">
+													<div class="release-panel-head">
+														<span>表单字段</span>
+													</div>
 													<div class="release-field-grid">
-														<div class="label">选择表单</div>
-														<select class="field"><option selected>西班牙VAT注册资料表</option><option>主体资料表单</option></select>
-														<div class="label">选择字段</div>
-														<select class="field"><option selected>注册公司名称</option><option>公司英文名称</option><option>法人姓名</option></select>
+														<div class="release-field-line">
+															<div class="label">选择表单</div>
+															<select class="field"><option selected>西班牙VAT注册资料表</option><option>主体资料表单</option></select>
+														</div>
+														<div class="release-field-line">
+															<div class="label">选择字段</div>
+															<select class="field"><option selected>注册公司名称</option><option>公司英文名称</option><option>法人姓名</option></select>
+														</div>
 													</div>
 												</div>
 											</div>
@@ -4511,31 +4593,47 @@
 			option.classList.add("active");
 		}
 		const area = option.closest(".release-action-area");
-		const content = area && area.querySelector(".release-action-content");
-		if (content) {
-			content.classList.toggle("disabled", !enabled);
+		if (area) {
+			area.classList.toggle("release-action-off", !enabled);
 		}
 	}
 
-	function updateReleaseSource(select) {
-		const content = select.closest(".release-action-content");
+	function updateReleaseSource(control, sourceValue) {
+		const content = control.closest(".release-action-content");
 		const sourceFields = content && content.querySelector(".release-source-fields");
 		if (!sourceFields) {
 			return;
 		}
-		if (select.value === "税号信息") {
+		const sourceType = sourceValue || control.value;
+		const sourceSwitch = control.closest(".release-source-switch");
+		if (sourceSwitch) {
+			sourceSwitch.querySelectorAll(".rule-pill-option").forEach(function (option) {
+				option.classList.toggle("active", option.dataset.source === sourceType);
+			});
+		}
+		const badge = content.querySelector(".release-source-badge");
+		if (badge) {
+			badge.textContent = sourceType;
+		}
+		if (sourceType === "税号信息") {
 			sourceFields.className = "release-field-grid release-source-fields tax-source";
 			sourceFields.innerHTML =
+				'<div class="release-field-line">' +
 				'<div class="label">税号信息</div>' +
-				'<select class="field"><option selected>VAT</option><option>本土税号</option></select>';
+				'<select class="field"><option selected>VAT</option><option>本土税号</option></select>' +
+				'</div>';
 			return;
 		}
 		sourceFields.className = "release-field-grid release-source-fields form-source";
 		sourceFields.innerHTML =
+			'<div class="release-field-line">' +
 			'<div class="label">选择表单</div>' +
 			'<select class="field"><option selected>主体资料表单</option><option>西班牙VAT注册资料表</option></select>' +
+			'</div>' +
+			'<div class="release-field-line">' +
 			'<div class="label">选择字段</div>' +
-			'<select class="field"><option selected>公司名称</option><option>公司英文名称</option><option>法人姓名</option></select>';
+			'<select class="field"><option selected>公司名称</option><option>公司英文名称</option><option>法人姓名</option></select>' +
+			'</div>';
 	}
 
 	function deleteConditionRow(action) {

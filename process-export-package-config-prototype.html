@@ -1131,10 +1131,6 @@
 			align-items: center;
 		}
 
-		.condition-target.company-info {
-			grid-template-columns: 96px minmax(0, 220px);
-		}
-
 		.condition-delete {
 			justify-self: end;
 			white-space: nowrap;
@@ -1208,8 +1204,7 @@
 				width: fit-content;
 			}
 
-			.condition-target,
-			.condition-target.company-info {
+			.condition-target {
 				grid-column: 1 / -1;
 				grid-template-columns: 96px minmax(0, 1fr) 96px minmax(0, 1fr);
 			}
@@ -3064,7 +3059,7 @@
 									<div class="condition-area">
 										<div class="condition-row">
 											<div class="label"><span class="required">*</span>完成条件</div>
-											<select class="field"><option selected>等待节点完成</option><option>公司信息</option></select>
+											<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>等待节点完成</option><option>税号信息</option></select>
 											<div class="condition-target">
 												<div class="label">选择流程</div>
 												<select class="field"><option selected>西班牙海牙认证流程</option><option>法人税号030递交流程</option></select>
@@ -3079,7 +3074,7 @@
 										</div>
 										<div class="condition-row">
 											<div class="label"><span class="required">*</span>完成条件</div>
-											<select class="field"><option selected>等待节点完成</option><option>公司信息</option></select>
+											<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>等待节点完成</option><option>税号信息</option></select>
 											<div class="condition-target">
 												<div class="label">选择流程</div>
 												<select class="field"><option selected>法人税号030递交流程</option><option>西班牙海牙认证流程</option></select>
@@ -3103,10 +3098,12 @@
 									<div class="condition-area">
 										<div class="condition-row">
 											<div class="label"><span class="required">*</span>完成条件</div>
-											<select class="field"><option selected>公司信息</option><option>等待节点完成</option></select>
-											<div class="condition-target company-info">
-												<div class="label">公司信息字段</div>
-												<select class="field"><option selected>法人税号</option><option>本土税号</option></select>
+											<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>税号信息</option><option>等待节点完成</option></select>
+											<div class="condition-target tax-info">
+												<div class="label">国家</div>
+												<select class="field"><option selected>西班牙</option><option>德国</option><option>英国</option></select>
+												<div class="label">税号类型</div>
+												<select class="field"><option selected>VAT</option><option>本土税号</option></select>
 											</div>
 											<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
 										</div>
@@ -4159,6 +4156,29 @@
 	function openCollaborationRuleDrawer(title) {
 		document.getElementById("collaborationRuleDrawerTitle").textContent = title;
 		openDrawer("collaborationRuleDrawer");
+	}
+
+	function updateConditionTarget(select) {
+		const row = select.closest(".condition-row");
+		const target = row && row.querySelector(".condition-target");
+		if (!target) {
+			return;
+		}
+		if (select.value === "税号信息") {
+			target.className = "condition-target tax-info";
+			target.innerHTML =
+				'<div class="label">国家</div>' +
+				'<select class="field"><option selected>西班牙</option><option>德国</option><option>英国</option></select>' +
+				'<div class="label">税号类型</div>' +
+				'<select class="field"><option selected>VAT</option><option>本土税号</option></select>';
+			return;
+		}
+		target.className = "condition-target";
+		target.innerHTML =
+			'<div class="label">选择流程</div>' +
+			'<select class="field"><option selected>西班牙海牙认证流程</option><option>法人税号030递交流程</option></select>' +
+			'<div class="label">选择节点</div>' +
+			'<select class="field"><option selected>海牙认证完成</option><option>030下号完成</option><option>待提交</option><option>处理中</option></select>';
 	}
 
 	function deleteConditionRow(action) {

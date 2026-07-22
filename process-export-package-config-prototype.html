@@ -691,6 +691,23 @@
 			font-weight: 600;
 		}
 
+		.rule-mode-tag {
+			display: inline-flex;
+			align-items: center;
+			height: 24px;
+			padding: 0 9px;
+			border-radius: 12px;
+			background: #eef5f6;
+			color: var(--brand-dark);
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.rule-mode-tag.muted {
+			background: #f2f4f7;
+			color: #667085;
+		}
+
 		.rule-card {
 			margin-top: 16px;
 			border: 1px solid var(--line);
@@ -835,6 +852,23 @@
 			gap: 14px;
 		}
 
+		.collaboration-rule-body {
+			display: grid;
+			gap: 14px;
+			padding: 18px;
+		}
+
+		.collaboration-rule-body .config-section {
+			margin-bottom: 0;
+			border-color: #e6ebef;
+			box-shadow: 0 8px 24px rgba(15, 23, 42, .04);
+		}
+
+		.collaboration-rule-body .config-section-title {
+			margin-bottom: 12px;
+			font-size: 14px;
+		}
+
 		.rule-info-group {
 			padding: 12px;
 			border: 1px solid #edf0f2;
@@ -863,6 +897,37 @@
 
 		.rule-info-grid.single-field {
 			grid-template-columns: 96px minmax(0, 360px);
+		}
+
+		.rule-info-grid.mode-grid {
+			grid-template-columns: 96px minmax(0, 1fr) 96px minmax(0, 1fr);
+		}
+
+		.mode-summary-card {
+			display: grid;
+			grid-template-columns: auto minmax(0, 1fr);
+			gap: 10px;
+			align-items: center;
+			margin-bottom: 12px;
+			padding: 10px 12px;
+			border: 1px solid #dce6ea;
+			border-radius: 4px;
+			background: linear-gradient(180deg, #fcfefe 0%, #f7fbfb 100%);
+		}
+
+		.mode-summary-label {
+			color: #667085;
+			font-size: 12px;
+		}
+
+		.mode-summary-value {
+			color: #27313d;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.only-merge-mode .normal-mode-only {
+			display: none !important;
 		}
 
 		.flow-picker {
@@ -1280,6 +1345,10 @@
 
 			.rule-info-grid,
 			.rule-info-grid.flow-scope {
+				grid-template-columns: 96px minmax(0, 1fr);
+			}
+
+			.rule-info-grid.mode-grid {
 				grid-template-columns: 96px minmax(0, 1fr);
 			}
 
@@ -2778,13 +2847,14 @@
 			</div>
 
 			<div class="table-wrap">
-				<table style="min-width:1500px;">
+				<table style="min-width:1620px;">
 					<colgroup>
 						<col style="width:52px">
 						<col style="width:150px">
 						<col style="width:220px">
 						<col style="width:300px">
 						<col style="width:230px">
+						<col style="width:120px">
 						<col style="width:100px">
 						<col style="width:120px">
 						<col style="width:180px">
@@ -2796,6 +2866,7 @@
 						<th>规则名称</th>
 						<th>参与流程</th>
 						<th>匹配方式</th>
+						<th>规则模式</th>
 						<th>合并展示</th>
 						<th>状态</th>
 						<th>操作</th>
@@ -2814,6 +2885,7 @@
 							</div>
 						</td>
 						<td>按公司名称匹配流程</td>
+						<td><span class="rule-mode-tag muted">正常模式</span></td>
 						<td><span class="status on">是</span></td>
 						<td><span class="status on">启用</span></td>
 						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-danger">停用</span></span></td>
@@ -2828,6 +2900,7 @@
 							</div>
 						</td>
 						<td>按公司名称匹配流程</td>
+						<td><span class="rule-mode-tag muted">正常模式</span></td>
 						<td><span class="status off">否</span></td>
 						<td><span class="status on">启用</span></td>
 						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-danger">停用</span></span></td>
@@ -2839,13 +2912,13 @@
 						<td>
 							<div class="rule-flow-tags">
 								<span class="rule-mini-tag main">德国VAT注册流程</span>
-								<span class="rule-mini-tag">德国税务授权流程</span>
 							</div>
 						</td>
 						<td>增值服务与基础服务绑定</td>
-						<td><span class="status off">否</span></td>
+						<td><span class="rule-mode-tag">仅合并模式</span></td>
+						<td><span class="status on">是</span></td>
 						<td><span class="status off">停用</span></td>
-						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-text">启用</span></span></td>
+						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则', 'merge')">编辑</span><span class="action-text">启用</span></span></td>
 					</tr>
 					</tbody>
 				</table>
@@ -3094,14 +3167,18 @@
 			<div class="drawer-title" id="collaborationRuleDrawerTitle">新增协同交付规则</div>
 			<button class="drawer-close" onclick="closeDrawer('collaborationRuleDrawer')">×</button>
 		</div>
-		<div class="drawer-body">
-			<div class="config-card-body">
+		<div class="drawer-body collaboration-rule-drawer-body">
+			<div class="config-card-body collaboration-rule-body">
 					<div class="config-section">
 						<div class="config-section-title">协同交付信息</div>
+						<div class="mode-summary-card" id="collaborationModeSummary">
+							<span class="mode-summary-label">当前模式</span>
+							<span class="mode-summary-value">正常模式：配置多流程协同、节点放行与放行后操作</span>
+						</div>
 						<div class="rule-info-layout">
 							<div class="rule-info-group">
 								<div class="rule-info-group-title">基础规则</div>
-								<div class="rule-info-grid">
+								<div class="rule-info-grid mode-grid">
 									<div class="label"><span class="required">*</span>规则名称</div>
 									<input class="field" value="西班牙VAT注册协同规则">
 									<div class="label">规则状态</div>
@@ -3114,13 +3191,18 @@
 										<span class="rule-pill-option active">是</span>
 										<span class="rule-pill-option">否</span>
 									</div>
+									<div class="label"><span class="required">*</span>规则模式</div>
+									<div class="rule-pill-switch" id="collaborationModeSwitch">
+										<span class="rule-pill-option active" data-mode="normal" onclick="setCollaborationMode('normal')">正常模式</span>
+										<span class="rule-pill-option" data-mode="merge" onclick="setCollaborationMode('merge')">仅合并模式</span>
+									</div>
 								</div>
 							</div>
 							<div class="rule-info-group">
 								<div class="rule-info-group-title">流程范围</div>
 								<div class="rule-info-grid flow-scope">
-									<div class="label"><span class="required">*</span>选择流程</div>
-									<div class="flow-multi-select" onclick="openCollaborationFlowSelectModal()">
+									<div class="label normal-mode-only"><span class="required">*</span>选择流程</div>
+									<div class="flow-multi-select normal-mode-only" onclick="openCollaborationFlowSelectModal()">
 										<span class="flow-select-count" id="collaborationFlowSelectText">已选 3</span>
 										<div class="selected-flow-summary" id="collaborationSelectedFlowSummary">
 											<span class="flow-chip">西班牙VAT注册+申报流程 <span class="close">×</span></span>
@@ -3130,14 +3212,14 @@
 										<span class="flow-select-arrow">⌄</span>
 									</div>
 									<div class="label"><span class="required">*</span>主流程</div>
-									<select class="field" id="collaborationMainFlowSelect"><option selected>西班牙VAT注册+申报流程</option><option>西班牙海牙认证流程</option><option>法人税号030递交流程</option></select>
+									<select class="field" id="collaborationMainFlowSelect"><option selected>西班牙VAT注册+申报流程</option><option>西班牙海牙认证流程</option><option>法人税号030递交流程</option><option>德国VAT注册流程</option></select>
 								</div>
 							</div>
 							<div class="rule-info-group">
 								<div class="rule-info-group-title">执行配置</div>
 								<div class="rule-info-grid single-field">
 									<div class="label"><span class="required">*</span>匹配方式</div>
-									<select class="field">
+									<select class="field" id="collaborationMatchTypeSelect" onchange="handleCollaborationMatchChange(this)">
 										<option selected>按公司名称匹配流程</option>
 										<option>增值服务与基础服务绑定</option>
 									</select>
@@ -3146,7 +3228,7 @@
 						</div>
 					</div>
 
-					<div class="config-section">
+					<div class="config-section normal-mode-only" id="collaborationNodeSection">
 						<div class="config-section-title">节点与放行条件</div>
 						<div class="config-section-desc">按流程配置需要协同的节点；条件满足后只放行当前节点。</div>
 						<div class="task-split">
@@ -4347,9 +4429,54 @@
 		document.getElementById(id).classList.remove("open");
 	}
 
-	function openCollaborationRuleDrawer(title) {
+	function openCollaborationRuleDrawer(title, mode) {
 		document.getElementById("collaborationRuleDrawerTitle").textContent = title;
+		const targetMode = mode || "normal";
+		const matchSelect = document.getElementById("collaborationMatchTypeSelect");
+		const mainFlowSelect = document.getElementById("collaborationMainFlowSelect");
+		if (matchSelect && !mode) {
+			matchSelect.value = "按公司名称匹配流程";
+		}
+		if (mainFlowSelect) {
+			mainFlowSelect.value = targetMode === "merge" ? "德国VAT注册流程" : "西班牙VAT注册+申报流程";
+		}
+		setCollaborationMode(targetMode);
 		openDrawer("collaborationRuleDrawer");
+	}
+
+	function setCollaborationMode(mode) {
+		const drawer = document.getElementById("collaborationRuleDrawer");
+		const isMergeOnly = mode === "merge";
+		if (drawer) {
+			drawer.classList.toggle("only-merge-mode", isMergeOnly);
+		}
+		const modeSwitch = document.getElementById("collaborationModeSwitch");
+		if (modeSwitch) {
+			modeSwitch.querySelectorAll(".rule-pill-option").forEach(function (option) {
+				option.classList.toggle("active", option.dataset.mode === mode);
+			});
+		}
+		const matchSelect = document.getElementById("collaborationMatchTypeSelect");
+		if (isMergeOnly && matchSelect) {
+			matchSelect.value = "增值服务与基础服务绑定";
+		}
+		const summary = document.getElementById("collaborationModeSummary");
+		if (summary) {
+			const value = summary.querySelector(".mode-summary-value");
+			if (value) {
+				value.textContent = isMergeOnly
+					? "仅合并模式：只选择主流程，用于增值服务与基础服务合并展示"
+					: "正常模式：配置多流程协同、节点放行与放行后操作";
+			}
+		}
+	}
+
+	function handleCollaborationMatchChange(select) {
+		if (select.value === "增值服务与基础服务绑定") {
+			setCollaborationMode("merge");
+			return;
+		}
+		setCollaborationMode("normal");
 	}
 
 	function updateConditionTarget(select) {

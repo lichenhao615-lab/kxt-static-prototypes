@@ -1872,6 +1872,18 @@
 			width: 880px;
 		}
 
+		#customPlaceholderModal .confirm-dialog.large {
+			width: min(1040px, calc(100vw - 48px));
+		}
+
+		#customPlaceholderModal .confirm-body {
+			overflow-x: auto;
+		}
+
+		#customPlaceholderModal .mini-table {
+			min-width: 970px;
+		}
+
 		.confirm-head {
 			height: 46px;
 			display: flex;
@@ -2750,8 +2762,8 @@
 					<colgroup>
 						<col style="width:90px">
 						<col style="width:130px">
-						<col style="width:170px">
-						<col style="width:110px">
+						<col style="width:180px">
+						<col style="width:120px">
 						<col style="width:210px">
 						<col style="width:110px">
 						<col style="width:170px">
@@ -2763,7 +2775,7 @@
 						<th>资料项ID</th>
 						<th>资料项名称</th>
 						<th>资料项类型</th>
-						<th>模板CODE/表单资料</th>
+						<th>模板CODE/表单材料</th>
 						<th>文件格式</th>
 						<th>更新时间</th>
 						<th>操作</th>
@@ -2810,6 +2822,36 @@
 						<td>2026-06-07 11:22:19</td>
 						<td><span class="actions"><span class="action-text" onclick="openDrawer('templateDrawer')">编辑</span><span class="action-danger">删除</span></span></td>
 					</tr>
+					<tr>
+						<td>5</td>
+						<td>SYS-TR-001</td>
+						<td>身份证翻译件-西班牙语</td>
+						<td>系统预设</td>
+						<td>preset_id_card_es</td>
+						<td>PDF</td>
+						<td>2026-07-22 10:20:00</td>
+						<td><span class="actions"><span class="action-text" onclick="openPresetMaterialScopeModal('身份证翻译件-西班牙语')">编辑</span></span></td>
+					</tr>
+					<tr>
+						<td>6</td>
+						<td>SYS-TR-002</td>
+						<td>营业执照翻译件-西班牙语</td>
+						<td>系统预设</td>
+						<td>preset_license_es</td>
+						<td>PDF</td>
+						<td>2026-07-22 10:20:00</td>
+						<td><span class="actions"><span class="action-text" onclick="openPresetMaterialScopeModal('营业执照翻译件-西班牙语')">编辑</span></span></td>
+					</tr>
+					<tr>
+						<td>7</td>
+						<td>SYS-TR-003</td>
+						<td>信用报告翻译件-英语</td>
+						<td>系统预设</td>
+						<td>preset_credit_en</td>
+						<td>PDF</td>
+						<td>2026-07-22 10:20:00</td>
+						<td><span class="actions"><span class="action-text" onclick="openPresetMaterialScopeModal('信用报告翻译件-英语')">编辑</span></span></td>
+					</tr>
 					</tbody>
 				</table>
 			</div>
@@ -2817,7 +2859,8 @@
 
 		<div class="workspace form-view">
 			<div class="module-tabs">
-				<div class="module-tab active">表单列表</div>
+				<div class="module-tab active">服务</div>
+				<div class="module-tab">申报</div>
 			</div>
 
 			<div class="toolbar">
@@ -3650,13 +3693,13 @@
 <div class="drawer-mask" id="formMaterialDrawer">
 	<div class="drawer wide">
 		<div class="drawer-header">
-			<div class="drawer-title">表单资料项配置 - 外观专利注册资料表</div>
+			<div class="drawer-title">表单材料项配置 - 外观专利注册资料表</div>
 			<button class="drawer-close" onclick="closeDrawer('formMaterialDrawer')">×</button>
 		</div>
 		<div class="drawer-body">
 			<div class="section">
 				<div class="section-head">
-					<span>表单资料项</span>
+					<span>表单材料项</span>
 					<button class="btn primary small" onclick="openMaterialItemSelectModal('form')">新增资料项</button>
 				</div>
 				<div class="section-body material-item-scroll" style="padding:0;">
@@ -3677,7 +3720,7 @@
 							<th>资料项ID</th>
 							<th>资料项名称</th>
 							<th>资料项类型</th>
-							<th>模板CODE/表单资料</th>
+							<th>模板CODE/表单材料</th>
 							<th>文件格式</th>
 							<th>更新时间</th>
 							<th>操作</th>
@@ -3698,7 +3741,7 @@
 							<td>2</td>
 							<td><span class="item-id">TPL-10025</span></td>
 							<td><span class="item-name">身份证正面</span></td>
-							<td>表单资料</td>
+							<td>表单材料</td>
 							<td><span class="item-source"><span>legalIdCardFront</span></span></td>
 							<td>PDF</td>
 							<td>2026-06-09 18:43:02</td>
@@ -3708,7 +3751,7 @@
 							<td>3</td>
 							<td><span class="item-id">TPL-10026</span></td>
 							<td><span class="item-name">身份证反面</span></td>
-							<td>表单资料</td>
+							<td>表单材料</td>
 							<td><span class="item-source"><span>legalIdCardBack</span></span></td>
 							<td>PDF</td>
 							<td>2026-06-09 18:41:36</td>
@@ -3718,7 +3761,7 @@
 							<td>4</td>
 							<td><span class="item-id">TPL-10027</span></td>
 							<td><span class="item-name">身份证正反面合并</span></td>
-							<td>表单资料</td>
+							<td>表单材料</td>
 							<td>
 								<span class="item-source">
 									<span>legalIdCardFront</span>
@@ -3739,8 +3782,8 @@
 				<div class="section-head">资料项配置说明</div>
 				<div class="section-body help">
 					<div>表单用于承载业务字段、附件字段及可生成的资料项；资料项挂在一个或多个表单下维护，作为表单可对外输出的标准资料定义。</div>
-					<div>表单资料项挂在表单上统一维护，不只服务于资料包导出，也可被资料下载、合同签署等场景复用。</div>
-					<div>资料项类型为“模板”时，系统按模板 CODE 生成文件；资料项类型为“表单资料”时，直接读取表单附件字段。</div>
+					<div>表单材料项挂在表单上统一维护，不只服务于资料包导出，也可被资料下载、合同签署等场景复用。</div>
+					<div>资料项类型为“模板”时，系统按模板 CODE 生成文件；资料项类型为“表单材料”时，直接读取表单附件字段。</div>
 					<div>资料项正文由系统模板能力维护，可通过导入 Excel、Word、PDF 文件覆盖当前正文；签署区和签名、盖章、签署日期等控件通过腾讯电子签嵌入式编辑页配置；系统保存资料项、模板 CODE、占位符和版本关系。</div>
 					<div>资料包配置挂在流程上，可从该流程下表单已维护的资料项中选择要导出的内容，并按资料包方案配置导出文件名、关联表单、顺序和格式转换规则。</div>
 				</div>
@@ -3777,7 +3820,7 @@
 								<div class="label"><span class="required">*</span>资料项名称</div>
 								<input class="field" value="专利申请委托书">
 								<div class="label"><span class="required">*</span>资料项类型</div>
-								<select class="field" id="materialType" onchange="toggleMaterialType()"><option selected>模板</option><option>表单资料</option></select>
+								<select class="field" id="materialType" onchange="toggleMaterialType()"><option selected>模板</option><option>表单材料</option></select>
 								<div class="label">备注</div>
 								<input class="field" value="用于流程资料包导出时生成专利申请委托书。">
 							</div>
@@ -3792,9 +3835,9 @@
 									<button class="btn small ghost" onclick="openCloudTemplateSelectModal()">选择模板</button>
 									<button class="btn small ghost" onclick="openTemplateEditorDrawer('新建资料项模板')">在线新增模板</button>
 								</div>
-								<div class="label form-config-row"><span class="required">*</span>表单资料</div>
+								<div class="label form-config-row"><span class="required">*</span>表单材料</div>
 								<div class="material-source-control" id="formFileControl">
-									<input class="field" id="selectedFormFilesText" value="" placeholder="请选择表单资料" readonly>
+									<input class="field" id="selectedFormFilesText" value="" placeholder="请选择表单材料" readonly>
 									<button class="btn small ghost" onclick="openFormFileSelectModal()">选择资料</button>
 								</div>
 							</div>
@@ -3809,7 +3852,7 @@
 								<tr>
 									<th>序号</th>
 									<th>资料项类型</th>
-									<th>模板CODE/表单资料</th>
+									<th>模板CODE/表单材料</th>
 									<th>操作</th>
 								</tr>
 								</thead>
@@ -3857,9 +3900,9 @@
 								<div class="label">所属资料项</div>
 								<input class="field" value="专利申请委托书" readonly>
 								<div class="label">是否需要签署</div>
-								<select class="field" id="needSignSelect">
-									<option>否</option>
-									<option selected>是</option>
+								<select class="field" id="needSignSelect" disabled>
+									<option selected>否</option>
+									<option>是</option>
 								</select>
 							</div>
 						</div>
@@ -3934,7 +3977,8 @@
 							<div class="placeholder-board-head">
 								<div class="material-group-title" style="margin-bottom:0;">现有占位符</div>
 								<div style="display:flex;align-items:center;gap:10px;">
-									<div class="placeholder-count">当前正文识别 6 个</div>
+									<div class="placeholder-count">当前正文识别 7 个</div>
+									<button class="btn small ghost" onclick="openCustomPlaceholderModal()">自定义占位符</button>
 									<button class="btn small ghost" onclick="openPlaceholderDictionaryModal()">占位符字典</button>
 								</div>
 							</div>
@@ -3942,8 +3986,9 @@
 							<table class="mini-table">
 								<colgroup>
 									<col style="width:70px">
-									<col style="width:260px">
-									<col style="width:240px">
+									<col style="width:220px">
+									<col style="width:210px">
+									<col style="width:140px">
 									<col style="width:140px">
 								</colgroup>
 								<thead>
@@ -3951,16 +3996,18 @@
 									<th>序号</th>
 									<th>占位符</th>
 									<th>字段名称</th>
+									<th>转换规则</th>
 									<th>匹配状态</th>
 								</tr>
 								</thead>
 								<tbody>
-								<tr><td>1</td><td>{{company_name}}</td><td>公司名称</td><td>成功</td></tr>
-								<tr><td>2</td><td>{{company_en_name}}</td><td>公司英文名称</td><td>成功</td></tr>
-								<tr><td>3</td><td>{{contact_name}}</td><td>联系人</td><td>成功</td></tr>
-								<tr><td>4</td><td>{{contact_phone}}</td><td>联系电话</td><td>成功</td></tr>
-								<tr><td>5</td><td>{{process_name}}</td><td>流程名称</td><td>成功</td></tr>
-								<tr><td>6</td><td>{{export_date}}</td><td>导出日期</td><td>失败</td></tr>
+								<tr><td>1</td><td>{{company_name}}</td><td>公司名称</td><td>无</td><td>成功</td></tr>
+								<tr><td>2</td><td>{{company_en_name}}</td><td>公司英文名称</td><td>无</td><td>成功</td></tr>
+								<tr><td>3</td><td>{{street_EN}}</td><td>街道地址</td><td>英文翻译</td><td>成功</td></tr>
+								<tr><td>4</td><td>{{street_PY}}</td><td>街道地址</td><td>拼音</td><td>成功</td></tr>
+								<tr><td>5</td><td>{{street_SP}}</td><td>街道地址</td><td>西班牙语翻译</td><td>成功</td></tr>
+								<tr><td>6</td><td>{{process_name}}</td><td>流程名称</td><td>无</td><td>成功</td></tr>
+								<tr><td>7</td><td>{{export_date}}</td><td>导出日期</td><td>无</td><td>失败</td></tr>
 								</tbody>
 							</table>
 						</div>
@@ -3970,6 +4017,38 @@
 		</div>
 		<div class="drawer-footer">
 			<button class="btn primary" onclick="saveTemplateEditor()">保存模板</button>
+		</div>
+	</div>
+</div>
+
+<div class="drawer-mask" id="presetMaterialScopeModal">
+	<div class="drawer">
+		<div class="drawer-header">
+			<div class="drawer-title">编辑资料项 - <span id="presetMaterialName">系统预设资料项</span></div>
+			<button class="drawer-close" onclick="closePresetMaterialScopeModal()">×</button>
+		</div>
+		<div class="drawer-body">
+			<div class="section">
+				<div class="section-head">资料项信息</div>
+				<div class="section-body">
+					<div class="material-form">
+						<div class="material-group">
+							<div class="material-group-title">适用范围</div>
+							<div class="material-grid">
+								<div class="label"><span class="required">*</span>所属表单</div>
+								<select class="field" id="presetMaterialScope" style="grid-column: span 3;">
+									<option selected>全部表单</option>
+									<option>指定表单</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="drawer-footer">
+			<button class="btn ghost" onclick="closePresetMaterialScopeModal()">取消</button>
+			<button class="btn primary" onclick="closePresetMaterialScopeModal()">保存</button>
 		</div>
 	</div>
 </div>
@@ -3991,9 +4070,10 @@
 			<table class="mini-table">
 				<colgroup>
 					<col style="width:70px">
-					<col style="width:260px">
 					<col style="width:220px">
-					<col style="width:150px">
+					<col style="width:190px">
+					<col style="width:130px">
+					<col style="width:180px">
 					<col style="width:120px">
 				</colgroup>
 				<thead>
@@ -4002,20 +4082,144 @@
 					<th>占位符</th>
 					<th>字段名称</th>
 					<th>来源</th>
+					<th>支持转换</th>
 					<th>操作</th>
 				</tr>
 				</thead>
 				<tbody>
-				<tr><td>1</td><td>{{company_name}}</td><td>公司名称</td><td>表单字段</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>2</td><td>{{company_en_name}}</td><td>公司英文名称</td><td>表单字段</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>3</td><td>{{export_date}}</td><td>导出日期</td><td>系统字段</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>4</td><td>{{legal_representative}}</td><td>法人姓名</td><td>表单字段</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>5</td><td>{{manual_remark}}</td><td>手动备注</td><td>手动补充字段</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>1</td><td>{{company_name}}</td><td>公司名称</td><td>表单字段</td><td>英文 / 拼音 / 西班牙语</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>2</td><td>{{company_en_name}}</td><td>公司英文名称</td><td>表单字段</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>3</td><td>{{street}}</td><td>街道地址</td><td>表单字段</td><td>英文 / 拼音 / 西班牙语</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>4</td><td>{{export_date}}</td><td>导出日期</td><td>系统字段</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>5</td><td>{{legal_representative}}</td><td>法人姓名</td><td>表单字段</td><td>拼音</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>6</td><td>{{custom_code}}</td><td>自定义编号</td><td>自定义占位符</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
 				</tbody>
 			</table>
 		</div>
 		<div class="confirm-footer">
 			<button class="btn ghost" onclick="closePlaceholderDictionaryModal()">关闭</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="customPlaceholderModal">
+	<div class="confirm-dialog large">
+		<div class="confirm-head">
+			<span>自定义占位符</span>
+			<button class="drawer-close" onclick="closeCustomPlaceholderModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="modal-toolbar">
+				<input class="input" placeholder="占位符编码 / 占位符名称">
+				<select class="select"><option>是否可复用：全部</option><option>是</option><option>否</option></select>
+				<button class="btn primary">查询</button>
+				<button class="btn ghost">重置</button>
+				<button class="btn ghost" onclick="openAddCustomPlaceholderModal()">新增占位符</button>
+				<button class="btn ghost">导入 Excel</button>
+			</div>
+			<div class="modal-note">自定义占位符不取表单字段值，系统按单据占用占位符池中的值；不可复用值在下载或导出时消耗，可复用值在审核通过后消耗。</div>
+			<table class="mini-table">
+				<colgroup>
+					<col style="width:150px">
+					<col style="width:150px">
+					<col style="width:100px">
+					<col style="width:100px">
+					<col style="width:100px">
+					<col style="width:100px">
+					<col style="width:150px">
+					<col style="width:120px">
+				</colgroup>
+				<thead>
+				<tr>
+					<th>占位符编码</th>
+					<th>占位符名称</th>
+					<th>是否可复用</th>
+					<th>可用数量</th>
+					<th>已占用数量</th>
+					<th>已使用数量</th>
+					<th>更新时间</th>
+					<th>操作</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>custom_code</td>
+					<td>自定义编号</td>
+					<td>否</td>
+					<td>128</td>
+					<td>6</td>
+					<td>42</td>
+					<td>2026-07-22 10:12:18</td>
+					<td><span class="actions"><span class="action-text" onclick="showCustomPlaceholderDetails('自定义编号')">查看明细</span></span></td>
+				</tr>
+				<tr>
+					<td>batch_serial</td>
+					<td>批次流水号</td>
+					<td>是</td>
+					<td>88</td>
+					<td>12</td>
+					<td>30</td>
+					<td>2026-07-21 18:43:02</td>
+					<td><span class="actions"><span class="action-text" onclick="showCustomPlaceholderDetails('批次流水号')">查看明细</span></span></td>
+				</tr>
+				</tbody>
+			</table>
+			<div id="customPlaceholderDetailSection" style="display:none;margin-top:12px;">
+				<div class="material-group-title" id="customPlaceholderDetailTitle" style="margin-bottom:8px;">占位符明细</div>
+				<table class="mini-table">
+					<colgroup>
+						<col style="width:130px">
+						<col style="width:160px">
+						<col style="width:100px">
+						<col style="width:160px">
+						<col style="width:150px">
+						<col style="width:150px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>导入批次</th>
+						<th>占位符值</th>
+						<th>状态</th>
+						<th>占用单据</th>
+						<th>占用时间</th>
+						<th>使用时间</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr><td>IMP-20260722</td><td>CUS-000128</td><td>可用</td><td>-</td><td>-</td><td>-</td></tr>
+					<tr><td>IMP-20260722</td><td>CUS-000127</td><td>已占用</td><td>FW20260722001</td><td>2026-07-22 11:20</td><td>-</td></tr>
+					<tr><td>IMP-20260720</td><td>CUS-000045</td><td>已使用</td><td>FW20260720009</td><td>2026-07-20 14:08</td><td>2026-07-21 09:32</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeCustomPlaceholderModal()">关闭</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="addCustomPlaceholderModal">
+	<div class="confirm-dialog">
+		<div class="confirm-head">
+			<span>新增占位符</span>
+			<button class="drawer-close" onclick="closeAddCustomPlaceholderModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="material-grid" style="grid-template-columns: 96px 1fr;">
+				<div class="label"><span class="required">*</span>占位符编码</div>
+				<input class="field" placeholder="如 custom_code">
+				<div class="label"><span class="required">*</span>占位符名称</div>
+				<input class="field" placeholder="如 自定义编号">
+				<div class="label"><span class="required">*</span>是否可复用</div>
+				<select class="field"><option>否</option><option>是</option></select>
+				<div class="label">备注</div>
+				<input class="field" placeholder="请输入备注">
+			</div>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeAddCustomPlaceholderModal()">取消</button>
+			<button class="btn primary" onclick="closeAddCustomPlaceholderModal()">保存</button>
 		</div>
 	</div>
 </div>
@@ -4150,21 +4354,35 @@
 					<td><input type="checkbox" class="material-item-select-check" data-id="TPL-10025" data-name="身份证正面" data-form="主体资料表单" data-source-type="field" data-source="legalIdCardFront" data-format="PDF"></td>
 					<td>2</td>
 					<td><span class="item-name">身份证正面</span></td>
-					<td>表单资料</td>
+					<td>表单材料</td>
 					<td>主体资料表单</td>
 				</tr>
 				<tr>
 					<td><input type="checkbox" class="material-item-select-check" data-id="TPL-10026" data-name="身份证反面" data-form="主体资料表单" data-source-type="field" data-source="legalIdCardBack" data-format="PDF"></td>
 					<td>3</td>
 					<td><span class="item-name">身份证反面</span></td>
-					<td>表单资料</td>
+					<td>表单材料</td>
 					<td>主体资料表单</td>
 				</tr>
 				<tr>
 					<td><input type="checkbox" class="material-item-select-check" data-id="TPL-10027" data-name="身份证正反面合并" data-form="主体资料表单" data-source-type="merge" data-source="legalIdCardFront|legalIdCardBack" data-format="PDF"></td>
 					<td>4</td>
 					<td><span class="item-name">身份证正反面合并</span></td>
-					<td>表单资料</td>
+					<td>表单材料</td>
+					<td>主体资料表单</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="material-item-select-check" data-id="SYS-TR-001" data-name="身份证翻译件-西班牙语" data-form="主体资料表单" data-source-type="preset" data-source="preset_id_card_es" data-format="PDF"></td>
+					<td>5</td>
+					<td><span class="item-name">身份证翻译件-西班牙语</span></td>
+					<td>系统预设</td>
+					<td>主体资料表单</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" class="material-item-select-check" data-id="SYS-TR-002" data-name="营业执照翻译件-英语" data-form="主体资料表单" data-source-type="preset" data-source="preset_license_en" data-format="PDF"></td>
+					<td>6</td>
+					<td><span class="item-name">营业执照翻译件-英语</span></td>
+					<td>系统预设</td>
 					<td>主体资料表单</td>
 				</tr>
 				</tbody>
@@ -4303,7 +4521,7 @@
 <div class="confirm-mask" id="formFileSelectModal">
 	<div class="confirm-dialog large">
 		<div class="confirm-head">
-			<span>选择表单资料</span>
+			<span>选择表单材料</span>
 			<button class="drawer-close" onclick="closeFormFileSelectModal()">×</button>
 		</div>
 		<div class="confirm-body compact">
@@ -4313,7 +4531,7 @@
 				<button class="btn primary">搜索</button>
 				<button class="btn ghost">重置</button>
 			</div>
-			<div class="modal-note">表单资料为单选，选择后生成一个资料项。</div>
+			<div class="modal-note">表单材料为单选，选择后生成一个资料项。</div>
 			<table class="mini-table">
 				<colgroup>
 					<col style="width:54px">
@@ -4476,7 +4694,7 @@
 <div class="confirm-mask" id="deleteFormMaterialConfirm">
 	<div class="confirm-dialog">
 		<div class="confirm-head">
-			<span>删除表单资料项</span>
+			<span>删除表单材料项</span>
 			<button class="drawer-close" onclick="hideDeleteFormMaterialConfirm()">×</button>
 		</div>
 		<div class="confirm-body">
@@ -4686,6 +4904,40 @@
 		document.getElementById("placeholderDictionaryModal").classList.remove("open");
 	}
 
+	function openPresetMaterialScopeModal(name) {
+		document.getElementById("presetMaterialName").textContent = name;
+		document.getElementById("presetMaterialScopeModal").classList.add("open");
+	}
+
+	function closePresetMaterialScopeModal() {
+		document.getElementById("presetMaterialScopeModal").classList.remove("open");
+	}
+
+	function openCustomPlaceholderModal() {
+		const detailSection = document.getElementById("customPlaceholderDetailSection");
+		if (detailSection) {
+			detailSection.style.display = "none";
+		}
+		document.getElementById("customPlaceholderModal").classList.add("open");
+	}
+
+	function closeCustomPlaceholderModal() {
+		document.getElementById("customPlaceholderModal").classList.remove("open");
+	}
+
+	function openAddCustomPlaceholderModal() {
+		document.getElementById("addCustomPlaceholderModal").classList.add("open");
+	}
+
+	function closeAddCustomPlaceholderModal() {
+		document.getElementById("addCustomPlaceholderModal").classList.remove("open");
+	}
+
+	function showCustomPlaceholderDetails(name) {
+		document.getElementById("customPlaceholderDetailTitle").textContent = name + " - 明细";
+		document.getElementById("customPlaceholderDetailSection").style.display = "block";
+	}
+
 	function switchTemplatePreview(type) {
 		const previewMap = {
 			word: document.getElementById("templateWordPreview"),
@@ -4883,13 +5135,16 @@
 	}
 
 	function renderItemType(sourceType) {
+		if (sourceType === "preset") {
+			return '系统预设';
+		}
 		if (sourceType === "cloud") {
 			return '模板';
 		}
 		if (sourceType === "merge") {
-			return '表单资料';
+			return '表单材料';
 		}
-		return '表单资料';
+		return '表单材料';
 	}
 
 	function renderItemSource(sourceType, source) {
@@ -4965,7 +5220,7 @@
 			name: selected.closest("tr").children[1].textContent
 		};
 		document.getElementById("selectedFormFilesText").value = selectedItem.code;
-		materialSourceItems = [{ type: "表单资料", code: selectedItem.code }];
+		materialSourceItems = [{ type: "表单材料", code: selectedItem.code }];
 		updateGenerationMode();
 		renderMaterialSourceRows();
 		closeFormFileSelectModal();
@@ -5008,7 +5263,7 @@
 	}
 
 	function toggleMaterialType() {
-		const isForm = document.getElementById("materialType").value === "表单资料";
+		const isForm = document.getElementById("materialType").value === "表单材料";
 		document.querySelectorAll(".material-cloud-row").forEach(function (el) {
 			el.style.display = isForm ? "none" : "";
 		});

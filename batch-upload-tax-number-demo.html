@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>批量上传税号 Demo</title>
+	<title>批量上传税号/证书 Demo</title>
 	<style>
 		:root {
 			--brand: #009aa6;
@@ -407,6 +407,8 @@
 		.batch-action-row {
 			display: flex;
 			align-items: center;
+			gap: 20px;
+			flex-wrap: wrap;
 			min-height: 42px;
 			border-top: 1px solid transparent;
 		}
@@ -476,6 +478,10 @@
 			display: flex;
 			flex-direction: column;
 			overflow: hidden;
+		}
+
+		.modal.epr-modal {
+			width: min(1040px, calc(100vw - 24px));
 		}
 
 		.modal-header {
@@ -593,6 +599,10 @@
 			display: grid;
 			grid-template-columns: 1fr 1fr;
 			gap: 12px;
+		}
+
+		.epr-modal .standard-upload-grid {
+			align-items: start;
 		}
 
 		.standard-card {
@@ -759,6 +769,14 @@
 			color: var(--success);
 		}
 
+		.status.info {
+			width: auto;
+			min-width: 64px;
+			padding: 0 10px;
+			background: #edf6ff;
+			color: var(--brand);
+		}
+
 		.rule-list {
 			margin-top: 16px;
 			display: grid;
@@ -839,6 +857,16 @@
 			min-width: 640px;
 			min-height: 44px;
 			padding: 0 14px;
+		}
+
+		.epr-file-list .file-list-header,
+		.epr-file-list .file-row {
+			grid-template-columns: minmax(260px, 1fr) 100px 90px 140px;
+			min-width: 760px;
+		}
+
+		.epr-file-list .empty-list {
+			min-width: 760px;
 		}
 
 		.file-list-header > div,
@@ -1223,6 +1251,15 @@
 						</svg>
 						批量上传VAT税号
 					</button>
+					<button class="btn outline-brand" id="openEprModal">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+							<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+							<path d="M14 2v6h6"></path>
+							<path d="M9 13h6"></path>
+							<path d="M9 17h4"></path>
+						</svg>
+						批量上传EPR证书
+					</button>
 				</div>
 
 				<div class="table-wrap">
@@ -1552,6 +1589,127 @@
 		</section>
 	</div>
 
+	<div class="modal-mask" id="eprModal">
+		<section class="modal epr-modal" role="dialog" aria-modal="true" aria-labelledby="eprModalTitle">
+			<header class="modal-header">
+				<div id="eprModalTitle">批量上传EPR证书</div>
+				<button class="icon-button" id="closeEprModal" aria-label="关闭">
+					<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor">
+						<path d="M18 6 6 18"></path>
+						<path d="m6 6 12 12"></path>
+					</svg>
+				</button>
+			</header>
+			<div class="modal-body">
+				<div class="template-panel">
+					<div class="template-header">
+						<div>
+							<div class="template-title">批量上传EPR证书</div>
+							<div class="upload-sub">入口与“批量上传VAT税号”同级，EPR 仅支持通用模板。</div>
+							<div class="result-tip">系统读取 ZIP 证书压缩包内的 PDF 文件名，并使用 PDF 文件名匹配通用表格中的国家、产品线、公司名称。</div>
+						</div>
+						<span class="badge">EPR</span>
+					</div>
+					<div class="template-body">
+						<div class="standard-tip">
+							<div><b>通用字段：</b>国家、产品线、公司名称、注册号、会员号、生效日期。</div>
+							<div><b>必填规则：</b>除会员号外均必填；会员号按“国家 + 产品线”判断是否必填，本期法国会员号必填。</div>
+							<div><b>证书命名：</b>ZIP 包内 PDF 按“国家+公司名称.pdf”命名；多文件产品线按“国家+公司名称+类目+品牌.pdf”命名。</div>
+						</div>
+
+						<div class="standard-upload-grid">
+							<section class="standard-card">
+								<div class="standard-card-head">
+									<div class="standard-card-title"><span class="step-badge">1</span>上传注册信息表格</div>
+									<button class="template-link" id="eprTemplateLink">下载模板</button>
+								</div>
+								<p class="standard-card-desc">表格字段包含国家、产品线、公司名称、注册号、会员号、生效日期。法国会员号为空时校验失败，系统先校验表格，再创建批量录入任务。</p>
+								<label class="upload-zone" for="eprInfoInput">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+										<path d="m17 8-5-5-5 5"></path>
+										<path d="M12 3v12"></path>
+									</svg>
+									<div class="upload-main">点击或将 EPR 注册信息表格拖拽到此上传</div>
+									<div class="upload-sub">仅支持 .xlsx 文件，限制文件大小 20M</div>
+									<div style="margin-top: 12px;">
+										<span class="btn primary">选择表格</span>
+									</div>
+								</label>
+								<input class="file-input" id="eprInfoInput" type="file" accept=".xlsx">
+								<div class="standard-file-stack" id="eprInfoRows"></div>
+							</section>
+
+							<section class="standard-card">
+								<div class="standard-card-head">
+									<div class="standard-card-title"><span class="step-badge">2</span>上传 EPR 证书压缩包</div>
+								</div>
+								<p class="standard-card-desc">证书文件需打包为 ZIP 后上传，每次仅允许上传一个 ZIP。系统读取 ZIP 内 PDF 文件名进行匹配；证书可后补，仅上传注册信息表格时单据进入部分完成。</p>
+								<label class="upload-zone" for="eprCertInput">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+										<path d="m17 8-5-5-5 5"></path>
+										<path d="M12 3v12"></path>
+									</svg>
+									<div class="upload-main">点击或将 ZIP 证书包拖拽到此上传</div>
+									<div class="upload-sub">仅支持 .zip 文件，每次仅允许上传一个证书包</div>
+									<div style="margin-top: 12px;">
+										<span class="btn primary">选择证书压缩包</span>
+									</div>
+								</label>
+								<input class="file-input" id="eprCertInput" type="file" accept=".zip">
+								<div class="file-list epr-file-list" id="eprCertFileList">
+									<div class="file-list-header">
+										<div>已上传文件</div>
+										<div>文件大小</div>
+										<div>状态</div>
+										<div>操作</div>
+									</div>
+									<div class="empty-list" id="eprCertEmpty">暂无已上传证书压缩包</div>
+									<div id="eprCertRows"></div>
+								</div>
+							</section>
+						</div>
+
+						<div class="rule-list">
+							<div class="rule-item"><b>ZIP 上传限制：</b>每次仅允许上传一个 ZIP 证书压缩包，压缩包内可包含多个 PDF 证书文件。</div>
+							<div class="rule-item"><b>普通证书匹配：</b>系统读取 ZIP 内 PDF 文件名，按“国家 + 公司名称”匹配表格记录，例如 <b>德国+深圳跨信通公司.pdf</b>。</div>
+							<div class="rule-item"><b>多文件产品线：</b>ZIP 内 PDF 文件命名为“国家 + 公司名称 + 类目 + 品牌”，例如 <b>德国+深圳跨信通公司+包装+KXT.pdf</b>。</div>
+							<div class="rule-item"><b>提交结果：</b>有注册信息但未上传证书时进入部分完成；部分完成后只允许补充缺失证书，不允许修改已录入字段。</div>
+						</div>
+
+						<div class="preview" id="eprPreview">
+							<div class="preview-header">
+								<span id="eprPreviewTitle">证书预览</span>
+								<button class="icon-button" id="closeEprPreview" aria-label="关闭预览">
+									<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor">
+										<path d="M18 6 6 18"></path>
+										<path d="m6 6 12 12"></path>
+									</svg>
+								</button>
+							</div>
+							<div class="preview-body" id="eprPreviewBody"></div>
+						</div>
+
+						<div class="result-panel" id="eprResultPanel">
+							<strong>已创建 EPR 批量录入证书任务</strong>
+							<span id="eprResultText">请前往我的任务下载查看结果。</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer class="modal-footer">
+				<button class="btn" id="cancelEprModal">取消</button>
+				<button class="btn primary" id="confirmEprUpload" disabled>
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+						<path d="M20 6 9 17l-5-5"></path>
+					</svg>
+					确定上传
+				</button>
+			</footer>
+		</section>
+	</div>
+
 	<div class="toast" id="toast">已创建批量录入税号任务，请前往我的任务下载查看结果。</div>
 
 	<script>
@@ -1614,6 +1772,23 @@
 		const generalTemplateLink = document.getElementById("generalTemplateLink");
 		const standardResultPanel = document.getElementById("standardResultPanel");
 		const standardResultText = document.getElementById("standardResultText");
+		const eprModal = document.getElementById("eprModal");
+		const openEprModal = document.getElementById("openEprModal");
+		const closeEprModal = document.getElementById("closeEprModal");
+		const cancelEprModal = document.getElementById("cancelEprModal");
+		const eprTemplateLink = document.getElementById("eprTemplateLink");
+		const eprInfoInput = document.getElementById("eprInfoInput");
+		const eprCertInput = document.getElementById("eprCertInput");
+		const eprInfoRows = document.getElementById("eprInfoRows");
+		const eprCertRows = document.getElementById("eprCertRows");
+		const eprCertEmpty = document.getElementById("eprCertEmpty");
+		const eprPreview = document.getElementById("eprPreview");
+		const eprPreviewTitle = document.getElementById("eprPreviewTitle");
+		const eprPreviewBody = document.getElementById("eprPreviewBody");
+		const closeEprPreview = document.getElementById("closeEprPreview");
+		const eprResultPanel = document.getElementById("eprResultPanel");
+		const eprResultText = document.getElementById("eprResultText");
+		const confirmEprUpload = document.getElementById("confirmEprUpload");
 
 		let uploadedFiles = [];
 		let uploadedGermanyEuVatFiles = [];
@@ -1624,6 +1799,17 @@
 		];
 		let uploadedFranceTaxInfoFile = null;
 		let uploadedPolandTaxInfoFile = null;
+		let uploadedEprInfoFile = { name: "EPR证书批量上传通用模板.xlsx", size: 64218 };
+		let uploadedEprCertFiles = [{
+			name: "EPR证书批量包.zip",
+			size: 3687424,
+			status: "已解析PDF",
+			statusClass: "info",
+			pdfNames: [
+				"德国+深圳跨信通公司+包装+KXT.pdf",
+				"法国+广州跨信通公司.pdf",
+			],
+		}];
 		let countryUploadMode = "info";
 		let toastTimer = null;
 		const countryMap = {
@@ -1712,6 +1898,18 @@
 			preview.classList.remove("show");
 		}
 
+		function openEprUploadModal() {
+			eprResultPanel.classList.remove("show");
+			renderEprInfoUpload();
+			renderEprCertFiles();
+			eprModal.classList.add("show");
+		}
+
+		function closeEprUploadModal() {
+			eprModal.classList.remove("show");
+			eprPreview.classList.remove("show");
+		}
+
 		function formatSize(size) {
 			if (size < 1024) {
 				return size + " B";
@@ -1724,6 +1922,14 @@
 
 		function iconFile() {
 			return '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg>';
+		}
+
+		function getUploadName(item) {
+			return item.file ? item.file.name : item.name;
+		}
+
+		function getUploadSize(item) {
+			return item.file ? item.file.size : item.size;
 		}
 
 		function renderFiles() {
@@ -1838,6 +2044,91 @@
 			if (!file) return;
 			uploadedPolandTaxInfoFile = { name: file.name, size: file.size };
 			renderPolandTaxInfoUpload();
+		}
+
+		function renderEprInfoUpload() {
+			eprInfoRows.innerHTML = uploadedEprInfoFile ? `
+				<div class="standard-file-row">
+					<span title="${uploadedEprInfoFile.name}">${uploadedEprInfoFile.name}</span>
+					<span class="status success">校验成功</span>
+				</div>
+			` : `
+				<div class="standard-file-row">
+					<span>请上传 EPR 注册信息表格</span>
+				</div>
+			`;
+			updateEprConfirmState();
+		}
+
+		function renderEprCertFiles() {
+			eprCertEmpty.style.display = uploadedEprCertFiles.length ? "none" : "grid";
+			eprCertRows.innerHTML = uploadedEprCertFiles.map((item, index) => `
+				<div class="file-row">
+					<div class="file-name">${iconFile()}<span title="${getUploadName(item)}">${getUploadName(item)}</span></div>
+					<div>${formatSize(getUploadSize(item))}</div>
+					<div><span class="status ${item.statusClass || "success"}">${item.status || "匹配成功"}</span></div>
+					<div>
+						<button class="btn text" data-epr-preview="${index}">预览</button>
+						<button class="btn text danger-text" data-epr-delete="${index}">删除</button>
+					</div>
+				</div>
+			`).join("");
+			updateEprConfirmState();
+		}
+
+		function previewEprFile(index) {
+			const item = uploadedEprCertFiles[index];
+			if (!item) return;
+			eprPreviewTitle.textContent = getUploadName(item);
+			const pdfNames = item.pdfNames || [
+				"系统将读取 ZIP 内 PDF 文件名进行匹配",
+			];
+			eprPreviewBody.innerHTML = `
+				<div class="document-preview">
+					<div class="doc-line mid"></div>
+					<div class="doc-line"></div>
+					<div class="doc-line short"></div>
+					<div class="doc-line mid"></div>
+					<div class="doc-stamp">ZIP证书包</div>
+					<div style="margin-top: 14px; line-height: 1.8; color: #344054; text-align: left;">
+						<strong>ZIP 内 PDF 文件名</strong>
+						${pdfNames.map((name) => `<div>${name} <span class="success-text">匹配成功</span></div>`).join("")}
+					</div>
+				</div>
+			`;
+			eprPreview.classList.add("show");
+		}
+
+		function deleteEprCertFile(index) {
+			uploadedEprCertFiles.splice(index, 1);
+			renderEprCertFiles();
+			if (!uploadedEprCertFiles.length) {
+				eprPreview.classList.remove("show");
+			}
+		}
+
+		function setEprInfoFile(file) {
+			if (!file) return;
+			uploadedEprInfoFile = { name: file.name, size: file.size };
+			renderEprInfoUpload();
+		}
+
+		function addEprCertFiles(files) {
+			const file = files[0];
+			if (!file) return;
+			uploadedEprCertFiles = [{
+				file,
+				status: "待解析PDF",
+				statusClass: "info",
+				pdfNames: [
+					"系统将读取 ZIP 内 PDF 文件名，并按国家+公司名称或国家+公司名称+类目+品牌匹配",
+				],
+			}];
+			renderEprCertFiles();
+		}
+
+		function updateEprConfirmState() {
+			confirmEprUpload.disabled = !uploadedEprInfoFile;
 		}
 
 		function updateConfirmState() {
@@ -2012,10 +2303,43 @@
 			taskCountText.textContent = "共有 1 条数据";
 		}
 
+		function addEprTaskRow(taskNo) {
+			const hasCertificates = uploadedEprCertFiles.length > 0;
+			const statusText = hasCertificates ? "正常" : "部分完成";
+			const statusClass = hasCertificates ? "success-text" : "warning-text";
+			const processStatus = hasCertificates ? "证书匹配中" : "待补传证书";
+			const templateName = hasCertificates ? "EPR通用模板+ZIP证书包" : "EPR通用模板";
+			taskTableBody.innerHTML = `
+				<tr>
+					<td>${taskNo}</td>
+					<td><span class="${statusClass}">${statusText}</span></td>
+					<td>系统异步处理</td>
+					<td>批量录入证书</td>
+					<td>履约工作台</td>
+					<td>${processStatus}</td>
+					<td>EPR证书批量文件</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+					<td>EPR履约服务</td>
+					<td>${templateName}</td>
+					<td>EPR</td>
+					<td>基础服务</td>
+					<td>多国家</td>
+					<td><button class="btn text">去我的任务下载</button></td>
+				</tr>
+			`;
+			taskCountText.textContent = "共有 1 条数据";
+		}
+
 		openBatchModal.addEventListener("click", openModal);
 		closeBatchModal.addEventListener("click", closeModal);
 		cancelBatchModal.addEventListener("click", closeModal);
 		closePreview.addEventListener("click", () => preview.classList.remove("show"));
+		openEprModal.addEventListener("click", openEprUploadModal);
+		closeEprModal.addEventListener("click", closeEprUploadModal);
+		cancelEprModal.addEventListener("click", closeEprUploadModal);
+		closeEprPreview.addEventListener("click", () => eprPreview.classList.remove("show"));
 		countrySelect.addEventListener("change", () => {
 			if (countrySelect.value === "DE" || countrySelect.value === "FR" || countrySelect.value === "PL") {
 				countryUploadMode = "info";
@@ -2029,6 +2353,12 @@
 		batchModal.addEventListener("click", (event) => {
 			if (event.target === batchModal) {
 				closeModal();
+			}
+		});
+
+		eprModal.addEventListener("click", (event) => {
+			if (event.target === eprModal) {
+				closeEprUploadModal();
 			}
 		});
 
@@ -2130,6 +2460,32 @@
 			showToast("已下载波兰税号录入模板（Demo）。");
 		});
 
+		eprTemplateLink.addEventListener("click", () => {
+			downloadTemplate("EPR证书批量上传通用模板.xlsx");
+			showToast("已下载 EPR 证书通用模板（Demo）。");
+		});
+
+		eprInfoInput.addEventListener("change", (event) => {
+			setEprInfoFile((event.target.files || [])[0]);
+			event.target.value = "";
+		});
+
+		eprCertInput.addEventListener("change", (event) => {
+			addEprCertFiles(Array.from(event.target.files || []));
+			event.target.value = "";
+		});
+
+		eprCertRows.addEventListener("click", (event) => {
+			const previewButton = event.target.closest("[data-epr-preview]");
+			const deleteButton = event.target.closest("[data-epr-delete]");
+			if (previewButton) {
+				previewEprFile(Number(previewButton.dataset.eprPreview));
+			}
+			if (deleteButton) {
+				deleteEprCertFile(Number(deleteButton.dataset.eprDelete));
+			}
+		});
+
 		fileList.addEventListener("click", (event) => {
 			const previewButton = event.target.closest("[data-preview]");
 			const deleteButton = event.target.closest("[data-delete]");
@@ -2188,11 +2544,26 @@
 			setTimeout(closeModal, 800);
 		});
 
+		confirmEprUpload.addEventListener("click", () => {
+			if (!uploadedEprInfoFile) return;
+			const taskNo = "BEPR" + new Date().toISOString().replace(/\D/g, "").slice(0, 14);
+			const hasCertificates = uploadedEprCertFiles.length > 0;
+			eprResultText.textContent = hasCertificates
+				? "，任务号：" + taskNo + "。注册信息与证书文件已提交，结果进入我的任务下载。"
+				: "，任务号：" + taskNo + "。注册信息已提交，当前进入部分完成；后续只允许补充缺失证书。";
+			eprResultPanel.classList.add("show");
+			addEprTaskRow(taskNo);
+			showToast("已创建 EPR 批量录入证书任务，去我的任务下载。");
+			setTimeout(closeEprUploadModal, 800);
+		});
+
 		renderFiles();
 		renderGermanyEuVatFiles();
 		renderStandardUploads();
 		renderFranceTaxInfoUpload();
 		renderPolandTaxInfoUpload();
+		renderEprInfoUpload();
+		renderEprCertFiles();
 	</script>
 </body>
 </html>

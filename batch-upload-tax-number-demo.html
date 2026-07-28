@@ -1606,7 +1606,7 @@
 						<div>
 							<div class="template-title">批量上传EPR证书</div>
 							<div class="upload-sub">入口与“批量上传VAT税号”同级，EPR 仅支持通用模板。</div>
-							<div class="result-tip">系统读取 ZIP 证书压缩包内的 PDF 文件名，并使用 PDF 文件名匹配通用表格中的国家、产品线、公司名称。</div>
+							<div class="result-tip">上传注册信息表格后可创建批量录入任务；证书资料可在本次或后续补传。</div>
 						</div>
 						<span class="badge">EPR</span>
 					</div>
@@ -1614,7 +1614,7 @@
 						<div class="standard-tip">
 							<div><b>通用字段：</b>国家、产品线、公司名称、注册号、会员号、生效日期。</div>
 							<div><b>必填规则：</b>除会员号外均必填；会员号按“国家 + 产品线”判断是否必填，本期法国会员号必填。</div>
-							<div><b>证书命名：</b>ZIP 包内 PDF 按“国家+公司名称.pdf”命名；多文件产品线按“国家+公司名称+类目+品牌.pdf”命名。</div>
+							<div><b>普通证书匹配：</b>系统读取 ZIP 内 PDF 文件名，按“国家+产品线+公司名称”匹配表格记录，例如 <b>德国+包装+深圳跨信通公司.pdf</b>。</div>
 						</div>
 
 						<div class="standard-upload-grid">
@@ -1644,7 +1644,7 @@
 								<div class="standard-card-head">
 									<div class="standard-card-title"><span class="step-badge">2</span>上传 EPR 证书压缩包</div>
 								</div>
-								<p class="standard-card-desc">证书文件需打包为 ZIP 后上传，每次仅允许上传一个 ZIP。系统读取 ZIP 内 PDF 文件名进行匹配；证书可后补，仅上传注册信息表格时单据进入部分完成。</p>
+								<p class="standard-card-desc">证书文件需打包为 ZIP 后上传；证书可后补，仅上传注册信息表格时单据进入部分完成。</p>
 								<label class="upload-zone" for="eprCertInput">
 									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
 										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1652,7 +1652,7 @@
 										<path d="M12 3v12"></path>
 									</svg>
 									<div class="upload-main">点击或将 ZIP 证书包拖拽到此上传</div>
-									<div class="upload-sub">仅支持 .zip 文件，每次仅允许上传一个证书包</div>
+									<div class="upload-sub">仅支持 .zip 文件</div>
 									<div style="margin-top: 12px;">
 										<span class="btn primary">选择证书压缩包</span>
 									</div>
@@ -1672,9 +1672,6 @@
 						</div>
 
 						<div class="rule-list">
-							<div class="rule-item"><b>ZIP 上传限制：</b>每次仅允许上传一个 ZIP 证书压缩包，压缩包内可包含多个 PDF 证书文件。</div>
-							<div class="rule-item"><b>普通证书匹配：</b>系统读取 ZIP 内 PDF 文件名，按“国家 + 公司名称”匹配表格记录，例如 <b>德国+深圳跨信通公司.pdf</b>。</div>
-							<div class="rule-item"><b>多文件产品线：</b>ZIP 内 PDF 文件命名为“国家 + 公司名称 + 类目 + 品牌”，例如 <b>德国+深圳跨信通公司+包装+KXT.pdf</b>。</div>
 							<div class="rule-item"><b>提交结果：</b>有注册信息但未上传证书时进入部分完成；部分完成后只允许补充缺失证书，不允许修改已录入字段。</div>
 						</div>
 
@@ -1799,15 +1796,15 @@
 		];
 		let uploadedFranceTaxInfoFile = null;
 		let uploadedPolandTaxInfoFile = null;
-		let uploadedEprInfoFile = { name: "EPR证书批量上传通用模板.xlsx", size: 64218 };
+		let uploadedEprInfoFile = { name: "上传EPR证书通用模板.xlsx", size: 10708 };
 		let uploadedEprCertFiles = [{
 			name: "EPR证书批量包.zip",
 			size: 3687424,
 			status: "已解析PDF",
 			statusClass: "info",
 			pdfNames: [
-				"德国+深圳跨信通公司+包装+KXT.pdf",
-				"法国+广州跨信通公司.pdf",
+				"证书文件-001.pdf",
+				"证书文件-002.pdf",
 			],
 		}];
 		let countryUploadMode = "info";
@@ -2066,7 +2063,7 @@
 				<div class="file-row">
 					<div class="file-name">${iconFile()}<span title="${getUploadName(item)}">${getUploadName(item)}</span></div>
 					<div>${formatSize(getUploadSize(item))}</div>
-					<div><span class="status ${item.statusClass || "success"}">${item.status || "匹配成功"}</span></div>
+					<div><span class="status ${item.statusClass || "success"}">${item.status || "已读取"}</span></div>
 					<div>
 						<button class="btn text" data-epr-preview="${index}">预览</button>
 						<button class="btn text danger-text" data-epr-delete="${index}">删除</button>
@@ -2081,7 +2078,7 @@
 			if (!item) return;
 			eprPreviewTitle.textContent = getUploadName(item);
 			const pdfNames = item.pdfNames || [
-				"系统将读取 ZIP 内 PDF 文件名进行匹配",
+				"系统将读取 ZIP 内 PDF 文件名",
 			];
 			eprPreviewBody.innerHTML = `
 				<div class="document-preview">
@@ -2092,7 +2089,7 @@
 					<div class="doc-stamp">ZIP证书包</div>
 					<div style="margin-top: 14px; line-height: 1.8; color: #344054; text-align: left;">
 						<strong>ZIP 内 PDF 文件名</strong>
-						${pdfNames.map((name) => `<div>${name} <span class="success-text">匹配成功</span></div>`).join("")}
+						${pdfNames.map((name) => `<div>${name} <span class="success-text">已读取</span></div>`).join("")}
 					</div>
 				</div>
 			`;
@@ -2121,7 +2118,7 @@
 				status: "待解析PDF",
 				statusClass: "info",
 				pdfNames: [
-					"系统将读取 ZIP 内 PDF 文件名，并按国家+公司名称或国家+公司名称+类目+品牌匹配",
+					"系统将读取 ZIP 内 PDF 文件名",
 				],
 			}];
 			renderEprCertFiles();
@@ -2461,7 +2458,7 @@
 		});
 
 		eprTemplateLink.addEventListener("click", () => {
-			downloadTemplate("EPR证书批量上传通用模板.xlsx");
+			downloadTemplate("上传EPR证书通用模板.xlsx");
 			showToast("已下载 EPR 证书通用模板（Demo）。");
 		});
 

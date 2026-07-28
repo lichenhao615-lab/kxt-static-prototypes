@@ -1605,8 +1605,6 @@
 					<div class="template-header">
 						<div>
 							<div class="template-title">批量上传EPR证书</div>
-							<div class="upload-sub">入口与“批量上传VAT税号”同级，EPR 仅支持通用模板。</div>
-							<div class="result-tip">上传注册信息表格后可创建批量录入任务；证书资料可在本次或后续补传。</div>
 						</div>
 						<span class="badge">EPR</span>
 					</div>
@@ -1644,7 +1642,7 @@
 								<div class="standard-card-head">
 									<div class="standard-card-title"><span class="step-badge">2</span>上传 EPR 证书压缩包</div>
 								</div>
-								<p class="standard-card-desc">证书文件需打包为 ZIP 后上传；证书可后补，仅上传注册信息表格时单据进入部分完成。</p>
+								<p class="standard-card-desc">证书文件需打包为 ZIP 后上传；EPR 不进入部分完成状态，未上传证书文件时录入失败。</p>
 								<label class="upload-zone" for="eprCertInput">
 									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
 										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -1672,7 +1670,7 @@
 						</div>
 
 						<div class="rule-list">
-							<div class="rule-item"><b>提交结果：</b>有注册信息但未上传证书时进入部分完成；部分完成后只允许补充缺失证书，不允许修改已录入字段。</div>
+							<div class="rule-item"><b>提交结果：</b>注册信息和证书文件均已上传时创建录入任务；未上传证书文件时录入失败。</div>
 						</div>
 
 						<div class="preview" id="eprPreview">
@@ -2302,9 +2300,9 @@
 
 		function addEprTaskRow(taskNo) {
 			const hasCertificates = uploadedEprCertFiles.length > 0;
-			const statusText = hasCertificates ? "正常" : "部分完成";
-			const statusClass = hasCertificates ? "success-text" : "warning-text";
-			const processStatus = hasCertificates ? "证书匹配中" : "待补传证书";
+			const statusText = hasCertificates ? "正常" : "录入失败";
+			const statusClass = hasCertificates ? "success-text" : "danger-text";
+			const processStatus = hasCertificates ? "证书匹配中" : "缺少证书文件";
 			const templateName = hasCertificates ? "EPR通用模板+ZIP证书包" : "EPR通用模板";
 			taskTableBody.innerHTML = `
 				<tr>
@@ -2547,10 +2545,10 @@
 			const hasCertificates = uploadedEprCertFiles.length > 0;
 			eprResultText.textContent = hasCertificates
 				? "，任务号：" + taskNo + "。注册信息与证书文件已提交，结果进入我的任务下载。"
-				: "，任务号：" + taskNo + "。注册信息已提交，当前进入部分完成；后续只允许补充缺失证书。";
+				: "，任务号：" + taskNo + "。未上传证书文件，EPR 不进入部分完成状态，本次录入失败。";
 			eprResultPanel.classList.add("show");
 			addEprTaskRow(taskNo);
-			showToast("已创建 EPR 批量录入证书任务，去我的任务下载。");
+			showToast(hasCertificates ? "已创建 EPR 批量录入证书任务，去我的任务下载。" : "未上传证书文件，EPR 录入失败。");
 			setTimeout(closeEprUploadModal, 800);
 		});
 

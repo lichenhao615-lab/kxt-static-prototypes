@@ -391,6 +391,59 @@
 			background: #fff;
 		}
 
+		.btn.batch-action-toggle {
+			height: 36px;
+			min-width: 122px;
+			justify-content: space-between;
+			border-color: #008e99;
+			background: linear-gradient(180deg, #00a8b4 0%, #008f9a 100%);
+			color: #fff;
+			border-radius: 6px;
+			padding: 0 9px 0 12px;
+			font-weight: 600;
+			box-shadow: 0 6px 14px rgba(0, 154, 166, .18);
+			transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+		}
+
+		.btn.batch-action-toggle:hover {
+			background: linear-gradient(180deg, #00a0ad 0%, #008a95 100%);
+			box-shadow: 0 9px 20px rgba(0, 154, 166, .24);
+			transform: translateY(-1px);
+		}
+
+		.btn.batch-action-toggle:active {
+			box-shadow: 0 4px 10px rgba(0, 154, 166, .16);
+			transform: translateY(0);
+		}
+
+		.btn.batch-action-toggle:focus-visible {
+			outline: 3px solid rgba(0, 154, 166, .18);
+			outline-offset: 2px;
+		}
+
+		.btn.batch-action-toggle svg {
+			flex: 0 0 auto;
+			stroke: #fff;
+		}
+
+		.batch-action-caret {
+			width: 18px;
+			height: 18px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			margin-left: 2px;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, .16);
+			font-size: 12px;
+			line-height: 1;
+			transition: transform .16s ease;
+		}
+
+		.batch-action-toggle[aria-expanded="true"] .batch-action-caret {
+			transform: rotate(180deg);
+		}
+
 		.btn.text {
 			border-color: transparent;
 			color: var(--brand);
@@ -411,6 +464,105 @@
 			flex-wrap: wrap;
 			min-height: 42px;
 			border-top: 1px solid transparent;
+		}
+
+		.batch-action-wrap {
+			position: relative;
+			display: inline-flex;
+			align-items: center;
+		}
+
+		.batch-action-menu {
+			position: absolute;
+			top: 44px;
+			left: 0;
+			z-index: 20;
+			width: 248px;
+			display: none;
+			padding: 7px;
+			border: 1px solid #dbe8ee;
+			border-radius: 8px;
+			background: #fff;
+			box-shadow: 0 18px 38px rgba(15, 35, 52, .16), 0 3px 10px rgba(15, 35, 52, .08);
+		}
+
+		.batch-action-menu.show {
+			display: grid;
+			gap: 2px;
+		}
+
+		.batch-action-menu::before {
+			content: "";
+			position: absolute;
+			top: -6px;
+			left: 22px;
+			width: 10px;
+			height: 10px;
+			background: #fff;
+			border-left: 1px solid #dbe8ee;
+			border-top: 1px solid #dbe8ee;
+			transform: rotate(45deg);
+		}
+
+		.batch-action-menu button {
+			position: relative;
+			width: 100%;
+			min-height: 40px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			border: 0;
+			border-radius: 6px;
+			background: transparent;
+			color: #1f2937;
+			padding: 9px 10px;
+			cursor: pointer;
+			font-size: 14px;
+			line-height: 20px;
+			text-align: left;
+			font-weight: 500;
+			transition: background .16s ease, color .16s ease;
+		}
+
+		.batch-action-menu button:hover {
+			background: #eefbfc;
+			color: var(--brand);
+		}
+
+		.batch-action-menu button:focus-visible {
+			outline: 2px solid rgba(0, 154, 166, .22);
+			outline-offset: -2px;
+		}
+
+		.batch-action-menu svg {
+			width: 24px;
+			height: 24px;
+			padding: 4px;
+			border-radius: 6px;
+			background: #edf9fb;
+			stroke: var(--brand);
+			stroke-width: 2;
+			flex: 0 0 auto;
+			box-sizing: border-box;
+			transition: background .16s ease;
+		}
+
+		.batch-action-menu button:hover svg {
+			background: #dff5f8;
+		}
+
+		.batch-action-menu button:nth-child(3) {
+			margin-top: 8px;
+		}
+
+		.batch-action-menu button:nth-child(3)::before {
+			content: "";
+			position: absolute;
+			top: -5px;
+			left: 8px;
+			right: 8px;
+			height: 1px;
+			background: #edf3f6;
 		}
 
 		.table-wrap {
@@ -1243,23 +1395,53 @@
 				</div>
 
 				<div class="batch-action-row">
-					<button class="btn outline-brand" id="openBatchModal">
-						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-							<path d="m17 8-5-5-5 5"></path>
-							<path d="M12 3v12"></path>
-						</svg>
-						批量上传VAT税号
-					</button>
-					<button class="btn outline-brand" id="openEprModal">
-						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-							<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-							<path d="M14 2v6h6"></path>
-							<path d="M9 13h6"></path>
-							<path d="M9 17h4"></path>
-						</svg>
-						批量上传EPR证书
-					</button>
+					<div class="batch-action-wrap" id="batchActionWrap">
+						<button class="btn batch-action-toggle" id="batchActionToggle" aria-haspopup="true" aria-expanded="false">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+								<path d="M4 6h16"></path>
+								<path d="M4 12h16"></path>
+								<path d="M4 18h16"></path>
+							</svg>
+							批量操作
+							<span class="batch-action-caret">⌄</span>
+						</button>
+						<div class="batch-action-menu" id="batchActionMenu" role="menu">
+							<button type="button" id="batchDownloadType" role="menuitem">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+									<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+									<path d="M7 10l5 5 5-5"></path>
+									<path d="M12 15V3"></path>
+								</svg>
+								批量下载类型
+							</button>
+							<button type="button" id="batchBindAccountant" role="menuitem">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+									<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+									<circle cx="9" cy="7" r="4"></circle>
+									<path d="M19 8v6"></path>
+									<path d="M22 11h-6"></path>
+								</svg>
+								批量关联会计师
+							</button>
+							<button type="button" id="openBatchModal" role="menuitem">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+									<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+									<path d="m17 8-5-5-5 5"></path>
+									<path d="M12 3v12"></path>
+								</svg>
+								批量上传VAT税号
+							</button>
+							<button type="button" id="openEprModal" role="menuitem">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+									<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+									<path d="M14 2v6h6"></path>
+									<path d="M9 13h6"></path>
+									<path d="M9 17h4"></path>
+								</svg>
+								批量上传EPR证书
+							</button>
+						</div>
+					</div>
 				</div>
 
 				<div class="table-wrap">
@@ -1709,6 +1891,11 @@
 
 	<script>
 		const batchModal = document.getElementById("batchModal");
+		const batchActionWrap = document.getElementById("batchActionWrap");
+		const batchActionToggle = document.getElementById("batchActionToggle");
+		const batchActionMenu = document.getElementById("batchActionMenu");
+		const batchDownloadType = document.getElementById("batchDownloadType");
+		const batchBindAccountant = document.getElementById("batchBindAccountant");
 		const openBatchModal = document.getElementById("openBatchModal");
 		const closeBatchModal = document.getElementById("closeBatchModal");
 		const cancelBatchModal = document.getElementById("cancelBatchModal");
@@ -2219,6 +2406,16 @@
 			toastTimer = setTimeout(() => toast.classList.remove("show"), 3600);
 		}
 
+		function closeBatchActionMenu() {
+			batchActionMenu.classList.remove("show");
+			batchActionToggle.setAttribute("aria-expanded", "false");
+		}
+
+		function toggleBatchActionMenu() {
+			const isOpen = batchActionMenu.classList.toggle("show");
+			batchActionToggle.setAttribute("aria-expanded", String(isOpen));
+		}
+
 		function downloadTemplate(fileName) {
 			const link = document.createElement("a");
 			link.href = encodeURI(fileName);
@@ -2327,11 +2524,29 @@
 			taskCountText.textContent = "共有 1 条数据";
 		}
 
-		openBatchModal.addEventListener("click", openModal);
+		batchActionToggle.addEventListener("click", (event) => {
+			event.stopPropagation();
+			toggleBatchActionMenu();
+		});
+		batchDownloadType.addEventListener("click", () => {
+			closeBatchActionMenu();
+			showToast("已选择批量下载类型（Demo）。");
+		});
+		batchBindAccountant.addEventListener("click", () => {
+			closeBatchActionMenu();
+			showToast("已进入批量关联会计师流程（Demo）。");
+		});
+		openBatchModal.addEventListener("click", () => {
+			closeBatchActionMenu();
+			openModal();
+		});
 		closeBatchModal.addEventListener("click", closeModal);
 		cancelBatchModal.addEventListener("click", closeModal);
 		closePreview.addEventListener("click", () => preview.classList.remove("show"));
-		openEprModal.addEventListener("click", openEprUploadModal);
+		openEprModal.addEventListener("click", () => {
+			closeBatchActionMenu();
+			openEprUploadModal();
+		});
 		closeEprModal.addEventListener("click", closeEprUploadModal);
 		cancelEprModal.addEventListener("click", closeEprUploadModal);
 		closeEprPreview.addEventListener("click", () => eprPreview.classList.remove("show"));
@@ -2354,6 +2569,12 @@
 		eprModal.addEventListener("click", (event) => {
 			if (event.target === eprModal) {
 				closeEprUploadModal();
+			}
+		});
+
+		document.addEventListener("click", (event) => {
+			if (!batchActionWrap.contains(event.target)) {
+				closeBatchActionMenu();
 			}
 		});
 

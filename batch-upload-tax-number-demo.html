@@ -906,11 +906,21 @@
 			background: #fbfdff;
 		}
 
+		.standard-file-row.has-actions {
+			grid-template-columns: minmax(0, 1fr) auto auto;
+		}
+
 		.standard-file-row span:first-child {
 			min-width: 0;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
+		}
+
+		.standard-file-actions {
+			display: inline-flex;
+			align-items: center;
+			gap: 2px;
 		}
 
 		.status.success {
@@ -2230,9 +2240,12 @@
 
 		function renderEprInfoUpload() {
 			eprInfoRows.innerHTML = uploadedEprInfoFile ? `
-				<div class="standard-file-row">
+				<div class="standard-file-row has-actions">
 					<span title="${uploadedEprInfoFile.name}">${uploadedEprInfoFile.name}</span>
 					<span class="status success">校验成功</span>
+					<div class="standard-file-actions">
+						<button class="btn text danger-text" data-epr-info-delete>删除</button>
+					</div>
 				</div>
 			` : `
 				<div class="standard-file-row">
@@ -2250,7 +2263,6 @@
 					<div>${formatSize(getUploadSize(item))}</div>
 					<div><span class="status ${item.statusClass || "success"}">${item.status || "已读取"}</span></div>
 					<div>
-						<button class="btn text" data-epr-preview="${index}">预览</button>
 						<button class="btn text danger-text" data-epr-delete="${index}">删除</button>
 					</div>
 				</div>
@@ -2258,27 +2270,10 @@
 			updateEprConfirmState();
 		}
 
-		function previewEprFile(index) {
-			const item = uploadedEprCertFiles[index];
-			if (!item) return;
-			eprPreviewTitle.textContent = getUploadName(item);
-			const pdfNames = item.pdfNames || [
-				"系统将读取 ZIP 内 PDF 文件名",
-			];
-			eprPreviewBody.innerHTML = `
-				<div class="document-preview">
-					<div class="doc-line mid"></div>
-					<div class="doc-line"></div>
-					<div class="doc-line short"></div>
-					<div class="doc-line mid"></div>
-					<div class="doc-stamp">ZIP证书包</div>
-					<div style="margin-top: 14px; line-height: 1.8; color: #344054; text-align: left;">
-						<strong>ZIP 内 PDF 文件名</strong>
-						${pdfNames.map((name) => `<div>${name} <span class="success-text">已读取</span></div>`).join("")}
-					</div>
-				</div>
-			`;
-			eprPreview.classList.add("show");
+		function deleteEprInfoFile() {
+			uploadedEprInfoFile = null;
+			renderEprInfoUpload();
+			eprPreview.classList.remove("show");
 		}
 
 		function deleteEprCertFile(index) {
@@ -2686,17 +2681,19 @@
 			event.target.value = "";
 		});
 
+		eprInfoRows.addEventListener("click", (event) => {
+			if (event.target.closest("[data-epr-info-delete]")) {
+				deleteEprInfoFile();
+			}
+		});
+
 		eprCertInput.addEventListener("change", (event) => {
 			addEprCertFiles(Array.from(event.target.files || []));
 			event.target.value = "";
 		});
 
 		eprCertRows.addEventListener("click", (event) => {
-			const previewButton = event.target.closest("[data-epr-preview]");
 			const deleteButton = event.target.closest("[data-epr-delete]");
-			if (previewButton) {
-				previewEprFile(Number(previewButton.dataset.eprPreview));
-			}
 			if (deleteButton) {
 				deleteEprCertFile(Number(deleteButton.dataset.eprDelete));
 			}

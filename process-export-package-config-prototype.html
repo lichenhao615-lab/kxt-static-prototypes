@@ -316,6 +316,12 @@
 			padding: 4px 0 20px;
 		}
 
+		.action-buttons {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
 		.summary-pills {
 			display: flex;
 			align-items: center;
@@ -2750,7 +2756,10 @@
 			</div>
 
 			<div class="action-line">
-				<button class="btn primary" onclick="openDrawer('templateDrawer')">新增资料项</button>
+				<div class="action-buttons">
+					<button class="btn primary" onclick="openDrawer('templateDrawer')">新增资料项</button>
+					<button class="btn ghost" onclick="openCustomPlaceholderModal()">自定义占位符</button>
+				</div>
 				<div class="summary-pills">
 					<span class="pill">资料项总数：436</span>
 					<span class="pill">启用：421</span>

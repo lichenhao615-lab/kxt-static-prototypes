@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>流程资料包导出配置原型</title>
+	<title>流程配置与协同交付原型</title>
 	<style>
 		:root {
 			--brand: #00a5a8;
@@ -3036,7 +3036,9 @@
 			</div>
 			<div class="toolbar">
 				<input class="input" placeholder="规则ID / 规则名称 / 流程名称">
+				<select class="select"><option>请选择流程</option><option>西班牙VAT注册+申报流程</option><option>西班牙海牙认证流程</option><option>法人税号030递交流程</option><option>德国VAT注册流程</option></select>
 				<select class="select"><option>请选择匹配方式</option><option>按公司名称匹配流程</option><option>增值服务与基础服务绑定</option></select>
+				<select class="select"><option>请选择是否合并</option><option>是</option><option>否</option></select>
 				<select class="select"><option>请选择状态</option><option>启用</option><option>停用</option></select>
 				<button class="btn primary">搜索</button>
 				<button class="btn ghost">重置</button>
@@ -3413,7 +3415,7 @@
 										<span class="flow-select-arrow">⌄</span>
 									</div>
 									<div class="label"><span class="required">*</span>主流程</div>
-									<select class="field" id="collaborationMainFlowSelect"><option selected>西班牙VAT注册+申报流程</option><option>西班牙海牙认证流程</option><option>法人税号030递交流程</option><option>德国VAT注册流程</option></select>
+									<select class="field" id="collaborationMainFlowSelect"><option selected>西班牙VAT注册+申报流程</option><option>德国VAT注册流程</option></select>
 									<div class="merge-source-note merge-mode-only"><strong>关联服务来源：</strong>根据“增值服务与基础服务绑定”关系自动归入主流程服务下，不在规则内手动选择关联流程。</div>
 								</div>
 							</div>
@@ -4790,6 +4792,10 @@
 		{ type: "模板", code: "tcpl_908321884" }
 	];
 	let pendingTemplateImportFileName = "";
+	const collaborationBaseServiceFlows = [
+		"西班牙VAT注册+申报流程",
+		"德国VAT注册流程"
+	];
 
 	function openDrawer(id) {
 		document.querySelectorAll(".drawer-mask").forEach(function (el) {
@@ -4817,6 +4823,27 @@
 		openDrawer("collaborationRuleDrawer");
 	}
 
+	function getSelectedCollaborationFlows() {
+		return Array.from(document.querySelectorAll(".collaboration-flow-check:checked")).map(function (checkbox) {
+			return checkbox.value;
+		});
+	}
+
+	function renderCollaborationMainFlowOptions(mode) {
+		const mainFlowSelect = document.getElementById("collaborationMainFlowSelect");
+		if (!mainFlowSelect) {
+			return;
+		}
+		const currentValue = mainFlowSelect.value;
+		const options = mode === "merge" ? collaborationBaseServiceFlows : getSelectedCollaborationFlows();
+		const availableFlows = options.length ? options : collaborationBaseServiceFlows;
+		const defaultFlow = availableFlows.includes("西班牙VAT注册+申报流程") ? "西班牙VAT注册+申报流程" : availableFlows[0];
+		const selectedFlow = availableFlows.includes(currentValue) ? currentValue : defaultFlow;
+		mainFlowSelect.innerHTML = availableFlows.map(function (flow) {
+			return '<option' + (flow === selectedFlow ? ' selected' : '') + '>' + flow + '</option>';
+		}).join("");
+	}
+
 	function setCollaborationMode(mode) {
 		const drawer = document.getElementById("collaborationRuleDrawer");
 		const isMergeOnly = mode === "merge";
@@ -4842,6 +4869,7 @@
 					: "节点协同放行：按节点配置等待条件，满足后只放行当前节点";
 			}
 		}
+		renderCollaborationMainFlowOptions(mode);
 	}
 
 	function handleCollaborationMatchChange(select) {
@@ -4950,16 +4978,12 @@
 	}
 
 	function confirmCollaborationFlows() {
-		const selected = Array.from(document.querySelectorAll(".collaboration-flow-check:checked")).map(function (checkbox) {
-			return checkbox.value;
-		});
+		const selected = getSelectedCollaborationFlows();
 		document.getElementById("collaborationFlowSelectText").textContent = selected.length ? "已选 " + selected.length : "请选择";
 		document.getElementById("collaborationSelectedFlowSummary").innerHTML = selected.map(function (flow) {
 			return '<span class="flow-chip">' + flow + ' <span class="close">×</span></span>';
 		}).join("");
-		document.getElementById("collaborationMainFlowSelect").innerHTML = selected.map(function (flow, index) {
-			return '<option' + (index === 0 ? ' selected' : '') + '>' + flow + '</option>';
-		}).join("");
+		renderCollaborationMainFlowOptions("normal");
 		closeCollaborationFlowSelectModal();
 	}
 

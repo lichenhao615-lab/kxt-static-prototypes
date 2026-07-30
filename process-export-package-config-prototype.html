@@ -1879,7 +1879,7 @@
 		}
 
 		#customPlaceholderModal .confirm-dialog.large {
-			width: min(1040px, calc(100vw - 48px));
+			width: min(880px, calc(100vw - 48px));
 		}
 
 		#customPlaceholderModal .confirm-body {
@@ -1887,7 +1887,81 @@
 		}
 
 		#customPlaceholderModal .mini-table {
-			min-width: 970px;
+			min-width: 820px;
+		}
+
+		#customPlaceholderImportModal .confirm-dialog {
+			width: 560px;
+		}
+
+		.protocol-upload-card {
+			border: 1px solid #dfe5eb;
+			border-radius: 3px;
+			background: #fff;
+			overflow: hidden;
+		}
+
+		.protocol-upload-head {
+			height: 42px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 0 12px;
+			border-bottom: 1px solid #edf0f2;
+			background: #fbfcfd;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.protocol-upload-body {
+			display: grid;
+			grid-template-columns: 56px minmax(0, 1fr) auto;
+			gap: 12px;
+			align-items: center;
+			padding: 16px 12px;
+		}
+
+		.protocol-file-icon {
+			height: 42px;
+			display: grid;
+			place-items: center;
+			border: 1px solid #d9f1f1;
+			border-radius: 3px;
+			background: #eefafa;
+			color: var(--brand-dark);
+			font-size: 12px;
+			font-weight: 700;
+		}
+
+		.protocol-file-title {
+			margin-bottom: 4px;
+			color: #17212b;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.protocol-file-desc {
+			color: #74808a;
+			font-size: 12px;
+		}
+
+		.protocol-import-rules {
+			margin-top: 12px;
+			padding: 12px;
+			border: 1px solid #edf0f2;
+			border-radius: 3px;
+			background: #fbfcfd;
+			color: #5f6b76;
+			font-size: 12px;
+			line-height: 1.8;
+		}
+
+		.protocol-import-rule-title {
+			margin-bottom: 4px;
+			color: #17212b;
+			font-size: 13px;
+			font-weight: 600;
 		}
 
 		.confirm-head {
@@ -2758,7 +2832,7 @@
 			<div class="action-line">
 				<div class="action-buttons">
 					<button class="btn primary" onclick="openDrawer('templateDrawer')">新增资料项</button>
-					<button class="btn ghost" onclick="openCustomPlaceholderModal()">自定义占位符</button>
+					<button class="btn ghost" onclick="openCustomPlaceholderModal()">协议编码管理</button>
 				</div>
 				<div class="summary-pills">
 					<span class="pill">资料项总数：436</span>
@@ -3987,7 +4061,7 @@
 								<div class="material-group-title" style="margin-bottom:0;">现有占位符</div>
 								<div style="display:flex;align-items:center;gap:10px;">
 									<div class="placeholder-count">当前正文识别 7 个</div>
-									<button class="btn small ghost" onclick="openCustomPlaceholderModal()">自定义占位符</button>
+									<button class="btn small ghost" onclick="openCustomPlaceholderModal()">协议编码管理</button>
 									<button class="btn small ghost" onclick="openPlaceholderDictionaryModal()">占位符字典</button>
 								</div>
 							</div>
@@ -4101,7 +4175,7 @@
 				<tr><td>3</td><td>{{street}}</td><td>街道地址</td><td>表单字段</td><td>英文 / 拼音 / 西班牙语</td><td><span class="action-text">复制</span></td></tr>
 				<tr><td>4</td><td>{{exportDate}}</td><td>导出日期</td><td>系统字段</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
 				<tr><td>5</td><td>{{legalRepresentative}}</td><td>法人姓名</td><td>表单字段</td><td>拼音</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>6</td><td>{{customCode_ZD}}</td><td>自定义编号</td><td>自定义占位符</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>6</td><td>{{deware_ZD}}</td><td>德国仓储协议编码</td><td>协议编码</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
 				</tbody>
 			</table>
 		</div>
@@ -4114,25 +4188,19 @@
 <div class="confirm-mask" id="customPlaceholderModal">
 	<div class="confirm-dialog large">
 		<div class="confirm-head">
-			<span>自定义占位符</span>
+			<span>协议编码管理</span>
 			<button class="drawer-close" onclick="closeCustomPlaceholderModal()">×</button>
 		</div>
 		<div class="confirm-body compact">
-			<div class="modal-toolbar">
-				<input class="input" placeholder="占位符编码 / 占位符名称">
-				<select class="select"><option>是否可复用：全部</option><option>是</option><option>否</option></select>
-				<button class="btn primary">查询</button>
-				<button class="btn ghost">重置</button>
-				<button class="btn ghost" onclick="openAddCustomPlaceholderModal()">新增占位符</button>
-				<button class="btn ghost">导入 Excel</button>
+			<div class="placeholder-board-head">
+				<div class="material-group-title" style="margin-bottom:0;">协议编码列表</div>
+				<button class="btn ghost" onclick="openCustomPlaceholderImportModal()">导入 Excel</button>
 			</div>
-			<div class="modal-note">自定义占位符不取表单字段值，系统按单据占用占位符池中的值；不可复用值在下载或导出时消耗，可复用值在审核通过后消耗。占位符主体使用小驼峰命名，自定义占位符编码统一以 _ZD 结尾。</div>
+			<div class="modal-note" style="margin-top:10px;">协议编码管理仅维护德国仓储协议编码。用户首次点击下载时，系统将仓储编码与当前单据绑定使用，并回传使用记录。</div>
 			<table class="mini-table">
 				<colgroup>
 					<col style="width:150px">
-					<col style="width:150px">
-					<col style="width:100px">
-					<col style="width:100px">
+					<col style="width:190px">
 					<col style="width:100px">
 					<col style="width:100px">
 					<col style="width:150px">
@@ -4140,11 +4208,9 @@
 				</colgroup>
 				<thead>
 				<tr>
-					<th>占位符编码</th>
-					<th>占位符名称</th>
-					<th>是否可复用</th>
+					<th>协议占位符编码</th>
+					<th>协议占位符名称</th>
 					<th>可用数量</th>
-					<th>已占用数量</th>
 					<th>已使用数量</th>
 					<th>更新时间</th>
 					<th>操作</th>
@@ -4152,55 +4218,15 @@
 				</thead>
 				<tbody>
 				<tr>
-					<td>customCode_ZD</td>
-					<td>自定义编号</td>
-					<td>否</td>
+					<td>deware_ZD</td>
+					<td>德国仓储协议编码</td>
 					<td>128</td>
-					<td>6</td>
-					<td>42</td>
+					<td>48</td>
 					<td>2026-07-22 10:12:18</td>
-					<td><span class="actions"><span class="action-text" onclick="showCustomPlaceholderDetails('自定义编号')">查看明细</span></span></td>
-				</tr>
-				<tr>
-					<td>batchSerial_ZD</td>
-					<td>批次流水号</td>
-					<td>是</td>
-					<td>88</td>
-					<td>12</td>
-					<td>30</td>
-					<td>2026-07-21 18:43:02</td>
-					<td><span class="actions"><span class="action-text" onclick="showCustomPlaceholderDetails('批次流水号')">查看明细</span></span></td>
+					<td><span class="actions"><span class="action-text" onclick="downloadProtocolCodeExport()">导出</span></span></td>
 				</tr>
 				</tbody>
 			</table>
-			<div id="customPlaceholderDetailSection" style="display:none;margin-top:12px;">
-				<div class="material-group-title" id="customPlaceholderDetailTitle" style="margin-bottom:8px;">占位符明细</div>
-				<table class="mini-table">
-					<colgroup>
-						<col style="width:130px">
-						<col style="width:160px">
-						<col style="width:100px">
-						<col style="width:160px">
-						<col style="width:150px">
-						<col style="width:150px">
-					</colgroup>
-					<thead>
-					<tr>
-						<th>导入批次</th>
-						<th>占位符值</th>
-						<th>状态</th>
-						<th>占用单据</th>
-						<th>占用时间</th>
-						<th>使用时间</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr><td>IMP-20260722</td><td>CUS-000128</td><td>可用</td><td>-</td><td>-</td><td>-</td></tr>
-					<tr><td>IMP-20260722</td><td>CUS-000127</td><td>已占用</td><td>FW20260722001</td><td>2026-07-22 11:20</td><td>-</td></tr>
-					<tr><td>IMP-20260720</td><td>CUS-000045</td><td>已使用</td><td>FW20260720009</td><td>2026-07-20 14:08</td><td>2026-07-21 09:32</td></tr>
-					</tbody>
-				</table>
-			</div>
 		</div>
 		<div class="confirm-footer">
 			<button class="btn ghost" onclick="closeCustomPlaceholderModal()">关闭</button>
@@ -4208,27 +4234,39 @@
 	</div>
 </div>
 
-<div class="confirm-mask" id="addCustomPlaceholderModal">
+<div class="confirm-mask" id="customPlaceholderImportModal">
 	<div class="confirm-dialog">
 		<div class="confirm-head">
-			<span>新增占位符</span>
-			<button class="drawer-close" onclick="closeAddCustomPlaceholderModal()">×</button>
+			<span>导入协议编码</span>
+			<button class="drawer-close" onclick="closeCustomPlaceholderImportModal()">×</button>
 		</div>
 		<div class="confirm-body compact">
-			<div class="material-grid" style="grid-template-columns: 96px 1fr;">
-				<div class="label"><span class="required">*</span>占位符编码</div>
-				<input class="field" placeholder="如 customCode_ZD">
-				<div class="label"><span class="required">*</span>占位符名称</div>
-				<input class="field" placeholder="如 自定义编号">
-				<div class="label"><span class="required">*</span>是否可复用</div>
-				<select class="field"><option>否</option><option>是</option></select>
-				<div class="label">备注</div>
-				<input class="field" placeholder="请输入备注">
+			<div class="protocol-upload-card">
+				<div class="protocol-upload-head">
+					<span><span class="required">*</span>导入文件</span>
+					<button class="btn small ghost" onclick="downloadProtocolCodeTemplate()">下载模板</button>
+				</div>
+				<div class="protocol-upload-body">
+					<div class="protocol-file-icon">XLSX</div>
+					<div>
+						<div class="protocol-file-title" id="protocolImportFileName">请选择协议编码导入文件</div>
+						<div class="protocol-file-desc">仅支持 Excel 文件，一次只能导入一个文件。</div>
+					</div>
+					<div style="display:flex;align-items:center;gap:8px;">
+						<button class="btn ghost" onclick="selectProtocolImportFile()">选择文件</button>
+						<button class="btn link danger" id="protocolImportRemoveBtn" style="display:none;" onclick="removeProtocolImportFile()">删除</button>
+					</div>
+				</div>
+			</div>
+			<div class="protocol-import-rules">
+				<div class="protocol-import-rule-title">导入规则</div>
+				<div>下载模板后逐行填写协议编码，导入后系统默认写入德国仓储协议编码。</div>
+				<div>已存在且未使用的协议编码不重复写入；格式不正确的编码导入失败。</div>
 			</div>
 		</div>
 		<div class="confirm-footer">
-			<button class="btn ghost" onclick="closeAddCustomPlaceholderModal()">取消</button>
-			<button class="btn primary" onclick="closeAddCustomPlaceholderModal()">保存</button>
+			<button class="btn ghost" onclick="closeCustomPlaceholderImportModal()">取消</button>
+			<button class="btn primary" onclick="closeCustomPlaceholderImportModal()">确认导入</button>
 		</div>
 	</div>
 </div>
@@ -4923,10 +4961,6 @@
 	}
 
 	function openCustomPlaceholderModal() {
-		const detailSection = document.getElementById("customPlaceholderDetailSection");
-		if (detailSection) {
-			detailSection.style.display = "none";
-		}
 		document.getElementById("customPlaceholderModal").classList.add("open");
 	}
 
@@ -4934,17 +4968,49 @@
 		document.getElementById("customPlaceholderModal").classList.remove("open");
 	}
 
-	function openAddCustomPlaceholderModal() {
-		document.getElementById("addCustomPlaceholderModal").classList.add("open");
+	function openCustomPlaceholderImportModal() {
+		document.getElementById("customPlaceholderImportModal").classList.add("open");
 	}
 
-	function closeAddCustomPlaceholderModal() {
-		document.getElementById("addCustomPlaceholderModal").classList.remove("open");
+	function closeCustomPlaceholderImportModal() {
+		document.getElementById("customPlaceholderImportModal").classList.remove("open");
 	}
 
-	function showCustomPlaceholderDetails(name) {
-		document.getElementById("customPlaceholderDetailTitle").textContent = name + " - 明细";
-		document.getElementById("customPlaceholderDetailSection").style.display = "block";
+	function selectProtocolImportFile() {
+		document.getElementById("protocolImportFileName").textContent = "德国仓储协议编码导入.xlsx";
+		document.getElementById("protocolImportRemoveBtn").style.display = "inline-flex";
+	}
+
+	function removeProtocolImportFile() {
+		document.getElementById("protocolImportFileName").textContent = "请选择协议编码导入文件";
+		document.getElementById("protocolImportRemoveBtn").style.display = "none";
+	}
+
+	function downloadProtocolCodeTemplate() {
+		const tableHtml = "<html><head><meta charset='UTF-8'></head><body><table><tr><td>协议编码</td></tr></table></body></html>";
+		const blob = new Blob([tableHtml], { type: "application/vnd.ms-excel;charset=utf-8" });
+		const link = document.createElement("a");
+		link.href = URL.createObjectURL(blob);
+		link.download = "导入协议编码模板.xls";
+		link.click();
+		URL.revokeObjectURL(link.href);
+	}
+
+	function downloadProtocolCodeExport() {
+		const tableHtml = [
+			"<html><head><meta charset='UTF-8'></head><body><table>",
+			"<tr><td>编码</td><td>编码状态</td><td>单据号</td><td>公司名称</td><td>英文公司名称</td><td>单据状态</td></tr>",
+			"<tr><td>CUS-000128</td><td>可用</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>",
+			"<tr><td>CUS-000127</td><td>已使用</td><td>FW20260722001</td><td>星河贸易有限公司</td><td>Galaxy Trading Co., Ltd.</td><td>已完成</td></tr>",
+			"<tr><td>CUS-000045</td><td>已使用</td><td>FW20260720009</td><td>远航科技有限公司</td><td>Voyage Technology Co., Ltd.</td><td>已完成</td></tr>",
+			"</table></body></html>"
+		].join("");
+		const blob = new Blob([tableHtml], { type: "application/vnd.ms-excel;charset=utf-8" });
+		const link = document.createElement("a");
+		link.href = URL.createObjectURL(blob);
+		link.download = "德国仓储协议编码导出.xls";
+		link.click();
+		URL.revokeObjectURL(link.href);
 	}
 
 	function switchTemplatePreview(type) {

@@ -3923,7 +3923,7 @@
 									<input type="file" id="templateImportFile" accept=".xls,.xlsx,.pdf,.doc,.docx" style="display:none;" onchange="prepareTemplateImport(this)">
 								</div>
 							</div>
-						<div class="editor-tip">正文由系统模板能力维护；导入 Excel、Word、PDF 文件后会覆盖当前正文，并重新识别正文中的 {{field_code}} 占位符。</div>
+						<div class="editor-tip">正文由系统模板能力维护；导入 Excel、Word、PDF 文件后会覆盖当前正文，并重新识别正文中的 {{fieldCode}} 占位符。</div>
 						<div class="template-workbench">
 							<div class="template-preview-card">
 								<div class="template-preview-head">
@@ -3942,11 +3942,11 @@
 								</div>
 								<div class="template-document word-preview" id="templateWordPreview">
 									<p style="text-align:center;font-weight:700;font-size:18px;margin:0 0 18px;">专利申请委托书</p>
-									<p>委托方：<span class="placeholder-token">{{company_name}}</span></p>
-									<p>英文名称：<span class="placeholder-token">{{company_en_name}}</span></p>
-									<p>联系人：<span class="placeholder-token">{{contact_name}}</span>，联系电话：<span class="placeholder-token">{{contact_phone}}</span></p>
-									<p>委托事项：委托代理机构办理<span class="placeholder-token">{{process_name}}</span>相关申请资料准备、递交及后续沟通事项。</p>
-									<p>委托日期：<span class="placeholder-token">{{export_date}}</span></p>
+									<p>委托方：<span class="placeholder-token">{{companyName}}</span></p>
+									<p>英文名称：<span class="placeholder-token">{{companyEnName}}</span></p>
+									<p>联系人：<span class="placeholder-token">{{contactName}}</span>，联系电话：<span class="placeholder-token">{{contactPhone}}</span></p>
+									<p>委托事项：委托代理机构办理<span class="placeholder-token">{{processName}}</span>相关申请资料准备、递交及后续沟通事项。</p>
+									<p>委托日期：<span class="placeholder-token">{{exportDate}}</span></p>
 									<p style="margin-top:48px;">签章区域：签名、盖章、签署日期在需要签署时交由腾讯电子签控件处理。</p>
 								</div>
 								<div class="template-document excel-preview" id="templateExcelPreview" style="display:none;">
@@ -3965,10 +3965,10 @@
 											<tbody>
 											<tr><td class="row-no">1</td><td colspan="5" class="sheet-title">专利申请委托书字段清单</td></tr>
 											<tr><td class="row-no">2</td><td>字段名称</td><td>占位符</td><td>示例值</td><td>匹配状态</td><td>备注</td></tr>
-											<tr><td class="row-no">3</td><td>公司名称</td><td><span class="placeholder-token">{{company_name}}</span></td><td>星河贸易有限公司</td><td>成功</td><td>来自主体资料表单</td></tr>
-											<tr><td class="row-no">4</td><td>公司英文名称</td><td><span class="placeholder-token">{{company_en_name}}</span></td><td>Galaxy Trading Co., Ltd.</td><td>成功</td><td>来自主体资料表单</td></tr>
-											<tr><td class="row-no">5</td><td>联系人</td><td><span class="placeholder-token">{{contact_name}}</span></td><td>李晨浩</td><td>成功</td><td>手动补充</td></tr>
-											<tr><td class="row-no">6</td><td>委托日期</td><td><span class="placeholder-token">{{export_date}}</span></td><td>-</td><td>失败</td><td>未匹配到字段</td></tr>
+											<tr><td class="row-no">3</td><td>公司名称</td><td><span class="placeholder-token">{{companyName}}</span></td><td>星河贸易有限公司</td><td>成功</td><td>来自主体资料表单</td></tr>
+											<tr><td class="row-no">4</td><td>公司英文名称</td><td><span class="placeholder-token">{{companyEnName}}</span></td><td>Galaxy Trading Co., Ltd.</td><td>成功</td><td>来自主体资料表单</td></tr>
+											<tr><td class="row-no">5</td><td>联系人</td><td><span class="placeholder-token">{{contactName}}</span></td><td>李晨浩</td><td>成功</td><td>手动补充</td></tr>
+											<tr><td class="row-no">6</td><td>委托日期</td><td><span class="placeholder-token">{{exportDate}}</span></td><td>-</td><td>失败</td><td>未匹配到字段</td></tr>
 											</tbody>
 										</table>
 									</div>
@@ -4010,13 +4010,13 @@
 								</tr>
 								</thead>
 								<tbody>
-								<tr><td>1</td><td>{{company_name}}</td><td>公司名称</td><td>无</td><td>成功</td></tr>
-								<tr><td>2</td><td>{{company_en_name}}</td><td>公司英文名称</td><td>无</td><td>成功</td></tr>
+								<tr><td>1</td><td>{{companyName}}</td><td>公司名称</td><td>无</td><td>成功</td></tr>
+								<tr><td>2</td><td>{{companyEnName}}</td><td>公司英文名称</td><td>无</td><td>成功</td></tr>
 								<tr><td>3</td><td>{{street_EN}}</td><td>街道地址</td><td>英文翻译</td><td>成功</td></tr>
 								<tr><td>4</td><td>{{street_PY}}</td><td>街道地址</td><td>拼音</td><td>成功</td></tr>
 								<tr><td>5</td><td>{{street_SP}}</td><td>街道地址</td><td>西班牙语翻译</td><td>成功</td></tr>
-								<tr><td>6</td><td>{{process_name}}</td><td>流程名称</td><td>无</td><td>成功</td></tr>
-								<tr><td>7</td><td>{{export_date}}</td><td>导出日期</td><td>无</td><td>失败</td></tr>
+								<tr><td>6</td><td>{{processName}}</td><td>流程名称</td><td>无</td><td>成功</td></tr>
+								<tr><td>7</td><td>{{exportDate}}</td><td>导出日期</td><td>无</td><td>失败</td></tr>
 								</tbody>
 							</table>
 						</div>
@@ -4096,12 +4096,12 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr><td>1</td><td>{{company_name}}</td><td>公司名称</td><td>表单字段</td><td>英文 / 拼音 / 西班牙语</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>2</td><td>{{company_en_name}}</td><td>公司英文名称</td><td>表单字段</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>1</td><td>{{companyName}}</td><td>公司名称</td><td>表单字段</td><td>英文 / 拼音 / 西班牙语</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>2</td><td>{{companyEnName}}</td><td>公司英文名称</td><td>表单字段</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
 				<tr><td>3</td><td>{{street}}</td><td>街道地址</td><td>表单字段</td><td>英文 / 拼音 / 西班牙语</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>4</td><td>{{export_date}}</td><td>导出日期</td><td>系统字段</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>5</td><td>{{legal_representative}}</td><td>法人姓名</td><td>表单字段</td><td>拼音</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>6</td><td>{{custom_code}}</td><td>自定义编号</td><td>自定义占位符</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>4</td><td>{{exportDate}}</td><td>导出日期</td><td>系统字段</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>5</td><td>{{legalRepresentative}}</td><td>法人姓名</td><td>表单字段</td><td>拼音</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>6</td><td>{{customCode_ZD}}</td><td>自定义编号</td><td>自定义占位符</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
 				</tbody>
 			</table>
 		</div>
@@ -4126,7 +4126,7 @@
 				<button class="btn ghost" onclick="openAddCustomPlaceholderModal()">新增占位符</button>
 				<button class="btn ghost">导入 Excel</button>
 			</div>
-			<div class="modal-note">自定义占位符不取表单字段值，系统按单据占用占位符池中的值；不可复用值在下载或导出时消耗，可复用值在审核通过后消耗。</div>
+			<div class="modal-note">自定义占位符不取表单字段值，系统按单据占用占位符池中的值；不可复用值在下载或导出时消耗，可复用值在审核通过后消耗。占位符主体使用小驼峰命名，自定义占位符编码统一以 _ZD 结尾。</div>
 			<table class="mini-table">
 				<colgroup>
 					<col style="width:150px">
@@ -4152,7 +4152,7 @@
 				</thead>
 				<tbody>
 				<tr>
-					<td>custom_code</td>
+					<td>customCode_ZD</td>
 					<td>自定义编号</td>
 					<td>否</td>
 					<td>128</td>
@@ -4162,7 +4162,7 @@
 					<td><span class="actions"><span class="action-text" onclick="showCustomPlaceholderDetails('自定义编号')">查看明细</span></span></td>
 				</tr>
 				<tr>
-					<td>batch_serial</td>
+					<td>batchSerial_ZD</td>
 					<td>批次流水号</td>
 					<td>是</td>
 					<td>88</td>
@@ -4217,7 +4217,7 @@
 		<div class="confirm-body compact">
 			<div class="material-grid" style="grid-template-columns: 96px 1fr;">
 				<div class="label"><span class="required">*</span>占位符编码</div>
-				<input class="field" placeholder="如 custom_code">
+				<input class="field" placeholder="如 customCode_ZD">
 				<div class="label"><span class="required">*</span>占位符名称</div>
 				<input class="field" placeholder="如 自定义编号">
 				<div class="label"><span class="required">*</span>是否可复用</div>
@@ -4290,9 +4290,9 @@
 					</div>
 					<div class="esign-page">
 						<p style="text-align:center;font-weight:700;font-size:17px;margin:0 0 18px;">专利申请委托书</p>
-						<p>委托方：<span class="esign-placeholder">{{company_name}}</span></p>
-						<p>英文名称：<span class="esign-placeholder">{{company_en_name}}</span></p>
-						<p>联系人：<span class="esign-placeholder">{{contact_name}}</span></p>
+						<p>委托方：<span class="esign-placeholder">{{companyName}}</span></p>
+						<p>英文名称：<span class="esign-placeholder">{{companyEnName}}</span></p>
+						<p>联系人：<span class="esign-placeholder">{{contactName}}</span></p>
 						<p>委托事项：办理外观专利注册资料准备、递交及后续沟通事项。</p>
 						<p style="margin-top:220px;">签署区域：</p>
 						<div class="esign-control" style="left:42px;bottom:86px;width:128px;height:38px;">客户签名</div>
@@ -4989,7 +4989,7 @@
 			'<p>已导入文件内容，并覆盖当前正文。</p>' +
 			'<p>系统将基于导入后的模板内容重新识别正文中的占位符。</p>' +
 			'<p>导入格式支持 Excel、Word、PDF，PDF 暂不支持正文预览。</p>' +
-			'<p style="margin-top:24px;">示例占位符：<span class="placeholder-token">{{company_name}}</span> <span class="placeholder-token">{{export_date}}</span></p>';
+			'<p style="margin-top:24px;">示例占位符：<span class="placeholder-token">{{companyName}}</span> <span class="placeholder-token">{{exportDate}}</span></p>';
 		switchTemplatePreview(previewType);
 		closeTemplateImportConfirm();
 	}

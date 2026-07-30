@@ -936,6 +936,30 @@
 			display: none !important;
 		}
 
+		.merge-mode-only {
+			display: none;
+		}
+
+		.only-merge-mode .merge-mode-only {
+			display: block;
+		}
+
+		.merge-source-note {
+			grid-column: 1 / -1;
+			margin-top: 10px;
+			padding: 10px 12px;
+			border: 1px solid #dce6ea;
+			border-radius: 4px;
+			background: #f7fbfb;
+			color: #475467;
+			font-size: 12px;
+			line-height: 1.6;
+		}
+
+		.merge-source-note strong {
+			color: #27313d;
+		}
+
 		.flow-picker {
 			display: grid;
 			grid-template-columns: minmax(0, 1fr) 280px;
@@ -3042,8 +3066,8 @@
 						<th>规则名称</th>
 						<th>参与流程</th>
 						<th>匹配方式</th>
-						<th>规则模式</th>
-						<th>合并展示</th>
+						<th>规则用途</th>
+						<th>是否合并</th>
 						<th>状态</th>
 						<th>操作</th>
 					</tr>
@@ -3061,7 +3085,7 @@
 							</div>
 						</td>
 						<td>按公司名称匹配流程</td>
-						<td><span class="rule-mode-tag muted">正常模式</span></td>
+						<td><span class="rule-mode-tag muted">节点协同放行</span></td>
 						<td><span class="status on">是</span></td>
 						<td><span class="status on">启用</span></td>
 						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-danger">停用</span></span></td>
@@ -3069,14 +3093,15 @@
 					<tr>
 						<td>2</td>
 						<td><span class="service-no">CDR-20260701002</span></td>
-						<td>西班牙资料上传协同规则</td>
+						<td>西班牙030税号协同规则</td>
 						<td>
 							<div class="rule-flow-tags">
 								<span class="rule-mini-tag main">西班牙VAT注册+申报流程</span>
+								<span class="rule-mini-tag">法人税号030递交流程</span>
 							</div>
 						</td>
 						<td>按公司名称匹配流程</td>
-						<td><span class="rule-mode-tag muted">正常模式</span></td>
+						<td><span class="rule-mode-tag muted">节点协同放行</span></td>
 						<td><span class="status off">否</span></td>
 						<td><span class="status on">启用</span></td>
 						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-danger">停用</span></span></td>
@@ -3084,14 +3109,14 @@
 					<tr>
 						<td>3</td>
 						<td><span class="service-no">CDR-20260701003</span></td>
-						<td>德国VAT套餐协同规则</td>
+						<td>西班牙VAT增值服务合并规则</td>
 						<td>
 							<div class="rule-flow-tags">
-								<span class="rule-mini-tag main">德国VAT注册流程</span>
+								<span class="rule-mini-tag main">西班牙VAT注册+申报流程</span>
 							</div>
 						</td>
 						<td>增值服务与基础服务绑定</td>
-						<td><span class="rule-mode-tag">仅合并模式</span></td>
+						<td><span class="rule-mode-tag">仅合并服务展示</span></td>
 						<td><span class="status on">是</span></td>
 						<td><span class="status off">停用</span></td>
 						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则', 'merge')">编辑</span><span class="action-text">启用</span></span></td>
@@ -3201,7 +3226,7 @@
 						<td>线上</td>
 						<td><span class="service-no">DD260701735326</span></td>
 						<td><span class="status off">等待海牙完成</span></td>
-						<td><span class="actions"><span class="action-text">上传资料</span><span class="action-text" onclick="toggleMergedRows(this)">收起关联</span></span></td>
+						<td><span class="actions"><span class="action-text">查看资料</span><span class="action-text" onclick="toggleMergedRows(this)">收起关联</span></span></td>
 					</tr>
 					<tr class="service-row-child merge-group-row">
 						<td></td>
@@ -3223,7 +3248,7 @@
 						<td>系统</td>
 						<td><span class="service-no">DD260701735326</span></td>
 						<td><span class="status on">海牙认证完成</span></td>
-						<td><span class="actions"><span class="action-text">查看资料</span><span class="action-text">查看流程</span></span></td>
+						<td><span class="actions"><span class="action-text">查看资料</span></span></td>
 					</tr>
 					<tr class="service-row-child merge-group-row">
 						<td></td>
@@ -3245,7 +3270,7 @@
 						<td>系统</td>
 						<td><span class="service-no">DD260701735326</span></td>
 						<td><span class="status off">030下号中</span></td>
-						<td><span class="actions"><span class="action-text">查看资料</span><span class="action-text">查看流程</span></span></td>
+						<td><span class="actions"><span class="action-text">查看资料</span></span></td>
 					</tr>
 					<tr>
 						<td><input type="checkbox"></td>
@@ -3348,8 +3373,8 @@
 					<div class="config-section">
 						<div class="config-section-title">协同交付信息</div>
 						<div class="mode-summary-card" id="collaborationModeSummary">
-							<span class="mode-summary-label">当前模式</span>
-							<span class="mode-summary-value">正常模式：配置多流程协同、节点放行与放行后操作</span>
+							<span class="mode-summary-label">当前用途</span>
+							<span class="mode-summary-value">节点协同放行：按节点配置等待条件，满足后只放行当前节点</span>
 						</div>
 						<div class="rule-info-layout">
 							<div class="rule-info-group">
@@ -3367,10 +3392,10 @@
 										<span class="rule-pill-option active">是</span>
 										<span class="rule-pill-option">否</span>
 									</div>
-									<div class="label"><span class="required">*</span>规则模式</div>
+									<div class="label"><span class="required">*</span>规则用途</div>
 									<div class="rule-pill-switch" id="collaborationModeSwitch">
-										<span class="rule-pill-option active" data-mode="normal" onclick="setCollaborationMode('normal')">正常模式</span>
-										<span class="rule-pill-option" data-mode="merge" onclick="setCollaborationMode('merge')">仅合并模式</span>
+										<span class="rule-pill-option active" data-mode="normal" onclick="setCollaborationMode('normal')">节点协同放行</span>
+										<span class="rule-pill-option" data-mode="merge" onclick="setCollaborationMode('merge')">仅合并服务展示</span>
 									</div>
 								</div>
 							</div>
@@ -3389,6 +3414,7 @@
 									</div>
 									<div class="label"><span class="required">*</span>主流程</div>
 									<select class="field" id="collaborationMainFlowSelect"><option selected>西班牙VAT注册+申报流程</option><option>西班牙海牙认证流程</option><option>法人税号030递交流程</option><option>德国VAT注册流程</option></select>
+									<div class="merge-source-note merge-mode-only"><strong>关联服务来源：</strong>根据“增值服务与基础服务绑定”关系自动归入主流程服务下，不在规则内手动选择关联流程。</div>
 								</div>
 							</div>
 							<div class="rule-info-group">
@@ -3461,18 +3487,18 @@
 										</div>
 										<div class="inline-action">+ 添加完成条件</div>
 									</div>
-									<div class="release-action-area">
+									<div class="release-action-area release-action-off">
 										<div class="release-action-head">
-											<span class="release-action-title">放行后操作</span>
+											<span class="release-action-title">放行后资料同步</span>
 											<div class="release-action-control">
-												<span class="label">触发操作</span>
+												<span class="label">是否同步</span>
 												<div class="rule-pill-switch">
-													<span class="rule-pill-option active" onclick="toggleReleaseAction(this, true)">是</span>
-													<span class="rule-pill-option" onclick="toggleReleaseAction(this, false)">否</span>
+													<span class="rule-pill-option" onclick="toggleReleaseAction(this, true)">是</span>
+													<span class="rule-pill-option active" onclick="toggleReleaseAction(this, false)">否</span>
 												</div>
 											</div>
 										</div>
-										<div class="release-action-empty">不触发放行后操作</div>
+										<div class="release-action-empty">不进行放行后资料同步</div>
 										<div class="release-action-card release-action-content">
 											<div class="release-action-toolbar">
 												<div class="label">取值来源</div>
@@ -3537,18 +3563,18 @@
 										</div>
 										<div class="inline-action">+ 添加完成条件</div>
 									</div>
-									<div class="release-action-area">
+									<div class="release-action-area release-action-off">
 										<div class="release-action-head">
-											<span class="release-action-title">放行后操作</span>
+											<span class="release-action-title">放行后资料同步</span>
 											<div class="release-action-control">
-												<span class="label">触发操作</span>
+												<span class="label">是否同步</span>
 												<div class="rule-pill-switch">
-													<span class="rule-pill-option active" onclick="toggleReleaseAction(this, true)">是</span>
-													<span class="rule-pill-option" onclick="toggleReleaseAction(this, false)">否</span>
+													<span class="rule-pill-option" onclick="toggleReleaseAction(this, true)">是</span>
+													<span class="rule-pill-option active" onclick="toggleReleaseAction(this, false)">否</span>
 												</div>
 											</div>
 										</div>
-										<div class="release-action-empty">不触发放行后操作</div>
+										<div class="release-action-empty">不进行放行后资料同步</div>
 										<div class="release-action-card release-action-content">
 											<div class="release-action-toolbar">
 												<div class="label">取值来源</div>
@@ -4785,7 +4811,7 @@
 			matchSelect.value = "按公司名称匹配流程";
 		}
 		if (mainFlowSelect) {
-			mainFlowSelect.value = targetMode === "merge" ? "德国VAT注册流程" : "西班牙VAT注册+申报流程";
+			mainFlowSelect.value = "西班牙VAT注册+申报流程";
 		}
 		setCollaborationMode(targetMode);
 		openDrawer("collaborationRuleDrawer");
@@ -4812,8 +4838,8 @@
 			const value = summary.querySelector(".mode-summary-value");
 			if (value) {
 				value.textContent = isMergeOnly
-					? "仅合并模式：只选择主流程，用于增值服务与基础服务合并展示"
-					: "正常模式：配置多流程协同、节点放行与放行后操作";
+					? "仅合并服务展示：只选择主流程，关联服务按绑定关系自动归入主服务"
+					: "节点协同放行：按节点配置等待条件，满足后只放行当前节点";
 			}
 		}
 	}
@@ -5453,7 +5479,7 @@
 			closeDrawer("packageDrawer");
 		} else if (view === "forms") {
 			document.querySelector('[data-menu="forms"]').classList.add("active");
-			document.getElementById("topTab").textContent = "协同交付规则 ×";
+			document.getElementById("topTab").textContent = "表单管理 ×";
 			document.querySelector('[data-tab="forms"]').classList.add("active");
 			closeDrawer("packageDrawer");
 		} else if (view === "collaboration") {
@@ -5463,7 +5489,7 @@
 			closeDrawer("packageDrawer");
 		} else if (view === "services") {
 			document.querySelector('[data-menu="services"]').classList.add("active");
-			document.getElementById("topTab").textContent = "协同交付规则 ×";
+			document.getElementById("topTab").textContent = "基础服务 ×";
 			document.querySelector('[data-tab="services"]').classList.add("active");
 			const serviceTable = document.querySelector(".service-view .table-wrap");
 			if (serviceTable) {

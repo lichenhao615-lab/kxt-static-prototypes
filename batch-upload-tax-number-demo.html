@@ -840,6 +840,48 @@
 			color: #9ca3af;
 		}
 
+		.node-pagination {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			margin-top: 12px;
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.node-page-actions {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.node-page-numbers {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.node-page-button {
+			min-width: 32px;
+			height: 32px;
+			border: 1px solid #d7e2e8;
+			border-radius: 4px;
+			background: #fff;
+			color: #334155;
+		}
+
+		.node-page-button.active {
+			border-color: var(--brand);
+			background: var(--brand);
+			color: #fff;
+		}
+
+		.node-pagination button:disabled {
+			cursor: not-allowed;
+			opacity: .45;
+		}
+
 		.standard-upload-grid {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
@@ -1988,7 +2030,7 @@
 						</div>
 
 						<div class="rule-list">
-							<div class="rule-item"><b>提交结果：</b>注册信息和证书文件均已上传时创建录入任务；未上传证书文件时录入失败。</div>
+							<div class="rule-item"><b>提交结果：</b>注册信息和证书文件均已上传时创建录入任务；未上传证书文件时录入失败。结果文件需在我的任务处下载。</div>
 						</div>
 
 						<div class="preview" id="eprPreview">
@@ -2062,6 +2104,14 @@
 						</thead>
 						<tbody id="eprNodeRows"></tbody>
 					</table>
+				</div>
+				<div class="node-pagination" id="eprNodePagination">
+					<span id="eprNodePageInfo">共 0 条 / 第 1 页</span>
+					<div class="node-page-actions">
+						<button class="btn" id="prevEprNodePage" type="button">上一页</button>
+						<div class="node-page-numbers" id="eprNodePageNumbers"></div>
+						<button class="btn" id="nextEprNodePage" type="button">下一页</button>
+					</div>
 				</div>
 			</div>
 			<footer class="modal-footer">
@@ -2165,6 +2215,10 @@
 		const searchEprNode = document.getElementById("searchEprNode");
 		const resetEprNode = document.getElementById("resetEprNode");
 		const eprNodeRows = document.getElementById("eprNodeRows");
+		const eprNodePageInfo = document.getElementById("eprNodePageInfo");
+		const eprNodePageNumbers = document.getElementById("eprNodePageNumbers");
+		const prevEprNodePage = document.getElementById("prevEprNodePage");
+		const nextEprNodePage = document.getElementById("nextEprNodePage");
 		const eprSelectedNodeText = document.getElementById("eprSelectedNodeText");
 		const openVatNodeModal = document.getElementById("openVatNodeModal");
 		const vatSelectedNodeText = document.getElementById("vatSelectedNodeText");
@@ -2203,6 +2257,8 @@
 		let selectedEprNode = eprNodeOptions[0];
 		let activeNodeTarget = "epr";
 		let pendingNodeId = selectedEprNode.id;
+		let nodeCurrentPage = 1;
+		const nodePageSize = 5;
 		let toastTimer = null;
 		const countryMap = {
 			GENERAL: { name: "通用", taskName: "通用税号批量文件", serviceName: "税号批量录入" },
@@ -2447,15 +2503,35 @@
 			`;
 		}
 
-		function renderEprNodeRows() {
+		function getFilteredEprNodes() {
 			const keyword = eprNodeKeyword.value.trim();
 			const status = eprNodeStatusFilter.value;
-			const filteredNodes = eprNodeOptions.filter((node) => {
+			return eprNodeOptions.filter((node) => {
 				const keywordMatched = !keyword || [node.id, node.name, node.addUser, node.updateUser].some((text) => text.includes(keyword));
 				const statusMatched = !status || node.status === status;
 				return keywordMatched && statusMatched;
 			});
-			eprNodeRows.innerHTML = filteredNodes.map((node) => {
+		}
+
+		function renderEprNodePagination(total, totalPages) {
+			eprNodePageInfo.textContent = `共 ${total} 条 / 第 ${nodeCurrentPage} 页，共 ${totalPages} 页`;
+			prevEprNodePage.disabled = nodeCurrentPage <= 1;
+			nextEprNodePage.disabled = nodeCurrentPage >= totalPages;
+			eprNodePageNumbers.innerHTML = Array.from({ length: totalPages }, (_, index) => {
+				const page = index + 1;
+				return `<button class="node-page-button ${page === nodeCurrentPage ? "active" : ""}" type="button" data-node-page="${page}">${page}</button>`;
+			}).join("");
+		}
+
+		function renderEprNodeRows() {
+			const filteredNodes = getFilteredEprNodes();
+			const totalPages = Math.max(1, Math.ceil(filteredNodes.length / nodePageSize));
+			if (nodeCurrentPage > totalPages) {
+				nodeCurrentPage = totalPages;
+			}
+			const startIndex = (nodeCurrentPage - 1) * nodePageSize;
+			const currentNodes = filteredNodes.slice(startIndex, startIndex + nodePageSize);
+			eprNodeRows.innerHTML = currentNodes.map((node) => {
 				const disabled = node.status !== "启用";
 				const checked = pendingNodeId === node.id ? "checked" : "";
 				return `
@@ -2475,11 +2551,13 @@
 					<td colspan="8">暂无匹配节点</td>
 				</tr>
 			`;
+			renderEprNodePagination(filteredNodes.length, totalPages);
 		}
 
 		function openNodeSelectModal(target) {
 			activeNodeTarget = target;
 			pendingNodeId = (target === "vat" ? selectedVatNode : selectedEprNode).id;
+			nodeCurrentPage = 1;
 			eprNodeKeyword.value = "";
 			eprNodeStatusFilter.value = "";
 			renderEprNodeRows();
@@ -2817,10 +2895,14 @@
 		openEprNodeModal.addEventListener("click", () => openNodeSelectModal("epr"));
 		closeEprNodeModal.addEventListener("click", closeEprNodeSelectModal);
 		cancelEprNodeModal.addEventListener("click", closeEprNodeSelectModal);
-		searchEprNode.addEventListener("click", renderEprNodeRows);
+		searchEprNode.addEventListener("click", () => {
+			nodeCurrentPage = 1;
+			renderEprNodeRows();
+		});
 		resetEprNode.addEventListener("click", () => {
 			eprNodeKeyword.value = "";
 			eprNodeStatusFilter.value = "";
+			nodeCurrentPage = 1;
 			renderEprNodeRows();
 		});
 		confirmEprNode.addEventListener("click", confirmNodeSelection);
@@ -2828,6 +2910,23 @@
 			const row = event.target.closest("[data-epr-node-id]");
 			if (!row || row.classList.contains("is-disabled")) return;
 			pendingNodeId = row.dataset.eprNodeId;
+			renderEprNodeRows();
+		});
+		eprNodePageNumbers.addEventListener("click", (event) => {
+			const pageButton = event.target.closest("[data-node-page]");
+			if (!pageButton) return;
+			nodeCurrentPage = Number(pageButton.dataset.nodePage);
+			renderEprNodeRows();
+		});
+		prevEprNodePage.addEventListener("click", () => {
+			if (nodeCurrentPage <= 1) return;
+			nodeCurrentPage -= 1;
+			renderEprNodeRows();
+		});
+		nextEprNodePage.addEventListener("click", () => {
+			const totalPages = Math.max(1, Math.ceil(getFilteredEprNodes().length / nodePageSize));
+			if (nodeCurrentPage >= totalPages) return;
+			nodeCurrentPage += 1;
 			renderEprNodeRows();
 		});
 		countrySelect.addEventListener("change", () => {

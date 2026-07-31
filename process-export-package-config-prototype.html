@@ -3372,6 +3372,88 @@
 									<div class="label"><span class="required">*</span>关联节点</div>
 									<select class="field"><option selected>海牙认证完成</option><option>030下号完成</option><option>本土税号录入完成</option></select>
 								</div>
+								<div class="condition-area">
+									<div class="condition-row">
+										<div class="label"><span class="required">*</span>完成条件</div>
+										<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>等待节点完成</option><option>税号信息</option></select>
+										<div class="condition-target">
+											<div class="label">关联流程</div>
+											<select class="field"><option selected>西班牙海牙认证流程</option><option>法人税号030递交流程</option></select>
+											<div class="label">关联节点</div>
+											<select class="field"><option selected>海牙认证完成</option><option>海牙认证中</option><option>待客户签回</option></select>
+										</div>
+										<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
+									</div>
+									<div class="condition-relation-row">
+										<div class="label">条件关系</div>
+										<select class="field"><option selected>且</option><option>或</option></select>
+									</div>
+									<div class="condition-row">
+										<div class="label"><span class="required">*</span>完成条件</div>
+										<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>等待节点完成</option><option>税号信息</option></select>
+										<div class="condition-target">
+											<div class="label">关联流程</div>
+											<select class="field"><option selected>法人税号030递交流程</option><option>西班牙海牙认证流程</option></select>
+											<div class="label">关联节点</div>
+											<select class="field"><option selected>030下号完成</option><option>待提交</option><option>处理中</option></select>
+										</div>
+										<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
+									</div>
+									<div class="inline-action">+ 添加完成条件</div>
+								</div>
+								<div class="release-action-area release-action-off">
+									<div class="release-action-head">
+										<span class="release-action-title">后端资料同步</span>
+										<div class="release-action-control">
+											<span class="label">是否同步</span>
+											<div class="rule-pill-switch">
+												<span class="rule-pill-option" onclick="toggleReleaseAction(this, true)">是</span>
+												<span class="rule-pill-option active" onclick="toggleReleaseAction(this, false)">否</span>
+											</div>
+										</div>
+									</div>
+									<div class="release-action-empty">不进行后端资料同步</div>
+									<div class="release-action-card release-action-content">
+										<div class="release-action-toolbar">
+											<div class="label">取值来源</div>
+											<div class="rule-pill-switch release-source-switch">
+												<span class="rule-pill-option" data-source="表单字段" onclick="updateReleaseSource(this, '表单字段')">表单字段</span>
+												<span class="rule-pill-option active" data-source="税号信息" onclick="updateReleaseSource(this, '税号信息')">税号信息</span>
+											</div>
+										</div>
+										<div class="release-action-map">
+											<div class="release-map-panel">
+												<div class="release-panel-head">
+													<span>来源</span>
+													<span class="release-source-badge">税号信息</span>
+												</div>
+												<div class="release-field-grid release-source-fields tax-source">
+													<div class="release-field-line">
+														<div class="label">税号信息</div>
+														<select class="field"><option selected>VAT</option><option>本土税号</option></select>
+													</div>
+												</div>
+											</div>
+											<div class="release-map-arrow"><span>写入</span></div>
+											<div class="release-map-panel">
+												<div class="release-panel-head">
+													<span>表单字段</span>
+												</div>
+												<div class="release-field-grid">
+													<div class="release-field-line">
+														<div class="label">选择表单</div>
+														<select class="field"><option selected>西班牙VAT注册资料表</option><option>主体资料表单</option></select>
+													</div>
+													<div class="release-field-line">
+														<div class="label">选择字段</div>
+														<select class="field"><option selected>西班牙VAT税号</option><option>本土税号</option><option>税号备注</option></select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="inline-action">+ 添加节点控制关系</div>
 							</div>
 							<div class="rule-info-group">
 								<div class="rule-info-group-title">执行配置</div>
@@ -3381,197 +3463,6 @@
 										<option selected>按公司名称匹配流程</option>
 									</select>
 								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="config-section" id="collaborationNodeSection">
-						<div class="config-section-title">完成条件与后端资料同步</div>
-						<div class="config-section-desc">按控制节点配置关联节点、完成条件和后端资料同步；条件满足后只放行当前控制节点。</div>
-						<div class="task-split">
-							<div class="task-flow-list">
-								<div class="task-flow-title">控制流程</div>
-								<div class="task-flow-item active">
-									<span class="task-flow-name">西班牙VAT注册+申报流程</span>
-									<span class="task-flow-meta">2 个控制节点</span>
-								</div>
-								<div class="task-flow-item">
-									<span class="task-flow-name">德国VAT注册流程</span>
-									<span class="task-flow-meta">1 个控制节点</span>
-								</div>
-							</div>
-							<div class="task-detail-panel">
-								<div class="task-block">
-									<div class="task-block-head">
-										<span>等待海牙完成</span>
-									</div>
-									<div class="task-row">
-										<div class="label"><span class="required">*</span>控制节点</div>
-										<select class="field"><option selected>等待海牙完成</option><option>用户上传资料</option><option>待提交</option><option>处理中</option></select>
-									</div>
-									<div class="condition-area">
-										<div class="condition-row">
-											<div class="label"><span class="required">*</span>完成条件</div>
-											<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>等待节点完成</option><option>税号信息</option></select>
-											<div class="condition-target">
-												<div class="label">关联流程</div>
-												<select class="field"><option selected>西班牙海牙认证流程</option><option>法人税号030递交流程</option></select>
-												<div class="label">关联节点</div>
-												<select class="field"><option selected>海牙认证完成</option><option>海牙认证中</option><option>待客户签回</option></select>
-											</div>
-											<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
-										</div>
-										<div class="condition-relation-row">
-											<div class="label">条件关系</div>
-											<select class="field"><option selected>且</option><option>或</option></select>
-										</div>
-										<div class="condition-row">
-											<div class="label"><span class="required">*</span>完成条件</div>
-											<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>等待节点完成</option><option>税号信息</option></select>
-											<div class="condition-target">
-												<div class="label">关联流程</div>
-												<select class="field"><option selected>法人税号030递交流程</option><option>西班牙海牙认证流程</option></select>
-												<div class="label">关联节点</div>
-												<select class="field"><option selected>030下号完成</option><option>待提交</option><option>处理中</option></select>
-											</div>
-											<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
-										</div>
-										<div class="inline-action">+ 添加完成条件</div>
-									</div>
-									<div class="release-action-area release-action-off">
-										<div class="release-action-head">
-											<span class="release-action-title">后端资料同步</span>
-											<div class="release-action-control">
-												<span class="label">是否同步</span>
-												<div class="rule-pill-switch">
-													<span class="rule-pill-option" onclick="toggleReleaseAction(this, true)">是</span>
-													<span class="rule-pill-option active" onclick="toggleReleaseAction(this, false)">否</span>
-												</div>
-											</div>
-										</div>
-										<div class="release-action-empty">不进行后端资料同步</div>
-										<div class="release-action-card release-action-content">
-											<div class="release-action-toolbar">
-												<div class="label">取值来源</div>
-												<div class="rule-pill-switch release-source-switch">
-													<span class="rule-pill-option" data-source="表单字段" onclick="updateReleaseSource(this, '表单字段')">表单字段</span>
-													<span class="rule-pill-option active" data-source="税号信息" onclick="updateReleaseSource(this, '税号信息')">税号信息</span>
-												</div>
-											</div>
-											<div class="release-action-map">
-												<div class="release-map-panel">
-													<div class="release-panel-head">
-														<span>来源</span>
-														<span class="release-source-badge">税号信息</span>
-													</div>
-													<div class="release-field-grid release-source-fields tax-source">
-														<div class="release-field-line">
-															<div class="label">税号信息</div>
-															<select class="field"><option selected>VAT</option><option>本土税号</option></select>
-														</div>
-													</div>
-												</div>
-												<div class="release-map-arrow"><span>写入</span></div>
-												<div class="release-map-panel">
-													<div class="release-panel-head">
-														<span>表单字段</span>
-													</div>
-													<div class="release-field-grid">
-														<div class="release-field-line">
-															<div class="label">选择表单</div>
-															<select class="field"><option selected>西班牙VAT注册资料表</option><option>主体资料表单</option></select>
-														</div>
-														<div class="release-field-line">
-															<div class="label">选择字段</div>
-															<select class="field"><option selected>西班牙VAT税号</option><option>本土税号</option><option>税号备注</option></select>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-
-								<div class="task-block">
-									<div class="task-block-head">
-										<span>用户上传资料</span>
-									</div>
-									<div class="task-row">
-										<div class="label"><span class="required">*</span>控制节点</div>
-										<select class="field"><option selected>用户上传资料</option><option>等待海牙完成</option><option>待提交</option><option>处理中</option></select>
-									</div>
-									<div class="condition-area">
-										<div class="condition-row">
-											<div class="label"><span class="required">*</span>完成条件</div>
-											<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>税号信息</option><option>等待节点完成</option></select>
-											<div class="condition-target tax-info">
-												<div class="label">国家</div>
-												<select class="field"><option selected>西班牙</option><option>德国</option><option>英国</option></select>
-												<div class="label">税号类型</div>
-												<select class="field"><option selected>VAT</option><option>本土税号</option></select>
-											</div>
-											<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
-										</div>
-										<div class="inline-action">+ 添加完成条件</div>
-									</div>
-									<div class="release-action-area release-action-off">
-										<div class="release-action-head">
-											<span class="release-action-title">后端资料同步</span>
-											<div class="release-action-control">
-												<span class="label">是否同步</span>
-												<div class="rule-pill-switch">
-													<span class="rule-pill-option" onclick="toggleReleaseAction(this, true)">是</span>
-													<span class="rule-pill-option active" onclick="toggleReleaseAction(this, false)">否</span>
-												</div>
-											</div>
-										</div>
-										<div class="release-action-empty">不进行后端资料同步</div>
-										<div class="release-action-card release-action-content">
-											<div class="release-action-toolbar">
-												<div class="label">取值来源</div>
-												<div class="rule-pill-switch release-source-switch">
-													<span class="rule-pill-option active" data-source="表单字段" onclick="updateReleaseSource(this, '表单字段')">表单字段</span>
-													<span class="rule-pill-option" data-source="税号信息" onclick="updateReleaseSource(this, '税号信息')">税号信息</span>
-												</div>
-											</div>
-											<div class="release-action-map">
-												<div class="release-map-panel">
-													<div class="release-panel-head">
-														<span>来源</span>
-														<span class="release-source-badge">表单字段</span>
-													</div>
-													<div class="release-field-grid release-source-fields form-source">
-														<div class="release-field-line">
-															<div class="label">选择表单</div>
-															<select class="field"><option selected>主体资料表单</option><option>西班牙VAT注册资料表</option></select>
-														</div>
-														<div class="release-field-line">
-															<div class="label">选择字段</div>
-															<select class="field"><option selected>公司名称</option><option>公司英文名称</option><option>法人姓名</option></select>
-														</div>
-													</div>
-												</div>
-												<div class="release-map-arrow"><span>写入</span></div>
-												<div class="release-map-panel">
-													<div class="release-panel-head">
-														<span>表单字段</span>
-													</div>
-													<div class="release-field-grid">
-														<div class="release-field-line">
-															<div class="label">选择表单</div>
-															<select class="field"><option selected>西班牙VAT注册资料表</option><option>主体资料表单</option></select>
-														</div>
-														<div class="release-field-line">
-															<div class="label">选择字段</div>
-															<select class="field"><option selected>注册公司名称</option><option>公司英文名称</option><option>法人姓名</option></select>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="inline-action">+ 添加控制节点</div>
 							</div>
 						</div>
 					</div>

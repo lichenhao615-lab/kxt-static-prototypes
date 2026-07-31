@@ -3460,7 +3460,7 @@
 										<span class="flow-select-arrow">⌄</span>
 									</button>
 									<div class="label"><span class="required">*</span>控制节点</div>
-									<select class="field"><option selected>等待海牙完成</option><option>用户上传资料</option><option>待提交</option><option>处理中</option></select>
+									<select class="field flow-node-select" id="collaborationControlNodeSelect"><option selected>等待海牙完成</option><option>用户上传资料</option><option>待提交</option><option>处理中</option></select>
 									<div class="label match-type-field"><span class="required">*</span>匹配方式</div>
 									<select class="field match-type-field" id="collaborationMatchTypeSelect">
 										<option selected>按公司名称匹配流程</option>
@@ -3479,7 +3479,7 @@
 												<span class="flow-select-arrow">⌄</span>
 											</button>
 											<div class="label">关联节点</div>
-											<select class="field"><option selected>海牙认证完成</option><option>海牙认证中</option><option>待客户签回</option></select>
+											<select class="field flow-node-select condition-node-select"><option selected>海牙认证完成</option><option>海牙认证中</option><option>待客户签回</option></select>
 										</div>
 										<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
 									</div>
@@ -3497,7 +3497,7 @@
 												<span class="flow-select-arrow">⌄</span>
 											</button>
 											<div class="label">关联节点</div>
-											<select class="field"><option selected>030下号完成</option><option>待提交</option><option>处理中</option></select>
+											<select class="field flow-node-select condition-node-select"><option selected>030下号完成</option><option>待提交</option><option>处理中</option></select>
 										</div>
 										<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
 									</div>
@@ -4788,6 +4788,13 @@
 	let pendingPackagePlanTab = null;
 	let pendingDeleteFormMaterial = null;
 	let activeFlowPickerTarget = null;
+	const collaborationFlowNodes = {
+		"西班牙VAT注册+申报流程": ["用户上传资料", "待审核", "待制作", "等待海牙完成", "待提交", "处理中", "已完成"],
+		"西班牙海牙认证流程": ["待上传资料", "待客户签回", "海牙认证中", "海牙认证完成"],
+		"法人税号030递交流程": ["待提交", "处理中", "030下号完成"],
+		"德国VAT注册流程": ["待上传资料", "待审核", "待制作", "待提交", "注册中", "待录入税号", "已完成"],
+		"德国本土税号递交流程": ["待提交", "处理中", "本土税号下号完成"]
+	};
 	let materialSourceItems = [
 		{ type: "模板", code: "tcpl_908321884" }
 	];
@@ -4813,6 +4820,7 @@
 		if (mainFlowSelect) {
 			setFlowPickerValue(mainFlowSelect, "西班牙VAT注册+申报流程");
 		}
+		refreshAllCollaborationNodeSelects();
 		refreshCollaborationMatchTypeVisibility();
 		openDrawer("collaborationRuleDrawer");
 	}
@@ -4826,6 +4834,43 @@
 		if (nameEl) {
 			nameEl.textContent = flowName;
 		}
+		refreshNodeSelectByFlowTarget(target, flowName);
+	}
+
+	function refreshNodeSelectByFlowTarget(target, flowName) {
+		if (!target) {
+			return;
+		}
+		let nodeSelect = null;
+		if (target.id === "collaborationMainFlowSelect") {
+			nodeSelect = document.getElementById("collaborationControlNodeSelect");
+		} else {
+			const conditionTarget = target.closest(".condition-target");
+			nodeSelect = conditionTarget && conditionTarget.querySelector(".condition-node-select");
+		}
+		refreshFlowNodeOptions(nodeSelect, flowName);
+	}
+
+	function refreshFlowNodeOptions(select, flowName) {
+		if (!select) {
+			return;
+		}
+		const nodes = collaborationFlowNodes[flowName] || [];
+		const currentValue = select.value;
+		select.innerHTML = nodes.map(function (node) {
+			return '<option>' + node + '</option>';
+		}).join("");
+		if (nodes.indexOf(currentValue) > -1) {
+			select.value = currentValue;
+		} else if (nodes.length > 0) {
+			select.value = nodes[0];
+		}
+	}
+
+	function refreshAllCollaborationNodeSelects() {
+		document.querySelectorAll("#collaborationRuleDrawer .flow-select-field").forEach(function (flowField) {
+			refreshNodeSelectByFlowTarget(flowField, flowField.dataset.flowName);
+		});
 	}
 
 	function openFlowSelectModal(target) {
@@ -4895,7 +4940,8 @@
 				'<span class="flow-select-arrow">⌄</span>' +
 			'</button>' +
 			'<div class="label">关联节点</div>' +
-			'<select class="field"><option selected>海牙认证完成</option><option>030下号完成</option><option>待提交</option><option>处理中</option></select>';
+			'<select class="field flow-node-select condition-node-select"></select>';
+		refreshNodeSelectByFlowTarget(target.querySelector(".flow-select-field"), "西班牙海牙认证流程");
 		refreshCollaborationMatchTypeVisibility();
 	}
 

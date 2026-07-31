@@ -927,6 +927,28 @@
 			grid-template-columns: 96px minmax(0, 1fr) 96px minmax(0, 1fr);
 		}
 
+		.match-type-field.is-hidden {
+			display: none;
+		}
+
+		.match-skip-note {
+			grid-column: 1 / -1;
+			display: flex;
+			align-items: center;
+			min-height: 34px;
+			padding: 8px 10px;
+			border: 1px solid #dce6ea;
+			border-radius: 4px;
+			background: #f7fbfb;
+			color: #667085;
+			font-size: 12px;
+			line-height: 1.5;
+		}
+
+		.match-skip-note.is-hidden {
+			display: none;
+		}
+
 		.mode-summary-card {
 			display: grid;
 			grid-template-columns: auto minmax(0, 1fr);
@@ -3200,7 +3222,7 @@
 						<td>德国VAT注册资料控制规则</td>
 						<td><span class="rule-mini-tag main">德国VAT注册流程</span></td>
 						<td><span class="status off">待提交</span></td>
-						<td>按公司名称匹配流程</td>
+						<td><span class="rule-mode-tag muted">无需匹配</span></td>
 						<td>
 							<div class="condition-summary">
 								<div class="condition-summary-line"><span class="condition-logic">且</span><span>税号信息 德国 / VAT存在</span></div>
@@ -3439,11 +3461,12 @@
 									</button>
 									<div class="label"><span class="required">*</span>控制节点</div>
 									<select class="field"><option selected>等待海牙完成</option><option>用户上传资料</option><option>待提交</option><option>处理中</option></select>
-									<div class="label"><span class="required">*</span>匹配方式</div>
-									<select class="field" id="collaborationMatchTypeSelect">
+									<div class="label match-type-field"><span class="required">*</span>匹配方式</div>
+									<select class="field match-type-field" id="collaborationMatchTypeSelect">
 										<option selected>按公司名称匹配流程</option>
 										<option>增值服务与基础服务绑定</option>
 									</select>
+									<div class="match-skip-note is-hidden" id="collaborationMatchSkipNote">当前完成条件仅使用税号信息，无需配置匹配方式。</div>
 								</div>
 								<div class="condition-area">
 									<div class="condition-row">
@@ -4790,6 +4813,7 @@
 		if (mainFlowSelect) {
 			setFlowPickerValue(mainFlowSelect, "西班牙VAT注册+申报流程");
 		}
+		refreshCollaborationMatchTypeVisibility();
 		openDrawer("collaborationRuleDrawer");
 	}
 
@@ -4860,6 +4884,7 @@
 				'<select class="field"><option selected>西班牙</option><option>德国</option><option>英国</option></select>' +
 				'<div class="label">税号类型</div>' +
 				'<select class="field"><option selected>VAT</option><option>本土税号</option></select>';
+			refreshCollaborationMatchTypeVisibility();
 			return;
 		}
 		target.className = "condition-target";
@@ -4871,6 +4896,22 @@
 			'</button>' +
 			'<div class="label">关联节点</div>' +
 			'<select class="field"><option selected>海牙认证完成</option><option>030下号完成</option><option>待提交</option><option>处理中</option></select>';
+		refreshCollaborationMatchTypeVisibility();
+	}
+
+	function refreshCollaborationMatchTypeVisibility() {
+		const drawer = document.getElementById("collaborationRuleDrawer");
+		const conditionSelects = drawer ? Array.from(drawer.querySelectorAll(".condition-type-select")) : [];
+		const onlyTaxInfo = conditionSelects.length > 0 && conditionSelects.every(function (select) {
+			return select.value === "税号信息";
+		});
+		document.querySelectorAll(".match-type-field").forEach(function (field) {
+			field.classList.toggle("is-hidden", onlyTaxInfo);
+		});
+		const skipNote = document.getElementById("collaborationMatchSkipNote");
+		if (skipNote) {
+			skipNote.classList.toggle("is-hidden", !onlyTaxInfo);
+		}
 	}
 
 	function toggleReleaseAction(option, enabled) {
@@ -4928,6 +4969,7 @@
 				next.remove();
 			}
 			row.remove();
+			refreshCollaborationMatchTypeVisibility();
 		}
 	}
 

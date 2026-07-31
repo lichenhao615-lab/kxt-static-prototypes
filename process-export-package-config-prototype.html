@@ -1075,6 +1075,31 @@
 			text-align: right;
 		}
 
+		.flow-select-field {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			text-align: left;
+			cursor: pointer;
+		}
+
+		.flow-select-field:hover {
+			border-color: var(--brand);
+			box-shadow: 0 0 0 2px rgba(0, 165, 168, .08);
+		}
+
+		.flow-select-name {
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.flow-select-field .flow-select-arrow {
+			flex: 0 0 auto;
+		}
+
 		.rule-pill-switch {
 			display: inline-flex;
 			align-items: center;
@@ -1934,6 +1959,70 @@
 
 		#customPlaceholderImportModal .confirm-dialog {
 			width: 560px;
+		}
+
+		#flowSelectModal .confirm-dialog.large {
+			width: min(1180px, calc(100vw - 48px));
+		}
+
+		#flowSelectModal .confirm-body {
+			max-height: calc(100vh - 176px);
+			overflow: hidden;
+		}
+
+		.flow-select-scroll {
+			max-height: 430px;
+			overflow: auto;
+			border: 1px solid #edf0f2;
+		}
+
+		.flow-select-scroll .mini-table {
+			min-width: 1060px;
+		}
+
+		.flow-select-row {
+			cursor: pointer;
+		}
+
+		.flow-select-row:hover {
+			background: #f7fbfb;
+		}
+
+		.flow-select-row.is-selected {
+			background: var(--brand-soft);
+		}
+
+		.flow-select-footer {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			margin-top: 10px;
+			color: #667085;
+			font-size: 12px;
+		}
+
+		.flow-select-pages {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.flow-select-page {
+			min-width: 28px;
+			height: 28px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			border: 1px solid #d8dde3;
+			border-radius: 3px;
+			background: #fff;
+			color: #475467;
+		}
+
+		.flow-select-page.active {
+			border-color: var(--brand);
+			color: var(--brand-dark);
 		}
 
 		.protocol-upload-card {
@@ -3367,7 +3456,10 @@
 								<div class="rule-info-group-title">节点控制关系</div>
 								<div class="rule-info-grid flow-scope">
 									<div class="label"><span class="required">*</span>控制流程</div>
-									<select class="field" id="collaborationMainFlowSelect"><option selected>西班牙VAT注册+申报流程</option><option>德国VAT注册流程</option></select>
+									<button type="button" class="field flow-select-field" id="collaborationMainFlowSelect" data-flow-name="西班牙VAT注册+申报流程" onclick="openFlowSelectModal(this)">
+										<span class="flow-select-name">西班牙VAT注册+申报流程</span>
+										<span class="flow-select-arrow">⌄</span>
+									</button>
 									<div class="label"><span class="required">*</span>控制节点</div>
 									<select class="field"><option selected>等待海牙完成</option><option>用户上传资料</option><option>待提交</option><option>处理中</option></select>
 									<div class="label"><span class="required">*</span>匹配方式</div>
@@ -3382,7 +3474,10 @@
 										<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>等待节点完成</option><option>税号信息</option></select>
 										<div class="condition-target">
 											<div class="label">关联流程</div>
-											<select class="field"><option selected>西班牙海牙认证流程</option><option>法人税号030递交流程</option></select>
+											<button type="button" class="field flow-select-field" data-flow-name="西班牙海牙认证流程" onclick="openFlowSelectModal(this)">
+												<span class="flow-select-name">西班牙海牙认证流程</span>
+												<span class="flow-select-arrow">⌄</span>
+											</button>
 											<div class="label">关联节点</div>
 											<select class="field"><option selected>海牙认证完成</option><option>海牙认证中</option><option>待客户签回</option></select>
 										</div>
@@ -3397,7 +3492,10 @@
 										<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>等待节点完成</option><option>税号信息</option></select>
 										<div class="condition-target">
 											<div class="label">关联流程</div>
-											<select class="field"><option selected>法人税号030递交流程</option><option>西班牙海牙认证流程</option></select>
+											<button type="button" class="field flow-select-field" data-flow-name="法人税号030递交流程" onclick="openFlowSelectModal(this)">
+												<span class="flow-select-name">法人税号030递交流程</span>
+												<span class="flow-select-arrow">⌄</span>
+											</button>
 											<div class="label">关联节点</div>
 											<select class="field"><option selected>030下号完成</option><option>待提交</option><option>处理中</option></select>
 										</div>
@@ -3467,6 +3565,147 @@
 		<div class="drawer-footer">
 			<button class="btn ghost" onclick="closeDrawer('collaborationRuleDrawer')">取消</button>
 			<button class="btn primary">保存规则</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="flowSelectModal">
+	<div class="confirm-dialog large">
+		<div class="confirm-head">
+			<span id="flowSelectModalTitle">选择流程</span>
+			<button class="drawer-close" onclick="closeFlowSelectModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="modal-toolbar">
+				<input class="input" placeholder="流程ID/流程名称/添加人/更新人">
+				<select class="select"><option>请选择类目</option><option>税务</option><option>专利</option></select>
+				<select class="select"><option>请选择类型</option><option>注册</option><option>认证</option><option>递交</option></select>
+				<select class="select"><option>请选择国家</option><option>西班牙</option><option>德国</option><option>英国</option></select>
+				<select class="select" style="min-width:150px;"><option>请选择资料包配置</option><option>是</option><option>否</option></select>
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+			<div class="modal-note" id="flowSelectModalNote">选择一个流程后回填当前字段。</div>
+			<div class="flow-select-scroll">
+				<table class="mini-table flow-select-table">
+					<colgroup>
+						<col style="width:54px">
+						<col style="width:70px">
+						<col style="width:90px">
+						<col style="width:270px">
+						<col style="width:105px">
+						<col style="width:105px">
+						<col style="width:105px">
+						<col style="width:92px">
+						<col style="width:170px">
+						<col style="width:92px">
+						<col style="width:170px">
+						<col style="width:105px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>选择</th>
+						<th>序号</th>
+						<th>流程ID</th>
+						<th>流程名称</th>
+						<th>所属类目</th>
+						<th>所属类型</th>
+						<th>所属国家</th>
+						<th>添加人</th>
+						<th>添加时间</th>
+						<th>更新人</th>
+						<th>更新时间</th>
+						<th>资料包配置</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr class="flow-select-row" onclick="selectFlowRow(this)">
+						<td><input type="radio" name="flowSelectRadio" class="flow-select-radio" data-name="西班牙VAT注册+申报流程"></td>
+						<td>1</td>
+						<td>3001</td>
+						<td>西班牙VAT注册+申报流程</td>
+						<td>税务</td>
+						<td>注册</td>
+						<td>西班牙</td>
+						<td>方小路</td>
+						<td>2026-03-17 09:25:35</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:38:54</td>
+						<td><span class="status on">是</span></td>
+					</tr>
+					<tr class="flow-select-row" onclick="selectFlowRow(this)">
+						<td><input type="radio" name="flowSelectRadio" class="flow-select-radio" data-name="西班牙海牙认证流程"></td>
+						<td>2</td>
+						<td>3002</td>
+						<td>西班牙海牙认证流程</td>
+						<td>税务</td>
+						<td>认证</td>
+						<td>西班牙</td>
+						<td>徐如珍</td>
+						<td>2026-01-08 14:58:02</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:34:42</td>
+						<td><span class="status off">否</span></td>
+					</tr>
+					<tr class="flow-select-row" onclick="selectFlowRow(this)">
+						<td><input type="radio" name="flowSelectRadio" class="flow-select-radio" data-name="法人税号030递交流程"></td>
+						<td>3</td>
+						<td>3003</td>
+						<td>法人税号030递交流程</td>
+						<td>税务</td>
+						<td>递交</td>
+						<td>西班牙</td>
+						<td>徐如珍</td>
+						<td>2026-01-04 16:01:00</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:32:22</td>
+						<td><span class="status off">否</span></td>
+					</tr>
+					<tr class="flow-select-row" onclick="selectFlowRow(this)">
+						<td><input type="radio" name="flowSelectRadio" class="flow-select-radio" data-name="德国VAT注册流程"></td>
+						<td>4</td>
+						<td>3004</td>
+						<td>德国VAT注册流程</td>
+						<td>税务</td>
+						<td>注册</td>
+						<td>德国</td>
+						<td>方小路</td>
+						<td>2026-04-03 10:02:59</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:29:13</td>
+						<td><span class="status on">是</span></td>
+					</tr>
+					<tr class="flow-select-row" onclick="selectFlowRow(this)">
+						<td><input type="radio" name="flowSelectRadio" class="flow-select-radio" data-name="德国本土税号递交流程"></td>
+						<td>5</td>
+						<td>3005</td>
+						<td>德国本土税号递交流程</td>
+						<td>税务</td>
+						<td>递交</td>
+						<td>德国</td>
+						<td>徐如珍</td>
+						<td>2025-12-04 11:03:23</td>
+						<td>江晓文</td>
+						<td>2026-06-09 20:27:03</td>
+						<td><span class="status off">否</span></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="flow-select-footer">
+				<span>共有 2553 条数据</span>
+				<div class="flow-select-pages">
+					<span class="flow-select-page active">1</span>
+					<span class="flow-select-page">2</span>
+					<span class="flow-select-page">3</span>
+					<span class="flow-select-page">4</span>
+					<span class="flow-select-page">5</span>
+				</div>
+			</div>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeFlowSelectModal()">取消</button>
+			<button class="btn primary" onclick="confirmSelectedFlow()">确认选择</button>
 		</div>
 	</div>
 </div>
@@ -4553,6 +4792,7 @@
 	let packageExportItems = [];
 	let pendingPackagePlanTab = null;
 	let pendingDeleteFormMaterial = null;
+	let activeFlowPickerTarget = null;
 	let materialSourceItems = [
 		{ type: "模板", code: "tcpl_908321884" }
 	];
@@ -4576,9 +4816,63 @@
 			matchSelect.value = "按公司名称匹配流程";
 		}
 		if (mainFlowSelect) {
-			mainFlowSelect.value = "西班牙VAT注册+申报流程";
+			setFlowPickerValue(mainFlowSelect, "西班牙VAT注册+申报流程");
 		}
 		openDrawer("collaborationRuleDrawer");
+	}
+
+	function setFlowPickerValue(target, flowName) {
+		if (!target) {
+			return;
+		}
+		target.dataset.flowName = flowName;
+		const nameEl = target.querySelector(".flow-select-name");
+		if (nameEl) {
+			nameEl.textContent = flowName;
+		}
+	}
+
+	function openFlowSelectModal(target) {
+		activeFlowPickerTarget = target;
+		const label = target && target.previousElementSibling ? target.previousElementSibling.textContent.replace("*", "").trim() : "流程";
+		document.getElementById("flowSelectModalTitle").textContent = "选择" + label;
+		document.getElementById("flowSelectModalNote").textContent = "单选一个流程，确认后回填到当前" + label + "字段。";
+		const currentName = target && target.dataset.flowName;
+		document.querySelectorAll(".flow-select-row").forEach(function (row) {
+			row.classList.remove("is-selected");
+		});
+		document.querySelectorAll(".flow-select-radio").forEach(function (radio) {
+			const checked = radio.dataset.name === currentName;
+			radio.checked = checked;
+			if (checked) {
+				radio.closest(".flow-select-row").classList.add("is-selected");
+			}
+		});
+		document.getElementById("flowSelectModal").classList.add("open");
+	}
+
+	function closeFlowSelectModal() {
+		document.getElementById("flowSelectModal").classList.remove("open");
+		activeFlowPickerTarget = null;
+	}
+
+	function selectFlowRow(row) {
+		const radio = row.querySelector(".flow-select-radio");
+		if (!radio) {
+			return;
+		}
+		radio.checked = true;
+		document.querySelectorAll(".flow-select-row").forEach(function (item) {
+			item.classList.toggle("is-selected", item === row);
+		});
+	}
+
+	function confirmSelectedFlow() {
+		const selected = document.querySelector(".flow-select-radio:checked");
+		if (selected && activeFlowPickerTarget) {
+			setFlowPickerValue(activeFlowPickerTarget, selected.dataset.name);
+		}
+		closeFlowSelectModal();
 	}
 
 	function updateConditionTarget(select) {
@@ -4599,7 +4893,10 @@
 		target.className = "condition-target";
 		target.innerHTML =
 			'<div class="label">关联流程</div>' +
-			'<select class="field"><option selected>西班牙海牙认证流程</option><option>法人税号030递交流程</option></select>' +
+			'<button type="button" class="field flow-select-field" data-flow-name="西班牙海牙认证流程" onclick="openFlowSelectModal(this)">' +
+				'<span class="flow-select-name">西班牙海牙认证流程</span>' +
+				'<span class="flow-select-arrow">⌄</span>' +
+			'</button>' +
 			'<div class="label">关联节点</div>' +
 			'<select class="field"><option selected>海牙认证完成</option><option>030下号完成</option><option>待提交</option><option>处理中</option></select>';
 	}

@@ -3154,7 +3154,7 @@
 			</div>
 
 			<div class="table-wrap">
-				<table style="min-width:1660px;">
+				<table style="min-width:1320px;">
 					<colgroup>
 						<col style="width:52px">
 						<col style="width:150px">
@@ -3162,8 +3162,6 @@
 						<col style="width:250px">
 						<col style="width:150px">
 						<col style="width:190px">
-						<col style="width:360px">
-						<col style="width:220px">
 						<col style="width:120px">
 						<col style="width:180px">
 					</colgroup>
@@ -3175,8 +3173,6 @@
 						<th>控制流程</th>
 						<th>控制节点</th>
 						<th>匹配方式</th>
-						<th>完成条件</th>
-						<th>后端资料同步</th>
 						<th>状态</th>
 						<th>操作</th>
 					</tr>
@@ -3189,13 +3185,6 @@
 						<td><span class="rule-mini-tag main">西班牙VAT注册+申报流程</span></td>
 						<td><span class="status off">等待海牙完成</span></td>
 						<td>按公司名称匹配流程</td>
-						<td>
-							<div class="condition-summary">
-								<div class="condition-summary-line"><span class="condition-logic">且</span><span>等待 西班牙海牙认证流程 / 海牙认证完成</span></div>
-								<div class="condition-summary-line"><span class="condition-logic">且</span><span>等待 法人税号030递交流程 / 030下号完成</span></div>
-							</div>
-						</td>
-						<td>本土税号 → 注册资料表</td>
 						<td><span class="status on">启用</span></td>
 						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-danger">停用</span></span></td>
 					</tr>
@@ -3206,13 +3195,6 @@
 						<td><span class="rule-mini-tag main">西班牙VAT注册+申报流程</span></td>
 						<td><span class="status off">待提交</span></td>
 						<td>按公司名称匹配流程</td>
-						<td>
-							<div class="condition-summary">
-								<div class="condition-summary-line"><span class="condition-logic">或</span><span>等待 法人税号030递交流程 / 030下号完成</span></div>
-								<div class="condition-summary-line"><span class="condition-logic">或</span><span>税号信息 西班牙 / 本土税号存在</span></div>
-							</div>
-						</td>
-						<td>本土税号 → 税号信息</td>
 						<td><span class="status on">启用</span></td>
 						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-danger">停用</span></span></td>
 					</tr>
@@ -3223,12 +3205,6 @@
 						<td><span class="rule-mini-tag main">德国VAT注册流程</span></td>
 						<td><span class="status off">待提交</span></td>
 						<td><span class="rule-mode-tag muted">无需匹配</span></td>
-						<td>
-							<div class="condition-summary">
-								<div class="condition-summary-line"><span class="condition-logic">且</span><span>税号信息 德国 / VAT存在</span></div>
-							</div>
-						</td>
-						<td>VAT税号 → 申报账号资料</td>
 						<td><span class="status off">停用</span></td>
 						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-text">启用</span></span></td>
 					</tr>

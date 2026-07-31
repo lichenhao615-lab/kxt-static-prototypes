@@ -1342,16 +1342,6 @@
 			background: #fcfdfd;
 		}
 
-		.release-action-toolbar {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			gap: 12px;
-			padding-bottom: 10px;
-			border-bottom: 1px solid #edf0f2;
-			font-size: 13px;
-		}
-
 		.release-action-content {
 			display: grid;
 			gap: 10px;
@@ -1383,16 +1373,8 @@
 			font-weight: 600;
 		}
 
-		.release-source-badge {
-			display: inline-flex;
-			align-items: center;
-			height: 22px;
-			padding: 0 8px;
-			border-radius: 11px;
-			background: var(--brand-soft);
-			color: var(--brand-dark);
-			font-size: 12px;
-			font-weight: 600;
+		.release-panel-head .release-source-switch {
+			flex: 0 0 auto;
 		}
 
 		.release-field-grid {
@@ -1499,11 +1481,6 @@
 			}
 
 			.release-action-head {
-				align-items: flex-start;
-				flex-direction: column;
-			}
-
-			.release-action-toolbar {
 				align-items: flex-start;
 				flex-direction: column;
 			}
@@ -3516,18 +3493,14 @@
 									</div>
 									<div class="release-action-empty">不进行后端资料同步</div>
 									<div class="release-action-card release-action-content">
-										<div class="release-action-toolbar">
-											<div class="label">取值来源</div>
-											<div class="rule-pill-switch release-source-switch">
-												<span class="rule-pill-option" data-source="表单字段" onclick="updateReleaseSource(this, '表单字段')">表单字段</span>
-												<span class="rule-pill-option active" data-source="税号信息" onclick="updateReleaseSource(this, '税号信息')">税号信息</span>
-											</div>
-										</div>
 										<div class="release-action-map">
 											<div class="release-map-panel">
 												<div class="release-panel-head">
 													<span>来源</span>
-													<span class="release-source-badge">税号信息</span>
+													<div class="rule-pill-switch release-source-switch">
+														<span class="rule-pill-option" data-source="表单字段" onclick="updateReleaseSource(this, '表单字段')">表单字段</span>
+														<span class="rule-pill-option active" data-source="税号信息" onclick="updateReleaseSource(this, '税号信息')">税号信息</span>
+													</div>
 												</div>
 												<div class="release-field-grid release-source-fields tax-source">
 													<div class="release-field-line">
@@ -4926,10 +4899,6 @@
 			sourceSwitch.querySelectorAll(".rule-pill-option").forEach(function (option) {
 				option.classList.toggle("active", option.dataset.source === sourceType);
 			});
-		}
-		const badge = content.querySelector(".release-source-badge");
-		if (badge) {
-			badge.textContent = sourceType;
 		}
 		if (sourceType === "税号信息") {
 			sourceFields.className = "release-field-grid release-source-fields tax-source";

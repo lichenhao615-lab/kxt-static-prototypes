@@ -680,6 +680,28 @@
 			white-space: normal;
 		}
 
+		.condition-summary {
+			display: grid;
+			gap: 6px;
+			text-align: left;
+			line-height: 1.5;
+			color: #344054;
+			white-space: normal;
+		}
+
+		.condition-summary-line {
+			display: flex;
+			align-items: flex-start;
+			gap: 6px;
+		}
+
+		.condition-logic {
+			flex: 0 0 auto;
+			min-width: 20px;
+			color: #0f766e;
+			font-weight: 600;
+		}
+
 		.rule-mini-tag {
 			display: inline-flex;
 			align-items: center;
@@ -3037,7 +3059,6 @@
 			<div class="toolbar">
 				<input class="input" placeholder="规则ID / 规则名称 / 流程名称">
 				<select class="select"><option>请选择控制流程</option><option>西班牙VAT注册+申报流程</option><option>德国VAT注册流程</option></select>
-				<select class="select"><option>请选择关联流程</option><option>西班牙海牙认证流程</option><option>法人税号030递交流程</option><option>德国VAT注册流程</option></select>
 				<select class="select"><option>请选择匹配方式</option><option>按公司名称匹配流程</option></select>
 				<select class="select"><option>请选择状态</option><option>启用</option><option>停用</option></select>
 				<button class="btn primary">搜索</button>
@@ -3049,16 +3070,14 @@
 			</div>
 
 			<div class="table-wrap">
-				<table style="min-width:1960px;">
+				<table style="min-width:1660px;">
 					<colgroup>
 						<col style="width:52px">
 						<col style="width:150px">
 						<col style="width:220px">
 						<col style="width:250px">
 						<col style="width:150px">
-						<col style="width:260px">
-						<col style="width:220px">
-						<col style="width:210px">
+						<col style="width:360px">
 						<col style="width:220px">
 						<col style="width:190px">
 						<col style="width:120px">
@@ -3071,8 +3090,6 @@
 						<th>规则名称</th>
 						<th>控制流程</th>
 						<th>控制节点</th>
-						<th>关联流程</th>
-						<th>关联节点</th>
 						<th>完成条件</th>
 						<th>后端资料同步</th>
 						<th>匹配方式</th>
@@ -3088,18 +3105,11 @@
 						<td><span class="rule-mini-tag main">西班牙VAT注册+申报流程</span></td>
 						<td><span class="status off">等待海牙完成</span></td>
 						<td>
-							<div class="rule-flow-tags">
-								<span class="rule-mini-tag">西班牙海牙认证流程</span>
-								<span class="rule-mini-tag">法人税号030递交流程</span>
+							<div class="condition-summary">
+								<div class="condition-summary-line"><span class="condition-logic">且</span><span>等待 西班牙海牙认证流程 / 海牙认证完成</span></div>
+								<div class="condition-summary-line"><span class="condition-logic">且</span><span>等待 法人税号030递交流程 / 030下号完成</span></div>
 							</div>
 						</td>
-						<td>
-							<div class="rule-flow-tags">
-								<span class="rule-mini-tag">海牙认证完成</span>
-								<span class="rule-mini-tag">030下号完成</span>
-							</div>
-						</td>
-						<td>全部关联节点完成</td>
 						<td>本土税号 → 注册资料表</td>
 						<td>按公司名称匹配流程</td>
 						<td><span class="status on">启用</span></td>
@@ -3112,12 +3122,11 @@
 						<td><span class="rule-mini-tag main">西班牙VAT注册+申报流程</span></td>
 						<td><span class="status off">待提交</span></td>
 						<td>
-							<div class="rule-flow-tags">
-								<span class="rule-mini-tag">法人税号030递交流程</span>
+							<div class="condition-summary">
+								<div class="condition-summary-line"><span class="condition-logic">或</span><span>等待 法人税号030递交流程 / 030下号完成</span></div>
+								<div class="condition-summary-line"><span class="condition-logic">或</span><span>税号信息 西班牙 / 本土税号存在</span></div>
 							</div>
 						</td>
-						<td><span class="rule-mini-tag">030下号完成</span></td>
-						<td>关联节点完成或本土税号存在</td>
 						<td>本土税号 → 税号信息</td>
 						<td>按公司名称匹配流程</td>
 						<td><span class="status on">启用</span></td>
@@ -3130,12 +3139,10 @@
 						<td><span class="rule-mini-tag main">德国VAT注册流程</span></td>
 						<td><span class="status off">待提交</span></td>
 						<td>
-							<div class="rule-flow-tags">
-								<span class="rule-mini-tag">德国本土税号递交流程</span>
+							<div class="condition-summary">
+								<div class="condition-summary-line"><span class="condition-logic">且</span><span>税号信息 德国 / VAT存在</span></div>
 							</div>
 						</td>
-						<td><span class="rule-mini-tag">本土税号录入完成</span></td>
-						<td>税号信息存在</td>
 						<td>VAT税号 → 申报账号资料</td>
 						<td>按公司名称匹配流程</td>
 						<td><span class="status off">停用</span></td>
@@ -3346,7 +3353,7 @@
 			<div class="config-card-body collaboration-rule-body">
 					<div class="config-section">
 						<div class="config-section-title">协同交付信息</div>
-						<div class="config-section-desc">配置一个控制节点与一个或多个关联节点的关系；完成条件满足后放行控制节点，并可执行后端资料同步。</div>
+						<div class="config-section-desc">配置控制流程的控制节点；完成条件满足后放行该节点，并可执行后端资料同步。</div>
 						<div class="rule-info-layout">
 							<div class="rule-info-group">
 								<div class="rule-info-group-title">基础规则</div>
@@ -3367,10 +3374,6 @@
 									<select class="field" id="collaborationMainFlowSelect"><option selected>西班牙VAT注册+申报流程</option><option>德国VAT注册流程</option></select>
 									<div class="label"><span class="required">*</span>控制节点</div>
 									<select class="field"><option selected>等待海牙完成</option><option>用户上传资料</option><option>待提交</option><option>处理中</option></select>
-									<div class="label"><span class="required">*</span>关联流程</div>
-									<select class="field"><option selected>西班牙海牙认证流程</option><option>法人税号030递交流程</option><option>德国本土税号递交流程</option></select>
-									<div class="label"><span class="required">*</span>关联节点</div>
-									<select class="field"><option selected>海牙认证完成</option><option>030下号完成</option><option>本土税号录入完成</option></select>
 								</div>
 								<div class="condition-area">
 									<div class="condition-row">

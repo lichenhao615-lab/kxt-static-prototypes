@@ -3756,12 +3756,12 @@
 											<div class="condition-row single-condition-row">
 												<select class="field condition-type-select" onchange="updateConditionTarget(this)" style="display:none;"><option selected>等待节点完成</option><option>税号信息</option></select>
 												<div class="condition-target">
-													<div class="label">关联流程</div>
+													<div class="label"><span class="required">*</span>关联流程</div>
 													<button type="button" class="field flow-select-field" data-flow-name="西班牙海牙认证流程" onclick="openFlowSelectModal(this)">
 														<span class="flow-select-name">西班牙海牙认证流程</span>
 														<span class="flow-select-arrow">⌄</span>
 													</button>
-													<div class="label">关联节点</div>
+													<div class="label"><span class="required">*</span>关联节点</div>
 													<select class="field flow-node-select condition-node-select"><option selected>海牙认证完成</option><option>海牙认证中</option><option>待客户签回</option></select>
 												</div>
 											</div>
@@ -5759,9 +5759,9 @@
 		if (select.value === "税号信息") {
 			target.className = "condition-target tax-info";
 			target.innerHTML =
-				'<div class="label">国家</div>' +
+				'<div class="label"><span class="required">*</span>国家</div>' +
 				'<select class="field"><option selected>西班牙</option><option>德国</option><option>英国</option></select>' +
-				'<div class="label">税号类型</div>' +
+				'<div class="label"><span class="required">*</span>税号类型</div>' +
 				'<select class="field"><option selected>VAT</option><option>本土税号</option></select>';
 			refreshCollaborationMatchTypeVisibility();
 			refreshAllReleaseFlowOptions();
@@ -5769,12 +5769,12 @@
 		}
 		target.className = "condition-target";
 		target.innerHTML =
-			'<div class="label">关联流程</div>' +
+			'<div class="label"><span class="required">*</span>关联流程</div>' +
 			'<button type="button" class="field flow-select-field" data-flow-name="西班牙海牙认证流程" onclick="openFlowSelectModal(this)">' +
 				'<span class="flow-select-name">西班牙海牙认证流程</span>' +
 				'<span class="flow-select-arrow">⌄</span>' +
 			'</button>' +
-			'<div class="label">关联节点</div>' +
+			'<div class="label"><span class="required">*</span>关联节点</div>' +
 			'<select class="field flow-node-select condition-node-select"></select>';
 		refreshNodeSelectByFlowTarget(target.querySelector(".flow-select-field"), "西班牙海牙认证流程");
 		refreshCollaborationMatchTypeVisibility();
@@ -5840,12 +5840,12 @@
 			'<div class="condition-row single-condition-row">' +
 				'<select class="field condition-type-select" onchange="updateConditionTarget(this)" style="display:none;"><option selected>等待节点完成</option><option>税号信息</option></select>' +
 				'<div class="condition-target">' +
-					'<div class="label">关联流程</div>' +
+					'<div class="label"><span class="required">*</span>关联流程</div>' +
 					'<button type="button" class="field flow-select-field" data-flow-name="' + flowName + '" onclick="openFlowSelectModal(this)">' +
 						'<span class="flow-select-name">' + flowName + '</span>' +
 						'<span class="flow-select-arrow">⌄</span>' +
 					'</button>' +
-					'<div class="label">关联节点</div>' +
+					'<div class="label"><span class="required">*</span>关联节点</div>' +
 					'<select class="field flow-node-select condition-node-select"><option selected>' + nodeName + '</option></select>' +
 				'</div>' +
 			'</div>';

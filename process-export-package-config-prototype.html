@@ -881,7 +881,13 @@
 
 		.rule-info-layout {
 			display: grid;
+			grid-template-columns: 300px minmax(0, 1fr);
+			align-items: start;
 			gap: 14px;
+		}
+
+		#collaborationRuleDrawer .drawer.wide {
+			width: min(1180px, calc(100vw - 32px));
 		}
 
 		.collaboration-rule-body {
@@ -908,6 +914,16 @@
 			background: #fcfdfd;
 		}
 
+		.collaboration-basic-panel {
+			position: sticky;
+			top: 0;
+			min-width: 0;
+		}
+
+		.collaboration-basic-panel .rule-info-group {
+			background: #fff;
+		}
+
 		.rule-info-group-title {
 			margin-bottom: 10px;
 			color: #667085;
@@ -932,12 +948,80 @@
 			grid-template-columns: 96px minmax(0, 1fr) 96px minmax(0, 1fr);
 		}
 
+		.collaboration-basic-panel .rule-info-grid.basic-rule-grid {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 6px;
+		}
+
+		.collaboration-basic-panel .rule-info-grid.basic-rule-grid .label {
+			justify-self: start;
+			margin-top: 4px;
+			text-align: left;
+		}
+
+		.collaboration-basic-panel .rule-info-grid.basic-rule-grid .label:first-child {
+			margin-top: 0;
+		}
+
 		.rule-info-grid.basic-rule-grid .main-flow-label {
 			grid-column: 1;
 		}
 
 		.rule-info-grid.basic-rule-grid .main-flow-field {
 			grid-column: 2 / -1;
+		}
+
+		.collaboration-basic-panel .rule-info-grid.basic-rule-grid .main-flow-label,
+		.collaboration-basic-panel .rule-info-grid.basic-rule-grid .main-flow-field {
+			grid-column: auto;
+		}
+
+		.control-relation-panel {
+			min-width: 0;
+			border: 1px solid #e6ebef;
+			border-radius: 4px;
+			background: #fff;
+			box-shadow: 0 8px 24px rgba(15, 23, 42, .04);
+			overflow: hidden;
+		}
+
+		.control-relation-panel-head {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 14px;
+			padding: 12px 14px;
+			border-bottom: 1px solid #edf0f2;
+			background: #fbfcfd;
+		}
+
+		.control-relation-panel-title {
+			color: #17212b;
+			font-size: 14px;
+			font-weight: 600;
+		}
+
+		.control-relation-panel-desc {
+			margin-top: 4px;
+			color: #667085;
+			font-size: 12px;
+			line-height: 1.5;
+		}
+
+		.control-relation-scroll {
+			display: grid;
+			gap: 12px;
+			min-height: 360px;
+			max-height: calc(100vh - 252px);
+			padding: 12px;
+			overflow: auto;
+			background: #f7f9fa;
+		}
+
+		.control-relation-panel .control-relation-group {
+			background: #fff;
+			border-color: #e6ebef;
+			box-shadow: 0 6px 16px rgba(15, 23, 42, .04);
 		}
 
 		.control-relation-head {
@@ -952,8 +1036,8 @@
 			display: inline-flex;
 			align-items: center;
 			gap: 8px;
-			color: #667085;
-			font-size: 12px;
+			color: #17212b;
+			font-size: 14px;
 			font-weight: 600;
 		}
 
@@ -977,30 +1061,20 @@
 			font-size: 13px;
 		}
 
-		.relation-add-action {
+		.relation-add-button {
+			flex: 0 0 auto;
+			height: 32px;
 			margin-top: 0;
-			padding: 0 4px;
+			padding: 0 10px;
+			border: 1px solid #d6e4e6;
+			border-radius: 4px;
+			background: #f6fbfb;
+			color: var(--brand-dark);
+			font-size: 13px;
+			cursor: pointer;
 		}
 
 		.match-type-field.is-hidden {
-			display: none;
-		}
-
-		.match-skip-note {
-			grid-column: 1 / -1;
-			display: flex;
-			align-items: center;
-			min-height: 34px;
-			padding: 8px 10px;
-			border: 1px solid #dce6ea;
-			border-radius: 4px;
-			background: #f7fbfb;
-			color: #667085;
-			font-size: 12px;
-			line-height: 1.5;
-		}
-
-		.match-skip-note.is-hidden {
 			display: none;
 		}
 
@@ -1103,6 +1177,13 @@
 
 		.flow-chip .close {
 			color: #94a3b8;
+			font-size: 14px;
+			line-height: 1;
+			cursor: pointer;
+		}
+
+		.flow-chip .close:hover {
+			color: #f04438;
 		}
 
 		.flow-multi-select {
@@ -1184,6 +1265,30 @@
 		}
 
 		.main-flow-selected {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+			min-width: 0;
+		}
+
+		.main-flow-readonly {
+			min-height: 34px;
+			height: auto !important;
+			display: flex;
+			align-items: center;
+			padding: 4px 10px;
+			border-color: #d8dde3;
+			background: #f7f8fa;
+			cursor: default;
+		}
+
+		.control-node-picker {
+			height: auto !important;
+			min-height: 34px;
+			padding: 4px 10px;
+		}
+
+		.control-node-selected {
 			display: flex;
 			flex-wrap: wrap;
 			gap: 6px;
@@ -1359,9 +1464,29 @@
 			background: #fcfdfd;
 		}
 
+		.condition-action-head {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			margin-bottom: 10px;
+			padding: 10px;
+			border: 1px solid #edf0f2;
+			border-radius: 4px;
+			background: #fff;
+		}
+
+		.condition-pill-block {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			min-width: 0;
+		}
+
 		.condition-row {
 			display: grid;
-			grid-template-columns: 78px 120px minmax(0, 1fr) 36px;
+			grid-template-columns: 78px 140px minmax(0, 1fr);
 			gap: 8px;
 			align-items: center;
 			margin-bottom: 10px;
@@ -1370,6 +1495,11 @@
 			border-radius: 4px;
 			background: #fff;
 			font-size: 13px;
+		}
+
+		.condition-row.single-condition-row {
+			grid-template-columns: minmax(0, 1fr);
+			margin-bottom: 0;
 		}
 
 		.condition-row:last-child {
@@ -1381,24 +1511,6 @@
 			grid-template-columns: 72px minmax(0, 1fr) 72px minmax(0, 1fr);
 			gap: 8px;
 			align-items: center;
-		}
-
-		.condition-delete {
-			justify-self: end;
-			white-space: nowrap;
-		}
-
-		.condition-relation-row {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			margin: -2px 0 8px 10px;
-			font-size: 13px;
-		}
-
-		.condition-relation-row .field {
-			width: 84px;
-			height: 32px;
 		}
 
 		.release-action-area {
@@ -1421,24 +1533,8 @@
 			font-weight: 600;
 		}
 
-		.release-action-empty {
-			display: none;
-			align-items: center;
-			min-height: 38px;
-			padding: 0 12px;
-			border: 1px dashed #d8dde3;
-			border-radius: 4px;
-			background: #f7f8fa;
-			color: #98a2b3;
-			font-size: 13px;
-		}
-
 		.release-action-area.release-action-off .release-action-content {
 			display: none;
-		}
-
-		.release-action-area.release-action-off .release-action-empty {
-			display: flex;
 		}
 
 		.release-action-control {
@@ -1558,6 +1654,24 @@
 				grid-template-columns: 112px minmax(0, 1fr) 112px minmax(0, 1fr);
 			}
 
+			.rule-info-layout {
+				grid-template-columns: 1fr;
+			}
+
+			.collaboration-basic-panel {
+				position: static;
+			}
+
+			.control-relation-panel-head {
+				flex-direction: column;
+			}
+
+			.control-relation-scroll {
+				min-height: 0;
+				max-height: none;
+				overflow: visible;
+			}
+
 			.rule-info-grid,
 			.rule-info-grid.flow-scope {
 				grid-template-columns: 96px minmax(0, 1fr);
@@ -1594,6 +1708,11 @@
 				grid-template-columns: 96px minmax(0, 1fr) 96px minmax(0, 1fr);
 			}
 
+			.condition-action-head {
+				align-items: flex-start;
+				flex-direction: column;
+			}
+
 			.release-action-head {
 				align-items: flex-start;
 				flex-direction: column;
@@ -1611,10 +1730,6 @@
 				justify-content: flex-start;
 			}
 
-			.condition-delete {
-				grid-column: 1 / -1;
-				justify-self: start;
-			}
 		}
 
 		.drawer-mask {
@@ -2820,22 +2935,21 @@
 		<div class="menu-row" style="color: var(--brand-dark);">流程管理 <span>⌃</span></div>
 		<div class="menu-row small">节点管理</div>
 		<div class="menu-row small">操作项管理</div>
-		<div class="menu-row small" data-menu="flows" onclick="showView('flows')">流程列表</div>
+		<div class="menu-row small active" data-menu="flows" onclick="showView('flows')">流程列表</div>
 		<div class="menu-row small" data-menu="forms" onclick="showView('forms')">表单管理</div>
 		<div class="menu-row small">显示配置</div>
 		<div class="menu-row small" data-menu="templates" onclick="showView('templates')">资料项列表</div>
-		<div class="menu-row small active" data-menu="collaboration" onclick="showView('collaboration')">协同交付规则</div>
 		<div class="menu-row">知识产权 <span>⌄</span></div>
 		<div class="menu-row" style="color: var(--brand-dark);">服务管理 <span>⌃</span></div>
 		<div class="menu-row small" data-menu="services" onclick="showView('services')">基础服务</div>
 		<div class="menu-row small" data-menu="addonServices" onclick="showView('addonServices')">增值服务</div>
 	</aside>
 
-	<section class="content" id="pageContent" data-view="collaboration">
+	<section class="content" id="pageContent" data-view="flows">
 		<div class="page-tabs">
 			<div class="page-tab" data-tab="forms" onclick="showView('forms')">表单管理 ×</div>
 			<div class="page-tab" data-tab="services" onclick="showView('services')">基础服务 ×</div>
-			<div class="page-tab active" id="topTab">协同交付规则 ×</div>
+			<div class="page-tab active" id="topTab">流程列表 ×</div>
 		</div>
 
 		<div class="workspace flow-view">
@@ -2904,7 +3018,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:38:54</td>
 						<td><span class="status on">是</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>2</td>
@@ -2918,7 +3032,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:35:30</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>3</td>
@@ -2932,7 +3046,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:34:42</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>4</td>
@@ -2946,7 +3060,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:33:58</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>5</td>
@@ -2960,7 +3074,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:33:13</td>
 						<td><span class="status on">是</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>6</td>
@@ -2974,7 +3088,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:32:22</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>7</td>
@@ -2988,7 +3102,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:31:04</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>8</td>
@@ -3002,7 +3116,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:30:25</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr class="selected">
 						<td>9</td>
@@ -3016,7 +3130,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:29:13</td>
 						<td><span class="status on">是</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>10</td>
@@ -3030,7 +3144,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:27:03</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text">规则配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					</tbody>
 				</table>
@@ -3246,10 +3360,10 @@
 
 		<div class="workspace collaboration-view">
 			<div class="module-tabs">
-				<div class="module-tab active">协同交付规则</div>
+				<div class="module-tab active">协同配置</div>
 			</div>
 			<div class="toolbar">
-				<input class="input" placeholder="规则ID / 规则名称 / 流程名称">
+				<input class="input" placeholder="规则ID / 流程名称">
 				<select class="select"><option>请选择主流程</option><option>西班牙VAT注册+申报流程</option><option>德国VAT注册流程</option></select>
 				<select class="select"><option>请选择匹配方式</option><option>按公司+客户ID匹配流程</option><option>增值服务与基础服务绑定</option></select>
 				<select class="select"><option>请选择状态</option><option>启用</option><option>停用</option></select>
@@ -3258,7 +3372,7 @@
 			</div>
 
 			<div class="action-line">
-				<button class="btn primary" onclick="openCollaborationRuleDrawer('新增协同交付规则')">新增协同交付规则</button>
+				<button class="btn primary" onclick="openCollaborationRuleDrawer('协同配置')">新增协同配置</button>
 			</div>
 
 			<div class="table-wrap">
@@ -3266,7 +3380,6 @@
 					<colgroup>
 						<col style="width:52px">
 						<col style="width:150px">
-						<col style="width:220px">
 						<col style="width:110px">
 						<col style="width:330px">
 						<col style="width:120px">
@@ -3276,8 +3389,7 @@
 					<tr>
 						<th>序号</th>
 						<th>规则ID</th>
-						<th>规则名称</th>
-						<th>规则版本</th>
+						<th>流程版本</th>
 						<th>主流程</th>
 						<th>状态</th>
 						<th>操作</th>
@@ -3287,29 +3399,26 @@
 					<tr>
 						<td>1</td>
 						<td><span class="service-no">CDR-20260701001</span></td>
-						<td>西班牙VAT等待海牙控制规则</td>
 						<td><span class="rule-mini-tag">V3</span></td>
 						<td><span class="rule-flow-tags"><span class="rule-mini-tag main">西班牙VAT注册+申报流程</span><span class="rule-mini-tag main">德国VAT注册流程</span></span></td>
 						<td><span class="status on">启用</span></td>
-						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-danger">停用</span></span></td>
+						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">编辑</span><span class="action-danger">停用</span></span></td>
 					</tr>
 					<tr>
 						<td>2</td>
 						<td><span class="service-no">CDR-20260701002</span></td>
-						<td>西班牙030税号协同规则</td>
 						<td><span class="rule-mini-tag">V2</span></td>
 						<td><span class="rule-mini-tag main">西班牙VAT注册+申报流程</span></td>
 						<td><span class="status on">启用</span></td>
-						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-danger">停用</span></span></td>
+						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">编辑</span><span class="action-danger">停用</span></span></td>
 					</tr>
 					<tr>
 						<td>3</td>
 						<td><span class="service-no">CDR-20260701003</span></td>
-						<td>德国VAT注册资料控制规则</td>
 						<td><span class="rule-mini-tag">V1</span></td>
 						<td><span class="rule-mini-tag main">德国VAT注册流程</span></td>
 						<td><span class="status off">停用</span></td>
-						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('编辑协同交付规则')">编辑</span><span class="action-text">启用</span></span></td>
+						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">编辑</span><span class="action-text">启用</span></span></td>
 					</tr>
 					</tbody>
 				</table>
@@ -3567,146 +3676,140 @@
 <div class="drawer-mask" id="collaborationRuleDrawer">
 	<div class="drawer wide">
 		<div class="drawer-header">
-			<div class="drawer-title" id="collaborationRuleDrawerTitle">新增协同交付规则</div>
+			<div class="drawer-title" id="collaborationRuleDrawerTitle">协同配置</div>
 			<button class="drawer-close" onclick="closeDrawer('collaborationRuleDrawer')">×</button>
 		</div>
 		<div class="drawer-body collaboration-rule-drawer-body">
 			<div class="config-card-body collaboration-rule-body">
 					<div class="config-section">
 						<div class="config-section-title">协同交付信息</div>
-						<div class="config-section-desc">配置主流程下的节点控制关系；完成条件满足后放行当前控制节点，并可执行后端资料同步。</div>
+						<div class="config-section-desc">配置主流程下的节点控制关系；完成条件满足后放行当前控制节点，并可执行资料同步。</div>
 						<div class="rule-info-layout">
-							<div class="rule-info-group">
-								<div class="rule-info-group-title">基础规则</div>
-								<div class="rule-info-grid basic-rule-grid">
-									<div class="label"><span class="required">*</span>规则名称</div>
-									<input class="field" value="西班牙VAT注册协同规则">
-									<div class="label">规则版本</div>
-									<input class="field" value="V3" readonly>
-									<div class="label main-flow-label"><span class="required">*</span>主流程</div>
-									<button type="button" class="field flow-select-field main-flow-multi main-flow-field" id="collaborationMainFlowSelect" data-flow-name="西班牙VAT注册+申报流程" data-flow-names="西班牙VAT注册+申报流程,德国VAT注册流程" onclick="openFlowSelectModal(this)">
-										<span class="main-flow-selected">
-											<span class="flow-chip main">西班牙VAT注册+申报流程</span>
-											<span class="flow-chip main">德国VAT注册流程</span>
-										</span>
-										<span class="flow-select-arrow">⌄</span>
-									</button>
-									<div class="label">规则状态</div>
-									<div class="rule-pill-switch">
-										<span class="rule-pill-option active">启用</span>
-										<span class="rule-pill-option">停用</span>
+							<div class="collaboration-basic-panel">
+								<div class="rule-info-group">
+									<div class="rule-info-group-title">基础规则</div>
+									<div class="rule-info-grid basic-rule-grid">
+										<div class="label">流程版本</div>
+										<input class="field" value="V3" readonly>
+										<div class="label main-flow-label"><span class="required">*</span>主流程</div>
+										<div class="field main-flow-readonly main-flow-field" id="collaborationMainFlowSelect" data-flow-name="西班牙VAT注册+申报流程" data-flow-names="西班牙VAT注册+申报流程">
+											<span class="main-flow-selected">
+												<span class="flow-chip main">西班牙VAT注册+申报流程</span>
+											</span>
+										</div>
+										<div class="label"><span class="required">*</span>控制节点</div>
+										<button type="button" class="field flow-select-field control-node-picker" id="collaborationControlNodePicker" data-node-names="等待海牙完成,待提交" onclick="openControlNodeSelectModal(this)">
+											<span class="control-node-selected">
+												<span class="flow-chip main">等待海牙完成<span class="close" onclick="removeControlNodeFromPicker(event, this)">×</span></span>
+												<span class="flow-chip main">待提交<span class="close" onclick="removeControlNodeFromPicker(event, this)">×</span></span>
+											</span>
+											<span class="flow-select-arrow">⌄</span>
+										</button>
+										<div class="label">规则状态</div>
+										<div class="rule-pill-switch">
+											<span class="rule-pill-option active">启用</span>
+											<span class="rule-pill-option">停用</span>
+										</div>
 									</div>
+									<div class="modal-note" style="margin-top:10px;margin-bottom:0;">规则变更会触发流程版本变化；变化的流程仅对新单有效。</div>
 								</div>
-								<div class="modal-note" style="margin-top:10px;margin-bottom:0;">单据生成时按流程查询启用规则，命中后在单据上记录规则 ID 与规则版本号。</div>
 							</div>
-							<div class="rule-info-group control-relation-group" data-relation-index="2">
-								<div class="control-relation-head">
-									<div class="control-relation-title">节点控制关系 1</div>
-									<div class="control-relation-actions"></div>
-								</div>
-								<div class="rule-info-grid flow-scope">
-									<div class="label"><span class="required">*</span>控制节点</div>
-									<select class="field flow-node-select control-node-select" id="collaborationControlNodeSelect"><option selected>等待海牙完成</option><option>用户上传资料</option><option>待提交</option><option>处理中</option></select>
-								</div>
-								<div class="condition-area">
-									<div class="condition-row">
-										<div class="label"><span class="required">*</span>完成条件</div>
-										<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>等待节点完成</option><option>税号信息</option></select>
-										<div class="condition-target">
-											<div class="label">关联流程</div>
-											<button type="button" class="field flow-select-field" data-flow-name="西班牙海牙认证流程" onclick="openFlowSelectModal(this)">
-												<span class="flow-select-name">西班牙海牙认证流程</span>
-												<span class="flow-select-arrow">⌄</span>
-											</button>
-											<div class="label">关联节点</div>
-											<select class="field flow-node-select condition-node-select"><option selected>海牙认证完成</option><option>海牙认证中</option><option>待客户签回</option></select>
-										</div>
-										<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
-									</div>
-									<div class="condition-relation-row">
-										<div class="label">条件关系</div>
-										<select class="field"><option selected>且</option><option>或</option></select>
-									</div>
-									<div class="condition-row">
-										<div class="label"><span class="required">*</span>完成条件</div>
-										<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>等待节点完成</option><option>税号信息</option></select>
-										<div class="condition-target">
-											<div class="label">关联流程</div>
-											<button type="button" class="field flow-select-field" data-flow-name="法人税号030递交流程" onclick="openFlowSelectModal(this)">
-												<span class="flow-select-name">法人税号030递交流程</span>
-												<span class="flow-select-arrow">⌄</span>
-											</button>
-											<div class="label">关联节点</div>
-											<select class="field flow-node-select condition-node-select"><option selected>030下号完成</option><option>待提交</option><option>处理中</option></select>
-										</div>
-										<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>
-									</div>
-									<div class="inline-action" onclick="addConditionRow(this)">+ 添加完成条件</div>
-									<div class="match-type-block">
-										<div class="label match-type-field"><span class="required">*</span>匹配方式</div>
-										<select class="field match-type-field">
-											<option selected>按公司+客户ID匹配流程</option>
-											<option>增值服务与基础服务绑定</option>
-										</select>
-										<div class="match-skip-note is-hidden">当前完成条件仅使用税号信息，无需配置匹配方式。</div>
+							<div class="control-relation-panel">
+								<div class="control-relation-panel-head">
+									<div>
+										<div class="control-relation-panel-title">节点控制关系</div>
 									</div>
 								</div>
-								<div class="release-action-area release-action-off">
-									<div class="release-action-head">
-										<span class="release-action-title">后端资料同步</span>
-										<div class="release-action-control">
-											<span class="label">是否同步</span>
-											<div class="rule-pill-switch">
-												<span class="rule-pill-option" onclick="toggleReleaseAction(this, true)">是</span>
-												<span class="rule-pill-option active" onclick="toggleReleaseAction(this, false)">否</span>
-											</div>
+								<div class="control-relation-scroll">
+									<div class="rule-info-group control-relation-group" data-relation-index="2" data-control-node="等待海牙完成">
+										<div class="control-relation-head">
+											<div class="control-relation-title">等待海牙完成</div>
+											<div class="control-relation-actions"></div>
 										</div>
-									</div>
-									<div class="release-action-empty">不进行后端资料同步</div>
-									<div class="release-action-card release-action-content">
-										<div class="release-action-map">
-											<div class="release-map-panel">
-												<div class="release-panel-head">
-													<span>来源</span>
-													<div class="rule-pill-switch release-source-switch">
-														<span class="rule-pill-option" data-source="表单字段" onclick="updateReleaseSource(this, '表单字段')">表单字段</span>
-														<span class="rule-pill-option active" data-source="税号信息" onclick="updateReleaseSource(this, '税号信息')">税号信息</span>
+										<div class="condition-area">
+											<div class="condition-action-head">
+												<div class="condition-pill-block">
+													<span class="label"><span class="required">*</span>完成条件</span>
+													<div class="rule-pill-switch condition-type-switch">
+														<span class="rule-pill-option active" data-condition-type="等待节点完成" onclick="setConditionType(this, '等待节点完成')">等待节点完成</span>
+														<span class="rule-pill-option" data-condition-type="税号信息" onclick="setConditionType(this, '税号信息')">税号信息</span>
 													</div>
 												</div>
-												<div class="release-field-grid release-source-fields tax-source">
-													<div class="release-field-line">
-														<div class="label">国家</div>
-														<select class="field"><option selected>西班牙</option><option>德国</option><option>英国</option></select>
-													</div>
-													<div class="release-field-line">
-														<div class="label">税号类型</div>
-														<select class="field"><option selected>VAT</option><option>本土税号</option></select>
+												<div class="condition-pill-block">
+													<span class="label">是否资料同步</span>
+													<div class="rule-pill-switch">
+														<span class="rule-pill-option" onclick="toggleReleaseAction(this, true)">是</span>
+														<span class="rule-pill-option active" onclick="toggleReleaseAction(this, false)">否</span>
 													</div>
 												</div>
 											</div>
-											<div class="release-map-arrow"><span>写入</span></div>
-											<div class="release-map-panel">
-												<div class="release-panel-head">
-													<span>表单字段</span>
+											<div class="condition-row single-condition-row">
+												<select class="field condition-type-select" onchange="updateConditionTarget(this)" style="display:none;"><option selected>等待节点完成</option><option>税号信息</option></select>
+												<div class="condition-target">
+													<div class="label">关联流程</div>
+													<button type="button" class="field flow-select-field" data-flow-name="西班牙海牙认证流程" onclick="openFlowSelectModal(this)">
+														<span class="flow-select-name">西班牙海牙认证流程</span>
+														<span class="flow-select-arrow">⌄</span>
+													</button>
+													<div class="label">关联节点</div>
+													<select class="field flow-node-select condition-node-select"><option selected>海牙认证完成</option><option>海牙认证中</option><option>待客户签回</option></select>
 												</div>
-												<div class="release-field-grid">
-													<div class="release-field-line">
-														<div class="label">写入流程</div>
-														<select class="field release-target-flow-select" onchange="refreshReleaseFormOptions(this, 'target')"></select>
+											</div>
+											<div class="match-type-block">
+												<div class="label match-type-field"><span class="required">*</span>匹配方式</div>
+												<select class="field match-type-field">
+													<option selected>按公司+客户ID匹配流程</option>
+													<option>增值服务与基础服务绑定</option>
+												</select>
+											</div>
+										</div>
+										<div class="release-action-area release-action-off">
+											<div class="release-action-card release-action-content">
+												<div class="release-action-map">
+													<div class="release-map-panel">
+														<div class="release-panel-head">
+															<span>来源</span>
+															<div class="rule-pill-switch release-source-switch">
+																<span class="rule-pill-option" data-source="表单字段" onclick="updateReleaseSource(this, '表单字段')">表单字段</span>
+																<span class="rule-pill-option active" data-source="税号信息" onclick="updateReleaseSource(this, '税号信息')">税号信息</span>
+															</div>
+														</div>
+														<div class="release-field-grid release-source-fields tax-source">
+															<div class="release-field-line">
+																<div class="label">国家</div>
+																<select class="field"><option selected>西班牙</option><option>德国</option><option>英国</option></select>
+															</div>
+															<div class="release-field-line">
+																<div class="label">税号类型</div>
+																<select class="field"><option selected>VAT</option><option>本土税号</option></select>
+															</div>
+														</div>
 													</div>
-													<div class="release-field-line">
-														<div class="label">选择表单</div>
-														<select class="field release-target-form-select" onchange="refreshReleaseTargetFieldOptions(this)"><option selected>西班牙VAT注册资料表</option><option>主体资料表单</option></select>
-													</div>
-													<div class="release-field-line">
-														<div class="label">选择数据字段</div>
-														<button type="button" class="field flow-select-field data-field-picker release-target-field-picker" data-field-names="西班牙VAT税号,本土税号" data-field-options="西班牙VAT税号,本土税号,税号备注" onclick="openDataFieldSelectModal(this)">
-															<span class="data-field-selected">
-																<span class="flow-chip">西班牙VAT税号</span>
-																<span class="flow-chip">本土税号</span>
-															</span>
-															<span class="flow-select-arrow">⌄</span>
-														</button>
+													<div class="release-map-arrow"><span>写入</span></div>
+													<div class="release-map-panel">
+														<div class="release-panel-head">
+															<span>表单字段</span>
+														</div>
+														<div class="release-field-grid">
+															<div class="release-field-line">
+																<div class="label">写入流程</div>
+																<select class="field release-target-flow-select" onchange="refreshReleaseFormOptions(this, 'target')"></select>
+															</div>
+															<div class="release-field-line">
+																<div class="label">选择表单</div>
+																<select class="field release-target-form-select" onchange="refreshReleaseTargetFieldOptions(this)"><option selected>西班牙VAT注册资料表</option><option>主体资料表单</option></select>
+															</div>
+															<div class="release-field-line">
+																<div class="label">选择数据字段</div>
+																<button type="button" class="field flow-select-field data-field-picker release-target-field-picker" data-field-names="西班牙VAT税号,本土税号" data-field-options="西班牙VAT税号,本土税号,税号备注" onclick="openDataFieldSelectModal(this)">
+																	<span class="data-field-selected">
+																		<span class="flow-chip">西班牙VAT税号</span>
+																		<span class="flow-chip">本土税号</span>
+																	</span>
+																	<span class="flow-select-arrow">⌄</span>
+																</button>
+															</div>
+														</div>
 													</div>
 												</div>
 											</div>
@@ -3714,7 +3817,6 @@
 									</div>
 								</div>
 							</div>
-							<div class="inline-action relation-add-action" onclick="addControlRelationGroup()">+ 新增节点控制关系</div>
 						</div>
 					</div>
 
@@ -3722,7 +3824,7 @@
 		</div>
 		<div class="drawer-footer">
 			<button class="btn ghost" onclick="closeDrawer('collaborationRuleDrawer')">取消</button>
-			<button class="btn primary">保存规则</button>
+			<button class="btn primary">保存配置</button>
 		</div>
 	</div>
 </div>
@@ -3864,6 +3966,46 @@
 		<div class="confirm-footer">
 			<button class="btn ghost" onclick="closeFlowSelectModal()">取消</button>
 			<button class="btn primary" onclick="confirmSelectedFlow()">确认选择</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="controlNodeSelectModal">
+	<div class="confirm-dialog large">
+		<div class="confirm-head">
+			<span>选择控制节点</span>
+			<button class="drawer-close" onclick="closeControlNodeSelectModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="modal-toolbar">
+				<input class="input" placeholder="节点名称 / 所属流程">
+				<button class="btn primary">搜索</button>
+				<button class="btn ghost">重置</button>
+			</div>
+			<div class="modal-note" id="controlNodeSelectModalNote">控制节点取自主流程节点，可多选；每选择一个控制节点，右侧生成一个节点控制关系。</div>
+			<div class="flow-select-scroll">
+				<table class="mini-table">
+					<colgroup>
+						<col style="width:54px">
+						<col style="width:70px">
+						<col style="width:220px">
+						<col style="width:320px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>选择</th>
+						<th>序号</th>
+						<th>控制节点</th>
+						<th>来源主流程</th>
+					</tr>
+					</thead>
+					<tbody id="controlNodeSelectRows"></tbody>
+				</table>
+			</div>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeControlNodeSelectModal()">取消</button>
+			<button class="btn primary" onclick="confirmSelectedControlNodes()">确认选择</button>
 		</div>
 	</div>
 </div>
@@ -5131,6 +5273,7 @@
 	let pendingDeleteFormMaterial = null;
 	let activeFlowPickerTarget = null;
 	let activeDataFieldPicker = null;
+	let activeControlNodePicker = null;
 	const collaborationFlowNodes = {
 		"西班牙VAT注册+申报流程": ["用户上传资料", "待审核", "待制作", "等待海牙完成", "待提交", "处理中", "已完成"],
 		"西班牙海牙认证流程": ["待上传资料", "待客户签回", "海牙认证中", "海牙认证完成"],
@@ -5138,6 +5281,7 @@
 		"德国VAT注册流程": ["待上传资料", "待审核", "待制作", "待提交", "注册中", "待录入税号", "已完成"],
 		"德国本土税号递交流程": ["待提交", "处理中", "本土税号下号完成"]
 	};
+	const defaultCollaborationFlowNodes = ["用户上传资料", "待审核", "待制作", "待提交", "处理中", "已完成"];
 	const collaborationFlowForms = {
 		"西班牙VAT注册+申报流程": ["西班牙VAT注册资料表", "主体资料表单"],
 		"西班牙海牙认证流程": ["西班牙海牙认证资料表", "主体资料表单"],
@@ -5168,11 +5312,29 @@
 		document.getElementById(id).classList.remove("open");
 	}
 
-	function openCollaborationRuleDrawer(title) {
+	function getCollaborationMainFlowName(trigger) {
+		const actionTarget = trigger || (window.event && (window.event.currentTarget || window.event.target));
+		const row = actionTarget && actionTarget.closest ? actionTarget.closest("tr") : null;
+		if (!row) {
+			return "西班牙VAT注册+申报流程";
+		}
+		const ruleFlow = row.querySelector(".rule-flow-tags .rule-mini-tag.main, .rule-mini-tag.main");
+		if (ruleFlow) {
+			return ruleFlow.textContent.trim();
+		}
+		const cells = row.querySelectorAll("td");
+		return cells[2] ? cells[2].textContent.trim() : "西班牙VAT注册+申报流程";
+	}
+
+	function openCollaborationRuleDrawer(title, trigger) {
 		document.getElementById("collaborationRuleDrawerTitle").textContent = title;
 		const mainFlowSelect = document.getElementById("collaborationMainFlowSelect");
 		if (mainFlowSelect) {
-			setMainFlowPickerValues(mainFlowSelect, ["西班牙VAT注册+申报流程", "德国VAT注册流程"]);
+			setMainFlowPickerValues(mainFlowSelect, [getCollaborationMainFlowName(trigger)]);
+		}
+		const controlNodePicker = document.getElementById("collaborationControlNodePicker");
+		if (controlNodePicker) {
+			setControlNodePickerValues(controlNodePicker, getDefaultControlNodeNames());
 		}
 		refreshAllCollaborationNodeSelects();
 		refreshControlRelationGroupTitles();
@@ -5212,7 +5374,10 @@
 		if (!target) {
 			return;
 		}
-		const uniqueNames = Array.from(new Set(flowNames.filter(Boolean)));
+		const firstName = flowNames.find(function (name) {
+			return !!name;
+		});
+		const uniqueNames = firstName ? [firstName] : [];
 		target.dataset.flowNames = uniqueNames.join(",");
 		target.dataset.flowName = uniqueNames[0] || "";
 		const selectedWrap = target.querySelector(".main-flow-selected");
@@ -5226,7 +5391,115 @@
 			});
 		}
 		refreshNodeSelectByFlowTarget(target, uniqueNames);
+		syncControlNodePickerWithMainFlows();
 		refreshAllReleaseFlowOptions();
+	}
+
+	function getAvailableControlNodeItems() {
+		const mainFlow = document.getElementById("collaborationMainFlowSelect");
+		const flowNames = getFlowPickerValues(mainFlow);
+		const itemMap = {};
+		flowNames.forEach(function (flowName) {
+			(collaborationFlowNodes[flowName] || defaultCollaborationFlowNodes).forEach(function (nodeName) {
+				if (!itemMap[nodeName]) {
+					itemMap[nodeName] = [];
+				}
+				itemMap[nodeName].push(flowName);
+			});
+		});
+		return Object.keys(itemMap).map(function (nodeName) {
+			return { nodeName: nodeName, flowName: Array.from(new Set(itemMap[nodeName])).join("、") };
+		});
+	}
+
+	function getDefaultControlNodeNames() {
+		const availableNames = getAvailableControlNodeItems().map(function (item) {
+			return item.nodeName;
+		});
+		const preferredNames = ["等待海牙完成", "待提交"].filter(function (nodeName) {
+			return availableNames.indexOf(nodeName) > -1;
+		});
+		return preferredNames.length > 1 ? preferredNames : availableNames.slice(0, 2);
+	}
+
+	function getControlNodePickerValues(target) {
+		if (!target) {
+			return [];
+		}
+		const names = target.dataset.nodeNames || "";
+		return names.split(",").map(function (name) {
+			return name.trim();
+		}).filter(Boolean);
+	}
+
+	function setControlNodePickerValues(target, nodeNames) {
+		if (!target) {
+			return;
+		}
+		const availableNames = Array.from(new Set(getAvailableControlNodeItems().map(function (item) {
+			return item.nodeName;
+		})));
+		const uniqueNames = Array.from(new Set(nodeNames.filter(Boolean))).filter(function (name) {
+			return availableNames.length === 0 || availableNames.indexOf(name) > -1;
+		});
+		const finalNames = uniqueNames;
+		target.dataset.nodeNames = finalNames.join(",");
+		const selectedWrap = target.querySelector(".control-node-selected");
+		if (selectedWrap) {
+			selectedWrap.innerHTML = "";
+			if (finalNames.length === 0) {
+				const placeholder = document.createElement("span");
+				placeholder.className = "data-field-placeholder";
+				placeholder.textContent = "请选择控制节点";
+				selectedWrap.appendChild(placeholder);
+			}
+			finalNames.forEach(function (name) {
+				const chip = document.createElement("span");
+				chip.className = "flow-chip main";
+				chip.appendChild(document.createTextNode(name));
+				const close = document.createElement("span");
+				close.className = "close";
+				close.textContent = "×";
+				close.onclick = function (event) {
+					removeControlNodeFromPicker(event, close);
+				};
+				chip.appendChild(close);
+				selectedWrap.appendChild(chip);
+			});
+		}
+		renderControlRelationGroupsFromNodes();
+	}
+
+	function removeControlNodeFromPicker(event, closeEl) {
+		if (event) {
+			event.stopPropagation();
+			event.preventDefault();
+		}
+		const picker = closeEl.closest(".control-node-picker");
+		if (!picker) {
+			return;
+		}
+		const chip = closeEl.closest(".flow-chip");
+		const nodeName = chip ? chip.childNodes[0].textContent.trim() : "";
+		const nextNames = getControlNodePickerValues(picker).filter(function (name) {
+			return name !== nodeName;
+		});
+		setControlNodePickerValues(picker, nextNames);
+	}
+
+	function syncControlNodePickerWithMainFlows() {
+		const picker = document.getElementById("collaborationControlNodePicker");
+		if (!picker) {
+			return;
+		}
+		const currentNames = getControlNodePickerValues(picker);
+		const availableNames = getAvailableControlNodeItems().map(function (item) {
+			return item.nodeName;
+		});
+		const nextNames = currentNames.filter(function (name) {
+			return availableNames.indexOf(name) > -1;
+		});
+		setControlNodePickerValues(picker, nextNames.length > 0 ? nextNames : getDefaultControlNodeNames());
 	}
 
 	function refreshNodeSelectByFlowTarget(target, flowName) {
@@ -5275,9 +5548,9 @@
 	function openFlowSelectModal(target) {
 		activeFlowPickerTarget = target;
 		const label = target && target.previousElementSibling ? target.previousElementSibling.textContent.replace("*", "").trim() : "流程";
-		const isMulti = target && target.id === "collaborationMainFlowSelect";
+		const isMulti = target && target.classList.contains("main-flow-multi");
 		document.getElementById("flowSelectModalTitle").textContent = "选择" + label;
-		document.getElementById("flowSelectModalNote").textContent = isMulti ? "可多选多个主流程，确认后回填到当前主流程字段。" : "单选一个流程，确认后回填到当前" + label + "字段。";
+		document.getElementById("flowSelectModalNote").textContent = isMulti ? "可多选多个流程，确认后回填到当前字段。" : "单选一个流程，确认后回填到当前" + label + "字段。";
 		document.getElementById("flowSelectModal").dataset.multi = String(isMulti);
 		const currentNames = isMulti ? getFlowPickerValues(target) : [target && target.dataset.flowName];
 		document.querySelectorAll(".flow-select-row").forEach(function (row) {
@@ -5336,7 +5609,7 @@
 			closeFlowSelectModal();
 			return;
 		}
-		const isMulti = activeFlowPickerTarget.id === "collaborationMainFlowSelect";
+		const isMulti = activeFlowPickerTarget.classList.contains("main-flow-multi");
 		if (isMulti) {
 			const selectedNames = Array.from(document.querySelectorAll(".flow-select-radio:checked")).map(function (input) {
 				return input.dataset.name;
@@ -5352,6 +5625,62 @@
 			setFlowPickerValue(activeFlowPickerTarget, selected.dataset.name);
 		}
 		closeFlowSelectModal();
+	}
+
+	function openControlNodeSelectModal(target) {
+		activeControlNodePicker = target;
+		const rowsWrap = document.getElementById("controlNodeSelectRows");
+		const selectedNames = getControlNodePickerValues(target);
+		const items = getAvailableControlNodeItems();
+		if (rowsWrap) {
+			rowsWrap.innerHTML = items.map(function (item, index) {
+				const checked = selectedNames.indexOf(item.nodeName) > -1;
+				return '' +
+					'<tr class="flow-select-row control-node-select-row' + (checked ? ' is-selected' : '') + '" onclick="toggleControlNodeSelectRow(this)">' +
+						'<td><input type="checkbox" class="control-node-select-check" data-name="' + item.nodeName + '" onclick="event.stopPropagation()" onchange="syncControlNodeSelectInput(this)"' + (checked ? ' checked' : '') + '></td>' +
+						'<td>' + (index + 1) + '</td>' +
+						'<td>' + item.nodeName + '</td>' +
+						'<td>' + item.flowName + '</td>' +
+					'</tr>';
+			}).join("");
+		}
+		document.getElementById("controlNodeSelectModalNote").textContent = items.length > 0
+			? "控制节点取自主流程节点，可多选；每选择一个控制节点，右侧生成一个节点控制关系。"
+			: "请先选择主流程，再选择控制节点。";
+		document.getElementById("controlNodeSelectModal").classList.add("open");
+	}
+
+	function closeControlNodeSelectModal() {
+		document.getElementById("controlNodeSelectModal").classList.remove("open");
+		activeControlNodePicker = null;
+	}
+
+	function toggleControlNodeSelectRow(row) {
+		const checkbox = row.querySelector(".control-node-select-check");
+		if (!checkbox) {
+			return;
+		}
+		checkbox.checked = !checkbox.checked;
+		row.classList.toggle("is-selected", checkbox.checked);
+	}
+
+	function syncControlNodeSelectInput(input) {
+		const row = input.closest(".control-node-select-row");
+		if (row) {
+			row.classList.toggle("is-selected", input.checked);
+		}
+	}
+
+	function confirmSelectedControlNodes() {
+		if (!activeControlNodePicker) {
+			closeControlNodeSelectModal();
+			return;
+		}
+		const selectedNames = Array.from(document.querySelectorAll(".control-node-select-check:checked")).map(function (input) {
+			return input.dataset.name;
+		});
+		setControlNodePickerValues(activeControlNodePicker, selectedNames);
+		closeControlNodeSelectModal();
 	}
 
 	function openDataFieldSelectModal(target) {
@@ -5455,18 +5784,51 @@
 			group.querySelectorAll(".match-type-field").forEach(function (field) {
 				field.classList.toggle("is-hidden", onlyTaxInfo);
 			});
-			const skipNote = group.querySelector(".match-skip-note");
-			if (skipNote) {
-				skipNote.classList.toggle("is-hidden", !onlyTaxInfo);
-			}
 		});
+	}
+
+	function setConditionType(option, conditionType) {
+		const group = option.closest(".control-relation-group");
+		if (!group) {
+			return;
+		}
+		const switchEl = option.closest(".condition-type-switch");
+		if (switchEl) {
+			switchEl.querySelectorAll(".rule-pill-option").forEach(function (item) {
+				item.classList.toggle("active", item === option);
+			});
+		}
+		const select = group.querySelector(".condition-type-select");
+		if (select) {
+			select.value = conditionType;
+			updateConditionTarget(select);
+		}
+	}
+
+	function createConditionActionHeadHtml() {
+		return '' +
+			'<div class="condition-action-head">' +
+				'<div class="condition-pill-block">' +
+					'<span class="label"><span class="required">*</span>完成条件</span>' +
+					'<div class="rule-pill-switch condition-type-switch">' +
+						'<span class="rule-pill-option active" data-condition-type="等待节点完成" onclick="setConditionType(this, \'等待节点完成\')">等待节点完成</span>' +
+						'<span class="rule-pill-option" data-condition-type="税号信息" onclick="setConditionType(this, \'税号信息\')">税号信息</span>' +
+					'</div>' +
+				'</div>' +
+				'<div class="condition-pill-block">' +
+					'<span class="label">是否资料同步</span>' +
+					'<div class="rule-pill-switch">' +
+						'<span class="rule-pill-option" onclick="toggleReleaseAction(this, true)">是</span>' +
+						'<span class="rule-pill-option active" onclick="toggleReleaseAction(this, false)">否</span>' +
+					'</div>' +
+				'</div>' +
+			'</div>';
 	}
 
 	function createConditionRowHtml(flowName, nodeName) {
 		return '' +
-			'<div class="condition-row">' +
-				'<div class="label"><span class="required">*</span>完成条件</div>' +
-				'<select class="field condition-type-select" onchange="updateConditionTarget(this)"><option selected>等待节点完成</option><option>税号信息</option></select>' +
+			'<div class="condition-row single-condition-row">' +
+				'<select class="field condition-type-select" onchange="updateConditionTarget(this)" style="display:none;"><option selected>等待节点完成</option><option>税号信息</option></select>' +
 				'<div class="condition-target">' +
 					'<div class="label">关联流程</div>' +
 					'<button type="button" class="field flow-select-field" data-flow-name="' + flowName + '" onclick="openFlowSelectModal(this)">' +
@@ -5476,42 +5838,12 @@
 					'<div class="label">关联节点</div>' +
 					'<select class="field flow-node-select condition-node-select"><option selected>' + nodeName + '</option></select>' +
 				'</div>' +
-				'<span class="action-danger condition-delete" onclick="deleteConditionRow(this)">删除</span>' +
 			'</div>';
-	}
-
-	function addConditionRow(action) {
-		const area = action.closest(".condition-area");
-		if (!area) {
-			return;
-		}
-		const conditionCount = area.querySelectorAll(".condition-row").length;
-		const relationHtml = conditionCount > 0
-			? '<div class="condition-relation-row"><div class="label">条件关系</div><select class="field"><option selected>且</option><option>或</option></select></div>'
-			: '';
-		action.insertAdjacentHTML("beforebegin", relationHtml + createConditionRowHtml("西班牙海牙认证流程", "海牙认证完成"));
-		const newFlowField = action.previousElementSibling && action.previousElementSibling.querySelector(".flow-select-field");
-		if (newFlowField) {
-			refreshNodeSelectByFlowTarget(newFlowField, newFlowField.dataset.flowName);
-		}
-		refreshCollaborationMatchTypeVisibility();
-		refreshAllReleaseFlowOptions();
 	}
 
 	function createReleaseActionHtml() {
 		return '' +
 			'<div class="release-action-area release-action-off">' +
-				'<div class="release-action-head">' +
-					'<span class="release-action-title">后端资料同步</span>' +
-					'<div class="release-action-control">' +
-						'<span class="label">是否同步</span>' +
-						'<div class="rule-pill-switch">' +
-							'<span class="rule-pill-option" onclick="toggleReleaseAction(this, true)">是</span>' +
-							'<span class="rule-pill-option active" onclick="toggleReleaseAction(this, false)">否</span>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-				'<div class="release-action-empty">不进行后端资料同步</div>' +
 				'<div class="release-action-card release-action-content">' +
 					'<div class="release-action-map">' +
 						'<div class="release-map-panel">' +
@@ -5562,28 +5894,22 @@
 			'</div>';
 	}
 
-	function createControlRelationGroupHtml(index) {
-		const relationNo = index - 1;
+	function createControlRelationGroupHtml(index, controlNodeName) {
 		return '' +
-			'<div class="rule-info-group control-relation-group" data-relation-index="' + index + '">' +
+			'<div class="rule-info-group control-relation-group" data-relation-index="' + index + '" data-control-node="' + controlNodeName + '">' +
 				'<div class="control-relation-head">' +
-					'<div class="control-relation-title">节点控制关系 ' + relationNo + '</div>' +
-					'<div class="control-relation-actions"><span class="action-danger" onclick="deleteControlRelationGroup(this)">删除</span></div>' +
-				'</div>' +
-				'<div class="rule-info-grid flow-scope">' +
-					'<div class="label"><span class="required">*</span>控制节点</div>' +
-					'<select class="field flow-node-select control-node-select"></select>' +
+					'<div class="control-relation-title">' + controlNodeName + '</div>' +
+					'<div class="control-relation-actions"></div>' +
 				'</div>' +
 				'<div class="condition-area">' +
+					createConditionActionHeadHtml() +
 					createConditionRowHtml("西班牙海牙认证流程", "海牙认证完成") +
-					'<div class="inline-action" onclick="addConditionRow(this)">+ 添加完成条件</div>' +
 					'<div class="match-type-block">' +
 						'<div class="label match-type-field"><span class="required">*</span>匹配方式</div>' +
 						'<select class="field match-type-field">' +
 							'<option selected>按公司+客户ID匹配流程</option>' +
 							'<option>增值服务与基础服务绑定</option>' +
 						'</select>' +
-						'<div class="match-skip-note is-hidden">当前完成条件仅使用税号信息，无需配置匹配方式。</div>' +
 					'</div>' +
 				'</div>' +
 				createReleaseActionHtml() +
@@ -5593,45 +5919,33 @@
 	function refreshControlRelationGroupTitles() {
 		document.querySelectorAll("#collaborationRuleDrawer .control-relation-group").forEach(function (group, index) {
 			const groupIndex = index + 2;
-			const relationNo = index + 1;
 			const title = group.querySelector(".control-relation-title");
 			const actions = group.querySelector(".control-relation-actions");
 			if (title) {
-				title.textContent = '节点控制关系 ' + relationNo;
+				title.textContent = group.dataset.controlNode || "";
 			}
 			if (actions) {
-				actions.innerHTML = index === 0 ? '' : '<span class="action-danger" onclick="deleteControlRelationGroup(this)">删除</span>';
+				actions.innerHTML = '';
 			}
 			group.dataset.relationIndex = String(groupIndex);
 		});
 	}
 
-	function addControlRelationGroup() {
-		const addAction = document.querySelector("#collaborationRuleDrawer .relation-add-action");
-		if (!addAction) {
+	function renderControlRelationGroupsFromNodes() {
+		const relationScroll = document.querySelector("#collaborationRuleDrawer .control-relation-scroll");
+		if (!relationScroll) {
 			return;
 		}
-		const nextIndex = document.querySelectorAll("#collaborationRuleDrawer .control-relation-group").length + 2;
-		addAction.insertAdjacentHTML("beforebegin", createControlRelationGroupHtml(nextIndex));
-		const newGroup = addAction.previousElementSibling;
-		const mainFlow = document.getElementById("collaborationMainFlowSelect");
-		newGroup.querySelectorAll(".control-node-select").forEach(function (select) {
-			refreshFlowNodeOptions(select, mainFlow ? getFlowPickerValues(mainFlow) : ["西班牙VAT注册+申报流程"]);
-		});
-		newGroup.querySelectorAll(".condition-target .flow-select-field").forEach(function (flowField) {
+		const picker = document.getElementById("collaborationControlNodePicker");
+		const nodeNames = getControlNodePickerValues(picker);
+		relationScroll.innerHTML = nodeNames.map(function (nodeName, index) {
+			return createControlRelationGroupHtml(index + 2, nodeName);
+		}).join("");
+		relationScroll.querySelectorAll(".condition-target .flow-select-field").forEach(function (flowField) {
 			refreshNodeSelectByFlowTarget(flowField, flowField.dataset.flowName);
 		});
 		refreshControlRelationGroupTitles();
 		refreshCollaborationMatchTypeVisibility();
-		refreshAllReleaseFlowOptions();
-	}
-
-	function deleteControlRelationGroup(action) {
-		const group = action.closest(".control-relation-group");
-		if (group) {
-			group.remove();
-		}
-		refreshControlRelationGroupTitles();
 		refreshAllReleaseFlowOptions();
 	}
 
@@ -5758,7 +6072,8 @@
 			});
 			option.classList.add("active");
 		}
-		const area = option.closest(".release-action-area");
+		const group = option.closest(".control-relation-group");
+		const area = option.closest(".release-action-area") || (group && group.querySelector(".release-action-area"));
 		if (area) {
 			area.classList.toggle("release-action-off", !enabled);
 			refreshAllReleaseFlowOptions();
@@ -5802,22 +6117,6 @@
 			'<select class="field release-source-form-select"><option selected>主体资料表单</option><option>西班牙VAT注册资料表</option></select>' +
 			'</div>';
 		refreshReleaseFormOptions(sourceFields.querySelector(".release-source-flow-select"), "source");
-	}
-
-	function deleteConditionRow(action) {
-		const row = action.closest(".condition-row");
-		if (row) {
-			const prev = row.previousElementSibling;
-			const next = row.nextElementSibling;
-			if (prev && prev.classList.contains("condition-relation-row")) {
-				prev.remove();
-			} else if (next && next.classList.contains("condition-relation-row")) {
-				next.remove();
-			}
-			row.remove();
-			refreshCollaborationMatchTypeVisibility();
-			refreshAllReleaseFlowOptions();
-		}
 	}
 
 	function openTemplateEditorDrawer(name) {
@@ -6340,8 +6639,9 @@
 			document.querySelector('[data-tab="forms"]').classList.add("active");
 			closeDrawer("packageDrawer");
 		} else if (view === "collaboration") {
-			document.querySelector('[data-menu="collaboration"]').classList.add("active");
-			document.getElementById("topTab").textContent = "协同交付规则 ×";
+			content.dataset.view = "flows";
+			document.querySelector('[data-menu="flows"]').classList.add("active");
+			document.getElementById("topTab").textContent = "流程列表 ×";
 			document.getElementById("topTab").classList.add("active");
 			closeDrawer("packageDrawer");
 		} else if (view === "services") {
@@ -6383,6 +6683,7 @@
 </script>
 </body>
 </html>
+
 
 
 

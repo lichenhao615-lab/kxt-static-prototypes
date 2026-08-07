@@ -1821,11 +1821,6 @@
 			box-shadow: 0 12px 26px rgba(84, 72, 204, .16);
 		}
 
-		.flow-node.is-control {
-			outline: 2px dashed #f04438;
-			outline-offset: 8px;
-		}
-
 		.flow-node-head {
 			display: flex;
 			align-items: center;
@@ -1889,6 +1884,17 @@
 
 		.flow-node-connect:hover {
 			background: #f8f7ff;
+		}
+
+		.flow-editor-viewport.is-linking-control .flow-node:not(.is-related):not(.is-small) {
+			box-shadow: 0 0 0 2px rgba(0, 165, 168, .28), 0 10px 22px rgba(15, 23, 42, .12);
+			cursor: crosshair;
+		}
+
+		.flow-node-connect.is-linking {
+			border-color: var(--brand);
+			background: #eafafa;
+			color: var(--brand-dark);
 		}
 
 		.flow-palette {
@@ -4120,26 +4126,26 @@
 				<div class="flow-node is-small" style="left:458px;top:154px;" data-draggable-node>
 					<div class="flow-node-head">开始节点</div>
 				</div>
-				<div class="flow-node" style="left:320px;top:244px;" data-draggable-node>
+				<div class="flow-node" id="mainUploadNode" style="left:320px;top:244px;" data-draggable-node>
 					<div class="flow-node-head">待上传资料 <span class="flow-node-close">×</span></div>
 					<div class="flow-node-action">上传资料（增值）</div>
 					<div class="flow-node-action">关联会计师</div>
 					<div class="flow-node-action">自定义备注</div>
 					<div class="flow-node-action">操作日志</div>
 				</div>
-				<div class="flow-node" style="left:560px;top:346px;" data-draggable-node>
+				<div class="flow-node" id="mainReviewNode" style="left:560px;top:346px;" data-draggable-node>
 					<div class="flow-node-head">待审核 <span class="flow-node-close">×</span></div>
 					<div class="flow-node-action">查看资料（增值）</div>
 					<div class="flow-node-action">审核资料（增值）</div>
 					<div class="flow-node-action">自定义备注</div>
 					<div class="flow-node-action">强制驳回</div>
 				</div>
-				<div class="flow-node is-control" id="controlWaitNode" style="left:690px;top:372px;" data-draggable-node>
+				<div class="flow-node" id="controlWaitNode" style="left:690px;top:372px;" data-draggable-node>
 					<div class="flow-node-head">等待海牙完成 <span class="flow-node-close">×</span></div>
 					<div class="flow-node-action">查看资料</div>
 					<div class="flow-node-action">放行当前节点</div>
 				</div>
-				<div class="flow-node" style="left:908px;top:426px;" data-draggable-node>
+				<div class="flow-node" id="mainSubmitNode" style="left:908px;top:426px;" data-draggable-node>
 					<div class="flow-node-head">待提交 <span class="flow-node-close">×</span></div>
 					<div class="flow-node-action">查看会计师</div>
 					<div class="flow-node-action">关联会计师</div>
@@ -4148,7 +4154,7 @@
 					<div class="flow-node-action">变更分单</div>
 					<div class="flow-node-action">查看分单</div>
 				</div>
-				<div class="flow-node" style="left:1110px;top:478px;" data-draggable-node>
+				<div class="flow-node" id="mainProcessingNode" style="left:1110px;top:478px;" data-draggable-node>
 					<div class="flow-node-head">处理中 <span class="flow-node-close">×</span></div>
 					<div class="flow-node-action">查看会计师</div>
 					<div class="flow-node-action">变更会计师</div>
@@ -4156,14 +4162,14 @@
 					<div class="flow-node-action">上传修改证明</div>
 					<div class="flow-node-action">查看分单</div>
 				</div>
-				<div class="flow-node" style="left:1368px;top:606px;" data-draggable-node>
+				<div class="flow-node" id="mainCompleteNode" style="left:1368px;top:606px;" data-draggable-node>
 					<div class="flow-node-head">已完成 <span class="flow-node-close">×</span></div>
 					<div class="flow-node-action">查看会计师</div>
 					<div class="flow-node-action">变更会计师</div>
 					<div class="flow-node-action">查看资料（增值）</div>
 					<div class="flow-node-action">查看分单</div>
 				</div>
-				<div class="flow-node" style="left:666px;top:612px;" data-draggable-node>
+				<div class="flow-node" id="mainRejectNode" style="left:666px;top:612px;" data-draggable-node>
 					<div class="flow-node-head">资料被驳回 <span class="flow-node-close">×</span></div>
 					<div class="flow-node-action">关联会计师</div>
 					<div class="flow-node-action">重新上传资料（增值）</div>
@@ -4175,7 +4181,7 @@
 					<div class="flow-node-head">关联流程节点 <span class="flow-node-close">×</span></div>
 					<div class="flow-node-desc" id="relatedFlowNodeFlow">西班牙海牙认证流程</div>
 					<div class="flow-node-action" id="relatedFlowNodeName">海牙认证完成</div>
-					<div class="flow-node-connect" onclick="openFlowLineConfigModal(this)">连接等待海牙完成</div>
+					<div class="flow-node-connect" onclick="startControlLineConnection(this, event)">控制：等待海牙完成</div>
 				</div>
 			</div>
 		</div>
@@ -4239,11 +4245,7 @@
 						<div class="label">主流程</div>
 						<input class="field" value="西班牙VAT注册+申报流程" readonly>
 						<div class="label"><span class="required">*</span>控制节点</div>
-						<select class="field" disabled>
-							<option selected>等待海牙完成</option>
-							<option>待提交</option>
-							<option>处理中</option>
-						</select>
+						<input class="field" id="lineControlNodeDisplay" value="等待海牙完成" readonly>
 						<div class="label"><span class="required">*</span>关联流程</div>
 						<input class="field" id="lineRelatedFlowDisplay" value="西班牙海牙认证流程" readonly>
 						<div class="label"><span class="required">*</span>关联节点</div>
@@ -5931,6 +5933,7 @@
 	let pendingTemplateImportFileName = "";
 	let flowEditorScale = 1;
 	let activeFlowDrag = null;
+	let activeControlConnectionNode = null;
 	let flowRelatedNodeCounter = 1;
 
 	function openFlowEditor(trigger) {
@@ -5945,10 +5948,12 @@
 		resetFlowEditorZoom();
 		refreshRelatedNodeOptions();
 		refreshLineRelatedNodeOptions();
+		setControlConnectionMode(null);
 		refreshFlowControlLine();
 	}
 
 	function closeFlowEditor() {
+		setControlConnectionMode(null);
 		document.getElementById("flowEditorMask").classList.remove("open");
 	}
 
@@ -6029,7 +6034,7 @@
 			'<div class="flow-node-head">关联流程节点 <span class="flow-node-close">×</span></div>' +
 			'<div class="flow-node-desc">' + flowName + '</div>' +
 			'<div class="flow-node-action">' + nodeName + '</div>' +
-			'<div class="flow-node-connect" onclick="openFlowLineConfigModal(this)">连接等待海牙完成</div>';
+			'<div class="flow-node-connect" onclick="startControlLineConnection(this, event)">控制：等待海牙完成</div>';
 		viewport.appendChild(relatedNode);
 		if (svg) {
 			const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -6056,6 +6061,51 @@
 		return relatedNode;
 	}
 
+	function getFlowNodeTitle(node) {
+		const head = node && node.querySelector(".flow-node-head");
+		if (!head) {
+			return "";
+		}
+		return head.textContent.replace("×", "").trim();
+	}
+
+	function isSelectableControlNode(node) {
+		return !!(node && node.classList.contains("flow-node") && !node.classList.contains("is-related") && !node.classList.contains("is-small"));
+	}
+
+	function setControlConnectionMode(relatedNode) {
+		activeControlConnectionNode = relatedNode || null;
+		const viewport = document.getElementById("flowEditorViewport");
+		if (viewport) {
+			viewport.classList.toggle("is-linking-control", !!activeControlConnectionNode);
+		}
+		document.querySelectorAll(".flow-node-connect").forEach(function (button) {
+			const buttonNode = button.closest(".flow-node.is-related");
+			button.classList.toggle("is-linking", !!activeControlConnectionNode && buttonNode === activeControlConnectionNode);
+		});
+	}
+
+	function startControlLineConnection(trigger, event) {
+		if (event) {
+			event.preventDefault();
+			event.stopPropagation();
+		}
+		const relatedNode = trigger && trigger.closest ? trigger.closest(".flow-node.is-related") : null;
+		setControlConnectionMode(relatedNode);
+	}
+
+	function bindControlLineToNode(relatedNode, controlNode) {
+		if (!relatedNode || !controlNode) {
+			return;
+		}
+		if (!controlNode.id) {
+			controlNode.id = "mainControlNode" + Date.now();
+		}
+		relatedNode.dataset.controlNodeId = controlNode.id;
+		setControlConnectionMode(null);
+		refreshFlowControlLine();
+	}
+
 	function getFlowLineContext(trigger) {
 		let relatedNode = null;
 		if (trigger && trigger.dataset && trigger.dataset.relatedNodeId) {
@@ -6067,8 +6117,11 @@
 		if (!relatedNode) {
 			relatedNode = document.getElementById("relatedFlowNode");
 		}
+		const controlNode = relatedNode ? document.getElementById(relatedNode.dataset.controlNodeId || "controlWaitNode") : document.getElementById("controlWaitNode");
 		return {
 			relatedNode: relatedNode,
+			controlNode: controlNode,
+			controlNodeName: getFlowNodeTitle(controlNode) || "等待海牙完成",
 			flowName: relatedNode ? relatedNode.dataset.relatedFlow : "西班牙海牙认证流程",
 			nodeName: relatedNode ? relatedNode.dataset.relatedNode : "海牙认证完成"
 		};
@@ -6085,8 +6138,12 @@
 		if (context.nodeName && lineNodeSelect) {
 			lineNodeSelect.value = context.nodeName;
 		}
+		const displayControlNode = document.getElementById("lineControlNodeDisplay");
 		const displayFlow = document.getElementById("lineRelatedFlowDisplay");
 		const displayNode = document.getElementById("lineRelatedNodeDisplay");
+		if (displayControlNode) {
+			displayControlNode.value = context.controlNodeName;
+		}
 		if (displayFlow) {
 			displayFlow.value = context.flowName;
 		}
@@ -6216,13 +6273,20 @@
 			const targetX = targetLeft + controlNode.offsetWidth / 2;
 			const targetY = targetTop;
 			const midY = Math.round((sourceY + targetY) / 2);
+			const controlNodeName = getFlowNodeTitle(controlNode) || "等待海牙完成";
 			path.setAttribute("d", "M" + sourceX + " " + sourceY + " L" + sourceX + " " + midY + " L" + targetX + " " + midY + " L" + targetX + " " + targetY);
 			if (label) {
 				label.dataset.relatedNodeId = relatedNode.id;
 				label.dataset.flowName = relatedNode.dataset.relatedFlow || "";
 				label.dataset.nodeName = relatedNode.dataset.relatedNode || "";
+				label.dataset.controlNodeId = controlNode.id;
+				label.dataset.controlNodeName = controlNodeName;
 				label.style.left = Math.round((sourceX + targetX) / 2 - 34) + "px";
 				label.style.top = Math.round(midY - 12) + "px";
+			}
+			const connectButton = relatedNode.querySelector(".flow-node-connect");
+			if (connectButton && connectButton !== document.activeElement) {
+				connectButton.textContent = "控制：" + controlNodeName;
 			}
 		});
 	}
@@ -6233,6 +6297,9 @@
 		}
 		node.dataset.dragReady = "true";
 		node.addEventListener("pointerdown", function (event) {
+			if (activeControlConnectionNode && isSelectableControlNode(node)) {
+				return;
+			}
 			if (event.target.closest(".flow-node-connect")) {
 				return;
 			}
@@ -6244,6 +6311,13 @@
 				top: parseFloat(node.style.top) || 0
 			};
 			node.setPointerCapture(event.pointerId);
+		});
+		node.addEventListener("click", function (event) {
+			if (activeControlConnectionNode && isSelectableControlNode(node)) {
+				event.preventDefault();
+				event.stopPropagation();
+				bindControlLineToNode(activeControlConnectionNode, node);
+			}
 		});
 	}
 

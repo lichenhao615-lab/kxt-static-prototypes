@@ -2041,21 +2041,6 @@
 			flex: 0 0 auto;
 		}
 
-		.line-config-summary {
-			display: grid;
-			grid-template-columns: repeat(4, minmax(0, 1fr));
-			gap: 10px;
-			margin-bottom: 12px;
-		}
-
-		.line-config-summary .preview-item {
-			background: #fff;
-		}
-
-		#flowLineConfigModal .line-config-summary {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-
 		.line-config-grid {
 			display: grid;
 			gap: 12px;
@@ -4247,16 +4232,6 @@
 			<button class="drawer-close" onclick="closeFlowLineConfigModal()">×</button>
 		</div>
 		<div class="confirm-body compact line-config-body">
-			<div class="line-config-summary">
-				<div class="preview-item">
-					<div class="preview-label">连线类型</div>
-					<div class="preview-value">放行控制线</div>
-				</div>
-				<div class="preview-item">
-					<div class="preview-label">主流程节点</div>
-					<div class="preview-value">等待海牙完成</div>
-				</div>
-			</div>
 			<div class="line-config-grid">
 				<div class="line-config-section line-control-readonly">
 					<div class="line-config-section-title">节点控制关系</div>
@@ -6110,16 +6085,8 @@
 		if (context.nodeName && lineNodeSelect) {
 			lineNodeSelect.value = context.nodeName;
 		}
-		const summaryFlow = document.getElementById("lineSummaryFlow");
-		const summaryNode = document.getElementById("lineSummaryNode");
 		const displayFlow = document.getElementById("lineRelatedFlowDisplay");
 		const displayNode = document.getElementById("lineRelatedNodeDisplay");
-		if (summaryFlow) {
-			summaryFlow.textContent = context.flowName;
-		}
-		if (summaryNode) {
-			summaryNode.textContent = context.nodeName;
-		}
 		if (displayFlow) {
 			displayFlow.value = context.flowName;
 		}
@@ -6147,16 +6114,8 @@
 		if (flowSelect.value === "西班牙海牙认证流程" && nodes.indexOf("海牙认证完成") > -1) {
 			nodeSelect.value = "海牙认证完成";
 		}
-		const summaryFlow = document.getElementById("lineSummaryFlow");
-		const summaryNode = document.getElementById("lineSummaryNode");
 		const displayFlow = document.getElementById("lineRelatedFlowDisplay");
 		const displayNode = document.getElementById("lineRelatedNodeDisplay");
-		if (summaryFlow) {
-			summaryFlow.textContent = flowSelect.value;
-		}
-		if (summaryNode) {
-			summaryNode.textContent = nodeSelect.value;
-		}
 		if (displayFlow) {
 			displayFlow.value = flowSelect.value;
 		}

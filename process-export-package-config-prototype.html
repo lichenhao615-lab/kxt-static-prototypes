@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
 	<meta charset="utf-8">
@@ -1474,6 +1474,29 @@
 			background: #fcfdfd;
 		}
 
+		.relation-readonly-grid {
+			display: grid;
+			grid-template-columns: 84px minmax(0, 1fr) 84px minmax(0, 1fr);
+			gap: 10px;
+			align-items: center;
+			margin-bottom: 10px;
+			padding: 10px;
+			border: 1px solid #edf0f2;
+			border-radius: 4px;
+			background: #fff;
+			font-size: 13px;
+		}
+
+		.relation-readonly-grid .readonly-value {
+			min-width: 0;
+			padding: 8px 10px;
+			border: 1px solid #d8dde3;
+			border-radius: 4px;
+			background: #f0f2f5;
+			color: #667085;
+			line-height: 18px;
+		}
+
 		.condition-action-head {
 			display: flex;
 			flex-wrap: wrap;
@@ -1634,6 +1657,466 @@
 			border-radius: 12px;
 			background: #eef5f6;
 			color: var(--brand-dark);
+		}
+
+		.flow-editor-mask {
+			position: fixed;
+			inset: 0;
+			display: none;
+			background: #fff;
+			z-index: 70;
+		}
+
+		.flow-editor-mask.open {
+			display: block;
+		}
+
+		.flow-editor-shell {
+			position: relative;
+			width: 100%;
+			height: 100vh;
+			overflow: hidden;
+			background: #fff;
+		}
+
+		.flow-editor-top {
+			position: absolute;
+			top: 0;
+			right: 0;
+			left: 0;
+			z-index: 8;
+			height: 58px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			pointer-events: none;
+		}
+
+		.flow-version-badge {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 42px;
+			display: flex;
+			align-items: center;
+			padding: 0 28px;
+			border-radius: 0 0 3px 0;
+			background: #5d95e8;
+			color: #fff;
+			font-size: 14px;
+			font-weight: 600;
+			pointer-events: auto;
+		}
+
+		.flow-editor-title-input {
+			width: min(760px, calc(100vw - 520px));
+			height: 34px;
+			border: 1px solid #d8dde3;
+			border-radius: 2px;
+			padding: 0 12px;
+			background: rgba(255, 255, 255, .92);
+			color: #27313d;
+			font-size: 13px;
+			pointer-events: auto;
+		}
+
+		.flow-editor-close {
+			position: absolute;
+			top: 16px;
+			right: 20px;
+			width: 28px;
+			height: 28px;
+			border: none;
+			background: transparent;
+			color: #8a95a1;
+			font-size: 26px;
+			line-height: 1;
+			pointer-events: auto;
+		}
+
+		.flow-editor-canvas {
+			position: absolute;
+			inset: 0;
+			overflow: hidden;
+			background-image: radial-gradient(#d8dde3 1px, transparent 1px);
+			background-size: 14px 14px;
+		}
+
+		.flow-editor-viewport {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 1680px;
+			height: 900px;
+			transform-origin: 0 0;
+		}
+
+		.flow-editor-links {
+			position: absolute;
+			inset: 0;
+			z-index: 1;
+			overflow: visible;
+			pointer-events: none;
+		}
+
+		.flow-editor-line {
+			fill: none;
+			stroke: #1eb6bd;
+			stroke-width: 2;
+			stroke-dasharray: 5 4;
+		}
+
+		.flow-editor-control-line {
+			fill: none;
+			stroke: #f04438;
+			stroke-width: 2.5;
+			stroke-dasharray: 7 5;
+		}
+
+		.flow-line-label {
+			position: absolute;
+			z-index: 5;
+			height: 24px;
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			padding: 0 10px;
+			border: 1px solid #ffd0d0;
+			border-radius: 12px;
+			background: #fff;
+			color: #d92d20;
+			font-size: 12px;
+			cursor: pointer;
+			box-shadow: 0 4px 10px rgba(217, 45, 32, .12);
+		}
+
+		.flow-line-label:hover {
+			border-color: #f04438;
+			background: #fff6f5;
+		}
+
+		.flow-node {
+			position: absolute;
+			z-index: 3;
+			width: 154px;
+			padding: 10px 10px 12px;
+			border-radius: 6px;
+			background: #74cdd0;
+			box-shadow: 0 10px 22px rgba(15, 23, 42, .12);
+			color: #fff;
+			cursor: move;
+			user-select: none;
+		}
+
+		.flow-node.is-small {
+			width: 92px;
+			padding: 8px;
+		}
+
+		.flow-node.is-related {
+			width: 190px;
+			border: 1px solid #9b8cf6;
+			background: #eef0ff;
+			color: #344054;
+			box-shadow: 0 12px 26px rgba(84, 72, 204, .16);
+		}
+
+		.flow-node.is-control {
+			outline: 2px dashed #f04438;
+			outline-offset: 8px;
+		}
+
+		.flow-node-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8px;
+			margin-bottom: 8px;
+			font-size: 12px;
+			font-weight: 700;
+		}
+
+		.flow-node-close {
+			color: rgba(255, 255, 255, .78);
+			font-size: 14px;
+			cursor: pointer;
+		}
+
+		.flow-node.is-related .flow-node-close {
+			color: #98a2b3;
+		}
+
+		.flow-node-desc {
+			margin-top: -2px;
+			margin-bottom: 8px;
+			color: #667085;
+			font-size: 12px;
+			line-height: 1.4;
+		}
+
+		.flow-node-action {
+			height: 28px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-top: 7px;
+			border-radius: 3px;
+			background: rgba(255, 255, 255, .92);
+			color: #3b4a54;
+			font-size: 12px;
+		}
+
+		.flow-node.is-related .flow-node-action {
+			border: 1px solid #dddafa;
+			background: #fff;
+			color: #4a4f8f;
+			font-weight: 600;
+		}
+
+		.flow-node-connect {
+			margin-top: 8px;
+			height: 28px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border: 1px dashed #8f86e8;
+			border-radius: 3px;
+			background: #fff;
+			color: #5f56c6;
+			font-size: 12px;
+			cursor: pointer;
+		}
+
+		.flow-node-connect:hover {
+			background: #f8f7ff;
+		}
+
+		.flow-palette {
+			position: absolute;
+			top: 54px;
+			left: 24px;
+			z-index: 9;
+			display: grid;
+			gap: 10px;
+			width: 112px;
+		}
+
+		.flow-palette-main,
+		.flow-palette-action {
+			height: 68px;
+			display: grid;
+			place-items: center;
+			gap: 4px;
+			border: 1px solid #a8e1e3;
+			border-radius: 6px;
+			background: #7ad1d4;
+			color: #fff;
+			font-size: 13px;
+			font-weight: 700;
+			box-shadow: 0 8px 18px rgba(0, 165, 168, .18);
+		}
+
+		.flow-palette-main {
+			cursor: default;
+		}
+
+		.flow-palette-main span,
+		.flow-palette-action span {
+			display: block;
+			font-size: 22px;
+			line-height: 1;
+		}
+
+		.flow-palette-action {
+			width: 100%;
+			padding: 0;
+			cursor: pointer;
+		}
+
+		.flow-palette-action:hover {
+			background: #66c6c9;
+			border-color: #8bd9dc;
+		}
+
+		.flow-editor-tools {
+			position: absolute;
+			left: 30px;
+			bottom: 48px;
+			z-index: 9;
+			display: grid;
+			border: 1px solid #e6ebef;
+			background: #fff;
+			box-shadow: 0 8px 20px rgba(15, 23, 42, .08);
+		}
+
+		.flow-tool-btn {
+			width: 28px;
+			height: 28px;
+			border: none;
+			border-bottom: 1px solid #edf0f2;
+			background: #fff;
+			color: #27313d;
+			font-size: 16px;
+		}
+
+		.flow-tool-btn:last-child {
+			border-bottom: none;
+		}
+
+		.flow-minimap {
+			position: absolute;
+			right: 30px;
+			bottom: 54px;
+			z-index: 8;
+			width: 200px;
+			height: 120px;
+			border: 10px solid #f2f4f7;
+			background: #fff;
+			box-shadow: 0 8px 20px rgba(15, 23, 42, .08);
+		}
+
+		.flow-minimap span {
+			position: absolute;
+			display: block;
+			width: 14px;
+			height: 14px;
+			background: #d0d5dd;
+		}
+
+		.flow-editor-footer {
+			position: absolute;
+			left: 50%;
+			bottom: 24px;
+			z-index: 9;
+			display: flex;
+			gap: 10px;
+			transform: translateX(-50%);
+		}
+
+		.related-node-form {
+			display: grid;
+			grid-template-columns: 96px minmax(0, 1fr);
+			gap: 12px 10px;
+			align-items: center;
+			font-size: 13px;
+		}
+
+		.line-config-dialog {
+			width: min(1180px, calc(100vw - 48px));
+		}
+
+		#flowLineConfigModal.open {
+			align-items: stretch;
+			justify-content: flex-end;
+			background: rgba(15, 23, 42, .24);
+		}
+
+		#flowLineConfigModal .line-config-dialog {
+			width: min(760px, calc(100vw - 72px));
+			height: 100vh;
+			display: flex;
+			flex-direction: column;
+			border-radius: 0;
+			box-shadow: -18px 0 42px rgba(15, 23, 42, .18);
+		}
+
+		#relatedNodeModal,
+		#flowLineConfigModal,
+		#dataFieldSelectModal {
+			z-index: 90;
+		}
+
+		.line-config-body {
+			flex: 1;
+			max-height: calc(100vh - 170px);
+			overflow: auto;
+			background: #fbfcfd;
+		}
+
+		#flowLineConfigModal .line-config-body {
+			max-height: none;
+		}
+
+		#flowLineConfigModal .confirm-footer {
+			flex: 0 0 auto;
+		}
+
+		.line-config-summary {
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			gap: 10px;
+			margin-bottom: 12px;
+		}
+
+		.line-config-summary .preview-item {
+			background: #fff;
+		}
+
+		#flowLineConfigModal .line-config-summary {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.line-config-grid {
+			display: grid;
+			gap: 12px;
+		}
+
+		.line-config-section {
+			padding: 12px;
+			border: 1px solid #edf0f2;
+			border-radius: 4px;
+			background: #fff;
+		}
+
+		.line-config-section-title {
+			margin-bottom: 10px;
+			color: #27313d;
+			font-size: 13px;
+			font-weight: 700;
+		}
+
+		.line-control-readonly {
+			background: #f7f8fa;
+		}
+
+		.line-config-fields {
+			display: grid;
+			grid-template-columns: 96px minmax(0, 1fr) 96px minmax(0, 1fr);
+			gap: 12px 10px;
+			align-items: center;
+			font-size: 13px;
+		}
+
+		.line-control-readonly .field {
+			border-color: #d8dde3;
+			background: #f0f2f5;
+			color: #8a95a1;
+			cursor: not-allowed;
+			pointer-events: none;
+		}
+
+		.line-config-fields .full-line {
+			grid-column: 1 / -1;
+		}
+
+		.line-config-fields .condition-target {
+			grid-column: 1 / -1;
+		}
+
+		#flowLineConfigModal .release-action-map {
+			grid-template-columns: minmax(0, 1fr) 38px minmax(0, 1fr);
+		}
+
+		#flowLineConfigModal .release-map-arrow {
+			min-height: auto;
+		}
+
+		#flowLineConfigModal .release-map-arrow span {
+			width: 36px;
+		}
+
+		#flowLineConfigModal .release-map-panel {
+			min-width: 0;
 		}
 
 		.connector {
@@ -3028,7 +3511,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:38:54</td>
 						<td><span class="status on">是</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text" onclick="openFlowEditor(this)">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>2</td>
@@ -3042,7 +3525,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:35:30</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text" onclick="openFlowEditor(this)">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>3</td>
@@ -3056,7 +3539,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:34:42</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text" onclick="openFlowEditor(this)">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>4</td>
@@ -3070,7 +3553,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:33:58</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text" onclick="openFlowEditor(this)">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>5</td>
@@ -3084,7 +3567,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:33:13</td>
 						<td><span class="status on">是</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text" onclick="openFlowEditor(this)">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>6</td>
@@ -3098,7 +3581,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:32:22</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text" onclick="openFlowEditor(this)">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>7</td>
@@ -3112,7 +3595,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:31:04</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text" onclick="openFlowEditor(this)">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>8</td>
@@ -3126,7 +3609,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:30:25</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text" onclick="openFlowEditor(this)">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr class="selected">
 						<td>9</td>
@@ -3140,7 +3623,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:29:13</td>
 						<td><span class="status on">是</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text" onclick="openFlowEditor(this)">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					<tr>
 						<td>10</td>
@@ -3154,7 +3637,7 @@
 						<td>江晓文</td>
 						<td>2026-06-09 20:27:03</td>
 						<td><span class="status off">否</span></td>
-						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">协同配置</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
+						<td><span class="actions"><span class="action-danger">删除</span><span class="action-text" onclick="openFlowEditor(this)">编辑</span><span class="action-text">复制流程</span><span class="action-text" onclick="openDrawer('packageDrawer')">资料包配置</span></span></td>
 					</tr>
 					</tbody>
 				</table>
@@ -3362,73 +3845,6 @@
 						<td>5</td>
 						<td>2026-06-07 15:21:06</td>
 						<td><span class="actions"><span class="action-text">编辑</span><span class="action-text" onclick="openDrawer('formMaterialDrawer')">资料项配置</span><span class="action-danger">删除</span></span></td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-
-		<div class="workspace collaboration-view">
-			<div class="module-tabs">
-				<div class="module-tab active">协同配置</div>
-			</div>
-			<div class="toolbar">
-				<input class="input" placeholder="规则ID / 流程名称">
-				<select class="select"><option>请选择主流程</option><option>西班牙VAT注册+申报流程</option><option>德国VAT注册流程</option></select>
-				<select class="select"><option>请选择匹配方式</option><option>按公司+客户ID匹配流程</option><option>增值服务与基础服务绑定</option></select>
-				<select class="select"><option>请选择状态</option><option>启用</option><option>停用</option></select>
-				<button class="btn primary">搜索</button>
-				<button class="btn ghost">重置</button>
-			</div>
-
-			<div class="action-line">
-				<button class="btn primary" onclick="openCollaborationRuleDrawer('协同配置')">新增协同配置</button>
-			</div>
-
-			<div class="table-wrap">
-				<table style="min-width:1060px;">
-					<colgroup>
-						<col style="width:52px">
-						<col style="width:150px">
-						<col style="width:110px">
-						<col style="width:330px">
-						<col style="width:120px">
-						<col style="width:180px">
-					</colgroup>
-					<thead>
-					<tr>
-						<th>序号</th>
-						<th>规则ID</th>
-						<th>流程版本</th>
-						<th>主流程</th>
-						<th>状态</th>
-						<th>操作</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr>
-						<td>1</td>
-						<td><span class="service-no">CDR-20260701001</span></td>
-						<td><span class="rule-mini-tag">V3</span></td>
-						<td><span class="rule-flow-tags"><span class="rule-mini-tag main">西班牙VAT注册+申报流程</span><span class="rule-mini-tag main">德国VAT注册流程</span></span></td>
-						<td><span class="status on">启用</span></td>
-						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">编辑</span><span class="action-danger">停用</span></span></td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td><span class="service-no">CDR-20260701002</span></td>
-						<td><span class="rule-mini-tag">V2</span></td>
-						<td><span class="rule-mini-tag main">西班牙VAT注册+申报流程</span></td>
-						<td><span class="status on">启用</span></td>
-						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">编辑</span><span class="action-danger">停用</span></span></td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td><span class="service-no">CDR-20260701003</span></td>
-						<td><span class="rule-mini-tag">V1</span></td>
-						<td><span class="rule-mini-tag main">德国VAT注册流程</span></td>
-						<td><span class="status off">停用</span></td>
-						<td><span class="actions"><span class="action-text" onclick="openCollaborationRuleDrawer('协同配置')">编辑</span><span class="action-text">启用</span></span></td>
 					</tr>
 					</tbody>
 				</table>
@@ -3683,6 +4099,257 @@
 	</section>
 </main>
 
+<div class="flow-editor-mask" id="flowEditorMask">
+	<div class="flow-editor-shell">
+		<div class="flow-editor-top">
+			<div class="flow-version-badge">流程版本v5-使用中</div>
+			<input class="flow-editor-title-input" id="flowEditorTitleInput" value="西班牙VAT注册+申报流程">
+			<button class="flow-editor-close" onclick="closeFlowEditor()">×</button>
+		</div>
+		<div class="flow-editor-canvas" id="flowEditorCanvas">
+			<div class="flow-palette">
+				<div class="flow-palette-main"><span>▦</span>新增节点</div>
+				<button class="flow-palette-action" onclick="openRelatedNodeModal()"><span>⛓</span>关联流程节点</button>
+			</div>
+			<div class="flow-editor-viewport" id="flowEditorViewport">
+				<svg class="flow-editor-links" viewBox="0 0 1680 900" aria-hidden="true">
+					<defs>
+						<marker id="flowArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+							<path d="M0,0 L8,4 L0,8 Z" fill="#1eb6bd"></path>
+						</marker>
+						<marker id="controlArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+							<path d="M0,0 L8,4 L0,8 Z" fill="#f04438"></path>
+						</marker>
+					</defs>
+					<path class="flow-editor-line" marker-end="url(#flowArrow)" d="M500 182 L500 230 L382 230 L382 250"></path>
+					<path class="flow-editor-line" marker-end="url(#flowArrow)" d="M474 315 L585 315 L585 370"></path>
+					<path class="flow-editor-line" marker-end="url(#flowArrow)" d="M662 478 L746 478 L746 520"></path>
+					<path class="flow-editor-line" marker-end="url(#flowArrow)" d="M836 580 L928 580 L928 446"></path>
+					<path class="flow-editor-line" marker-end="url(#flowArrow)" d="M1040 500 L1112 500 L1112 500"></path>
+					<path class="flow-editor-line" marker-end="url(#flowArrow)" d="M1244 557 L1356 557 L1356 600"></path>
+					<path class="flow-editor-line" marker-end="url(#flowArrow)" d="M640 430 L640 710 L812 710"></path>
+					<path class="flow-editor-control-line" id="flowControlPath" marker-end="url(#controlArrow)" d="M811 244 L811 330 L767 330 L767 372"></path>
+				</svg>
+				<div class="flow-line-label" id="flowControlLineLabel" style="left:748px;top:308px;" data-related-node-id="relatedFlowNode" data-source-node-id="relatedFlowNode" data-source-type="related" data-flow-name="西班牙海牙认证流程" data-node-name="海牙认证完成" onclick="openFlowLineConfigModal(this)">放行控制</div>
+
+				<div class="flow-node is-small" style="left:458px;top:154px;" data-draggable-node>
+					<div class="flow-node-head">开始节点</div>
+				</div>
+				<div class="flow-node" style="left:320px;top:244px;" data-draggable-node>
+					<div class="flow-node-head">待上传资料 <span class="flow-node-close">×</span></div>
+					<div class="flow-node-action">上传资料（增值）</div>
+					<div class="flow-node-action">关联会计师</div>
+					<div class="flow-node-action">自定义备注</div>
+					<div class="flow-node-action">操作日志</div>
+				</div>
+				<div class="flow-node" style="left:560px;top:346px;" data-draggable-node>
+					<div class="flow-node-head">待审核 <span class="flow-node-close">×</span></div>
+					<div class="flow-node-action">查看资料（增值）</div>
+					<div class="flow-node-action">审核资料（增值）</div>
+					<div class="flow-node-action">自定义备注</div>
+					<div class="flow-node-action">强制驳回</div>
+				</div>
+				<div class="flow-node is-control" id="controlWaitNode" style="left:690px;top:372px;" data-draggable-node>
+					<div class="flow-node-head">等待海牙完成 <span class="flow-node-close">×</span></div>
+					<div class="flow-node-action">查看资料</div>
+					<div class="flow-node-action">放行当前节点</div>
+				</div>
+				<div class="flow-node" style="left:908px;top:426px;" data-draggable-node>
+					<div class="flow-node-head">待提交 <span class="flow-node-close">×</span></div>
+					<div class="flow-node-action">查看会计师</div>
+					<div class="flow-node-action">关联会计师</div>
+					<div class="flow-node-action">查看资料（增值）</div>
+					<div class="flow-node-action">分单</div>
+					<div class="flow-node-action">变更分单</div>
+					<div class="flow-node-action">查看分单</div>
+				</div>
+				<div class="flow-node" style="left:1110px;top:478px;" data-draggable-node>
+					<div class="flow-node-head">处理中 <span class="flow-node-close">×</span></div>
+					<div class="flow-node-action">查看会计师</div>
+					<div class="flow-node-action">变更会计师</div>
+					<div class="flow-node-action">查看资料（增值）</div>
+					<div class="flow-node-action">上传修改证明</div>
+					<div class="flow-node-action">查看分单</div>
+				</div>
+				<div class="flow-node" style="left:1368px;top:606px;" data-draggable-node>
+					<div class="flow-node-head">已完成 <span class="flow-node-close">×</span></div>
+					<div class="flow-node-action">查看会计师</div>
+					<div class="flow-node-action">变更会计师</div>
+					<div class="flow-node-action">查看资料（增值）</div>
+					<div class="flow-node-action">查看分单</div>
+				</div>
+				<div class="flow-node" style="left:666px;top:612px;" data-draggable-node>
+					<div class="flow-node-head">资料被驳回 <span class="flow-node-close">×</span></div>
+					<div class="flow-node-action">关联会计师</div>
+					<div class="flow-node-action">重新上传资料（增值）</div>
+					<div class="flow-node-action">查看驳回原因</div>
+					<div class="flow-node-action">自定义备注</div>
+					<div class="flow-node-action">停止服务</div>
+				</div>
+				<div class="flow-node is-related" id="relatedFlowNode" style="left:716px;top:112px;" data-source-type="related" data-related-flow="西班牙海牙认证流程" data-related-node="海牙认证完成" data-control-node-id="controlWaitNode" data-control-path-id="flowControlPath" data-control-label-id="flowControlLineLabel" data-draggable-node>
+					<div class="flow-node-head">关联流程节点 <span class="flow-node-close">×</span></div>
+					<div class="flow-node-desc" id="relatedFlowNodeFlow">西班牙海牙认证流程</div>
+					<div class="flow-node-action" id="relatedFlowNodeName">海牙认证完成</div>
+					<div class="flow-node-connect" onclick="openFlowLineConfigModal(this)">连接等待海牙完成</div>
+				</div>
+			</div>
+		</div>
+		<div class="flow-editor-tools">
+			<button class="flow-tool-btn" onclick="zoomFlowEditor(0.1)">+</button>
+			<button class="flow-tool-btn" onclick="zoomFlowEditor(-0.1)">−</button>
+			<button class="flow-tool-btn" onclick="resetFlowEditorZoom()">⛶</button>
+			<button class="flow-tool-btn">↺</button>
+			<button class="flow-tool-btn">◎</button>
+		</div>
+		<div class="flow-minimap" aria-hidden="true">
+			<span style="left:34px;top:36px;"></span>
+			<span style="left:64px;top:52px;"></span>
+			<span style="left:88px;top:42px;"></span>
+			<span style="left:118px;top:58px;"></span>
+			<span style="left:146px;top:70px;"></span>
+		</div>
+		<div class="flow-editor-footer">
+			<button class="btn ghost">保存版本</button>
+			<button class="btn primary">发布流程</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="relatedNodeModal">
+	<div class="confirm-dialog">
+		<div class="confirm-head">
+			<span>选择关联流程节点</span>
+			<button class="drawer-close" onclick="closeRelatedNodeModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="related-node-form">
+				<div class="label"><span class="required">*</span>关联流程</div>
+				<select class="field" id="relatedFlowSelect" onchange="refreshRelatedNodeOptions()">
+					<option selected>西班牙海牙认证流程</option>
+					<option>法人税号030递交流程</option>
+					<option>德国本土税号递交流程</option>
+				</select>
+				<div class="label"><span class="required">*</span>关联节点</div>
+				<select class="field" id="relatedNodeSelect"></select>
+			</div>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeRelatedNodeModal()">取消</button>
+			<button class="btn primary" onclick="confirmRelatedFlowNode()">确认选择</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="flowLineConfigModal">
+	<div class="confirm-dialog line-config-dialog">
+		<div class="confirm-head">
+			<span>连接线配置</span>
+			<button class="drawer-close" onclick="closeFlowLineConfigModal()">×</button>
+		</div>
+		<div class="confirm-body compact line-config-body">
+			<div class="line-config-summary">
+				<div class="preview-item">
+					<div class="preview-label">连线类型</div>
+					<div class="preview-value">放行控制线</div>
+				</div>
+				<div class="preview-item">
+					<div class="preview-label">主流程节点</div>
+					<div class="preview-value">等待海牙完成</div>
+				</div>
+			</div>
+			<div class="line-config-grid">
+				<div class="line-config-section line-control-readonly">
+					<div class="line-config-section-title">节点控制关系</div>
+					<div class="line-config-fields" id="lineControlFields">
+						<div class="label">主流程</div>
+						<input class="field" value="西班牙VAT注册+申报流程" readonly>
+						<div class="label"><span class="required">*</span>控制节点</div>
+						<select class="field" disabled>
+							<option selected>等待海牙完成</option>
+							<option>待提交</option>
+							<option>处理中</option>
+						</select>
+						<div class="label"><span class="required">*</span>关联流程</div>
+						<input class="field" id="lineRelatedFlowDisplay" value="西班牙海牙认证流程" readonly>
+						<div class="label"><span class="required">*</span>关联节点</div>
+						<input class="field" id="lineRelatedNodeDisplay" value="海牙认证完成" readonly>
+						<select class="field" id="lineRelatedFlowSelect" onchange="refreshLineRelatedNodeOptions()" style="display:none;" aria-hidden="true">
+							<option selected>西班牙海牙认证流程</option>
+							<option>法人税号030递交流程</option>
+							<option>德国本土税号递交流程</option>
+						</select>
+						<select class="field" id="lineRelatedNodeSelect" style="display:none;" aria-hidden="true"></select>
+					</div>
+				</div>
+				<div class="line-config-section">
+					<div class="line-config-section-title">资料同步</div>
+					<div class="condition-action-head">
+						<div class="condition-pill-block">
+							<span class="label">是否资料同步</span>
+							<div class="rule-pill-switch">
+								<span class="rule-pill-option active" onclick="toggleLineReleaseAction(this, true)">是</span>
+								<span class="rule-pill-option" onclick="toggleLineReleaseAction(this, false)">否</span>
+							</div>
+						</div>
+					</div>
+					<div class="release-action-area" id="lineReleaseActionArea">
+						<div class="release-action-card release-action-content">
+							<div class="release-action-map">
+								<div class="release-map-panel">
+									<div class="release-panel-head">
+										<span>读取字段</span>
+									</div>
+									<div class="release-field-grid release-source-fields form-source">
+										<div class="release-field-line">
+											<div class="label">读取流程</div>
+											<select class="field release-source-flow-select" onchange="refreshLineReleaseSourceOptions()"></select>
+										</div>
+										<div class="release-field-line">
+											<div class="label">选择表单</div>
+											<select class="field release-source-form-select"><option selected>主体资料表单</option><option>西班牙VAT注册资料表</option></select>
+										</div>
+									</div>
+								</div>
+								<div class="release-map-arrow"><span>写入</span></div>
+								<div class="release-map-panel">
+									<div class="release-panel-head">
+										<span>写入字段</span>
+									</div>
+									<div class="release-field-grid">
+										<div class="release-field-line">
+											<div class="label">写入流程</div>
+											<select class="field release-target-flow-select" onchange="refreshLineReleaseTargetOptions()"></select>
+										</div>
+										<div class="release-field-line">
+											<div class="label">选择表单</div>
+											<select class="field release-target-form-select" onchange="refreshReleaseTargetFieldOptions(this)"><option>西班牙VAT注册资料表</option><option selected>主体资料表单</option></select>
+										</div>
+										<div class="release-field-line">
+											<div class="label">选择数据字段</div>
+											<button type="button" class="field flow-select-field data-field-picker release-target-field-picker" data-field-names="公司名称,客户ID" data-field-options="公司名称,客户ID,法人姓名" onclick="openDataFieldSelectModal(this)">
+												<span class="data-field-selected">
+													<span class="flow-chip">公司名称</span>
+													<span class="flow-chip">客户ID</span>
+												</span>
+												<span class="flow-select-arrow">⌄</span>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+									<div class="modal-note" style="margin:0;">目标字段已有值时不覆盖；资料同步在节点放行后执行。</div>
+								</div>
+							</div>
+						</div>
+			</div>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closeFlowLineConfigModal()">取消</button>
+			<button class="btn primary" onclick="closeFlowLineConfigModal()">保存配置</button>
+		</div>
+	</div>
+</div>
+
 <div class="drawer-mask" id="collaborationRuleDrawer">
 	<div class="drawer wide">
 		<div class="drawer-header">
@@ -3693,7 +4360,7 @@
 			<div class="config-card-body collaboration-rule-body">
 					<div class="config-section">
 						<div class="config-section-title">协同配置信息</div>
-						<div class="config-section-desc">配置主流程下的节点控制关系；完成条件满足后放行当前控制节点，并可执行资料同步。</div>
+						<div class="config-section-desc">配置主流程下的节点控制关系；节点达到放行要求后放行当前控制节点，并可执行资料同步。</div>
 						<div class="rule-info-layout">
 							<div class="collaboration-basic-panel">
 								<div class="rule-info-group">
@@ -3731,20 +4398,19 @@
 									</div>
 								</div>
 								<div class="control-relation-scroll">
-									<div class="rule-info-group control-relation-group" data-relation-index="2" data-control-node="等待海牙完成">
+									<div class="rule-info-group control-relation-group" data-relation-index="2" data-control-node="等待海牙完成" data-related-flow="西班牙海牙认证流程" data-related-node="海牙认证完成">
 										<div class="control-relation-head">
 											<div class="control-relation-title">等待海牙完成</div>
 											<div class="control-relation-actions"></div>
 										</div>
 										<div class="condition-area">
+											<div class="relation-readonly-grid">
+												<div class="label"><span class="required">*</span>关联流程</div>
+												<div class="readonly-value">西班牙海牙认证流程</div>
+												<div class="label"><span class="required">*</span>关联节点</div>
+												<div class="readonly-value">海牙认证完成</div>
+											</div>
 											<div class="condition-action-head">
-												<div class="condition-pill-block">
-													<span class="label"><span class="required">*</span>完成条件</span>
-													<div class="rule-pill-switch condition-type-switch">
-														<span class="rule-pill-option active" data-condition-type="等待节点完成" onclick="setConditionType(this, '等待节点完成')">等待节点完成</span>
-														<span class="rule-pill-option" data-condition-type="税号信息" onclick="setConditionType(this, '税号信息')">税号信息</span>
-													</div>
-												</div>
 												<div class="condition-pill-block">
 													<span class="label">是否资料同步</span>
 													<div class="rule-pill-switch">
@@ -3753,52 +4419,29 @@
 													</div>
 												</div>
 											</div>
-											<div class="condition-row single-condition-row">
-												<select class="field condition-type-select" onchange="updateConditionTarget(this)" style="display:none;"><option selected>等待节点完成</option><option>税号信息</option></select>
-												<div class="condition-target">
-													<div class="label"><span class="required">*</span>关联流程</div>
-													<button type="button" class="field flow-select-field" data-flow-name="西班牙海牙认证流程" onclick="openFlowSelectModal(this)">
-														<span class="flow-select-name">西班牙海牙认证流程</span>
-														<span class="flow-select-arrow">⌄</span>
-													</button>
-													<div class="label"><span class="required">*</span>关联节点</div>
-													<select class="field flow-node-select condition-node-select"><option selected>海牙认证完成</option><option>海牙认证中</option><option>待客户签回</option></select>
-												</div>
-											</div>
-											<div class="match-type-block">
-												<div class="label match-type-field"><span class="required">*</span>匹配方式</div>
-												<select class="field match-type-field">
-													<option selected>按公司+客户ID匹配流程</option>
-													<option>增值服务与基础服务绑定</option>
-												</select>
-											</div>
 										</div>
 										<div class="release-action-area release-action-off">
 											<div class="release-action-card release-action-content">
 												<div class="release-action-map">
 													<div class="release-map-panel">
 														<div class="release-panel-head">
-															<span>来源</span>
-															<div class="rule-pill-switch release-source-switch">
-																<span class="rule-pill-option" data-source="表单字段" onclick="updateReleaseSource(this, '表单字段')">表单字段</span>
-																<span class="rule-pill-option active" data-source="税号信息" onclick="updateReleaseSource(this, '税号信息')">税号信息</span>
-															</div>
+															<span>读取字段</span>
 														</div>
-														<div class="release-field-grid release-source-fields tax-source">
+														<div class="release-field-grid release-source-fields form-source">
 															<div class="release-field-line">
-																<div class="label">国家</div>
-																<select class="field"><option selected>西班牙</option><option>德国</option><option>英国</option></select>
+																<div class="label">读取流程</div>
+																<select class="field release-source-flow-select" onchange="refreshReleaseFormOptions(this, 'source')"></select>
 															</div>
 															<div class="release-field-line">
-																<div class="label">税号类型</div>
-																<select class="field"><option selected>VAT</option><option>本土税号</option></select>
+																<div class="label">选择表单</div>
+																<select class="field release-source-form-select"><option selected>主体资料表单</option><option>西班牙VAT注册资料表</option></select>
 															</div>
 														</div>
 													</div>
 													<div class="release-map-arrow"><span>写入</span></div>
 													<div class="release-map-panel">
 														<div class="release-panel-head">
-															<span>表单字段</span>
+															<span>写入字段</span>
 														</div>
 														<div class="release-field-grid">
 															<div class="release-field-line">
@@ -3807,14 +4450,14 @@
 															</div>
 															<div class="release-field-line">
 																<div class="label">选择表单</div>
-																<select class="field release-target-form-select" onchange="refreshReleaseTargetFieldOptions(this)"><option selected>西班牙VAT注册资料表</option><option>主体资料表单</option></select>
+																<select class="field release-target-form-select" onchange="refreshReleaseTargetFieldOptions(this)"><option>西班牙VAT注册资料表</option><option selected>主体资料表单</option></select>
 															</div>
 															<div class="release-field-line">
 																<div class="label">选择数据字段</div>
-																<button type="button" class="field flow-select-field data-field-picker release-target-field-picker" data-field-names="西班牙VAT税号,本土税号" data-field-options="西班牙VAT税号,本土税号,税号备注" onclick="openDataFieldSelectModal(this)">
+																<button type="button" class="field flow-select-field data-field-picker release-target-field-picker" data-field-names="公司名称,客户ID" data-field-options="公司名称,客户ID,法人姓名" onclick="openDataFieldSelectModal(this)">
 																	<span class="data-field-selected">
-																		<span class="flow-chip">西班牙VAT税号</span>
-																		<span class="flow-chip">本土税号</span>
+																		<span class="flow-chip">公司名称</span>
+																		<span class="flow-chip">客户ID</span>
 																	</span>
 																	<span class="flow-select-arrow">⌄</span>
 																</button>
@@ -5311,6 +5954,359 @@
 		{ type: "模板", code: "tcpl_908321884" }
 	];
 	let pendingTemplateImportFileName = "";
+	let flowEditorScale = 1;
+	let activeFlowDrag = null;
+	let flowRelatedNodeCounter = 1;
+
+	function openFlowEditor(trigger) {
+		const titleInput = document.getElementById("flowEditorTitleInput");
+		if (titleInput) {
+			titleInput.value = "西班牙VAT注册+申报流程";
+		}
+		document.querySelectorAll(".drawer-mask.open, .confirm-mask.open").forEach(function (el) {
+			el.classList.remove("open");
+		});
+		document.getElementById("flowEditorMask").classList.add("open");
+		resetFlowEditorZoom();
+		refreshRelatedNodeOptions();
+		refreshLineRelatedNodeOptions();
+		refreshFlowControlLine();
+	}
+
+	function closeFlowEditor() {
+		document.getElementById("flowEditorMask").classList.remove("open");
+	}
+
+	function applyFlowEditorZoom() {
+		const viewport = document.getElementById("flowEditorViewport");
+		if (viewport) {
+			viewport.style.transform = "scale(" + flowEditorScale + ")";
+		}
+	}
+
+	function zoomFlowEditor(delta) {
+		flowEditorScale = Math.max(0.75, Math.min(1.25, Math.round((flowEditorScale + delta) * 100) / 100));
+		applyFlowEditorZoom();
+	}
+
+	function resetFlowEditorZoom() {
+		flowEditorScale = 1;
+		applyFlowEditorZoom();
+	}
+
+	function openRelatedNodeModal() {
+		refreshRelatedNodeOptions();
+		document.getElementById("relatedNodeModal").classList.add("open");
+	}
+
+	function closeRelatedNodeModal() {
+		document.getElementById("relatedNodeModal").classList.remove("open");
+	}
+
+	function refreshRelatedNodeOptions() {
+		const flowSelect = document.getElementById("relatedFlowSelect");
+		const nodeSelect = document.getElementById("relatedNodeSelect");
+		if (!flowSelect || !nodeSelect) {
+			return;
+		}
+		const nodes = collaborationFlowNodes[flowSelect.value] || defaultCollaborationFlowNodes;
+		setSelectOptions(nodeSelect, nodes);
+		if (flowSelect.value === "西班牙海牙认证流程" && nodes.indexOf("海牙认证完成") > -1) {
+			nodeSelect.value = "海牙认证完成";
+		}
+	}
+
+	function confirmRelatedFlowNode() {
+		const flowSelect = document.getElementById("relatedFlowSelect");
+		const nodeSelect = document.getElementById("relatedNodeSelect");
+		if (flowSelect && nodeSelect) {
+			createRelatedFlowNodeAndLine(flowSelect.value, nodeSelect.value);
+		}
+		closeRelatedNodeModal();
+		refreshFlowControlLine();
+	}
+
+	function createRelatedFlowNodeAndLine(flowName, nodeName) {
+		flowRelatedNodeCounter += 1;
+		const viewport = document.getElementById("flowEditorViewport");
+		const svg = viewport && viewport.querySelector(".flow-editor-links");
+		const controlNode = document.getElementById("controlWaitNode");
+		const nodeId = "relatedFlowNode" + flowRelatedNodeCounter;
+		const pathId = "flowControlPath" + flowRelatedNodeCounter;
+		const labelId = "flowControlLineLabel" + flowRelatedNodeCounter;
+		const column = (flowRelatedNodeCounter - 1) % 3;
+		const row = Math.floor((flowRelatedNodeCounter - 1) / 3);
+		const left = 716 + column * 220;
+		const top = 112 + row * 142;
+		const relatedNode = document.createElement("div");
+		relatedNode.className = "flow-node is-related";
+		relatedNode.id = nodeId;
+		relatedNode.style.left = left + "px";
+		relatedNode.style.top = top + "px";
+		relatedNode.dataset.relatedFlow = flowName;
+		relatedNode.dataset.relatedNode = nodeName;
+		relatedNode.dataset.sourceType = "related";
+		relatedNode.dataset.controlNodeId = controlNode ? controlNode.id : "controlWaitNode";
+		relatedNode.dataset.controlPathId = pathId;
+		relatedNode.dataset.controlLabelId = labelId;
+		relatedNode.setAttribute("data-draggable-node", "");
+		relatedNode.innerHTML =
+			'<div class="flow-node-head">关联流程节点 <span class="flow-node-close">×</span></div>' +
+			'<div class="flow-node-desc">' + flowName + '</div>' +
+			'<div class="flow-node-action">' + nodeName + '</div>' +
+			'<div class="flow-node-connect" onclick="openFlowLineConfigModal(this)">连接等待海牙完成</div>';
+		viewport.appendChild(relatedNode);
+		if (svg) {
+			const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+			path.id = pathId;
+			path.setAttribute("class", "flow-editor-control-line");
+			path.setAttribute("marker-end", "url(#controlArrow)");
+			svg.appendChild(path);
+		}
+		const label = document.createElement("div");
+		label.className = "flow-line-label";
+		label.id = labelId;
+		label.dataset.relatedNodeId = nodeId;
+		label.dataset.sourceNodeId = nodeId;
+		label.dataset.sourceType = "related";
+		label.dataset.flowName = flowName;
+		label.dataset.nodeName = nodeName;
+		label.textContent = "放行控制";
+		label.onclick = function () {
+			openFlowLineConfigModal(label);
+		};
+		viewport.appendChild(label);
+		attachFlowDragNode(relatedNode);
+		refreshFlowControlLine();
+		return relatedNode;
+	}
+
+	function getFlowLineContext(trigger) {
+		let relatedNode = null;
+		if (trigger && trigger.dataset && trigger.dataset.relatedNodeId) {
+			relatedNode = document.getElementById(trigger.dataset.relatedNodeId);
+		}
+		if (!relatedNode && trigger && trigger.closest) {
+			relatedNode = trigger.closest(".flow-node.is-related");
+		}
+		if (!relatedNode) {
+			relatedNode = document.getElementById("relatedFlowNode");
+		}
+		return {
+			relatedNode: relatedNode,
+			flowName: relatedNode ? relatedNode.dataset.relatedFlow : "西班牙海牙认证流程",
+			nodeName: relatedNode ? relatedNode.dataset.relatedNode : "海牙认证完成"
+		};
+	}
+
+	function openFlowLineConfigModal(trigger) {
+		const context = getFlowLineContext(trigger);
+		const lineFlowSelect = document.getElementById("lineRelatedFlowSelect");
+		if (context.flowName && lineFlowSelect) {
+			lineFlowSelect.value = context.flowName;
+		}
+		refreshLineRelatedNodeOptions();
+		const lineNodeSelect = document.getElementById("lineRelatedNodeSelect");
+		if (context.nodeName && lineNodeSelect) {
+			lineNodeSelect.value = context.nodeName;
+		}
+		const summaryFlow = document.getElementById("lineSummaryFlow");
+		const summaryNode = document.getElementById("lineSummaryNode");
+		const displayFlow = document.getElementById("lineRelatedFlowDisplay");
+		const displayNode = document.getElementById("lineRelatedNodeDisplay");
+		if (summaryFlow) {
+			summaryFlow.textContent = context.flowName;
+		}
+		if (summaryNode) {
+			summaryNode.textContent = context.nodeName;
+		}
+		if (displayFlow) {
+			displayFlow.value = context.flowName;
+		}
+		if (displayNode) {
+			displayNode.value = context.nodeName;
+		}
+		syncLineConditionTarget();
+		refreshLineReleaseSourceOptions();
+		refreshLineReleaseTargetOptions();
+		document.getElementById("flowLineConfigModal").classList.add("open");
+	}
+
+	function closeFlowLineConfigModal() {
+		document.getElementById("flowLineConfigModal").classList.remove("open");
+	}
+
+	function refreshLineRelatedNodeOptions() {
+		const flowSelect = document.getElementById("lineRelatedFlowSelect");
+		const nodeSelect = document.getElementById("lineRelatedNodeSelect");
+		if (!flowSelect || !nodeSelect) {
+			return;
+		}
+		const nodes = collaborationFlowNodes[flowSelect.value] || defaultCollaborationFlowNodes;
+		setSelectOptions(nodeSelect, nodes);
+		if (flowSelect.value === "西班牙海牙认证流程" && nodes.indexOf("海牙认证完成") > -1) {
+			nodeSelect.value = "海牙认证完成";
+		}
+		const summaryFlow = document.getElementById("lineSummaryFlow");
+		const summaryNode = document.getElementById("lineSummaryNode");
+		const displayFlow = document.getElementById("lineRelatedFlowDisplay");
+		const displayNode = document.getElementById("lineRelatedNodeDisplay");
+		if (summaryFlow) {
+			summaryFlow.textContent = flowSelect.value;
+		}
+		if (summaryNode) {
+			summaryNode.textContent = nodeSelect.value;
+		}
+		if (displayFlow) {
+			displayFlow.value = flowSelect.value;
+		}
+		if (displayNode) {
+			displayNode.value = nodeSelect.value;
+		}
+		syncLineConditionTarget();
+		refreshLineReleaseSourceOptions();
+		refreshLineReleaseTargetOptions();
+	}
+
+	function syncLineConditionTarget() {
+		document.querySelectorAll("#flowLineConfigModal .match-type-field").forEach(function (field) {
+			field.classList.remove("is-hidden");
+		});
+	}
+
+	function setLineConditionType(option, conditionType) {
+		const switchEl = option.closest(".condition-type-switch");
+		if (switchEl) {
+			switchEl.querySelectorAll(".rule-pill-option").forEach(function (item) {
+				item.classList.toggle("active", item === option);
+			});
+		}
+		syncLineConditionTarget();
+	}
+
+	function toggleLineReleaseAction(option, enabled) {
+		const switchEl = option.closest(".rule-pill-switch");
+		if (switchEl) {
+			switchEl.querySelectorAll(".rule-pill-option").forEach(function (item) {
+				item.classList.toggle("active", item === option);
+			});
+		}
+		const area = document.getElementById("lineReleaseActionArea");
+		if (area) {
+			area.classList.toggle("release-action-off", !enabled);
+			refreshLineReleaseSourceOptions();
+			refreshLineReleaseTargetOptions();
+		}
+	}
+
+	function refreshLineReleaseSourceOptions() {
+		const area = document.getElementById("lineReleaseActionArea");
+		if (!area || area.classList.contains("release-action-off")) {
+			return;
+		}
+		const sourceFlowSelect = area.querySelector(".release-source-flow-select");
+		const sourceFormSelect = area.querySelector(".release-source-form-select");
+		if (!sourceFlowSelect || !sourceFormSelect) {
+			return;
+		}
+		const relatedFlow = document.getElementById("lineRelatedFlowSelect");
+		const flowOptions = ["西班牙VAT注册+申报流程"];
+		if (relatedFlow && relatedFlow.value && flowOptions.indexOf(relatedFlow.value) === -1) {
+			flowOptions.push(relatedFlow.value);
+		}
+		setSelectOptions(sourceFlowSelect, flowOptions);
+		const forms = collaborationFlowForms[sourceFlowSelect.value] || ["主体资料表单"];
+		setSelectOptions(sourceFormSelect, forms);
+	}
+
+	function refreshLineReleaseTargetOptions() {
+		const area = document.getElementById("lineReleaseActionArea");
+		if (!area || area.classList.contains("release-action-off")) {
+			return;
+		}
+		const targetFlowSelect = area.querySelector(".release-target-flow-select");
+		const targetFormSelect = area.querySelector(".release-target-form-select");
+		if (!targetFlowSelect || !targetFormSelect) {
+			return;
+		}
+		const relatedFlow = document.getElementById("lineRelatedFlowSelect");
+		const flowOptions = ["西班牙VAT注册+申报流程"];
+		if (relatedFlow && relatedFlow.value && flowOptions.indexOf(relatedFlow.value) === -1) {
+			flowOptions.push(relatedFlow.value);
+		}
+		setSelectOptions(targetFlowSelect, flowOptions);
+		const forms = collaborationFlowForms[targetFlowSelect.value] || ["主体资料表单"];
+		setSelectOptions(targetFormSelect, forms);
+		refreshReleaseTargetFieldOptions(targetFormSelect);
+	}
+
+	function refreshFlowControlLine() {
+		document.querySelectorAll(".flow-node.is-related").forEach(function (relatedNode) {
+			const controlNode = document.getElementById(relatedNode.dataset.controlNodeId || "controlWaitNode");
+			const path = document.getElementById(relatedNode.dataset.controlPathId || "");
+			const label = document.getElementById(relatedNode.dataset.controlLabelId || "");
+			if (!relatedNode || !controlNode || !path) {
+				return;
+			}
+			const sourceLeft = parseFloat(relatedNode.style.left) || 0;
+			const sourceTop = parseFloat(relatedNode.style.top) || 0;
+			const targetLeft = parseFloat(controlNode.style.left) || 0;
+			const targetTop = parseFloat(controlNode.style.top) || 0;
+			const sourceX = sourceLeft + relatedNode.offsetWidth / 2;
+			const sourceY = sourceTop + relatedNode.offsetHeight;
+			const targetX = targetLeft + controlNode.offsetWidth / 2;
+			const targetY = targetTop;
+			const midY = Math.round((sourceY + targetY) / 2);
+			path.setAttribute("d", "M" + sourceX + " " + sourceY + " L" + sourceX + " " + midY + " L" + targetX + " " + midY + " L" + targetX + " " + targetY);
+			if (label) {
+				label.dataset.relatedNodeId = relatedNode.id;
+				label.dataset.flowName = relatedNode.dataset.relatedFlow || "";
+				label.dataset.nodeName = relatedNode.dataset.relatedNode || "";
+				label.style.left = Math.round((sourceX + targetX) / 2 - 34) + "px";
+				label.style.top = Math.round(midY - 12) + "px";
+			}
+		});
+	}
+
+	function attachFlowDragNode(node) {
+		if (!node || node.dataset.dragReady === "true") {
+			return;
+		}
+		node.dataset.dragReady = "true";
+		node.addEventListener("pointerdown", function (event) {
+			if (event.target.closest(".flow-node-connect")) {
+				return;
+			}
+			activeFlowDrag = {
+				node: node,
+				startX: event.clientX,
+				startY: event.clientY,
+				left: parseFloat(node.style.left) || 0,
+				top: parseFloat(node.style.top) || 0
+			};
+			node.setPointerCapture(event.pointerId);
+		});
+	}
+
+	function initFlowEditorDrag() {
+		document.querySelectorAll("[data-draggable-node]").forEach(function (node) {
+			attachFlowDragNode(node);
+		});
+		document.addEventListener("pointermove", function (event) {
+			if (!activeFlowDrag) {
+				return;
+			}
+			const dx = (event.clientX - activeFlowDrag.startX) / flowEditorScale;
+			const dy = (event.clientY - activeFlowDrag.startY) / flowEditorScale;
+			activeFlowDrag.node.style.left = Math.max(150, activeFlowDrag.left + dx) + "px";
+			activeFlowDrag.node.style.top = Math.max(70, activeFlowDrag.top + dy) + "px";
+			refreshFlowControlLine();
+		});
+		document.addEventListener("pointerup", function () {
+			activeFlowDrag = null;
+		});
+	}
+
 	function openDrawer(id) {
 		document.querySelectorAll(".drawer-mask").forEach(function (el) {
 			el.classList.remove("open");
@@ -5756,17 +6752,6 @@
 		if (!target) {
 			return;
 		}
-		if (select.value === "税号信息") {
-			target.className = "condition-target tax-info";
-			target.innerHTML =
-				'<div class="label"><span class="required">*</span>国家</div>' +
-				'<select class="field"><option selected>西班牙</option><option>德国</option><option>英国</option></select>' +
-				'<div class="label"><span class="required">*</span>税号类型</div>' +
-				'<select class="field"><option selected>VAT</option><option>本土税号</option></select>';
-			refreshCollaborationMatchTypeVisibility();
-			refreshAllReleaseFlowOptions();
-			return;
-		}
 		target.className = "condition-target";
 		target.innerHTML =
 			'<div class="label"><span class="required">*</span>关联流程</div>' +
@@ -5787,12 +6772,8 @@
 			return;
 		}
 		drawer.querySelectorAll(".control-relation-group").forEach(function (group) {
-			const conditionSelects = Array.from(group.querySelectorAll(".condition-type-select"));
-			const onlyTaxInfo = conditionSelects.length > 0 && conditionSelects.every(function (select) {
-				return select.value === "税号信息";
-			});
 			group.querySelectorAll(".match-type-field").forEach(function (field) {
-				field.classList.toggle("is-hidden", onlyTaxInfo);
+				field.classList.remove("is-hidden");
 			});
 		});
 	}
@@ -5819,13 +6800,6 @@
 		return '' +
 			'<div class="condition-action-head">' +
 				'<div class="condition-pill-block">' +
-					'<span class="label"><span class="required">*</span>完成条件</span>' +
-					'<div class="rule-pill-switch condition-type-switch">' +
-						'<span class="rule-pill-option active" data-condition-type="等待节点完成" onclick="setConditionType(this, \'等待节点完成\')">等待节点完成</span>' +
-						'<span class="rule-pill-option" data-condition-type="税号信息" onclick="setConditionType(this, \'税号信息\')">税号信息</span>' +
-					'</div>' +
-				'</div>' +
-				'<div class="condition-pill-block">' +
 					'<span class="label">是否资料同步</span>' +
 					'<div class="rule-pill-switch">' +
 						'<span class="rule-pill-option" onclick="toggleReleaseAction(this, true)">是</span>' +
@@ -5835,20 +6809,18 @@
 			'</div>';
 	}
 
-	function createConditionRowHtml(flowName, nodeName) {
+	function createRelationReadonlyHtml(flowName, nodeName) {
 		return '' +
-			'<div class="condition-row single-condition-row">' +
-				'<select class="field condition-type-select" onchange="updateConditionTarget(this)" style="display:none;"><option selected>等待节点完成</option><option>税号信息</option></select>' +
-				'<div class="condition-target">' +
-					'<div class="label"><span class="required">*</span>关联流程</div>' +
-					'<button type="button" class="field flow-select-field" data-flow-name="' + flowName + '" onclick="openFlowSelectModal(this)">' +
-						'<span class="flow-select-name">' + flowName + '</span>' +
-						'<span class="flow-select-arrow">⌄</span>' +
-					'</button>' +
-					'<div class="label"><span class="required">*</span>关联节点</div>' +
-					'<select class="field flow-node-select condition-node-select"><option selected>' + nodeName + '</option></select>' +
-				'</div>' +
+			'<div class="relation-readonly-grid">' +
+				'<div class="label"><span class="required">*</span>关联流程</div>' +
+				'<div class="readonly-value">' + flowName + '</div>' +
+				'<div class="label"><span class="required">*</span>关联节点</div>' +
+				'<div class="readonly-value">' + nodeName + '</div>' +
 			'</div>';
+	}
+
+	function createConditionRowHtml(flowName, nodeName) {
+		return "";
 	}
 
 	function createReleaseActionHtml() {
@@ -5858,26 +6830,22 @@
 					'<div class="release-action-map">' +
 						'<div class="release-map-panel">' +
 							'<div class="release-panel-head">' +
-								'<span>来源</span>' +
-								'<div class="rule-pill-switch release-source-switch">' +
-									'<span class="rule-pill-option" data-source="表单字段" onclick="updateReleaseSource(this, \'表单字段\')">表单字段</span>' +
-									'<span class="rule-pill-option active" data-source="税号信息" onclick="updateReleaseSource(this, \'税号信息\')">税号信息</span>' +
-								'</div>' +
+								'<span>读取字段</span>' +
 							'</div>' +
-							'<div class="release-field-grid release-source-fields tax-source">' +
+							'<div class="release-field-grid release-source-fields form-source">' +
 								'<div class="release-field-line">' +
-									'<div class="label">国家</div>' +
-									'<select class="field"><option selected>西班牙</option><option>德国</option><option>英国</option></select>' +
+									'<div class="label">读取流程</div>' +
+									'<select class="field release-source-flow-select" onchange="refreshReleaseFormOptions(this, \'source\')"></select>' +
 								'</div>' +
 								'<div class="release-field-line">' +
-									'<div class="label">税号类型</div>' +
-									'<select class="field"><option selected>VAT</option><option>本土税号</option></select>' +
+									'<div class="label">选择表单</div>' +
+									'<select class="field release-source-form-select"><option selected>主体资料表单</option><option>西班牙VAT注册资料表</option></select>' +
 								'</div>' +
 							'</div>' +
 						'</div>' +
 						'<div class="release-map-arrow"><span>写入</span></div>' +
 						'<div class="release-map-panel">' +
-							'<div class="release-panel-head"><span>表单字段</span></div>' +
+							'<div class="release-panel-head"><span>写入字段</span></div>' +
 							'<div class="release-field-grid">' +
 								'<div class="release-field-line">' +
 									'<div class="label">写入流程</div>' +
@@ -5885,14 +6853,14 @@
 								'</div>' +
 								'<div class="release-field-line">' +
 									'<div class="label">选择表单</div>' +
-								'<select class="field release-target-form-select" onchange="refreshReleaseTargetFieldOptions(this)"><option selected>西班牙VAT注册资料表</option><option>主体资料表单</option></select>' +
+								'<select class="field release-target-form-select" onchange="refreshReleaseTargetFieldOptions(this)"><option>西班牙VAT注册资料表</option><option selected>主体资料表单</option></select>' +
 								'</div>' +
 								'<div class="release-field-line">' +
 									'<div class="label">选择数据字段</div>' +
-									'<button type="button" class="field flow-select-field data-field-picker release-target-field-picker" data-field-names="西班牙VAT税号,本土税号" data-field-options="西班牙VAT税号,本土税号,税号备注" onclick="openDataFieldSelectModal(this)">' +
+									'<button type="button" class="field flow-select-field data-field-picker release-target-field-picker" data-field-names="公司名称,客户ID" data-field-options="公司名称,客户ID,法人姓名" onclick="openDataFieldSelectModal(this)">' +
 										'<span class="data-field-selected">' +
-											'<span class="flow-chip">西班牙VAT税号</span>' +
-											'<span class="flow-chip">本土税号</span>' +
+											'<span class="flow-chip">公司名称</span>' +
+											'<span class="flow-chip">客户ID</span>' +
 										'</span>' +
 										'<span class="flow-select-arrow">⌄</span>' +
 									'</button>' +
@@ -5905,22 +6873,17 @@
 	}
 
 	function createControlRelationGroupHtml(index, controlNodeName) {
+		const relatedFlowName = "西班牙海牙认证流程";
+		const relatedNodeName = "海牙认证完成";
 		return '' +
-			'<div class="rule-info-group control-relation-group" data-relation-index="' + index + '" data-control-node="' + controlNodeName + '">' +
+			'<div class="rule-info-group control-relation-group" data-relation-index="' + index + '" data-control-node="' + controlNodeName + '" data-related-flow="' + relatedFlowName + '" data-related-node="' + relatedNodeName + '">' +
 				'<div class="control-relation-head">' +
 					'<div class="control-relation-title">' + controlNodeName + '</div>' +
 					'<div class="control-relation-actions"></div>' +
 				'</div>' +
 				'<div class="condition-area">' +
+					createRelationReadonlyHtml(relatedFlowName, relatedNodeName) +
 					createConditionActionHeadHtml() +
-					createConditionRowHtml("西班牙海牙认证流程", "海牙认证完成") +
-					'<div class="match-type-block">' +
-						'<div class="label match-type-field"><span class="required">*</span>匹配方式</div>' +
-						'<select class="field match-type-field">' +
-							'<option selected>按公司+客户ID匹配流程</option>' +
-							'<option>增值服务与基础服务绑定</option>' +
-						'</select>' +
-					'</div>' +
 				'</div>' +
 				createReleaseActionHtml() +
 			'</div>';
@@ -5966,6 +6929,9 @@
 			flows.push(flowName);
 		});
 		const group = context && context.closest ? context.closest(".control-relation-group") : null;
+		if (group && group.dataset.relatedFlow) {
+			flows.push(group.dataset.relatedFlow);
+		}
 		const searchRoot = group || document.getElementById("collaborationRuleDrawer");
 		if (searchRoot) {
 			searchRoot.querySelectorAll(".condition-target .flow-select-field").forEach(function (flowField) {
@@ -6103,23 +7069,10 @@
 				option.classList.toggle("active", option.dataset.source === sourceType);
 			});
 		}
-		if (sourceType === "税号信息") {
-			sourceFields.className = "release-field-grid release-source-fields tax-source";
-			sourceFields.innerHTML =
-				'<div class="release-field-line">' +
-				'<div class="label">国家</div>' +
-				'<select class="field"><option selected>西班牙</option><option>德国</option><option>英国</option></select>' +
-				'</div>' +
-				'<div class="release-field-line">' +
-				'<div class="label">税号类型</div>' +
-				'<select class="field"><option selected>VAT</option><option>本土税号</option></select>' +
-				'</div>';
-			return;
-		}
 		sourceFields.className = "release-field-grid release-source-fields form-source";
 		sourceFields.innerHTML =
 			'<div class="release-field-line">' +
-			'<div class="label">来源流程</div>' +
+			'<div class="label">读取流程</div>' +
 			'<select class="field release-source-flow-select" onchange="refreshReleaseFormOptions(this, \'source\')"></select>' +
 			'</div>' +
 			'<div class="release-field-line">' +
@@ -6690,11 +7643,12 @@
 		trigger.textContent = isExpanded ? "›" : "⌄";
 	}
 
+	initFlowEditorDrag();
+	refreshRelatedNodeOptions();
+	refreshLineRelatedNodeOptions();
+	refreshFlowControlLine();
+
 </script>
 </body>
 </html>
-
-
-
-
 

@@ -1046,13 +1046,7 @@
 				</div>
 			</div>
 
-			<div class="bom-type-line">
-				<div>
-					<div class="bom-type-name">回收费额度</div>
-					<p class="hint" style="margin:6px 0 0">字段、必填规则、最大组数由后端配置返回。</p>
-				</div>
-				<button class="btn ghost" onclick="openConfigDrawer()">查看后端配置</button>
-			</div>
+			<div class="bom-type-line" hidden></div>
 
 			<div class="section-title">
 				<span>额度配置</span>
@@ -1555,14 +1549,9 @@
 	}
 
 	function renderBomTypeLine() {
-		const config = bomTypeConfigs[activeBomTypeCode];
-		document.querySelector("#bomDrawerMask .bom-type-line").innerHTML = `
-			<div>
-				<div class="bom-type-name">${config.name}</div>
-				<p class="hint" style="margin:6px 0 0">字段、必填规则、选项来源由后端配置返回。</p>
-			</div>
-			<button class="btn ghost" onclick="openConfigDrawer()">查看后端配置</button>
-		`;
+		const bomTypeLine = document.querySelector("#bomDrawerMask .bom-type-line");
+		bomTypeLine.innerHTML = "";
+		bomTypeLine.hidden = true;
 	}
 
 	function selectBomType(typeCode) {

@@ -1870,16 +1870,27 @@
 
 		.flow-node-connect {
 			margin-top: 8px;
+			margin-right: auto;
+			margin-left: auto;
+			width: 28px;
 			height: 28px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			border: 1px dashed #8f86e8;
-			border-radius: 3px;
+			border-radius: 50%;
 			background: #fff;
 			color: #5f56c6;
 			font-size: 12px;
 			cursor: pointer;
+		}
+
+		.flow-node-connect::before {
+			content: "";
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			background: currentColor;
 		}
 
 		.flow-node-connect:hover {
@@ -4181,7 +4192,7 @@
 					<div class="flow-node-head">关联流程节点 <span class="flow-node-close">×</span></div>
 					<div class="flow-node-desc" id="relatedFlowNodeFlow">西班牙海牙认证流程</div>
 					<div class="flow-node-action" id="relatedFlowNodeName">海牙认证完成</div>
-					<div class="flow-node-connect" onclick="startControlLineConnection(this, event)">控制：等待海牙完成</div>
+					<div class="flow-node-connect" title="选择控制节点" aria-label="选择控制节点" onclick="startControlLineConnection(this, event)"></div>
 				</div>
 			</div>
 		</div>
@@ -6034,7 +6045,7 @@
 			'<div class="flow-node-head">关联流程节点 <span class="flow-node-close">×</span></div>' +
 			'<div class="flow-node-desc">' + flowName + '</div>' +
 			'<div class="flow-node-action">' + nodeName + '</div>' +
-			'<div class="flow-node-connect" onclick="startControlLineConnection(this, event)">控制：等待海牙完成</div>';
+			'<div class="flow-node-connect" title="选择控制节点" aria-label="选择控制节点" onclick="startControlLineConnection(this, event)"></div>';
 		viewport.appendChild(relatedNode);
 		if (svg) {
 			const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -6286,7 +6297,8 @@
 			}
 			const connectButton = relatedNode.querySelector(".flow-node-connect");
 			if (connectButton && connectButton !== document.activeElement) {
-				connectButton.textContent = "控制：" + controlNodeName;
+				connectButton.title = "选择控制节点";
+				connectButton.setAttribute("aria-label", "选择控制节点");
 			}
 		});
 	}

@@ -1045,70 +1045,51 @@
 			overflow: auto;
 		}
 
-		.recycle-toolbar {
+		.recycle-batch-bar {
 			display: flex;
 			align-items: center;
-			justify-content: space-between;
+			flex-wrap: wrap;
+			gap: 10px;
 			margin-bottom: 12px;
-			color: var(--muted);
-			font-size: 13px;
-		}
-
-		.recycle-sku-list {
-			display: flex;
-			flex-direction: column;
-			gap: 12px;
-		}
-
-		.recycle-sku-card {
+			padding: 12px;
 			border: 1px solid #dbe3ea;
-			background: #fff;
-		}
-
-		.recycle-sku-header {
-			min-height: 44px;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			gap: 12px;
-			padding: 10px 12px;
-			border-bottom: 1px solid #eef2f5;
 			background: #f7f9fb;
 		}
 
-		.recycle-sku-title {
+		.recycle-batch-bar .select,
+		.recycle-batch-bar .input {
+			width: 140px;
 			min-width: 0;
+		}
+
+		.recycle-table table {
+			min-width: 1280px;
+		}
+
+		.recycle-table td {
+			height: auto;
+			min-height: 42px;
+			padding: 8px 10px;
+			white-space: normal;
+			overflow: visible;
+			text-overflow: clip;
+		}
+
+		.recycle-table .select,
+		.recycle-table .input {
+			width: 100%;
+			min-width: 0;
+		}
+
+		.recycle-sku-name {
 			font-weight: 600;
 			line-height: 1.5;
 		}
 
-		.recycle-group-grid {
-			display: grid;
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: 12px;
-			padding: 12px;
-		}
-
-		.recycle-group-box {
-			border: 1px solid #e1e7ed;
-			background: #fbfcfd;
-		}
-
-		.recycle-group-head {
-			height: 36px;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 0 10px;
-			border-bottom: 1px solid #edf1f5;
-			font-weight: 600;
-		}
-
-		.recycle-group-fields {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 10px;
-			padding: 10px;
+		.recycle-checkbox {
+			width: 16px;
+			height: 16px;
+			accent-color: var(--brand);
 		}
 
 		.limit-cell {
@@ -1480,11 +1461,45 @@
 			<button class="icon-btn" title="关闭" onclick="closeRecycleFeeDialog()">×</button>
 		</div>
 		<div class="recycle-dialog-body">
-			<div class="recycle-toolbar">
-				<span id="recycleProductName">商品名称：-</span>
-				<span id="recycleSkuCount">共 0 个 SKU</span>
+			<div class="recycle-batch-bar">
+				<label><input id="recycleSelectAll" class="recycle-checkbox" type="checkbox" onchange="toggleRecycleSelectAll(this.checked)"> 全选</label>
+				<span id="recycleSelectedCount">已选 0 个 SKU</span>
+				<select id="batchAnnualFeeYear" class="select"></select>
+				<input id="batchAmount" class="input" type="number" min="0" step="0.01" placeholder="金额">
+				<select id="batchCurrency" class="select"></select>
+				<select id="batchSource" class="select"></select>
+				<button class="btn ghost" onclick="applyRecycleBatch()">批量填充第一组</button>
+				<button class="btn" onclick="clearSelectedRecycleGroups()">清空所选</button>
 			</div>
-			<div id="recycleSkuList" class="recycle-sku-list"></div>
+			<div class="table-wrap recycle-table">
+				<table>
+					<colgroup>
+						<col style="width:52px">
+						<col style="width:260px">
+						<col style="width:90px">
+						<col style="width:80px">
+						<col style="width:150px">
+						<col style="width:130px">
+						<col style="width:130px">
+						<col style="width:170px">
+						<col style="width:150px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>选择</th>
+						<th>SKU / 规格</th>
+						<th>状态</th>
+						<th>额度组</th>
+						<th>回收费额度</th>
+						<th>金额</th>
+						<th>币种</th>
+						<th>回收费来源</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody id="recycleSkuList"></tbody>
+				</table>
+			</div>
 		</div>
 		<div class="recycle-dialog-footer">
 			<button class="btn" onclick="closeRecycleFeeDialog()">取消</button>
@@ -1597,6 +1612,7 @@
 
 	let publishSpecRows = [];
 	let recycleFeeDraft = {};
+	let recycleSelectedSkuIds = new Set();
 	let currentSpu = null;
 	let currentSku = null;
 	let editingGroups = [];
@@ -1844,6 +1860,7 @@ function cloneFeeGroups(groups) {
 
 function buildRecycleFeeDraft() {
 	recycleFeeDraft = {};
+	recycleSelectedSkuIds = new Set(publishSpecRows.map(row => row.id));
 	publishSpecRows.forEach(row => {
 		recycleFeeDraft[row.id] = cloneFeeGroups(skuBomStore[row.id] || []);
 	});
@@ -1856,9 +1873,8 @@ function openRecycleFeeDialog() {
 	}
 	syncPublishSpecSummary();
 	buildRecycleFeeDraft();
+	renderRecycleBatchControls();
 	renderRecycleFeeSkuList();
-	document.getElementById("recycleProductName").textContent = `商品名称：${getPublishProductName()}`;
-	document.getElementById("recycleSkuCount").textContent = `共 ${publishSpecRows.length} 个 SKU`;
 	document.getElementById("recycleFeeDialogMask").classList.add("open");
 	document.getElementById("recycleFeeDialogMask").setAttribute("aria-hidden", "false");
 }
@@ -1870,6 +1886,74 @@ function closeRecycleFeeDialog() {
 
 function updateRecycleGroup(skuId, index, field, value) {
 	recycleFeeDraft[skuId][index][field] = value;
+}
+
+function renderRecycleBatchControls() {
+	document.getElementById("batchAnnualFeeYear").innerHTML = optionHtml(bomConfig.years, "", "回收费额度");
+	document.getElementById("batchCurrency").innerHTML = optionHtml(bomConfig.currencies, "", "币种");
+	document.getElementById("batchSource").innerHTML = optionHtml(bomConfig.sources, "", "回收费来源");
+	updateRecycleSelectedState();
+}
+
+function updateRecycleSelectedState() {
+	const selectedCount = recycleSelectedSkuIds.size;
+	const selectAll = document.getElementById("recycleSelectAll");
+	document.getElementById("recycleSelectedCount").textContent = `已选 ${selectedCount} 个 SKU`;
+	selectAll.checked = publishSpecRows.length > 0 && selectedCount === publishSpecRows.length;
+	selectAll.indeterminate = selectedCount > 0 && selectedCount < publishSpecRows.length;
+}
+
+function toggleRecycleSelectAll(checked) {
+	recycleSelectedSkuIds = checked ? new Set(publishSpecRows.map(row => row.id)) : new Set();
+	renderRecycleFeeSkuList();
+}
+
+function toggleRecycleSku(skuId, checked) {
+	if (checked) {
+		recycleSelectedSkuIds.add(skuId);
+	} else {
+		recycleSelectedSkuIds.delete(skuId);
+	}
+	updateRecycleSelectedState();
+}
+
+function applyRecycleBatch() {
+	if (!recycleSelectedSkuIds.size) {
+		showToast("请先选择 SKU");
+		return;
+	}
+	const annualFeeYear = document.getElementById("batchAnnualFeeYear").value;
+	const amount = document.getElementById("batchAmount").value;
+	const currency = document.getElementById("batchCurrency").value;
+	const source = document.getElementById("batchSource").value;
+	if (!annualFeeYear && !amount && !currency && !source) {
+		showToast("请先填写批量内容");
+		return;
+	}
+	recycleSelectedSkuIds.forEach(skuId => {
+		const groups = recycleFeeDraft[skuId] || [createEmptyFeeGroup()];
+		const firstGroup = groups[0] || createEmptyFeeGroup();
+		if (annualFeeYear) firstGroup.annualFeeYear = annualFeeYear;
+		if (amount) firstGroup.amount = amount;
+		if (currency) firstGroup.currency = currency;
+		if (source) firstGroup.source = source;
+		groups[0] = firstGroup;
+		recycleFeeDraft[skuId] = groups;
+	});
+	renderRecycleFeeSkuList();
+	showToast("已批量填充");
+}
+
+function clearSelectedRecycleGroups() {
+	if (!recycleSelectedSkuIds.size) {
+		showToast("请先选择 SKU");
+		return;
+	}
+	recycleSelectedSkuIds.forEach(skuId => {
+		recycleFeeDraft[skuId] = [createEmptyFeeGroup()];
+	});
+	renderRecycleFeeSkuList();
+	showToast("已清空所选");
 }
 
 function addRecycleGroup(skuId) {
@@ -1895,57 +1979,58 @@ function removeRecycleGroup(skuId, index) {
 
 function renderRecycleFeeSkuList(errors = {}) {
 	const list = document.getElementById("recycleSkuList");
-	list.innerHTML = publishSpecRows.map(row => {
+	list.innerHTML = publishSpecRows.map((row, rowIndex) => {
 		const groups = recycleFeeDraft[row.id] || [createEmptyFeeGroup()];
-		const groupHtml = groups.map((group, index) => {
+		return groups.map((group, index) => {
 			const groupErrors = (errors[row.id] && errors[row.id][index]) || {};
+			const showSkuCell = index === 0;
 			return `
-				<div class="recycle-group-box">
-					<div class="recycle-group-head">
-						<span>额度组 ${index + 1}</span>
-						<button class="btn text" onclick="removeRecycleGroup('${row.id}', ${index})">删除</button>
-					</div>
-					<div class="recycle-group-fields">
-						<div class="form-item">
-							<label class="form-label"><span class="required">*</span>回收费额度</label>
-							<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'annualFeeYear', this.value)">
-								${optionHtml(bomConfig.years, group.annualFeeYear, "请选择回收费额度")}
-							</select>
-							<div class="error-text">${groupErrors.annualFeeYear || ""}</div>
-						</div>
-						<div class="form-item">
-							<label class="form-label"><span class="required">*</span>金额</label>
-							<input class="input" type="number" min="0" step="0.01" value="${escapeHtml(group.amount)}" placeholder="请输入金额" oninput="updateRecycleGroup('${row.id}', ${index}, 'amount', this.value)">
-							<div class="error-text">${groupErrors.amount || ""}</div>
-						</div>
-						<div class="form-item">
-							<label class="form-label"><span class="required">*</span>币种</label>
-							<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'currency', this.value)">
-								${optionHtml(bomConfig.currencies, group.currency, "请选择币种")}
-							</select>
-							<div class="error-text">${groupErrors.currency || ""}</div>
-						</div>
-						<div class="form-item">
-							<label class="form-label"><span class="required">*</span>回收费来源</label>
-							<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'source', this.value)">
-								${optionHtml(bomConfig.sources, group.source, "请选择回收费来源")}
-							</select>
-							<div class="error-text">${groupErrors.source || ""}</div>
-						</div>
-					</div>
-				</div>
+				<tr>
+					${showSkuCell ? `
+						<td rowspan="${groups.length}">
+							<input class="recycle-checkbox" type="checkbox" ${recycleSelectedSkuIds.has(row.id) ? "checked" : ""} onchange="toggleRecycleSku('${row.id}', this.checked)">
+						</td>
+						<td rowspan="${groups.length}">
+							<div class="recycle-sku-name">${escapeHtml(getPublishSpecSelectLabel(row))}</div>
+						</td>
+						<td rowspan="${groups.length}">
+							<span class="status-chip ${row.configuredGroups > 0 ? "done" : ""}">${getPublishSpecConfigText(row.id)}</span>
+						</td>
+					` : ""}
+					<td>额度组 ${index + 1}</td>
+					<td>
+						<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'annualFeeYear', this.value)">
+							${optionHtml(bomConfig.years, group.annualFeeYear, "请选择")}
+						</select>
+						<div class="error-text">${groupErrors.annualFeeYear || ""}</div>
+					</td>
+					<td>
+						<input class="input" type="number" min="0" step="0.01" value="${escapeHtml(group.amount)}" placeholder="金额" oninput="updateRecycleGroup('${row.id}', ${index}, 'amount', this.value)">
+						<div class="error-text">${groupErrors.amount || ""}</div>
+					</td>
+					<td>
+						<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'currency', this.value)">
+							${optionHtml(bomConfig.currencies, group.currency, "请选择")}
+						</select>
+						<div class="error-text">${groupErrors.currency || ""}</div>
+					</td>
+					<td>
+						<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'source', this.value)">
+							${optionHtml(bomConfig.sources, group.source, "请选择")}
+						</select>
+						<div class="error-text">${groupErrors.source || ""}</div>
+					</td>
+					<td>
+						<span class="actions">
+							${showSkuCell && groups.length < bomConfig.maxGroups ? `<span class="action-text" onclick="addRecycleGroup('${row.id}')">添加一组</span>` : ""}
+							<span class="action-text" onclick="removeRecycleGroup('${row.id}', ${index})">清空/删除</span>
+						</span>
+					</td>
+				</tr>
 			`;
 		}).join("");
-		return `
-			<div class="recycle-sku-card">
-				<div class="recycle-sku-header">
-					<div class="recycle-sku-title">${escapeHtml(getPublishSpecSelectLabel(row))}</div>
-					<button class="btn ghost" onclick="addRecycleGroup('${row.id}')" ${groups.length >= bomConfig.maxGroups ? "disabled" : ""}>添加一组</button>
-				</div>
-				<div class="recycle-group-grid">${groupHtml}</div>
-			</div>
-		`;
 	}).join("");
+	updateRecycleSelectedState();
 }
 
 function validateRecycleFeeDraft() {

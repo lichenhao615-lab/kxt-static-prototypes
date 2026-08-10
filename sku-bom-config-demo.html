@@ -995,6 +995,122 @@
 			font-weight: 600;
 		}
 
+		.recycle-dialog-mask {
+			position: fixed;
+			inset: 0;
+			z-index: 68;
+			display: none;
+			align-items: center;
+			justify-content: center;
+			background: rgba(15, 23, 42, .34);
+		}
+
+		.recycle-dialog-mask.open {
+			display: flex;
+		}
+
+		.recycle-dialog {
+			width: min(1180px, calc(100vw - 96px));
+			max-height: calc(100vh - 96px);
+			display: flex;
+			flex-direction: column;
+			background: #fff;
+			box-shadow: var(--shadow);
+		}
+
+		.recycle-dialog-header,
+		.recycle-dialog-footer {
+			height: 54px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 18px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.recycle-dialog-footer {
+			justify-content: flex-end;
+			gap: 10px;
+			border-top: 1px solid var(--line);
+			border-bottom: 0;
+		}
+
+		.recycle-dialog-title {
+			font-size: 16px;
+			font-weight: 600;
+		}
+
+		.recycle-dialog-body {
+			padding: 16px 18px 18px;
+			overflow: auto;
+		}
+
+		.recycle-toolbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 12px;
+			color: var(--muted);
+			font-size: 13px;
+		}
+
+		.recycle-sku-list {
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+		}
+
+		.recycle-sku-card {
+			border: 1px solid #dbe3ea;
+			background: #fff;
+		}
+
+		.recycle-sku-header {
+			min-height: 44px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 10px 12px;
+			border-bottom: 1px solid #eef2f5;
+			background: #f7f9fb;
+		}
+
+		.recycle-sku-title {
+			min-width: 0;
+			font-weight: 600;
+			line-height: 1.5;
+		}
+
+		.recycle-group-grid {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 12px;
+			padding: 12px;
+		}
+
+		.recycle-group-box {
+			border: 1px solid #e1e7ed;
+			background: #fbfcfd;
+		}
+
+		.recycle-group-head {
+			height: 36px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 10px;
+			border-bottom: 1px solid #edf1f5;
+			font-weight: 600;
+		}
+
+		.recycle-group-fields {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 10px;
+			padding: 10px;
+		}
+
 		.limit-cell {
 			display: inline-flex;
 			align-items: center;
@@ -1310,7 +1426,7 @@
 				</div>
 				<div class="attribute-line">
 					<span>回收费额度：</span>
-					<span class="attribute-note"><strong>作为商品属性项展示</strong>，不参与规格组合生成，生成规格后按规格逐条配置。</span>
+					<button class="btn ghost" type="button" onclick="openRecycleFeeDialog()">配置回收费额度</button>
 				</div>
 				<div class="attribute-line">
 					<button class="btn ghost" onclick="generatePublishSpecs()">生成商品规格</button>
@@ -1355,6 +1471,26 @@
 			<button class="btn primary">确定</button>
 		</div>
 	</aside>
+</div>
+
+<div id="recycleFeeDialogMask" class="recycle-dialog-mask" aria-hidden="true">
+	<div class="recycle-dialog" role="dialog" aria-modal="true" aria-labelledby="recycleFeeDialogTitle">
+		<div class="recycle-dialog-header">
+			<div id="recycleFeeDialogTitle" class="recycle-dialog-title">回收费额度配置</div>
+			<button class="icon-btn" title="关闭" onclick="closeRecycleFeeDialog()">×</button>
+		</div>
+		<div class="recycle-dialog-body">
+			<div class="recycle-toolbar">
+				<span id="recycleProductName">商品名称：-</span>
+				<span id="recycleSkuCount">共 0 个 SKU</span>
+			</div>
+			<div id="recycleSkuList" class="recycle-sku-list"></div>
+		</div>
+		<div class="recycle-dialog-footer">
+			<button class="btn" onclick="closeRecycleFeeDialog()">取消</button>
+			<button class="btn primary" onclick="saveRecycleFeeDialog()">保存</button>
+		</div>
+	</div>
 </div>
 
 <div id="bomDrawerMask" class="drawer-mask" aria-hidden="true">
@@ -1460,6 +1596,7 @@
 	};
 
 	let publishSpecRows = [];
+	let recycleFeeDraft = {};
 	let currentSpu = null;
 	let currentSku = null;
 	let editingGroups = [];
@@ -1649,7 +1786,6 @@ function renderPublishSpecTable() {
 			<td><input class="table-input" value="${escapeHtml(row.productId)}" oninput="updatePublishSpecField('${row.id}', 'productId', this.value)"></td>
 			<td>
 				<span class="actions">
-					<span class="action-text" onclick="openBomDrawer('${row.id}')">配置</span>
 					<span class="action-text" onclick="removePublishSpec('${row.id}')">删除</span>
 				</span>
 			</td>
@@ -1696,6 +1832,176 @@ function generatePublishSpecs(showSuccess = true) {
 	if (showSuccess) {
 		showToast("已生成商品规格");
 	}
+}
+
+function createEmptyFeeGroup() {
+	return { annualFeeYear: "", amount: "", currency: "", source: "" };
+}
+
+function cloneFeeGroups(groups) {
+	return groups.length ? groups.map(group => ({ ...group })) : [createEmptyFeeGroup()];
+}
+
+function buildRecycleFeeDraft() {
+	recycleFeeDraft = {};
+	publishSpecRows.forEach(row => {
+		recycleFeeDraft[row.id] = cloneFeeGroups(skuBomStore[row.id] || []);
+	});
+}
+
+function openRecycleFeeDialog() {
+	if (!publishSpecRows.length) {
+		showToast("请先生成商品规格");
+		return;
+	}
+	syncPublishSpecSummary();
+	buildRecycleFeeDraft();
+	renderRecycleFeeSkuList();
+	document.getElementById("recycleProductName").textContent = `商品名称：${getPublishProductName()}`;
+	document.getElementById("recycleSkuCount").textContent = `共 ${publishSpecRows.length} 个 SKU`;
+	document.getElementById("recycleFeeDialogMask").classList.add("open");
+	document.getElementById("recycleFeeDialogMask").setAttribute("aria-hidden", "false");
+}
+
+function closeRecycleFeeDialog() {
+	document.getElementById("recycleFeeDialogMask").classList.remove("open");
+	document.getElementById("recycleFeeDialogMask").setAttribute("aria-hidden", "true");
+}
+
+function updateRecycleGroup(skuId, index, field, value) {
+	recycleFeeDraft[skuId][index][field] = value;
+}
+
+function addRecycleGroup(skuId) {
+	const groups = recycleFeeDraft[skuId] || [];
+	if (groups.length >= bomConfig.maxGroups) {
+		return;
+	}
+	groups.push(createEmptyFeeGroup());
+	recycleFeeDraft[skuId] = groups;
+	renderRecycleFeeSkuList();
+}
+
+function removeRecycleGroup(skuId, index) {
+	const groups = recycleFeeDraft[skuId] || [];
+	if (groups.length <= 1) {
+		recycleFeeDraft[skuId] = [createEmptyFeeGroup()];
+	} else {
+		groups.splice(index, 1);
+		recycleFeeDraft[skuId] = groups;
+	}
+	renderRecycleFeeSkuList();
+}
+
+function renderRecycleFeeSkuList(errors = {}) {
+	const list = document.getElementById("recycleSkuList");
+	list.innerHTML = publishSpecRows.map(row => {
+		const groups = recycleFeeDraft[row.id] || [createEmptyFeeGroup()];
+		const groupHtml = groups.map((group, index) => {
+			const groupErrors = (errors[row.id] && errors[row.id][index]) || {};
+			return `
+				<div class="recycle-group-box">
+					<div class="recycle-group-head">
+						<span>额度组 ${index + 1}</span>
+						<button class="btn text" onclick="removeRecycleGroup('${row.id}', ${index})">删除</button>
+					</div>
+					<div class="recycle-group-fields">
+						<div class="form-item">
+							<label class="form-label"><span class="required">*</span>回收费额度</label>
+							<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'annualFeeYear', this.value)">
+								${optionHtml(bomConfig.years, group.annualFeeYear, "请选择回收费额度")}
+							</select>
+							<div class="error-text">${groupErrors.annualFeeYear || ""}</div>
+						</div>
+						<div class="form-item">
+							<label class="form-label"><span class="required">*</span>金额</label>
+							<input class="input" type="number" min="0" step="0.01" value="${escapeHtml(group.amount)}" placeholder="请输入金额" oninput="updateRecycleGroup('${row.id}', ${index}, 'amount', this.value)">
+							<div class="error-text">${groupErrors.amount || ""}</div>
+						</div>
+						<div class="form-item">
+							<label class="form-label"><span class="required">*</span>币种</label>
+							<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'currency', this.value)">
+								${optionHtml(bomConfig.currencies, group.currency, "请选择币种")}
+							</select>
+							<div class="error-text">${groupErrors.currency || ""}</div>
+						</div>
+						<div class="form-item">
+							<label class="form-label"><span class="required">*</span>回收费来源</label>
+							<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'source', this.value)">
+								${optionHtml(bomConfig.sources, group.source, "请选择回收费来源")}
+							</select>
+							<div class="error-text">${groupErrors.source || ""}</div>
+						</div>
+					</div>
+				</div>
+			`;
+		}).join("");
+		return `
+			<div class="recycle-sku-card">
+				<div class="recycle-sku-header">
+					<div class="recycle-sku-title">${escapeHtml(getPublishSpecSelectLabel(row))}</div>
+					<button class="btn ghost" onclick="addRecycleGroup('${row.id}')" ${groups.length >= bomConfig.maxGroups ? "disabled" : ""}>添加一组</button>
+				</div>
+				<div class="recycle-group-grid">${groupHtml}</div>
+			</div>
+		`;
+	}).join("");
+}
+
+function validateRecycleFeeDraft() {
+	const errors = {};
+	let valid = true;
+	Object.entries(recycleFeeDraft).forEach(([skuId, groups]) => {
+		groups.forEach((group, index) => {
+			if (isEmptyGroup(group)) {
+				return;
+			}
+			const groupErrors = {};
+			if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费额度";
+			if (!group.amount) {
+				groupErrors.amount = "请输入金额";
+			} else if (Number(group.amount) < 0) {
+				groupErrors.amount = "金额不能小于0";
+			}
+			if (!group.currency) groupErrors.currency = "请选择币种";
+			if (!group.source) groupErrors.source = "请选择回收费来源";
+			if (Object.keys(groupErrors).length) {
+				valid = false;
+				if (!errors[skuId]) {
+					errors[skuId] = {};
+				}
+				errors[skuId][index] = groupErrors;
+			}
+		});
+	});
+	return { valid, errors };
+}
+
+function saveRecycleFeeDialog() {
+	const result = validateRecycleFeeDraft();
+	if (!result.valid) {
+		renderRecycleFeeSkuList(result.errors);
+		showToast("请完善必填字段");
+		return;
+	}
+	Object.entries(recycleFeeDraft).forEach(([skuId, groups]) => {
+		const saved = groups
+			.filter(group => !isEmptyGroup(group))
+			.map(group => ({
+				annualFeeYear: group.annualFeeYear,
+				amount: Number(group.amount).toFixed(2),
+				currency: group.currency,
+				source: group.source
+			}));
+		skuBomStore[skuId] = saved;
+		const row = publishSpecRows.find(item => item.id === skuId);
+		if (row) {
+			row.configuredGroups = saved.length;
+		}
+	});
+	renderPublishSpecTable();
+	closeRecycleFeeDialog();
+	showToast("保存成功");
 }
 
 function findConfigTargetById(id) {

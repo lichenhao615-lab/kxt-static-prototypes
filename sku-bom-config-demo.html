@@ -1464,11 +1464,15 @@
 			<div class="recycle-batch-bar">
 				<label><input id="recycleSelectAll" class="recycle-checkbox" type="checkbox" onchange="toggleRecycleSelectAll(this.checked)"> 全选</label>
 				<span id="recycleSelectedCount">已选 0 个 SKU</span>
+				<select id="batchTargetGroup" class="select">
+					<option value="0">填充到：额度组1</option>
+					<option value="1">填充到：额度组2</option>
+				</select>
 				<select id="batchAnnualFeeYear" class="select"></select>
 				<input id="batchAmount" class="input" type="number" min="0" step="0.01" placeholder="金额">
 				<select id="batchCurrency" class="select"></select>
 				<select id="batchSource" class="select"></select>
-				<button class="btn ghost" onclick="applyRecycleBatch()">批量填充第一组</button>
+				<button class="btn ghost" onclick="applyRecycleBatch()">批量填充</button>
 				<button class="btn" onclick="clearSelectedRecycleGroups()">清空所选</button>
 			</div>
 			<div class="table-wrap recycle-table">
@@ -1926,22 +1930,26 @@ function applyRecycleBatch() {
 	const amount = document.getElementById("batchAmount").value;
 	const currency = document.getElementById("batchCurrency").value;
 	const source = document.getElementById("batchSource").value;
+	const targetGroupIndex = Number(document.getElementById("batchTargetGroup").value);
 	if (!annualFeeYear && !amount && !currency && !source) {
 		showToast("请先填写批量内容");
 		return;
 	}
 	recycleSelectedSkuIds.forEach(skuId => {
 		const groups = recycleFeeDraft[skuId] || [createEmptyFeeGroup()];
-		const firstGroup = groups[0] || createEmptyFeeGroup();
-		if (annualFeeYear) firstGroup.annualFeeYear = annualFeeYear;
-		if (amount) firstGroup.amount = amount;
-		if (currency) firstGroup.currency = currency;
-		if (source) firstGroup.source = source;
-		groups[0] = firstGroup;
+		while (groups.length <= targetGroupIndex && groups.length < bomConfig.maxGroups) {
+			groups.push(createEmptyFeeGroup());
+		}
+		const targetGroup = groups[targetGroupIndex] || createEmptyFeeGroup();
+		if (annualFeeYear) targetGroup.annualFeeYear = annualFeeYear;
+		if (amount) targetGroup.amount = amount;
+		if (currency) targetGroup.currency = currency;
+		if (source) targetGroup.source = source;
+		groups[targetGroupIndex] = targetGroup;
 		recycleFeeDraft[skuId] = groups;
 	});
 	renderRecycleFeeSkuList();
-	showToast("已批量填充");
+	showToast(`已批量填充额度组 ${targetGroupIndex + 1}`);
 }
 
 function clearSelectedRecycleGroups() {

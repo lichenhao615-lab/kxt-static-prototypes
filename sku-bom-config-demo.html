@@ -1337,7 +1337,7 @@
 				</div>
 				<div class="publish-row">
 					<div class="publish-label"><span class="required">*</span> 商品类型：</div>
-					<select class="select">
+					<select id="publishProductType" class="select" onchange="refreshRecycleDefaults()">
 						<option>基础服务-&gt;注册+申报</option>
 						<option>基础服务-&gt;转代理+申报</option>
 					</select>
@@ -1345,10 +1345,12 @@
 				<div class="publish-row">
 					<div class="publish-label"><span class="required">*</span> 国家：</div>
 					<div class="inline-fields">
-						<select class="select">
+						<select id="publishCountry" class="select" onchange="refreshRecycleDefaults()">
 							<option>意大利</option>
 							<option>西班牙</option>
 							<option>比利时</option>
+							<option>英国</option>
+							<option>美国</option>
 						</select>
 						<select class="select">
 							<option>欧洲</option>
@@ -1366,9 +1368,9 @@
 						<select class="select">
 							<option>服务年限</option>
 						</select>
-						<select class="select">
-							<option>2026年</option>
-							<option>2027年</option>
+						<select id="publishServiceYear" class="select" onchange="refreshRecycleDefaults()">
+							<option value="2026">2026年</option>
+							<option value="2027">2027年</option>
 						</select>
 					</div>
 				</div>
@@ -1406,8 +1408,8 @@
 					<span class="link" onclick="togglePublishGroup('publishB2b', false)">全不选</span>
 				</div>
 				<div class="attribute-line">
-					<span>回收费额度：</span>
-					<button class="btn ghost" type="button" onclick="openRecycleFeeDialog()">配置回收费额度</button>
+					<span>回收费年份：</span>
+					<button class="btn ghost" type="button" onclick="openRecycleFeeDialog()">配置回收费年份</button>
 				</div>
 				<div class="attribute-line">
 					<button class="btn ghost" onclick="generatePublishSpecs()">生成商品规格</button>
@@ -1437,7 +1439,7 @@
 							<th><span class="required">*</span> 回收费</th>
 							<th><span class="required">*</span> 官费</th>
 							<th>售价</th>
-							<th>回收费额度</th>
+							<th>回收费年份</th>
 							<th>产品ID</th>
 							<th>操作</th>
 						</tr>
@@ -1457,7 +1459,7 @@
 <div id="recycleFeeDialogMask" class="recycle-dialog-mask" aria-hidden="true">
 	<div class="recycle-dialog" role="dialog" aria-modal="true" aria-labelledby="recycleFeeDialogTitle">
 		<div class="recycle-dialog-header">
-			<div id="recycleFeeDialogTitle" class="recycle-dialog-title">回收费额度配置</div>
+			<div id="recycleFeeDialogTitle" class="recycle-dialog-title">回收费年份配置</div>
 			<button class="icon-btn" title="关闭" onclick="closeRecycleFeeDialog()">×</button>
 		</div>
 		<div class="recycle-dialog-body">
@@ -1494,7 +1496,7 @@
 						<th>SKU / 规格</th>
 						<th>状态</th>
 						<th>额度组</th>
-						<th>回收费额度</th>
+						<th>回收费年份</th>
 						<th>金额</th>
 						<th>币种</th>
 						<th>回收费来源</th>
@@ -1535,7 +1537,7 @@
 			</div>
 
 			<div class="section-title">
-				<span>回收费额度</span>
+				<span>回收费年份</span>
 				<button id="addGroupBtn" class="btn ghost" onclick="addFeeGroup()">添加一组</button>
 			</div>
 			<div id="feeGroupList" class="group-list"></div>
@@ -1552,12 +1554,20 @@
 <script>
 	const bomConfig = {
 		bomTypeCode: "RECYCLE_FEE_LIMIT",
-		bomTypeName: "回收费额度",
+		bomTypeName: "回收费年份",
 		bindLevel: "SKU",
 		maxGroups: 2,
 		years: ["2026", "2027"],
 		currencies: ["EUR", "USD", "GBP"],
 		sources: ["追溯费用", "新注册/转代理", "申报罚金", "真实回收", "续费基础", "续费补差", "超额申报"]
+	};
+
+	const declarationCurrencyByCountry = {
+		"意大利": "EUR",
+		"西班牙": "EUR",
+		"比利时": "EUR",
+		"英国": "GBP",
+		"美国": "USD"
 	};
 
 	const spuRows = [
@@ -1630,12 +1640,59 @@
 	}
 
 	function optionHtml(options, selected, placeholder) {
+		const normalizedOptions = selected && !options.includes(selected) ? [selected, ...options] : options;
 		const list = [`<option value="">${placeholder}</option>`];
-		options.forEach(item => {
+		normalizedOptions.forEach(item => {
 			const checked = item === selected ? " selected" : "";
 			list.push(`<option value="${escapeHtml(item)}"${checked}>${escapeHtml(item)}</option>`);
 		});
 		return list.join("");
+	}
+
+	function getSelectValue(id) {
+		const el = document.getElementById(id);
+		return el ? el.value : "";
+	}
+
+	function queryDeclarationCurrency(country) {
+		return declarationCurrencyByCountry[country] || "EUR";
+	}
+
+	function getPublishProductType() {
+		return getSelectValue("publishProductType");
+	}
+
+	function getPublishCountry() {
+		return getSelectValue("publishCountry");
+	}
+
+	function getDefaultCurrency() {
+		return queryDeclarationCurrency(getPublishCountry());
+	}
+
+	function getRecycleYearOptions() {
+		const year = getSelectValue("publishServiceYear");
+		return year ? [year] : bomConfig.years;
+	}
+
+	function getDefaultRecycleYear() {
+		return getRecycleYearOptions()[0] || "";
+	}
+
+	function getCurrencyOptions() {
+		const currency = getDefaultCurrency();
+		return currency ? [currency] : bomConfig.currencies;
+	}
+
+	function getDefaultRecycleSource() {
+		return getPublishProductType().startsWith("基础服务") ? "新注册/转代理" : "";
+	}
+
+	function refreshRecycleDefaults() {
+		if (document.getElementById("recycleFeeDialogMask").classList.contains("open")) {
+			renderRecycleBatchControls();
+			renderRecycleFeeSkuList();
+		}
 	}
 
 	function renderSpuTable() {
@@ -1711,7 +1768,8 @@
 		`).join("");
 	}
 
-	function openPublishDialog() {
+function openPublishDialog() {
+	refreshRecycleDefaults();
 	if (!publishSpecRows.length) {
 		generatePublishSpecs(false);
 	} else {
@@ -1855,7 +1913,12 @@ function generatePublishSpecs(showSuccess = true) {
 }
 
 function createEmptyFeeGroup() {
-	return { annualFeeYear: "", amount: "", currency: "", source: "" };
+	return {
+		annualFeeYear: getDefaultRecycleYear(),
+		amount: "",
+		currency: getDefaultCurrency(),
+		source: getDefaultRecycleSource()
+	};
 }
 
 function cloneFeeGroups(groups) {
@@ -1893,9 +1956,9 @@ function updateRecycleGroup(skuId, index, field, value) {
 }
 
 function renderRecycleBatchControls() {
-	document.getElementById("batchAnnualFeeYear").innerHTML = optionHtml(bomConfig.years, "", "回收费额度");
-	document.getElementById("batchCurrency").innerHTML = optionHtml(bomConfig.currencies, "", "币种");
-	document.getElementById("batchSource").innerHTML = optionHtml(bomConfig.sources, "", "回收费来源");
+	document.getElementById("batchAnnualFeeYear").innerHTML = optionHtml(getRecycleYearOptions(), getDefaultRecycleYear(), "回收费年份");
+	document.getElementById("batchCurrency").innerHTML = optionHtml(getCurrencyOptions(), getDefaultCurrency(), "币种");
+	document.getElementById("batchSource").innerHTML = optionHtml(bomConfig.sources, getDefaultRecycleSource(), "回收费来源");
 	updateRecycleSelectedState();
 }
 
@@ -2008,7 +2071,7 @@ function renderRecycleFeeSkuList(errors = {}) {
 					<td>额度组 ${index + 1}</td>
 					<td>
 						<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'annualFeeYear', this.value)">
-							${optionHtml(bomConfig.years, group.annualFeeYear, "请选择")}
+							${optionHtml(getRecycleYearOptions(), group.annualFeeYear || getDefaultRecycleYear(), "请选择")}
 						</select>
 						<div class="error-text">${groupErrors.annualFeeYear || ""}</div>
 					</td>
@@ -2018,13 +2081,13 @@ function renderRecycleFeeSkuList(errors = {}) {
 					</td>
 					<td>
 						<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'currency', this.value)">
-							${optionHtml(bomConfig.currencies, group.currency, "请选择")}
+							${optionHtml(getCurrencyOptions(), group.currency || getDefaultCurrency(), "请选择")}
 						</select>
 						<div class="error-text">${groupErrors.currency || ""}</div>
 					</td>
 					<td>
 						<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'source', this.value)">
-							${optionHtml(bomConfig.sources, group.source, "请选择")}
+							${optionHtml(bomConfig.sources, group.source || getDefaultRecycleSource(), "请选择")}
 						</select>
 						<div class="error-text">${groupErrors.source || ""}</div>
 					</td>
@@ -2049,8 +2112,11 @@ function validateRecycleFeeDraft() {
 			if (isEmptyGroup(group)) {
 				return;
 			}
+			group.annualFeeYear = group.annualFeeYear || getDefaultRecycleYear();
+			group.currency = group.currency || getDefaultCurrency();
+			group.source = group.source || getDefaultRecycleSource();
 			const groupErrors = {};
-			if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费额度";
+			if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费年份";
 			if (!group.amount) {
 				groupErrors.amount = "请输入金额";
 			} else if (Number(group.amount) < 0) {
@@ -2081,10 +2147,10 @@ function saveRecycleFeeDialog() {
 		const saved = groups
 			.filter(group => !isEmptyGroup(group))
 			.map(group => ({
-				annualFeeYear: group.annualFeeYear,
+				annualFeeYear: group.annualFeeYear || getDefaultRecycleYear(),
 				amount: Number(group.amount).toFixed(2),
-				currency: group.currency,
-				source: group.source
+				currency: group.currency || getDefaultCurrency(),
+				source: group.source || getDefaultRecycleSource()
 			}));
 		skuBomStore[skuId] = saved;
 		const row = publishSpecRows.find(item => item.id === skuId);
@@ -2122,7 +2188,7 @@ function loadDrawerSku(skuId) {
 	const saved = skuBomStore[skuId] || [];
 	editingGroups = saved.length
 		? saved.map(item => ({ ...item }))
-		: [{ annualFeeYear: "", amount: "", currency: "", source: "" }];
+		: [createEmptyFeeGroup()];
 	document.getElementById("currentSpuId").textContent = currentSku.name;
 	document.getElementById("currentSkuName").textContent = currentSku.spec;
 	document.getElementById("bomDrawerSub").textContent = `${currentSku.id}`;
@@ -2165,9 +2231,9 @@ function renderFeeGroups(errors = {}) {
 				</div>
 				<div class="fee-group-body">
 					<div class="form-item">
-						<label class="form-label"><span class="required">*</span>回收费额度</label>
+						<label class="form-label"><span class="required">*</span>回收费年份</label>
 						<select class="select" onchange="updateGroup(${index}, 'annualFeeYear', this.value)">
-							${optionHtml(bomConfig.years, group.annualFeeYear, "请选择回收费额度")}
+							${optionHtml(getRecycleYearOptions(), group.annualFeeYear || getDefaultRecycleYear(), "请选择回收费年份")}
 						</select>
 						<div class="error-text">${groupErrors.annualFeeYear || ""}</div>
 					</div>
@@ -2179,14 +2245,14 @@ function renderFeeGroups(errors = {}) {
 					<div class="form-item">
 						<label class="form-label"><span class="required">*</span>币种</label>
 						<select class="select" onchange="updateGroup(${index}, 'currency', this.value)">
-							${optionHtml(bomConfig.currencies, group.currency, "请选择币种")}
+							${optionHtml(getCurrencyOptions(), group.currency || getDefaultCurrency(), "请选择币种")}
 						</select>
 						<div class="error-text">${groupErrors.currency || ""}</div>
 					</div>
 					<div class="form-item">
 						<label class="form-label"><span class="required">*</span>回收费来源</label>
 						<select class="select" onchange="updateGroup(${index}, 'source', this.value)">
-							${optionHtml(bomConfig.sources, group.source, "请选择回收费来源")}
+							${optionHtml(bomConfig.sources, group.source || getDefaultRecycleSource(), "请选择回收费来源")}
 						</select>
 						<div class="error-text">${groupErrors.source || ""}</div>
 					</div>
@@ -2203,7 +2269,7 @@ function updateGroup(index, field, value) {
 
 function removeFeeGroup(index) {
 	if (editingGroups.length <= 1) {
-		editingGroups = [{ annualFeeYear: "", amount: "", currency: "", source: "" }];
+		editingGroups = [createEmptyFeeGroup()];
 	} else {
 		editingGroups.splice(index, 1);
 	}
@@ -2214,12 +2280,12 @@ function addFeeGroup() {
 	if (editingGroups.length >= bomConfig.maxGroups) {
 		return;
 	}
-	editingGroups.push({ annualFeeYear: "", amount: "", currency: "", source: "" });
+	editingGroups.push(createEmptyFeeGroup());
 	renderFeeGroups();
 }
 
 function isEmptyGroup(group) {
-	return !group.annualFeeYear && !group.amount && !group.currency && !group.source;
+	return !group.amount;
 }
 
 function validateGroups() {
@@ -2229,8 +2295,11 @@ function validateGroups() {
 		if (isEmptyGroup(group)) {
 			return;
 		}
+		group.annualFeeYear = group.annualFeeYear || getDefaultRecycleYear();
+		group.currency = group.currency || getDefaultCurrency();
+		group.source = group.source || getDefaultRecycleSource();
 		const groupErrors = {};
-		if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费额度";
+		if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费年份";
 		if (!group.amount) {
 			groupErrors.amount = "请输入金额";
 		} else if (Number(group.amount) < 0) {
@@ -2256,10 +2325,10 @@ function saveBomConfig() {
 	const saved = editingGroups
 		.filter(group => !isEmptyGroup(group))
 		.map(group => ({
-			annualFeeYear: group.annualFeeYear,
+			annualFeeYear: group.annualFeeYear || getDefaultRecycleYear(),
 			amount: Number(group.amount).toFixed(2),
-			currency: group.currency,
-			source: group.source
+			currency: group.currency || getDefaultCurrency(),
+			source: group.source || getDefaultRecycleSource()
 		}));
 	skuBomStore[currentSku.id] = saved;
 	currentSku.configuredGroups = saved.length;

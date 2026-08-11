@@ -298,6 +298,47 @@
 			margin: 12px 0 42px;
 		}
 
+		.field-group {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.field-label {
+			color: #17212b;
+			white-space: nowrap;
+		}
+
+		.price-table table {
+			min-width: 1420px;
+		}
+
+		.drawer.price-drawer {
+			width: min(1320px, calc(100vw - 300px));
+		}
+
+		.price-drawer .drawer-body {
+			padding-top: 26px;
+		}
+
+		.price-section-title {
+			margin: 4px 0 18px;
+			font-weight: 600;
+		}
+
+		.price-edit-table table {
+			min-width: 1260px;
+		}
+
+		.price-drawer .recycle-table table {
+			min-width: 1060px;
+		}
+
+		.price-edit-table th,
+		.price-edit-table td {
+			height: 54px;
+		}
+
 		.table-wrap {
 			overflow: auto;
 			border: 1px solid #edf0f2;
@@ -1222,11 +1263,13 @@
 		<div class="menu-row small">属性管理 <span>⌄</span></div>
 		<div class="menu-row small">费用管理 <span>⌄</span></div>
 		<div class="menu-row small">商品管理 <span>⌃</span></div>
-		<div class="menu-row small active">基础商品管理</div>
+		<div class="menu-row small">基础商品管理</div>
 		<div class="menu-row small">增值商品管理</div>
 		<div class="menu-row small">追加商品管理</div>
 		<div class="menu-row small">续费商品管理</div>
-		<div class="menu-row">价格管理 <span>⌄</span></div>
+		<div class="menu-row" style="color: var(--brand-dark);">价格管理 <span>⌃</span></div>
+		<div class="menu-row small active">商品价格</div>
+		<div class="menu-row small">续费价格</div>
 		<div class="menu-row">流程管理 <span>⌄</span></div>
 		<div class="menu-row">知识产权 <span>⌄</span></div>
 	</aside>
@@ -1235,91 +1278,87 @@
 		<div class="page-tabs">
 			<div class="page-tab">履约工作台 ×</div>
 			<div class="page-tab">基础服务 ×</div>
-			<div class="page-tab active">基础商品管理 ×</div>
+			<div class="page-tab active">商品价格 ×</div>
 		</div>
 
 		<section class="workspace">
 			<div class="toolbar">
-				<input class="input" placeholder="商品ID/商品名称/添加人/更新人">
-				<select class="select">
+				<label class="field-group"><span class="field-label">商品ID</span><input class="input" placeholder="商品ID"></label>
+				<label class="field-group"><span class="field-label">商品名称</span><input class="input" placeholder="商品名称"></label>
+				<label class="field-group"><span class="field-label">类目</span><select class="select">
+					<option>请选择类目</option>
+					<option>EPR-&gt;包装法</option>
+					<option>VAT-&gt;VAT</option>
+					<option>知识产权-&gt;发明专利</option>
+				</select></label>
+				<label class="field-group"><span class="field-label">类型</span><select class="select">
+					<option>请选择类型</option>
+					<option>基础服务-&gt;注册+申报</option>
+					<option>基础服务-&gt;注册</option>
+					<option>基础服务-&gt;翻译</option>
+				</select></label>
+				<label class="field-group"><span class="field-label">国家</span><select class="select">
+					<option>请选择国家</option>
+					<option>德国</option>
+					<option>西班牙</option>
+					<option>美国</option>
+				</select></label>
+				<label class="field-group"><span class="field-label">状态</span><select class="select">
+					<option>请选择状态</option>
 					<option>上架</option>
 					<option>下架</option>
-				</select>
-				<select class="select">
-					<option>请选择类目</option>
-					<option>EPR &gt; 包装法</option>
-					<option>VAT &gt; VAT</option>
-				</select>
-				<select class="select">
-					<option>请选择类型</option>
-					<option>基础服务 &gt; 注册+申报</option>
-					<option>基础服务 &gt; 转代理+申报</option>
-				</select>
-				<select class="select">
-					<option>请选择国家</option>
-					<option>西班牙</option>
-					<option>比利时</option>
-					<option>英国</option>
-				</select>
-				<select class="select">
-					<option>服务类型</option>
-					<option>SaaS服务</option>
-					<option>专属顾问</option>
-				</select>
+				</select></label>
 				<button class="btn primary">查询</button>
 				<button class="btn">重置</button>
 			</div>
 
 			<div class="action-buttons">
-				<button class="btn primary" onclick="openPublishDialog()">发布商品</button>
-				<button class="btn primary">客户端排序</button>
+				<button class="btn primary">导入底价</button>
+				<button class="btn primary">导出底价</button>
 			</div>
 
-			<div class="table-wrap">
+			<div class="table-wrap price-table">
 				<table>
 					<colgroup>
 						<col style="width:80px">
-						<col style="width:210px">
-						<col style="width:95px">
-						<col style="width:150px">
+						<col style="width:300px">
 						<col style="width:160px">
-						<col style="width:120px">
-						<col style="width:100px">
-						<col style="width:150px">
+						<col style="width:170px">
+						<col style="width:90px">
+						<col style="width:190px">
+						<col style="width:80px">
+						<col style="width:80px">
 						<col style="width:110px">
 						<col style="width:150px">
-						<col style="width:80px">
-						<col style="width:245px">
+						<col style="width:250px">
 					</colgroup>
 					<thead>
 					<tr>
 						<th>商品ID</th>
 						<th>商品名称</th>
-						<th>商品规格</th>
 						<th>所属类目</th>
 						<th>所属类型</th>
 						<th>所属国家</th>
-						<th>添加人</th>
-						<th>添加时间</th>
+						<th>上架渠道</th>
 						<th>状态</th>
-						<th>是否可售</th>
-						<th>商品类型</th>
+						<th>更新人</th>
+						<th>最近更新时间</th>
 						<th>操作</th>
 					</tr>
 					</thead>
-					<tbody id="spuTableBody"></tbody>
+					<tbody id="priceTableBody"></tbody>
 				</table>
 			</div>
 
 			<div class="pagination">
-				<span>共有 1544 条数据</span>
+				<span>共有 2176 条数据</span>
 				<span class="page-box active">1</span>
 				<span class="page-box">2</span>
 				<span class="page-box">3</span>
 				<span class="page-box">4</span>
 				<span class="page-box">5</span>
 				<span>...</span>
-				<span class="page-box">155</span>
+				<span class="page-box">218</span>
 				<select class="select" style="min-width:90px;height:30px">
 					<option>10条/页</option>
 				</select>
@@ -1380,6 +1419,112 @@
 			</div>
 		</section>
 	</main>
+</div>
+
+<div id="priceEditDrawerMask" class="drawer-mask" aria-hidden="true">
+	<aside class="drawer price-drawer" role="dialog" aria-modal="true" aria-labelledby="priceEditDrawerTitle">
+		<div class="drawer-header">
+			<div class="drawer-title" id="priceEditDrawerTitle">规格信息 <span id="priceEditDrawerSub" class="drawer-subtitle"></span></div>
+			<button class="icon-btn" title="关闭" onclick="closePriceEditDrawer()">×</button>
+		</div>
+		<div class="drawer-body">
+			<div class="price-section-title">规格信息</div>
+			<div class="table-wrap price-edit-table">
+				<table>
+					<colgroup>
+						<col style="width:80px">
+						<col style="width:220px">
+						<col style="width:150px">
+						<col style="width:150px">
+						<col style="width:150px">
+						<col style="width:110px">
+						<col style="width:150px">
+						<col style="width:150px">
+						<col style="width:150px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th rowspan="2">SKUID</th>
+						<th rowspan="2">规格</th>
+						<th colspan="4">售价</th>
+						<th colspan="3">销售底价</th>
+					</tr>
+					<tr>
+						<th><span class="required">*</span> 基础服务费</th>
+						<th><span class="required">*</span> 回收费</th>
+						<th><span class="required">*</span> 官费</th>
+						<th>售价</th>
+						<th><span class="required">*</span> 基础服务费</th>
+						<th>回收费</th>
+						<th>官费</th>
+					</tr>
+					</thead>
+					<tbody id="priceEditSkuList"></tbody>
+				</table>
+			</div>
+		</div>
+		<div class="drawer-footer">
+			<button class="btn" onclick="closePriceEditDrawer()">取消</button>
+			<button class="btn primary" onclick="savePriceEditDrawer()">确认</button>
+		</div>
+	</aside>
+</div>
+
+<div id="priceRecycleDrawerMask" class="drawer-mask" aria-hidden="true">
+	<aside class="drawer price-drawer" role="dialog" aria-modal="true" aria-labelledby="priceRecycleDrawerTitle">
+		<div class="drawer-header">
+			<div class="drawer-title" id="priceRecycleDrawerTitle">回收费额度管理 <span id="priceRecycleDrawerSub" class="drawer-subtitle"></span></div>
+			<button class="icon-btn" title="关闭" onclick="closePriceRecycleDrawer()">×</button>
+		</div>
+		<div class="drawer-body">
+			<div class="recycle-batch-bar">
+				<label><input id="priceRecycleSelectAll" class="recycle-checkbox" type="checkbox" onchange="togglePriceRecycleSelectAll(this.checked)"> 全选</label>
+				<span id="priceRecycleSelectedCount">已选 0 个 SKU</span>
+				<select id="priceBatchTargetGroup" class="select">
+					<option value="0">填充到：额度组 1</option>
+					<option value="1">填充到：额度组 2</option>
+				</select>
+				<select id="priceBatchAnnualFeeYear" class="select"></select>
+				<input id="priceBatchAmount" class="input" type="number" min="0" step="0.01" placeholder="金额">
+				<select id="priceBatchCurrency" class="select"></select>
+				<select id="priceBatchSource" class="select"></select>
+				<button class="btn ghost" onclick="applyPriceRecycleBatch()">批量填充</button>
+			</div>
+			<div class="table-wrap recycle-table">
+				<table>
+					<colgroup>
+						<col style="width:46px">
+						<col style="width:250px">
+						<col style="width:80px">
+						<col style="width:70px">
+						<col style="width:130px">
+						<col style="width:110px">
+						<col style="width:110px">
+						<col style="width:150px">
+						<col style="width:110px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>选</th>
+						<th>SKU / 规格</th>
+						<th>状态</th>
+						<th>额度组</th>
+						<th>回收费额度</th>
+						<th>金额</th>
+						<th>币种</th>
+						<th>回收费来源</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody id="priceRecycleSkuList"></tbody>
+				</table>
+			</div>
+		</div>
+		<div class="drawer-footer">
+			<button class="btn" onclick="closePriceRecycleDrawer()">取消</button>
+			<button class="btn primary" onclick="savePriceRecycleDrawer()">确认</button>
+		</div>
+	</aside>
 </div>
 
 <div id="publishMask" class="publish-mask" aria-hidden="true">
@@ -1531,7 +1676,6 @@
 						<select id="batchCurrency" class="select"></select>
 						<select id="batchSource" class="select"></select>
 						<button class="btn ghost" onclick="applyRecycleBatch()">批量填充</button>
-						<button class="btn" onclick="clearSelectedRecycleGroups()">清空所选</button>
 					</div>
 					<div class="table-wrap recycle-table">
 						<table>
@@ -1626,10 +1770,13 @@
 
 	const declarationCurrencyByCountry = {
 		"意大利": "EUR",
+		"德国": "EUR",
 		"西班牙": "EUR",
 		"比利时": "EUR",
 		"英国": "GBP",
-		"美国": "USD"
+		"美国": "USD",
+		"日本": "USD",
+		"全球": "USD"
 	};
 
 	const spuRows = [
@@ -1679,6 +1826,18 @@
 		]
 	};
 
+	const priceRows = [
+		{ id: "12844", name: "德国包装法注册+申报（2026年度，50kg纸...）", category: "EPR->包装法", type: "基础服务->注册+申报", country: "德国", channel: "CRM", status: "上架", updater: "黎广", updatedAt: "2026-08-10 19:15:44" },
+		{ id: "12558", name: "西班牙VAT注册+申报（香港海牙）", category: "VAT->VAT", type: "基础服务->注册+申报", country: "西班牙", channel: "PC（客户端）,小程序,CRM", status: "上架", updater: "黎广", updatedAt: "2026-08-10 18:41:27" },
+		{ id: "12823", name: "美国发明专利授权", category: "知识产权->外观专利", type: "基础服务->注册", country: "美国", channel: "-", status: "下架", updater: "方小路", updatedAt: "2026-08-10 15:54:19" },
+		{ id: "12851", name: "美国发明专利授权", category: "知识产权->发明专利", type: "基础服务->注册", country: "美国", channel: "CRM", status: "上架", updater: "方小路", updatedAt: "2026-08-10 15:54:04" },
+		{ id: "11510", name: "美国发明专利注册", category: "知识产权->外观专利", type: "基础服务->注册", country: "美国", channel: "-", status: "下架", updater: "方小路", updatedAt: "2026-08-10 15:51:18" },
+		{ id: "11920", name: "发明专利和实用新型专利文书翻译", category: "知识产权->发明专利", type: "基础服务->翻译", country: "全球", channel: "CRM", status: "上架", updater: "方小路", updatedAt: "2026-08-10 15:50:54" },
+		{ id: "12828", name: "美国发明专利注册", category: "知识产权->发明专利", type: "基础服务->注册", country: "美国", channel: "CRM", status: "上架", updater: "方小路", updatedAt: "2026-08-10 15:50:47" },
+		{ id: "11521", name: "德国WEEE转入+申报（2026年度）", category: "EPR->电气法", type: "基础服务->注册+申报", country: "德国", channel: "-", status: "下架", updater: "黎广", updatedAt: "2026-08-10 10:27:29" },
+		{ id: "11129", name: "日本商标交易", category: "知识产权->商标交易", type: "基础服务->商标交易", country: "日本", channel: "CRM", status: "上架", updater: "徐如珍", updatedAt: "2026-08-10 09:43:59" }
+	];
+
 	const publishSpecCodeMap = {
 		"SaaS服务": "saas",
 		"专属顾问服务": "advisor",
@@ -1693,6 +1852,9 @@
 	let currentSpu = null;
 	let currentSku = null;
 	let editingGroups = [];
+	let currentPriceSpu = null;
+	let priceRecycleDraft = {};
+	let priceRecycleSelectedSkuIds = new Set();
 
 	function escapeHtml(value) {
 		return String(value ?? "")
@@ -1756,6 +1918,370 @@
 			renderRecycleBatchControls();
 			renderRecycleFeeSkuList();
 		}
+	}
+
+	function getSkuRowsBySpu(spuId) {
+		return skuRows.filter(row => row.spuId === spuId);
+	}
+
+	function getPriceRow(spuId) {
+		return priceRows.find(row => row.id === spuId) || priceRows[0];
+	}
+
+	function ensurePriceFloorFields(row) {
+		if (!row.floorBaseFee) {
+			row.floorBaseFee = String(Math.max(Number(row.baseFee || 0) - 180, 0));
+			row.floorRecycleFee = row.recycleFee || "0";
+			row.floorOfficialFee = row.officialFee || "0";
+		}
+		return row;
+	}
+
+	function renderPriceTable() {
+		document.getElementById("priceTableBody").innerHTML = priceRows.map(row => `
+			<tr>
+				<td>${row.id}</td>
+				<td title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</td>
+				<td>${escapeHtml(row.category)}</td>
+				<td>${escapeHtml(row.type)}</td>
+				<td>${escapeHtml(row.country)}</td>
+				<td title="${escapeHtml(row.channel)}">${escapeHtml(row.channel)}</td>
+				<td><span class="${row.status === "上架" ? "status-green" : "status-red"}">${row.status}</span></td>
+				<td>${escapeHtml(row.updater)}</td>
+				<td>${escapeHtml(row.updatedAt)}</td>
+				<td>
+					<span class="actions">
+						<span class="action-text" onclick="showToast('详情沿用现有商品价格详情页')">详情</span>
+						<span class="action-text" onclick="openPriceEditDrawer('${row.id}')">编辑</span>
+						<span class="action-text" onclick="showToast('价格记录沿用现有记录页')">价格记录</span>
+						<span class="action-text" onclick="openPriceRecycleDrawer('${row.id}')">回收费额度管理</span>
+					</span>
+				</td>
+			</tr>
+		`).join("");
+	}
+
+	function openPriceEditDrawer(spuId) {
+		currentPriceSpu = getPriceRow(spuId);
+		document.getElementById("priceEditDrawerSub").textContent = `${currentPriceSpu.id} / ${currentPriceSpu.name}`;
+		renderPriceEditSkuList();
+		document.getElementById("priceEditDrawerMask").classList.add("open");
+		document.getElementById("priceEditDrawerMask").setAttribute("aria-hidden", "false");
+	}
+
+	function closePriceEditDrawer() {
+		document.getElementById("priceEditDrawerMask").classList.remove("open");
+		document.getElementById("priceEditDrawerMask").setAttribute("aria-hidden", "true");
+	}
+
+	function updatePriceSkuField(skuId, field, value) {
+		const row = skuRows.find(item => item.id === skuId);
+		if (row) {
+			ensurePriceFloorFields(row)[field] = value;
+		}
+	}
+
+	function renderPriceEditSkuList() {
+		const rows = getSkuRowsBySpu(currentPriceSpu.id).map(ensurePriceFloorFields);
+		const body = document.getElementById("priceEditSkuList");
+		if (!rows.length) {
+			body.innerHTML = `<tr><td colspan="9"><div class="empty">当前商品暂无 SKU 示例数据</div></td></tr>`;
+			return;
+		}
+		body.innerHTML = rows.map(row => `
+			<tr>
+				<td>${row.id}</td>
+				<td class="left" title="${escapeHtml(row.spec)}">${escapeHtml(row.spec)}</td>
+				<td><input class="table-input" value="${escapeHtml(row.baseFee)}" oninput="updatePriceSkuField('${row.id}', 'baseFee', this.value)"></td>
+				<td><input class="table-input" value="${escapeHtml(row.recycleFee)}" oninput="updatePriceSkuField('${row.id}', 'recycleFee', this.value)"></td>
+				<td><input class="table-input" value="${escapeHtml(row.officialFee)}" oninput="updatePriceSkuField('${row.id}', 'officialFee', this.value)"></td>
+				<td><input class="table-input" value="${escapeHtml(row.price)}" oninput="updatePriceSkuField('${row.id}', 'price', this.value)"></td>
+				<td><input class="table-input" value="${escapeHtml(row.floorBaseFee)}" oninput="updatePriceSkuField('${row.id}', 'floorBaseFee', this.value)"></td>
+				<td><input class="table-input" value="${escapeHtml(row.floorRecycleFee)}" oninput="updatePriceSkuField('${row.id}', 'floorRecycleFee', this.value)"></td>
+				<td><input class="table-input" value="${escapeHtml(row.floorOfficialFee)}" oninput="updatePriceSkuField('${row.id}', 'floorOfficialFee', this.value)"></td>
+			</tr>
+		`).join("");
+	}
+
+	function savePriceEditDrawer() {
+		closePriceEditDrawer();
+		showToast("价格信息已保存");
+	}
+
+	function extractYearFromText(text) {
+		const match = String(text || "").match(/20\d{2}/);
+		return match ? match[0] : "";
+	}
+
+	function getPriceRecycleYearOptions() {
+		const rows = currentPriceSpu ? getSkuRowsBySpu(currentPriceSpu.id) : [];
+		const years = Array.from(new Set(rows.map(row => extractYearFromText(`${row.spec} ${row.name}`)).filter(Boolean)));
+		return years.length ? years : bomConfig.years;
+	}
+
+	function getPriceDefaultRecycleYear() {
+		return getPriceRecycleYearOptions()[0] || "";
+	}
+
+	function getPriceDefaultCurrency() {
+		return queryDeclarationCurrency(currentPriceSpu && currentPriceSpu.country);
+	}
+
+	function getPriceCurrencyOptions() {
+		const currency = getPriceDefaultCurrency();
+		return currency ? [currency] : bomConfig.currencies;
+	}
+
+	function getPriceDefaultRecycleSource() {
+		return currentPriceSpu && currentPriceSpu.type.startsWith("基础服务") ? "新注册/转代理" : "";
+	}
+
+	function createPriceEmptyFeeGroup() {
+		return {
+			annualFeeYear: getPriceDefaultRecycleYear(),
+			amount: "",
+			currency: getPriceDefaultCurrency(),
+			source: getPriceDefaultRecycleSource()
+		};
+	}
+
+	function clonePriceFeeGroups(groups) {
+		return groups.length ? groups.map(group => ({ ...group })) : [createPriceEmptyFeeGroup()];
+	}
+
+	function getPriceSkuConfigText(skuId) {
+		const groups = skuBomStore[skuId] || [];
+		return groups.length ? `已配置 ${groups.length} 组` : "未配置";
+	}
+
+	function getPriceSkuLabel(row) {
+		return `${row.id} / ${row.spec}`;
+	}
+
+	function buildPriceRecycleDraft() {
+		const rows = getSkuRowsBySpu(currentPriceSpu.id);
+		priceRecycleDraft = {};
+		priceRecycleSelectedSkuIds = new Set(rows.map(row => row.id));
+		rows.forEach(row => {
+			priceRecycleDraft[row.id] = clonePriceFeeGroups(skuBomStore[row.id] || []);
+		});
+	}
+
+	function renderPriceRecycleBatchControls() {
+		document.getElementById("priceBatchAnnualFeeYear").innerHTML = optionHtml(getPriceRecycleYearOptions(), getPriceDefaultRecycleYear(), "回收费额度");
+		document.getElementById("priceBatchCurrency").innerHTML = optionHtml(getPriceCurrencyOptions(), getPriceDefaultCurrency(), "币种");
+		document.getElementById("priceBatchSource").innerHTML = optionHtml(bomConfig.sources, getPriceDefaultRecycleSource(), "回收费来源");
+		updatePriceRecycleSelectedState();
+	}
+
+	function openPriceRecycleDrawer(spuId) {
+		currentPriceSpu = getPriceRow(spuId);
+		document.getElementById("priceRecycleDrawerSub").textContent = `${currentPriceSpu.id} / ${currentPriceSpu.name}`;
+		buildPriceRecycleDraft();
+		renderPriceRecycleBatchControls();
+		renderPriceRecycleSkuList();
+		document.getElementById("priceRecycleDrawerMask").classList.add("open");
+		document.getElementById("priceRecycleDrawerMask").setAttribute("aria-hidden", "false");
+	}
+
+	function closePriceRecycleDrawer() {
+		document.getElementById("priceRecycleDrawerMask").classList.remove("open");
+		document.getElementById("priceRecycleDrawerMask").setAttribute("aria-hidden", "true");
+	}
+
+	function updatePriceRecycleSelectedState() {
+		const rows = currentPriceSpu ? getSkuRowsBySpu(currentPriceSpu.id) : [];
+		const selectedCount = priceRecycleSelectedSkuIds.size;
+		const selectAll = document.getElementById("priceRecycleSelectAll");
+		document.getElementById("priceRecycleSelectedCount").textContent = `已选 ${selectedCount} 个 SKU`;
+		selectAll.checked = rows.length > 0 && selectedCount === rows.length;
+		selectAll.indeterminate = selectedCount > 0 && selectedCount < rows.length;
+	}
+
+	function togglePriceRecycleSelectAll(checked) {
+		const rows = getSkuRowsBySpu(currentPriceSpu.id);
+		priceRecycleSelectedSkuIds = checked ? new Set(rows.map(row => row.id)) : new Set();
+		renderPriceRecycleSkuList();
+	}
+
+	function togglePriceRecycleSku(skuId, checked) {
+		if (checked) {
+			priceRecycleSelectedSkuIds.add(skuId);
+		} else {
+			priceRecycleSelectedSkuIds.delete(skuId);
+		}
+		updatePriceRecycleSelectedState();
+	}
+
+	function updatePriceRecycleGroup(skuId, index, field, value) {
+		priceRecycleDraft[skuId][index][field] = value;
+	}
+
+	function applyPriceRecycleBatch() {
+		if (!priceRecycleSelectedSkuIds.size) {
+			showToast("请先选择 SKU");
+			return;
+		}
+		const annualFeeYear = document.getElementById("priceBatchAnnualFeeYear").value;
+		const amount = document.getElementById("priceBatchAmount").value;
+		const currency = document.getElementById("priceBatchCurrency").value;
+		const source = document.getElementById("priceBatchSource").value;
+		const targetGroupIndex = Number(document.getElementById("priceBatchTargetGroup").value);
+		if (!annualFeeYear && !amount && !currency && !source) {
+			showToast("请先填写批量内容");
+			return;
+		}
+		priceRecycleSelectedSkuIds.forEach(skuId => {
+			const groups = priceRecycleDraft[skuId] || [createPriceEmptyFeeGroup()];
+			while (groups.length <= targetGroupIndex && groups.length < bomConfig.maxGroups) {
+				groups.push(createPriceEmptyFeeGroup());
+			}
+			const targetGroup = groups[targetGroupIndex] || createPriceEmptyFeeGroup();
+			if (annualFeeYear) targetGroup.annualFeeYear = annualFeeYear;
+			if (amount) targetGroup.amount = amount;
+			if (currency) targetGroup.currency = currency;
+			if (source) targetGroup.source = source;
+			groups[targetGroupIndex] = targetGroup;
+			priceRecycleDraft[skuId] = groups;
+		});
+		renderPriceRecycleSkuList();
+		showToast(`已批量填充额度组 ${targetGroupIndex + 1}`);
+	}
+
+	function addPriceRecycleGroup(skuId) {
+		const groups = priceRecycleDraft[skuId] || [];
+		if (groups.length >= bomConfig.maxGroups) {
+			return;
+		}
+		groups.push(createPriceEmptyFeeGroup());
+		priceRecycleDraft[skuId] = groups;
+		renderPriceRecycleSkuList();
+	}
+
+	function removePriceRecycleGroup(skuId, index) {
+		const groups = priceRecycleDraft[skuId] || [];
+		if (groups.length <= 1) {
+			showToast("至少保留一组额度");
+			return;
+		}
+		groups.splice(index, 1);
+		priceRecycleDraft[skuId] = groups;
+		renderPriceRecycleSkuList();
+	}
+
+	function renderPriceRecycleSkuList(errors = {}) {
+		const list = document.getElementById("priceRecycleSkuList");
+		const rows = getSkuRowsBySpu(currentPriceSpu.id);
+		if (!rows.length) {
+			list.innerHTML = `<tr><td colspan="9"><div class="empty">当前商品暂无 SKU 示例数据</div></td></tr>`;
+			updatePriceRecycleSelectedState();
+			return;
+		}
+		list.innerHTML = rows.map(row => {
+			const groups = priceRecycleDraft[row.id] || [createPriceEmptyFeeGroup()];
+			return groups.map((group, index) => {
+				const groupErrors = (errors[row.id] && errors[row.id][index]) || {};
+				const showSkuCell = index === 0;
+				return `
+					<tr>
+						${showSkuCell ? `
+							<td rowspan="${groups.length}">
+								<input class="recycle-checkbox" type="checkbox" ${priceRecycleSelectedSkuIds.has(row.id) ? "checked" : ""} onchange="togglePriceRecycleSku('${row.id}', this.checked)">
+							</td>
+							<td rowspan="${groups.length}">
+								<div class="recycle-sku-name">${escapeHtml(getPriceSkuLabel(row))}</div>
+							</td>
+							<td rowspan="${groups.length}">
+								<span class="status-chip ${(skuBomStore[row.id] || []).length > 0 ? "done" : ""}">${getPriceSkuConfigText(row.id)}</span>
+							</td>
+						` : ""}
+						<td>额度组 ${index + 1}</td>
+						<td>
+							<select class="select" onchange="updatePriceRecycleGroup('${row.id}', ${index}, 'annualFeeYear', this.value)">
+								${optionHtml(getPriceRecycleYearOptions(), group.annualFeeYear || getPriceDefaultRecycleYear(), "请选择")}
+							</select>
+							<div class="error-text">${groupErrors.annualFeeYear || ""}</div>
+						</td>
+						<td>
+							<input class="input" type="number" min="0" step="0.01" value="${escapeHtml(group.amount)}" placeholder="金额" oninput="updatePriceRecycleGroup('${row.id}', ${index}, 'amount', this.value)">
+							<div class="error-text">${groupErrors.amount || ""}</div>
+						</td>
+						<td>
+							<select class="select" onchange="updatePriceRecycleGroup('${row.id}', ${index}, 'currency', this.value)">
+								${optionHtml(getPriceCurrencyOptions(), group.currency || getPriceDefaultCurrency(), "请选择")}
+							</select>
+							<div class="error-text">${groupErrors.currency || ""}</div>
+						</td>
+						<td>
+							<select class="select" onchange="updatePriceRecycleGroup('${row.id}', ${index}, 'source', this.value)">
+								${optionHtml(bomConfig.sources, group.source || getPriceDefaultRecycleSource(), "请选择")}
+							</select>
+							<div class="error-text">${groupErrors.source || ""}</div>
+						</td>
+						<td>
+							<span class="actions">
+								${showSkuCell && groups.length < bomConfig.maxGroups ? `<span class="action-text" onclick="addPriceRecycleGroup('${row.id}')">添加一组</span>` : ""}
+								${groups.length > 1 ? `<span class="action-text" onclick="removePriceRecycleGroup('${row.id}', ${index})">删除</span>` : ""}
+							</span>
+						</td>
+					</tr>
+				`;
+			}).join("");
+		}).join("");
+		updatePriceRecycleSelectedState();
+	}
+
+	function validatePriceRecycleDraft() {
+		const errors = {};
+		let valid = true;
+		Object.entries(priceRecycleDraft).forEach(([skuId, groups]) => {
+			groups.forEach((group, index) => {
+				if (isEmptyGroup(group)) {
+					return;
+				}
+				group.annualFeeYear = group.annualFeeYear || getPriceDefaultRecycleYear();
+				group.currency = group.currency || getPriceDefaultCurrency();
+				group.source = group.source || getPriceDefaultRecycleSource();
+				const groupErrors = {};
+				if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费额度";
+				if (!group.amount) {
+					groupErrors.amount = "请输入金额";
+				} else if (Number(group.amount) < 0) {
+					groupErrors.amount = "金额不能小于0";
+				}
+				if (!group.currency) groupErrors.currency = "请选择币种";
+				if (!group.source) groupErrors.source = "请选择回收费来源";
+				if (Object.keys(groupErrors).length) {
+					valid = false;
+					if (!errors[skuId]) {
+						errors[skuId] = {};
+					}
+					errors[skuId][index] = groupErrors;
+				}
+			});
+		});
+		return { valid, errors };
+	}
+
+	function savePriceRecycleDrawer() {
+		const result = validatePriceRecycleDraft();
+		if (!result.valid) {
+			renderPriceRecycleSkuList(result.errors);
+			showToast("请完善必填字段");
+			return;
+		}
+		Object.entries(priceRecycleDraft).forEach(([skuId, groups]) => {
+			skuBomStore[skuId] = groups
+				.filter(group => !isEmptyGroup(group))
+				.map(group => ({
+					annualFeeYear: group.annualFeeYear || getPriceDefaultRecycleYear(),
+					amount: Number(group.amount).toFixed(2),
+					currency: group.currency || getPriceDefaultCurrency(),
+					source: group.source || getPriceDefaultRecycleSource()
+				}));
+		});
+		closePriceRecycleDrawer();
+		showToast("回收费额度已保存");
 	}
 
 	function renderSpuTable() {
@@ -2113,18 +2639,6 @@ function applyRecycleBatch() {
 	showToast(`已批量填充额度组 ${targetGroupIndex + 1}`);
 }
 
-function clearSelectedRecycleGroups() {
-	if (!recycleSelectedSkuIds.size) {
-		showToast("请先选择 SKU");
-		return;
-	}
-	recycleSelectedSkuIds.forEach(skuId => {
-		recycleFeeDraft[skuId] = [createEmptyFeeGroup()];
-	});
-	renderRecycleFeeSkuList();
-	showToast("已清空所选");
-}
-
 function addRecycleGroup(skuId) {
 	const groups = recycleFeeDraft[skuId] || [];
 	if (groups.length >= bomConfig.maxGroups) {
@@ -2138,7 +2652,8 @@ function addRecycleGroup(skuId) {
 function removeRecycleGroup(skuId, index) {
 	const groups = recycleFeeDraft[skuId] || [];
 	if (groups.length <= 1) {
-		recycleFeeDraft[skuId] = [createEmptyFeeGroup()];
+		showToast("至少保留一组额度");
+		return;
 	} else {
 		groups.splice(index, 1);
 		recycleFeeDraft[skuId] = groups;
@@ -2192,7 +2707,7 @@ function renderRecycleFeeSkuList(errors = {}) {
 					<td>
 						<span class="actions">
 							${showSkuCell && groups.length < bomConfig.maxGroups ? `<span class="action-text" onclick="addRecycleGroup('${row.id}')">添加一组</span>` : ""}
-							<span class="action-text" onclick="removeRecycleGroup('${row.id}', ${index})">清空/删除</span>
+							${groups.length > 1 ? `<span class="action-text" onclick="removeRecycleGroup('${row.id}', ${index})">删除</span>` : ""}
 						</span>
 					</td>
 				</tr>
@@ -2325,7 +2840,7 @@ function renderFeeGroups(errors = {}) {
 			<div class="fee-group" data-index="${index}">
 				<div class="fee-group-header">
 					<span>额度组 ${index + 1}</span>
-					<button class="btn text" onclick="removeFeeGroup(${index})">删除</button>
+					${editingGroups.length > 1 ? `<button class="btn text" onclick="removeFeeGroup(${index})">删除</button>` : ""}
 				</div>
 				<div class="fee-group-body">
 					<div class="form-item">
@@ -2367,7 +2882,8 @@ function updateGroup(index, field, value) {
 
 function removeFeeGroup(index) {
 	if (editingGroups.length <= 1) {
-		editingGroups = [createEmptyFeeGroup()];
+		showToast("至少保留一组额度");
+		return;
 	} else {
 		editingGroups.splice(index, 1);
 	}
@@ -2444,7 +2960,7 @@ function showToast(message) {
 	showToast.timer = window.setTimeout(() => toast.classList.remove("open"), 1800);
 }
 
-renderSpuTable();
+renderPriceTable();
 </script>
 </body>
 </html>

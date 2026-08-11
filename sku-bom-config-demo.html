@@ -1006,11 +1006,17 @@
 			min-height: 54px;
 			display: flex;
 			align-items: center;
-			justify-content: space-between;
+			justify-content: flex-start;
 			gap: 18px;
 			padding: 12px 16px;
 			border-bottom: 1px solid var(--line);
 			background: #fbfcfd;
+		}
+
+		.recycle-inline-title-row {
+			display: flex;
+			align-items: center;
+			gap: 12px;
 		}
 
 		.recycle-inline-title {
@@ -1561,6 +1567,17 @@
 					<tbody id="priceEditSkuList"></tbody>
 				</table>
 			</div>
+			<div class="recycle-inline-section">
+				<div class="recycle-inline-header">
+					<div>
+						<div class="recycle-inline-title-row">
+							<div class="recycle-inline-title">回收费额度管理</div>
+							<button class="btn ghost" type="button" onclick="openPriceRecycleFromEdit()">配置回收费额度</button>
+						</div>
+						<div class="recycle-inline-note">按当前商品已生成 SKU 维护回收费额度，支持批量填充额度组 1 / 额度组 2。</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div class="drawer-footer">
 			<button class="btn" onclick="closePriceEditDrawer()">取消</button>
@@ -1754,13 +1771,15 @@
 			<div class="recycle-inline-section">
 				<div class="recycle-inline-header">
 					<div>
-						<div class="recycle-inline-title">回收费额度管理</div>
+						<div class="recycle-inline-title-row">
+							<div class="recycle-inline-title">回收费额度管理</div>
+							<button id="recycleManageSwitchBtn" class="switch-button" type="button" onclick="toggleRecycleManage()">
+								<span id="recycleManageSwitch" class="switch"></span>
+								<span id="recycleManageSwitchText">关闭</span>
+							</button>
+						</div>
 						<div class="recycle-inline-note">放在商品规格下方，开启后按已生成 SKU 直接维护回收费额度。</div>
 					</div>
-					<button id="recycleManageSwitchBtn" class="switch-button" type="button" onclick="toggleRecycleManage()">
-						<span id="recycleManageSwitch" class="switch"></span>
-						<span id="recycleManageSwitchText">关闭</span>
-					</button>
 				</div>
 				<div id="recycleManagePanel" class="recycle-manage-panel">
 					<div class="recycle-batch-bar">
@@ -2121,6 +2140,14 @@
 	function savePriceEditDrawer() {
 		closePriceEditDrawer();
 		showToast("价格信息已保存");
+	}
+
+	function openPriceRecycleFromEdit() {
+		if (!currentPriceSpu) {
+			showToast("请先选择商品");
+			return;
+		}
+		openPriceRecycleDrawer(currentPriceSpu.id);
 	}
 
 	function extractYearFromText(text) {

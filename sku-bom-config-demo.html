@@ -955,6 +955,68 @@
 			font-size: 12px;
 		}
 
+		.recycle-inline-section {
+			margin-top: 16px;
+			border: 1px solid #d8dde2;
+			background: #fff;
+		}
+
+		.recycle-inline-header {
+			min-height: 54px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 18px;
+			padding: 12px 16px;
+			border-bottom: 1px solid var(--line);
+			background: #fbfcfd;
+		}
+
+		.recycle-inline-title {
+			font-weight: 600;
+			color: #17212b;
+		}
+
+		.recycle-inline-note {
+			margin-top: 4px;
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.switch-button {
+			height: 32px;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 0 12px;
+			border: 1px solid #d7dfe6;
+			border-radius: 2px;
+			background: #fff;
+			color: #263442;
+		}
+
+		.switch-button.on {
+			border-color: var(--brand);
+			color: var(--brand-dark);
+			background: var(--brand-soft);
+		}
+
+		.recycle-manage-panel {
+			display: none;
+			padding: 14px 16px 16px;
+		}
+
+		.recycle-manage-panel.open {
+			display: block;
+		}
+
+		.recycle-inline-actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 10px;
+			margin-top: 12px;
+		}
+
 		.publish-spec-section {
 			margin-top: 4px;
 		}
@@ -1408,10 +1470,6 @@
 					<span class="link" onclick="togglePublishGroup('publishB2b', false)">全不选</span>
 				</div>
 				<div class="attribute-line">
-					<span>回收费年份：</span>
-					<button class="btn ghost" type="button" onclick="openRecycleFeeDialog()">配置回收费年份</button>
-				</div>
-				<div class="attribute-line">
 					<button class="btn ghost" onclick="generatePublishSpecs()">生成商品规格</button>
 				</div>
 			</div>
@@ -1439,7 +1497,7 @@
 							<th><span class="required">*</span> 回收费</th>
 							<th><span class="required">*</span> 官费</th>
 							<th>售价</th>
-							<th>回收费年份</th>
+							<th>回收费额度</th>
 							<th>产品ID</th>
 							<th>操作</th>
 						</tr>
@@ -1448,70 +1506,74 @@
 					</table>
 				</div>
 			</div>
+
+			<div class="recycle-inline-section">
+				<div class="recycle-inline-header">
+					<div>
+						<div class="recycle-inline-title">回收费额度管理</div>
+						<div class="recycle-inline-note">放在商品规格下方，开启后按已生成 SKU 直接维护回收费额度。</div>
+					</div>
+					<button id="recycleManageSwitchBtn" class="switch-button" type="button" onclick="toggleRecycleManage()">
+						<span id="recycleManageSwitch" class="switch"></span>
+						<span id="recycleManageSwitchText">关闭</span>
+					</button>
+				</div>
+				<div id="recycleManagePanel" class="recycle-manage-panel">
+					<div class="recycle-batch-bar">
+						<label><input id="recycleSelectAll" class="recycle-checkbox" type="checkbox" onchange="toggleRecycleSelectAll(this.checked)"> 全选</label>
+						<span id="recycleSelectedCount">已选 0 个 SKU</span>
+						<select id="batchTargetGroup" class="select">
+							<option value="0">填充到：额度组 1</option>
+							<option value="1">填充到：额度组 2</option>
+						</select>
+						<select id="batchAnnualFeeYear" class="select"></select>
+						<input id="batchAmount" class="input" type="number" min="0" step="0.01" placeholder="金额">
+						<select id="batchCurrency" class="select"></select>
+						<select id="batchSource" class="select"></select>
+						<button class="btn ghost" onclick="applyRecycleBatch()">批量填充</button>
+						<button class="btn" onclick="clearSelectedRecycleGroups()">清空所选</button>
+					</div>
+					<div class="table-wrap recycle-table">
+						<table>
+							<colgroup>
+								<col style="width:52px">
+								<col style="width:260px">
+								<col style="width:90px">
+								<col style="width:80px">
+								<col style="width:150px">
+								<col style="width:130px">
+								<col style="width:130px">
+								<col style="width:170px">
+								<col style="width:150px">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>选择</th>
+								<th>SKU / 规格</th>
+								<th>状态</th>
+								<th>额度组</th>
+								<th>回收费额度</th>
+								<th>金额</th>
+								<th>币种</th>
+								<th>回收费来源</th>
+								<th>操作</th>
+							</tr>
+							</thead>
+							<tbody id="recycleSkuList"></tbody>
+						</table>
+					</div>
+					<div class="recycle-inline-actions">
+						<button class="btn" onclick="toggleRecycleManage(false)">关闭管理</button>
+						<button class="btn primary" onclick="saveRecycleFeeDialog()">保存回收费额度</button>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div class="publish-footer">
 			<button class="btn" onclick="closePublishDialog()">取消</button>
 			<button class="btn primary">确定</button>
 		</div>
 	</aside>
-</div>
-
-<div id="recycleFeeDialogMask" class="recycle-dialog-mask" aria-hidden="true">
-	<div class="recycle-dialog" role="dialog" aria-modal="true" aria-labelledby="recycleFeeDialogTitle">
-		<div class="recycle-dialog-header">
-			<div id="recycleFeeDialogTitle" class="recycle-dialog-title">回收费年份配置</div>
-			<button class="icon-btn" title="关闭" onclick="closeRecycleFeeDialog()">×</button>
-		</div>
-		<div class="recycle-dialog-body">
-			<div class="recycle-batch-bar">
-				<label><input id="recycleSelectAll" class="recycle-checkbox" type="checkbox" onchange="toggleRecycleSelectAll(this.checked)"> 全选</label>
-				<span id="recycleSelectedCount">已选 0 个 SKU</span>
-				<select id="batchTargetGroup" class="select">
-					<option value="0">填充到：额度组1</option>
-					<option value="1">填充到：额度组2</option>
-				</select>
-				<select id="batchAnnualFeeYear" class="select"></select>
-				<input id="batchAmount" class="input" type="number" min="0" step="0.01" placeholder="金额">
-				<select id="batchCurrency" class="select"></select>
-				<select id="batchSource" class="select"></select>
-				<button class="btn ghost" onclick="applyRecycleBatch()">批量填充</button>
-				<button class="btn" onclick="clearSelectedRecycleGroups()">清空所选</button>
-			</div>
-			<div class="table-wrap recycle-table">
-				<table>
-					<colgroup>
-						<col style="width:52px">
-						<col style="width:260px">
-						<col style="width:90px">
-						<col style="width:80px">
-						<col style="width:150px">
-						<col style="width:130px">
-						<col style="width:130px">
-						<col style="width:170px">
-						<col style="width:150px">
-					</colgroup>
-					<thead>
-					<tr>
-						<th>选择</th>
-						<th>SKU / 规格</th>
-						<th>状态</th>
-						<th>额度组</th>
-						<th>回收费年份</th>
-						<th>金额</th>
-						<th>币种</th>
-						<th>回收费来源</th>
-						<th>操作</th>
-					</tr>
-					</thead>
-					<tbody id="recycleSkuList"></tbody>
-				</table>
-			</div>
-		</div>
-		<div class="recycle-dialog-footer">
-			<button class="btn" onclick="closeRecycleFeeDialog()">取消</button>
-			<button class="btn primary" onclick="saveRecycleFeeDialog()">保存</button>
-		</div>
-	</div>
 </div>
 
 <div id="bomDrawerMask" class="drawer-mask" aria-hidden="true">
@@ -1537,7 +1599,7 @@
 			</div>
 
 			<div class="section-title">
-				<span>回收费年份</span>
+				<span>回收费额度</span>
 				<button id="addGroupBtn" class="btn ghost" onclick="addFeeGroup()">添加一组</button>
 			</div>
 			<div id="feeGroupList" class="group-list"></div>
@@ -1554,7 +1616,7 @@
 <script>
 	const bomConfig = {
 		bomTypeCode: "RECYCLE_FEE_LIMIT",
-		bomTypeName: "回收费年份",
+		bomTypeName: "回收费额度",
 		bindLevel: "SKU",
 		maxGroups: 2,
 		years: ["2026", "2027"],
@@ -1627,6 +1689,7 @@
 	let publishSpecRows = [];
 	let recycleFeeDraft = {};
 	let recycleSelectedSkuIds = new Set();
+	let recycleManageEnabled = false;
 	let currentSpu = null;
 	let currentSku = null;
 	let editingGroups = [];
@@ -1689,7 +1752,7 @@
 	}
 
 	function refreshRecycleDefaults() {
-		if (document.getElementById("recycleFeeDialogMask").classList.contains("open")) {
+		if (recycleManageEnabled) {
 			renderRecycleBatchControls();
 			renderRecycleFeeSkuList();
 		}
@@ -1833,13 +1896,22 @@ function updatePublishSpecField(id, field, value) {
 	row[field] = value;
 }
 
-function removePublishSpec(id) {
-	publishSpecRows = publishSpecRows.filter(row => row.id !== id);
-	if (currentSku && currentSku.id === id) {
-		closeBomDrawer();
+	function removePublishSpec(id) {
+		publishSpecRows = publishSpecRows.filter(row => row.id !== id);
+		delete recycleFeeDraft[id];
+		recycleSelectedSkuIds.delete(id);
+		if (currentSku && currentSku.id === id) {
+			closeBomDrawer();
+		}
+		renderPublishSpecTable();
+		if (recycleManageEnabled) {
+			if (!publishSpecRows.length) {
+				toggleRecycleManage(false);
+			} else {
+				renderRecycleFeeSkuList();
+			}
+		}
 	}
-	renderPublishSpecTable();
-}
 
 function renderPublishSpecTable() {
 	const body = document.getElementById("publishSpecTableBody");
@@ -1907,6 +1979,11 @@ function generatePublishSpecs(showSuccess = true) {
 		});
 	});
 	renderPublishSpecTable();
+	if (recycleManageEnabled) {
+		buildRecycleFeeDraft();
+		renderRecycleBatchControls();
+		renderRecycleFeeSkuList();
+	}
 	if (showSuccess) {
 		showToast("已生成商品规格");
 	}
@@ -1925,38 +2002,59 @@ function cloneFeeGroups(groups) {
 	return groups.length ? groups.map(group => ({ ...group })) : [createEmptyFeeGroup()];
 }
 
-function buildRecycleFeeDraft() {
-	recycleFeeDraft = {};
-	recycleSelectedSkuIds = new Set(publishSpecRows.map(row => row.id));
-	publishSpecRows.forEach(row => {
-		recycleFeeDraft[row.id] = cloneFeeGroups(skuBomStore[row.id] || []);
-	});
-}
-
-function openRecycleFeeDialog() {
-	if (!publishSpecRows.length) {
-		showToast("请先生成商品规格");
-		return;
+	function buildRecycleFeeDraft() {
+		recycleFeeDraft = {};
+		recycleSelectedSkuIds = new Set(publishSpecRows.map(row => row.id));
+		publishSpecRows.forEach(row => {
+			recycleFeeDraft[row.id] = cloneFeeGroups(skuBomStore[row.id] || []);
+		});
 	}
-	syncPublishSpecSummary();
-	buildRecycleFeeDraft();
-	renderRecycleBatchControls();
-	renderRecycleFeeSkuList();
-	document.getElementById("recycleFeeDialogMask").classList.add("open");
-	document.getElementById("recycleFeeDialogMask").setAttribute("aria-hidden", "false");
-}
 
-function closeRecycleFeeDialog() {
-	document.getElementById("recycleFeeDialogMask").classList.remove("open");
-	document.getElementById("recycleFeeDialogMask").setAttribute("aria-hidden", "true");
-}
+	function renderRecycleManageState() {
+		const panel = document.getElementById("recycleManagePanel");
+		const switchBtn = document.getElementById("recycleManageSwitchBtn");
+		const switchIcon = document.getElementById("recycleManageSwitch");
+		const switchText = document.getElementById("recycleManageSwitchText");
+		panel.classList.toggle("open", recycleManageEnabled);
+		switchBtn.classList.toggle("on", recycleManageEnabled);
+		switchIcon.classList.toggle("on", recycleManageEnabled);
+		switchText.textContent = recycleManageEnabled ? "开启" : "关闭";
+	}
+
+	function toggleRecycleManage(force) {
+		if (force === false) {
+			recycleManageEnabled = false;
+			renderRecycleManageState();
+			return;
+		}
+		if (!publishSpecRows.length) {
+			showToast("请先生成商品规格");
+			return;
+		}
+		recycleManageEnabled = typeof force === "boolean" ? force : !recycleManageEnabled;
+		renderRecycleManageState();
+		if (recycleManageEnabled) {
+			syncPublishSpecSummary();
+			buildRecycleFeeDraft();
+			renderRecycleBatchControls();
+			renderRecycleFeeSkuList();
+		}
+	}
+
+	function openRecycleFeeDialog() {
+		toggleRecycleManage(true);
+	}
+
+	function closeRecycleFeeDialog() {
+		toggleRecycleManage(false);
+	}
 
 function updateRecycleGroup(skuId, index, field, value) {
 	recycleFeeDraft[skuId][index][field] = value;
 }
 
-function renderRecycleBatchControls() {
-	document.getElementById("batchAnnualFeeYear").innerHTML = optionHtml(getRecycleYearOptions(), getDefaultRecycleYear(), "回收费年份");
+	function renderRecycleBatchControls() {
+		document.getElementById("batchAnnualFeeYear").innerHTML = optionHtml(getRecycleYearOptions(), getDefaultRecycleYear(), "回收费额度");
 	document.getElementById("batchCurrency").innerHTML = optionHtml(getCurrencyOptions(), getDefaultCurrency(), "币种");
 	document.getElementById("batchSource").innerHTML = optionHtml(bomConfig.sources, getDefaultRecycleSource(), "回收费来源");
 	updateRecycleSelectedState();
@@ -2116,7 +2214,7 @@ function validateRecycleFeeDraft() {
 			group.currency = group.currency || getDefaultCurrency();
 			group.source = group.source || getDefaultRecycleSource();
 			const groupErrors = {};
-			if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费年份";
+			if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费额度";
 			if (!group.amount) {
 				groupErrors.amount = "请输入金额";
 			} else if (Number(group.amount) < 0) {
@@ -2159,8 +2257,8 @@ function saveRecycleFeeDialog() {
 		}
 	});
 	renderPublishSpecTable();
-	closeRecycleFeeDialog();
-	showToast("保存成功");
+	renderRecycleFeeSkuList();
+	showToast("回收费额度已保存");
 }
 
 function findConfigTargetById(id) {
@@ -2231,9 +2329,9 @@ function renderFeeGroups(errors = {}) {
 				</div>
 				<div class="fee-group-body">
 					<div class="form-item">
-						<label class="form-label"><span class="required">*</span>回收费年份</label>
+						<label class="form-label"><span class="required">*</span>回收费额度</label>
 						<select class="select" onchange="updateGroup(${index}, 'annualFeeYear', this.value)">
-							${optionHtml(getRecycleYearOptions(), group.annualFeeYear || getDefaultRecycleYear(), "请选择回收费年份")}
+							${optionHtml(getRecycleYearOptions(), group.annualFeeYear || getDefaultRecycleYear(), "请选择回收费额度")}
 						</select>
 						<div class="error-text">${groupErrors.annualFeeYear || ""}</div>
 					</div>
@@ -2299,7 +2397,7 @@ function validateGroups() {
 		group.currency = group.currency || getDefaultCurrency();
 		group.source = group.source || getDefaultRecycleSource();
 		const groupErrors = {};
-		if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费年份";
+		if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费额度";
 		if (!group.amount) {
 			groupErrors.amount = "请输入金额";
 		} else if (Number(group.amount) < 0) {

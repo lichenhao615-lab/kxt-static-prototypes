@@ -1620,10 +1620,6 @@
 							<tbody id="priceEditRecycleSkuList"></tbody>
 						</table>
 					</div>
-					<div class="recycle-inline-actions">
-						<button class="btn" onclick="togglePriceEditRecycleManage(false)">关闭管理</button>
-						<button class="btn primary" onclick="savePriceEditRecycleManage()">保存回收费额度</button>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -1865,16 +1861,12 @@
 							<tbody id="recycleSkuList"></tbody>
 						</table>
 					</div>
-					<div class="recycle-inline-actions">
-						<button class="btn" onclick="toggleRecycleManage(false)">关闭管理</button>
-						<button class="btn primary" onclick="saveRecycleFeeDialog()">保存回收费额度</button>
-					</div>
 				</div>
 			</div>
 		</div>
 		<div class="publish-footer">
 			<button class="btn" onclick="closePublishDialog()">取消</button>
-			<button class="btn primary">确定</button>
+			<button class="btn primary" onclick="savePublishDialog()">确定</button>
 		</div>
 	</aside>
 </div>
@@ -2182,6 +2174,9 @@
 	}
 
 	function savePriceEditDrawer() {
+		if (priceEditRecycleManageEnabled && !savePriceEditRecycleManage({ silent: true })) {
+			return;
+		}
 		closePriceEditDrawer();
 		showToast("价格信息已保存");
 	}
@@ -2362,12 +2357,12 @@
 		updatePriceEditRecycleSelectedState();
 	}
 
-	function savePriceEditRecycleManage() {
+	function savePriceEditRecycleManage(options = {}) {
 		const result = validatePriceRecycleDraft();
 		if (!result.valid) {
 			renderPriceEditRecycleSkuList(result.errors);
 			showToast("请完善必填字段");
-			return;
+			return false;
 		}
 		Object.entries(priceRecycleDraft).forEach(([skuId, groups]) => {
 			skuBomStore[skuId] = groups
@@ -2380,7 +2375,10 @@
 				}));
 		});
 		renderPriceEditRecycleSkuList();
-		showToast("回收费额度已保存");
+		if (!options.silent) {
+			showToast("回收费额度已保存");
+		}
+		return true;
 	}
 
 	function extractYearFromText(text) {
@@ -3103,12 +3101,20 @@ function validateRecycleFeeDraft() {
 	return { valid, errors };
 }
 
-function saveRecycleFeeDialog() {
+function savePublishDialog() {
+	if (recycleManageEnabled && !saveRecycleFeeDialog({ silent: true })) {
+		return;
+	}
+	closePublishDialog();
+	showToast("商品信息已保存");
+}
+
+function saveRecycleFeeDialog(options = {}) {
 	const result = validateRecycleFeeDraft();
 	if (!result.valid) {
 		renderRecycleFeeSkuList(result.errors);
 		showToast("请完善必填字段");
-		return;
+		return false;
 	}
 	Object.entries(recycleFeeDraft).forEach(([skuId, groups]) => {
 		const saved = groups
@@ -3127,7 +3133,10 @@ function saveRecycleFeeDialog() {
 	});
 	renderPublishSpecTable();
 	renderRecycleFeeSkuList();
-	showToast("回收费额度已保存");
+	if (!options.silent) {
+		showToast("回收费额度已保存");
+	}
+	return true;
 }
 
 function findConfigTargetById(id) {

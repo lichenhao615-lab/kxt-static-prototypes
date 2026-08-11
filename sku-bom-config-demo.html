@@ -1597,8 +1597,7 @@
 						<table>
 							<colgroup>
 								<col style="width:46px">
-								<col style="width:250px">
-								<col style="width:80px">
+								<col style="width:330px">
 								<col style="width:70px">
 								<col style="width:130px">
 								<col style="width:110px">
@@ -1610,7 +1609,6 @@
 							<tr>
 								<th>选</th>
 								<th>SKU / 规格</th>
-								<th>状态</th>
 								<th>额度组</th>
 								<th>回收费额度</th>
 								<th>金额</th>
@@ -1660,8 +1658,7 @@
 				<table>
 					<colgroup>
 						<col style="width:46px">
-						<col style="width:250px">
-						<col style="width:80px">
+						<col style="width:330px">
 						<col style="width:70px">
 						<col style="width:130px">
 						<col style="width:110px">
@@ -1673,7 +1670,6 @@
 					<tr>
 						<th>选</th>
 						<th>SKU / 规格</th>
-						<th>状态</th>
 						<th>额度组</th>
 						<th>回收费额度</th>
 						<th>金额</th>
@@ -1796,7 +1792,6 @@
 							<col style="width:140px">
 							<col style="width:120px">
 							<col style="width:120px">
-							<col style="width:200px">
 							<col style="width:140px">
 							<col style="width:160px">
 						</colgroup>
@@ -1808,7 +1803,6 @@
 							<th><span class="required">*</span> 回收费</th>
 							<th><span class="required">*</span> 官费</th>
 							<th>售价</th>
-							<th>回收费额度</th>
 							<th>产品ID</th>
 							<th>操作</th>
 						</tr>
@@ -1848,8 +1842,7 @@
 						<table>
 							<colgroup>
 								<col style="width:52px">
-								<col style="width:260px">
-								<col style="width:90px">
+								<col style="width:350px">
 								<col style="width:80px">
 								<col style="width:150px">
 								<col style="width:130px">
@@ -1861,7 +1854,6 @@
 							<tr>
 								<th>选择</th>
 								<th>SKU / 规格</th>
-								<th>状态</th>
 								<th>额度组</th>
 								<th>回收费额度</th>
 								<th>金额</th>
@@ -2315,7 +2307,7 @@
 		const list = document.getElementById("priceEditRecycleSkuList");
 		const rows = getSkuRowsBySpu(currentPriceSpu.id);
 		if (!rows.length) {
-			list.innerHTML = `<tr><td colspan="9"><div class="empty">当前商品暂无 SKU 示例数据</div></td></tr>`;
+			list.innerHTML = `<tr><td colspan="8"><div class="empty">当前商品暂无 SKU 示例数据</div></td></tr>`;
 			updatePriceEditRecycleSelectedState();
 			return;
 		}
@@ -2332,9 +2324,6 @@
 							</td>
 							<td rowspan="${groups.length}">
 								<div class="recycle-sku-name">${escapeHtml(getPriceSkuLabel(row))}</div>
-							</td>
-							<td rowspan="${groups.length}">
-								<span class="status-chip ${(skuBomStore[row.id] || []).length > 0 ? "done" : ""}">${getPriceSkuConfigText(row.id)}</span>
 							</td>
 						` : ""}
 						<td>额度组 ${index + 1}</td>
@@ -2433,11 +2422,6 @@
 
 	function clonePriceFeeGroups(groups) {
 		return groups.length ? groups.map(group => ({ ...group })) : [createPriceEmptyFeeGroup()];
-	}
-
-	function getPriceSkuConfigText(skuId) {
-		const groups = skuBomStore[skuId] || [];
-		return groups.length ? `已配置 ${groups.length} 组` : "未配置";
 	}
 
 	function getPriceSkuLabel(row) {
@@ -2559,7 +2543,7 @@
 		const list = document.getElementById("priceRecycleSkuList");
 		const rows = getSkuRowsBySpu(currentPriceSpu.id);
 		if (!rows.length) {
-			list.innerHTML = `<tr><td colspan="9"><div class="empty">当前商品暂无 SKU 示例数据</div></td></tr>`;
+			list.innerHTML = `<tr><td colspan="8"><div class="empty">当前商品暂无 SKU 示例数据</div></td></tr>`;
 			updatePriceRecycleSelectedState();
 			return;
 		}
@@ -2576,9 +2560,6 @@
 							</td>
 							<td rowspan="${groups.length}">
 								<div class="recycle-sku-name">${escapeHtml(getPriceSkuLabel(row))}</div>
-							</td>
-							<td rowspan="${groups.length}">
-								<span class="status-chip ${(skuBomStore[row.id] || []).length > 0 ? "done" : ""}">${getPriceSkuConfigText(row.id)}</span>
 							</td>
 						` : ""}
 						<td>额度组 ${index + 1}</td>
@@ -2782,11 +2763,6 @@ function getPublishProductName() {
 	return document.getElementById("publishProductName").value.trim() || "意大利VAT注册";
 }
 
-function getPublishSpecConfigText(specId) {
-	const groups = skuBomStore[specId] || [];
-	return groups.length ? `已配置 ${groups.length} 组` : "未配置";
-}
-
 function getPublishSpecSelectLabel(row) {
 	return `${row.id} / ${buildPublishSpecLabel(row)}`;
 }
@@ -2828,7 +2804,7 @@ function updatePublishSpecField(id, field, value) {
 function renderPublishSpecTable() {
 	const body = document.getElementById("publishSpecTableBody");
 	if (!publishSpecRows.length) {
-		body.innerHTML = `<tr><td colspan="9"><div class="empty">请先选择商品属性并生成商品规格</div></td></tr>`;
+		body.innerHTML = `<tr><td colspan="8"><div class="empty">请先选择商品属性并生成商品规格</div></td></tr>`;
 		return;
 	}
 	syncPublishSpecSummary();
@@ -2840,11 +2816,6 @@ function renderPublishSpecTable() {
 			<td><input class="table-input" value="${escapeHtml(row.recycleFee)}" oninput="updatePublishSpecField('${row.id}', 'recycleFee', this.value)"></td>
 			<td><input class="table-input" value="${escapeHtml(row.officialFee)}" oninput="updatePublishSpecField('${row.id}', 'officialFee', this.value)"></td>
 			<td><input class="table-input" value="${escapeHtml(row.price)}" oninput="updatePublishSpecField('${row.id}', 'price', this.value)"></td>
-			<td>
-				<span class="limit-cell">
-					<span class="status-chip ${row.configuredGroups > 0 ? "done" : ""}">${getPublishSpecConfigText(row.id)}</span>
-				</span>
-			</td>
 			<td><input class="table-input" value="${escapeHtml(row.productId)}" oninput="updatePublishSpecField('${row.id}', 'productId', this.value)"></td>
 			<td>
 				<span class="actions">
@@ -3062,9 +3033,6 @@ function renderRecycleFeeSkuList(errors = {}) {
 						</td>
 						<td rowspan="${groups.length}">
 							<div class="recycle-sku-name">${escapeHtml(getPublishSpecSelectLabel(row))}</div>
-						</td>
-						<td rowspan="${groups.length}">
-							<span class="status-chip ${row.configuredGroups > 0 ? "done" : ""}">${getPublishSpecConfigText(row.id)}</span>
 						</td>
 					` : ""}
 					<td>额度组 ${index + 1}</td>

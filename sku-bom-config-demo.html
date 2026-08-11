@@ -1217,6 +1217,14 @@
 			color: var(--brand-dark);
 		}
 
+		.workspace-page {
+			display: none;
+		}
+
+		.workspace-page.active {
+			display: block;
+		}
+
 		.empty {
 			height: 120px;
 			display: grid;
@@ -1263,12 +1271,12 @@
 		<div class="menu-row small">属性管理 <span>⌄</span></div>
 		<div class="menu-row small">费用管理 <span>⌄</span></div>
 		<div class="menu-row small">商品管理 <span>⌃</span></div>
-		<div class="menu-row small">基础商品管理</div>
+		<div id="productMenuItem" class="menu-row small" onclick="switchDemoPage('product')">基础商品管理</div>
 		<div class="menu-row small">增值商品管理</div>
 		<div class="menu-row small">追加商品管理</div>
 		<div class="menu-row small">续费商品管理</div>
 		<div class="menu-row" style="color: var(--brand-dark);">价格管理 <span>⌃</span></div>
-		<div class="menu-row small active">商品价格</div>
+		<div id="priceMenuItem" class="menu-row small active" onclick="switchDemoPage('price')">商品价格</div>
 		<div class="menu-row small">续费价格</div>
 		<div class="menu-row">流程管理 <span>⌄</span></div>
 		<div class="menu-row">知识产权 <span>⌄</span></div>
@@ -1278,10 +1286,12 @@
 		<div class="page-tabs">
 			<div class="page-tab">履约工作台 ×</div>
 			<div class="page-tab">基础服务 ×</div>
-			<div class="page-tab active">商品价格 ×</div>
+			<div id="productPageTab" class="page-tab" onclick="switchDemoPage('product')">基础商品管理 ×</div>
+			<div id="pricePageTab" class="page-tab active" onclick="switchDemoPage('price')">商品价格 ×</div>
 		</div>
 
 		<section class="workspace">
+			<div id="pricePage" class="workspace-page active">
 			<div class="toolbar">
 				<label class="field-group"><span class="field-label">商品ID</span><input class="input" placeholder="商品ID"></label>
 				<label class="field-group"><span class="field-label">商品名称</span><input class="input" placeholder="商品名称"></label>
@@ -1362,6 +1372,95 @@
 				<select class="select" style="min-width:90px;height:30px">
 					<option>10条/页</option>
 				</select>
+			</div>
+			</div>
+
+			<div id="productPage" class="workspace-page">
+				<div class="toolbar">
+					<input class="input" placeholder="商品ID/商品名称/添加人/更新人">
+					<select class="select">
+						<option>上架</option>
+						<option>下架</option>
+					</select>
+					<select class="select">
+						<option>请选择类目</option>
+						<option>EPR &gt; 包装法</option>
+						<option>VAT &gt; VAT</option>
+					</select>
+					<select class="select">
+						<option>请选择类型</option>
+						<option>基础服务 &gt; 注册+申报</option>
+						<option>基础服务 &gt; 转代理+申报</option>
+					</select>
+					<select class="select">
+						<option>请选择国家</option>
+						<option>西班牙</option>
+						<option>比利时</option>
+						<option>英国</option>
+					</select>
+					<select class="select">
+						<option>服务类型</option>
+						<option>SaaS服务</option>
+						<option>专属顾问</option>
+					</select>
+					<button class="btn primary">查询</button>
+					<button class="btn">重置</button>
+				</div>
+
+				<div class="action-buttons">
+					<button class="btn primary" onclick="openPublishDialog()">发布商品</button>
+					<button class="btn primary">客户端排序</button>
+				</div>
+
+				<div class="table-wrap">
+					<table>
+						<colgroup>
+							<col style="width:80px">
+							<col style="width:210px">
+							<col style="width:95px">
+							<col style="width:150px">
+							<col style="width:160px">
+							<col style="width:120px">
+							<col style="width:100px">
+							<col style="width:150px">
+							<col style="width:110px">
+							<col style="width:150px">
+							<col style="width:80px">
+							<col style="width:245px">
+						</colgroup>
+						<thead>
+						<tr>
+							<th>商品ID</th>
+							<th>商品名称</th>
+							<th>商品规格</th>
+							<th>所属类目</th>
+							<th>所属类型</th>
+							<th>所属国家</th>
+							<th>添加人</th>
+							<th>添加时间</th>
+							<th>状态</th>
+							<th>是否可售</th>
+							<th>商品类型</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody id="spuTableBody"></tbody>
+					</table>
+				</div>
+
+				<div class="pagination">
+					<span>共有 1544 条数据</span>
+					<span class="page-box active">1</span>
+					<span class="page-box">2</span>
+					<span class="page-box">3</span>
+					<span class="page-box">4</span>
+					<span class="page-box">5</span>
+					<span>...</span>
+					<span class="page-box">155</span>
+					<select class="select" style="min-width:90px;height:30px">
+						<option>10条/页</option>
+					</select>
+				</div>
 			</div>
 
 			<div id="skuPanel" class="sku-panel" aria-hidden="true">
@@ -1917,6 +2016,22 @@
 		if (recycleManageEnabled) {
 			renderRecycleBatchControls();
 			renderRecycleFeeSkuList();
+		}
+	}
+
+	function switchDemoPage(page) {
+		const isPricePage = page === "price";
+		document.getElementById("pricePage").classList.toggle("active", isPricePage);
+		document.getElementById("productPage").classList.toggle("active", !isPricePage);
+		document.getElementById("priceMenuItem").classList.toggle("active", isPricePage);
+		document.getElementById("productMenuItem").classList.toggle("active", !isPricePage);
+		document.getElementById("pricePageTab").classList.toggle("active", isPricePage);
+		document.getElementById("productPageTab").classList.toggle("active", !isPricePage);
+		closeSkuPanel();
+		if (isPricePage) {
+			renderPriceTable();
+		} else {
+			renderSpuTable();
 		}
 	}
 
@@ -2960,7 +3075,7 @@ function showToast(message) {
 	showToast.timer = window.setTimeout(() => toast.classList.remove("open"), 1800);
 }
 
-renderPriceTable();
+switchDemoPage("price");
 </script>
 </body>
 </html>

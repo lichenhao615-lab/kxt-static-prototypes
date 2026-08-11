@@ -4188,7 +4188,7 @@
 		<div class="flow-editor-canvas" id="flowEditorCanvas">
 			<div class="flow-palette">
 				<div class="flow-palette-main"><span>▦</span>新增节点</div>
-				<button class="flow-palette-action" onclick="openRelatedNodeModal()"><span>⛓</span>关联流程节点</button>
+				<button class="flow-palette-action" onclick="openRelatedNodeModal()"><span>⛓</span>关联流程</button>
 			</div>
 			<div class="flow-editor-viewport" id="flowEditorViewport">
 				<svg class="flow-editor-links" viewBox="0 0 1680 900" aria-hidden="true">
@@ -4266,8 +4266,9 @@
 					<div class="flow-node-action">停止服务</div>
 				</div>
 				<div class="flow-node is-related" id="relatedFlowNode" style="left:716px;top:112px;" data-source-type="related" data-related-flow="西班牙海牙认证流程" data-related-node="海牙认证完成" data-control-node-id="controlWaitNode" data-control-path-id="flowControlPath" data-control-label-id="flowControlLineLabel" data-draggable-node>
-					<div class="flow-node-head">关联流程节点 <span class="flow-node-close">×</span></div>
+					<div class="flow-node-head">关联流程 <span class="flow-node-close">×</span></div>
 					<div class="flow-node-desc" id="relatedFlowNodeFlow">西班牙海牙认证流程</div>
+					<div class="flow-node-desc">关联节点数：1</div>
 					<div class="flow-node-action" id="relatedFlowNodeName">海牙认证完成</div>
 					<div class="flow-node-connect" title="选择控制节点" aria-label="选择控制节点" onclick="startControlLineConnection(this, event)"></div>
 				</div>
@@ -4332,7 +4333,7 @@
 <div class="confirm-mask" id="relatedNodeModal">
 	<div class="confirm-dialog">
 		<div class="confirm-head">
-			<span>选择关联流程节点</span>
+			<span>选择关联流程</span>
 			<button class="drawer-close" onclick="closeRelatedNodeModal()">×</button>
 		</div>
 		<div class="confirm-body compact">
@@ -4381,71 +4382,10 @@
 						<select class="field" id="lineRelatedNodeSelect" style="display:none;" aria-hidden="true"></select>
 					</div>
 				</div>
-				<div class="line-config-section">
-					<div class="line-config-section-title">资料同步</div>
-					<div class="condition-action-head">
-						<div class="condition-pill-block">
-							<span class="label">是否资料同步</span>
-							<div class="rule-pill-switch">
-								<span class="rule-pill-option active" onclick="toggleLineReleaseAction(this, true)">是</span>
-								<span class="rule-pill-option" onclick="toggleLineReleaseAction(this, false)">否</span>
-							</div>
-						</div>
-					</div>
-					<div class="release-action-area" id="lineReleaseActionArea">
-						<div class="release-action-card release-action-content">
-							<div class="release-action-map">
-								<div class="release-map-panel">
-									<div class="release-panel-head">
-										<span>读取字段</span>
-									</div>
-									<div class="release-field-grid release-source-fields form-source">
-										<div class="release-field-line">
-											<div class="label">读取流程</div>
-											<select class="field release-source-flow-select" onchange="refreshLineReleaseSourceOptions()"></select>
-										</div>
-										<div class="release-field-line">
-											<div class="label">选择表单</div>
-											<select class="field release-source-form-select"><option selected>主体资料表单</option><option>西班牙VAT注册资料表</option></select>
-										</div>
-									</div>
-								</div>
-								<div class="release-map-arrow"><span>写入</span></div>
-								<div class="release-map-panel">
-									<div class="release-panel-head">
-										<span>写入字段</span>
-									</div>
-									<div class="release-field-grid">
-										<div class="release-field-line">
-											<div class="label">写入流程</div>
-											<select class="field release-target-flow-select" onchange="refreshLineReleaseTargetOptions()"></select>
-										</div>
-										<div class="release-field-line">
-											<div class="label">选择表单</div>
-											<select class="field release-target-form-select" onchange="refreshReleaseTargetFieldOptions(this)"><option>西班牙VAT注册资料表</option><option selected>主体资料表单</option></select>
-										</div>
-										<div class="release-field-line">
-											<div class="label">选择数据字段</div>
-											<button type="button" class="field flow-select-field data-field-picker release-target-field-picker" data-field-names="公司名称,客户ID" data-field-options="公司名称,客户ID,法人姓名" onclick="openDataFieldSelectModal(this)">
-												<span class="data-field-selected">
-													<span class="flow-chip">公司名称</span>
-													<span class="flow-chip">客户ID</span>
-												</span>
-												<span class="flow-select-arrow">⌄</span>
-											</button>
-										</div>
-									</div>
-								</div>
-							</div>
-									<div class="modal-note" style="margin:0;">目标字段已有值时不覆盖；资料同步在节点放行后执行。</div>
-								</div>
-							</div>
-						</div>
 			</div>
 		</div>
 		<div class="confirm-footer">
-			<button class="btn ghost" onclick="closeFlowLineConfigModal()">取消</button>
-			<button class="btn primary" onclick="closeFlowLineConfigModal()">保存配置</button>
+			<button class="btn primary" onclick="closeFlowLineConfigModal()">关闭</button>
 		</div>
 	</div>
 </div>
@@ -4453,14 +4393,14 @@
 <div class="drawer-mask" id="collaborationRuleDrawer">
 	<div class="drawer wide">
 		<div class="drawer-header">
-			<div class="drawer-title" id="collaborationRuleDrawerTitle">协同配置</div>
+			<div class="drawer-title" id="collaborationRuleDrawerTitle">节点控制关系</div>
 			<button class="drawer-close" onclick="closeDrawer('collaborationRuleDrawer')">×</button>
 		</div>
 		<div class="drawer-body collaboration-rule-drawer-body">
 			<div class="config-card-body collaboration-rule-body">
 					<div class="config-section">
-						<div class="config-section-title">协同配置信息</div>
-						<div class="config-section-desc">配置主流程下的节点控制关系；节点达到放行要求后放行当前控制节点，并可执行资料同步。</div>
+						<div class="config-section-title">节点控制关系</div>
+						<div class="config-section-desc">配置主流程下的节点控制关系；节点达到放行要求后放行当前控制节点。</div>
 						<div class="rule-info-layout">
 							<div class="collaboration-basic-panel">
 								<div class="rule-info-group">
@@ -4509,62 +4449,6 @@
 												<div class="readonly-value">西班牙海牙认证流程</div>
 												<div class="label"><span class="required">*</span>关联节点</div>
 												<div class="readonly-value">海牙认证完成</div>
-											</div>
-											<div class="condition-action-head">
-												<div class="condition-pill-block">
-													<span class="label">是否资料同步</span>
-													<div class="rule-pill-switch">
-														<span class="rule-pill-option" onclick="toggleReleaseAction(this, true)">是</span>
-														<span class="rule-pill-option active" onclick="toggleReleaseAction(this, false)">否</span>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="release-action-area release-action-off">
-											<div class="release-action-card release-action-content">
-												<div class="release-action-map">
-													<div class="release-map-panel">
-														<div class="release-panel-head">
-															<span>读取字段</span>
-														</div>
-														<div class="release-field-grid release-source-fields form-source">
-															<div class="release-field-line">
-																<div class="label">读取流程</div>
-																<select class="field release-source-flow-select" onchange="refreshReleaseFormOptions(this, 'source')"></select>
-															</div>
-															<div class="release-field-line">
-																<div class="label">选择表单</div>
-																<select class="field release-source-form-select"><option selected>主体资料表单</option><option>西班牙VAT注册资料表</option></select>
-															</div>
-														</div>
-													</div>
-													<div class="release-map-arrow"><span>写入</span></div>
-													<div class="release-map-panel">
-														<div class="release-panel-head">
-															<span>写入字段</span>
-														</div>
-														<div class="release-field-grid">
-															<div class="release-field-line">
-																<div class="label">写入流程</div>
-																<select class="field release-target-flow-select" onchange="refreshReleaseFormOptions(this, 'target')"></select>
-															</div>
-															<div class="release-field-line">
-																<div class="label">选择表单</div>
-																<select class="field release-target-form-select" onchange="refreshReleaseTargetFieldOptions(this)"><option>西班牙VAT注册资料表</option><option selected>主体资料表单</option></select>
-															</div>
-															<div class="release-field-line">
-																<div class="label">选择数据字段</div>
-																<button type="button" class="field flow-select-field data-field-picker release-target-field-picker" data-field-names="公司名称,客户ID" data-field-options="公司名称,客户ID,法人姓名" onclick="openDataFieldSelectModal(this)">
-																	<span class="data-field-selected">
-																		<span class="flow-chip">公司名称</span>
-																		<span class="flow-chip">客户ID</span>
-																	</span>
-																	<span class="flow-select-arrow">⌄</span>
-																</button>
-															</div>
-														</div>
-													</div>
-												</div>
 											</div>
 										</div>
 									</div>
@@ -6192,8 +6076,9 @@
 		relatedNode.dataset.controlLabelId = labelId;
 		relatedNode.setAttribute("data-draggable-node", "");
 		relatedNode.innerHTML =
-			'<div class="flow-node-head">关联流程节点 <span class="flow-node-close">×</span></div>' +
+			'<div class="flow-node-head">关联流程 <span class="flow-node-close">×</span></div>' +
 			'<div class="flow-node-desc">' + flowName + '</div>' +
+			'<div class="flow-node-desc">关联节点数：1</div>' +
 			'<div class="flow-node-action">' + nodeName + '</div>' +
 			'<div class="flow-node-connect" title="选择控制节点" aria-label="选择控制节点" onclick="startControlLineConnection(this, event)"></div>';
 		viewport.appendChild(relatedNode);
@@ -6992,16 +6877,7 @@
 	}
 
 	function createConditionActionHeadHtml() {
-		return '' +
-			'<div class="condition-action-head">' +
-				'<div class="condition-pill-block">' +
-					'<span class="label">是否资料同步</span>' +
-					'<div class="rule-pill-switch">' +
-						'<span class="rule-pill-option" onclick="toggleReleaseAction(this, true)">是</span>' +
-						'<span class="rule-pill-option active" onclick="toggleReleaseAction(this, false)">否</span>' +
-					'</div>' +
-				'</div>' +
-			'</div>';
+		return "";
 	}
 
 	function createRelationReadonlyHtml(flowName, nodeName) {
@@ -7019,52 +6895,7 @@
 	}
 
 	function createReleaseActionHtml() {
-		return '' +
-			'<div class="release-action-area release-action-off">' +
-				'<div class="release-action-card release-action-content">' +
-					'<div class="release-action-map">' +
-						'<div class="release-map-panel">' +
-							'<div class="release-panel-head">' +
-								'<span>读取字段</span>' +
-							'</div>' +
-							'<div class="release-field-grid release-source-fields form-source">' +
-								'<div class="release-field-line">' +
-									'<div class="label">读取流程</div>' +
-									'<select class="field release-source-flow-select" onchange="refreshReleaseFormOptions(this, \'source\')"></select>' +
-								'</div>' +
-								'<div class="release-field-line">' +
-									'<div class="label">选择表单</div>' +
-									'<select class="field release-source-form-select"><option selected>主体资料表单</option><option>西班牙VAT注册资料表</option></select>' +
-								'</div>' +
-							'</div>' +
-						'</div>' +
-						'<div class="release-map-arrow"><span>写入</span></div>' +
-						'<div class="release-map-panel">' +
-							'<div class="release-panel-head"><span>写入字段</span></div>' +
-							'<div class="release-field-grid">' +
-								'<div class="release-field-line">' +
-									'<div class="label">写入流程</div>' +
-									'<select class="field release-target-flow-select" onchange="refreshReleaseFormOptions(this, \'target\')"></select>' +
-								'</div>' +
-								'<div class="release-field-line">' +
-									'<div class="label">选择表单</div>' +
-								'<select class="field release-target-form-select" onchange="refreshReleaseTargetFieldOptions(this)"><option>西班牙VAT注册资料表</option><option selected>主体资料表单</option></select>' +
-								'</div>' +
-								'<div class="release-field-line">' +
-									'<div class="label">选择数据字段</div>' +
-									'<button type="button" class="field flow-select-field data-field-picker release-target-field-picker" data-field-names="公司名称,客户ID" data-field-options="公司名称,客户ID,法人姓名" onclick="openDataFieldSelectModal(this)">' +
-										'<span class="data-field-selected">' +
-											'<span class="flow-chip">公司名称</span>' +
-											'<span class="flow-chip">客户ID</span>' +
-										'</span>' +
-										'<span class="flow-select-arrow">⌄</span>' +
-									'</button>' +
-								'</div>' +
-							'</div>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>';
+		return "";
 	}
 
 	function createControlRelationGroupHtml(index, controlNodeName) {

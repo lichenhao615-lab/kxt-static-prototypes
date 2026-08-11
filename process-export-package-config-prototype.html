@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>流程配置与协同交付原型</title>
+	<title>流程配置原型</title>
 	<style>
 		:root {
 			--brand: #00a5a8;
@@ -1692,22 +1692,6 @@
 			pointer-events: none;
 		}
 
-		.flow-version-badge {
-			position: absolute;
-			top: 0;
-			left: 0;
-			height: 42px;
-			display: flex;
-			align-items: center;
-			padding: 0 28px;
-			border-radius: 0 0 3px 0;
-			background: #5d95e8;
-			color: #fff;
-			font-size: 14px;
-			font-weight: 600;
-			pointer-events: auto;
-		}
-
 		.flow-editor-title-input {
 			width: min(760px, calc(100vw - 520px));
 			height: 34px;
@@ -2037,7 +2021,6 @@
 			box-shadow: -18px 0 42px rgba(15, 23, 42, .18);
 		}
 
-		#flowPublishModal,
 		#relatedNodeModal,
 		#flowLineConfigModal,
 		#dataFieldSelectModal {
@@ -2104,82 +2087,6 @@
 
 		.line-config-fields .condition-target {
 			grid-column: 1 / -1;
-		}
-
-		.flow-publish-summary {
-			display: grid;
-			grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1fr);
-			gap: 12px;
-			align-items: stretch;
-			margin-bottom: 14px;
-		}
-
-		.flow-publish-card {
-			padding: 12px;
-			border: 1px solid #edf0f2;
-			border-radius: 4px;
-			background: #fbfcfd;
-		}
-
-		.flow-publish-card.primary {
-			border-color: #b8e6e8;
-			background: #f1fbfb;
-		}
-
-		.flow-publish-label {
-			margin-bottom: 6px;
-			color: #74808a;
-			font-size: 12px;
-		}
-
-		.flow-publish-version {
-			color: #17212b;
-			font-size: 18px;
-			font-weight: 700;
-			line-height: 1.3;
-		}
-
-		.flow-publish-status {
-			margin-top: 6px;
-			color: #667085;
-			font-size: 12px;
-		}
-
-		.flow-publish-arrow {
-			display: grid;
-			place-items: center;
-			color: var(--brand-dark);
-			font-size: 18px;
-			font-weight: 700;
-		}
-
-		.flow-publish-check {
-			display: flex;
-			gap: 10px;
-			align-items: flex-start;
-			padding: 12px;
-			border: 1px solid #edf0f2;
-			border-radius: 4px;
-			background: #fff;
-			cursor: pointer;
-		}
-
-		.flow-publish-check input {
-			margin-top: 4px;
-		}
-
-		.flow-publish-check strong {
-			display: block;
-			margin-bottom: 4px;
-			color: #27313d;
-			font-size: 13px;
-		}
-
-		.flow-publish-check span {
-			display: block;
-			color: #74808a;
-			font-size: 12px;
-			line-height: 1.6;
 		}
 
 		#flowLineConfigModal .release-action-map {
@@ -4181,7 +4088,6 @@
 <div class="flow-editor-mask" id="flowEditorMask">
 	<div class="flow-editor-shell">
 		<div class="flow-editor-top">
-			<div class="flow-version-badge">流程版本v5-使用中</div>
 			<input class="flow-editor-title-input" id="flowEditorTitleInput" value="西班牙VAT注册+申报流程">
 			<button class="flow-editor-close" onclick="closeFlowEditor()">×</button>
 		</div>
@@ -4268,7 +4174,7 @@
 				<div class="flow-node is-related" id="relatedFlowNode" style="left:716px;top:112px;" data-source-type="related" data-related-flow="西班牙海牙认证流程" data-related-node="海牙认证完成" data-control-node-id="controlWaitNode" data-control-path-id="flowControlPath" data-control-label-id="flowControlLineLabel" data-draggable-node>
 					<div class="flow-node-head">关联流程 <span class="flow-node-close">×</span></div>
 					<div class="flow-node-desc" id="relatedFlowNodeFlow">西班牙海牙认证流程</div>
-					<div class="flow-node-desc">关联节点数：1</div>
+					<div class="flow-node-desc">关联流程节点数量：1</div>
 					<div class="flow-node-action" id="relatedFlowNodeName">海牙认证完成</div>
 					<div class="flow-node-connect" title="选择控制节点" aria-label="选择控制节点" onclick="startControlLineConnection(this, event)"></div>
 				</div>
@@ -4289,43 +4195,8 @@
 			<span style="left:146px;top:70px;"></span>
 		</div>
 		<div class="flow-editor-footer">
-			<button class="btn ghost">保存版本</button>
-			<button class="btn primary" onclick="openFlowPublishModal()">发布流程</button>
-		</div>
-	</div>
-</div>
-
-<div class="confirm-mask" id="flowPublishModal">
-	<div class="confirm-dialog large" style="width:min(640px, calc(100vw - 48px));">
-		<div class="confirm-head">
-			<span>发布流程</span>
-			<button class="drawer-close" onclick="closeFlowPublishModal()">×</button>
-		</div>
-		<div class="confirm-body compact">
-			<div class="flow-publish-summary">
-				<div class="flow-publish-card">
-					<div class="flow-publish-label">当前使用版本</div>
-					<div class="flow-publish-version" id="flowPublishCurrentVersion">v5</div>
-					<div class="flow-publish-status">当前线上流程版本</div>
-				</div>
-				<div class="flow-publish-arrow">→</div>
-				<div class="flow-publish-card primary">
-					<div class="flow-publish-label">本次发布版本</div>
-					<div class="flow-publish-version" id="flowPublishNextVersion">v6</div>
-					<div class="flow-publish-status">发布后对新单生效</div>
-				</div>
-			</div>
-			<label class="flow-publish-check">
-				<input type="checkbox" id="syncRunningFlowVersionCheck">
-				<span>
-					<strong>同步在途流程至最新版本</strong>
-					<span>未勾选时，已生成且在途的服务单继续按原流程版本执行；勾选后，在途服务单后续节点按本次发布版本执行。</span>
-				</span>
-			</label>
-		</div>
-		<div class="confirm-footer">
-			<button class="btn ghost" onclick="closeFlowPublishModal()">取消</button>
-			<button class="btn primary" onclick="confirmFlowPublish()">确认发布</button>
+			<button class="btn ghost" onclick="closeFlowEditor()">取消</button>
+			<button class="btn primary" onclick="closeFlowEditor()">保存</button>
 		</div>
 	</div>
 </div>
@@ -4406,8 +4277,6 @@
 								<div class="rule-info-group">
 									<div class="rule-info-group-title">基础规则</div>
 									<div class="rule-info-grid basic-rule-grid">
-										<div class="label">流程版本</div>
-										<input class="field" value="V3" readonly>
 										<div class="label main-flow-label"><span class="required">*</span>主流程</div>
 										<div class="field main-flow-readonly main-flow-field" id="collaborationMainFlowSelect" data-flow-name="西班牙VAT注册+申报流程" data-flow-names="西班牙VAT注册+申报流程">
 											<span class="main-flow-selected">
@@ -4422,13 +4291,7 @@
 											</span>
 											<span class="flow-select-arrow">⌄</span>
 										</button>
-										<div class="label">规则状态</div>
-										<div class="rule-pill-switch">
-											<span class="rule-pill-option active">启用</span>
-											<span class="rule-pill-option">停用</span>
-										</div>
 									</div>
-									<div class="modal-note" style="margin-top:10px;margin-bottom:0;">规则变更会触发流程版本变化；变化的流程仅对新单有效。</div>
 								</div>
 							</div>
 							<div class="control-relation-panel">
@@ -5943,44 +5806,6 @@
 	let activeControlConnectionNode = null;
 	let flowRelatedNodeCounter = 1;
 
-	function getCurrentFlowVersionNumber() {
-		const badge = document.querySelector(".flow-version-badge");
-		const text = badge ? badge.textContent : "";
-		const match = text.match(/v(\d+)/i);
-		return match ? Number(match[1]) : 5;
-	}
-
-	function openFlowPublishModal() {
-		const currentVersion = getCurrentFlowVersionNumber();
-		const nextVersion = currentVersion + 1;
-		const currentEl = document.getElementById("flowPublishCurrentVersion");
-		const nextEl = document.getElementById("flowPublishNextVersion");
-		const syncCheck = document.getElementById("syncRunningFlowVersionCheck");
-		if (currentEl) {
-			currentEl.textContent = "v" + currentVersion;
-		}
-		if (nextEl) {
-			nextEl.textContent = "v" + nextVersion;
-		}
-		if (syncCheck) {
-			syncCheck.checked = false;
-		}
-		document.getElementById("flowPublishModal").classList.add("open");
-	}
-
-	function closeFlowPublishModal() {
-		document.getElementById("flowPublishModal").classList.remove("open");
-	}
-
-	function confirmFlowPublish() {
-		const nextVersion = getCurrentFlowVersionNumber() + 1;
-		const badge = document.querySelector(".flow-version-badge");
-		if (badge) {
-			badge.textContent = "流程版本v" + nextVersion + "-使用中";
-		}
-		closeFlowPublishModal();
-	}
-
 	function openFlowEditor(trigger) {
 		const titleInput = document.getElementById("flowEditorTitleInput");
 		if (titleInput) {
@@ -6078,7 +5903,7 @@
 		relatedNode.innerHTML =
 			'<div class="flow-node-head">关联流程 <span class="flow-node-close">×</span></div>' +
 			'<div class="flow-node-desc">' + flowName + '</div>' +
-			'<div class="flow-node-desc">关联节点数：1</div>' +
+			'<div class="flow-node-desc">关联流程节点数量：1</div>' +
 			'<div class="flow-node-action">' + nodeName + '</div>' +
 			'<div class="flow-node-connect" title="选择控制节点" aria-label="选择控制节点" onclick="startControlLineConnection(this, event)"></div>';
 		viewport.appendChild(relatedNode);

@@ -119,6 +119,37 @@
 			line-height: 1.8;
 		}
 
+		.evidence-strip {
+			display: grid;
+			grid-template-columns: repeat(4, minmax(180px, 1fr));
+			gap: 10px;
+			max-width: 1520px;
+			margin: 0 auto 16px;
+		}
+
+		.evidence-item {
+			min-height: 82px;
+			padding: 12px;
+			border: 1px solid rgba(255, 255, 255, .11);
+			border-radius: 10px;
+			background: rgba(8, 13, 25, .66);
+			backdrop-filter: blur(12px);
+		}
+
+		.evidence-item b {
+			display: block;
+			margin-bottom: 6px;
+			color: #f7fbff;
+			font-size: 13px;
+		}
+
+		.evidence-item span {
+			display: block;
+			color: var(--muted);
+			font-size: 12px;
+			line-height: 1.55;
+		}
+
 		.toolbar {
 			display: flex;
 			align-items: center;
@@ -678,10 +709,10 @@
 		}
 
 		.detail-title {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			gap: 10px;
+			display: grid;
+			grid-template-columns: minmax(0, 1fr);
+			align-items: start;
+			gap: 8px;
 			margin: 0 0 6px;
 		}
 
@@ -695,6 +726,8 @@
 		.badge {
 			display: inline-flex;
 			align-items: center;
+			justify-self: start;
+			max-width: 100%;
 			min-height: 27px;
 			padding: 0 9px;
 			border-radius: 8px;
@@ -702,7 +735,8 @@
 			background: rgba(255, 255, 255, .08);
 			border: 1px solid rgba(255, 255, 255, .12);
 			font-size: 12px;
-			white-space: nowrap;
+			line-height: 1.35;
+			overflow-wrap: anywhere;
 		}
 
 		.detail-desc {
@@ -809,6 +843,10 @@
 				grid-template-columns: 1fr;
 			}
 
+			.evidence-strip {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+			}
+
 			.toolbar {
 				justify-content: flex-start;
 			}
@@ -835,6 +873,10 @@
 		@media (max-width: 760px) {
 			.app {
 				padding: 14px;
+			}
+
+			.evidence-strip {
+				grid-template-columns: 1fr;
 			}
 
 			.topbar {
@@ -916,7 +958,7 @@
 		<header class="topbar">
 			<div class="title-block">
 				<h1>履约全链路实体星图</h1>
-				<p class="lead">点击任一实体星球，会进入它的关系视角：看核心字段、上下游关联、后台操作如何推动状态变化，以及表单、合同、流程模板如何共同关联到履约单。</p>
+				<p class="lead">代码实现视角：只按当前实现抽取实体关系。主线是 ServiceReceiptDTO 生成履约单据和 KxtServicePerform，再由 flow_id、state_id、operate(...)、parent_service_code、KxtServicePerformMapping、KxtServicePerformTrack 和 SAAS_BUSINESS_STATUS_CHANGE_EXCHANGE 串起已落地的履约、任务、通知关系。</p>
 			</div>
 			<div class="toolbar" aria-label="页面操作">
 				<button class="control-btn primary" id="homeBtn" type="button">回到履约主单</button>
@@ -924,6 +966,25 @@
 				<button class="control-btn" id="pathBtn" type="button">清空轨迹</button>
 			</div>
 		</header>
+
+		<section class="evidence-strip" aria-label="代码依据">
+			<div class="evidence-item">
+				<b>生成口径</b>
+				<span>KxtServicePerformServiceImpl.generateServiceReceipt / generateServicePerform 是履约主单生成入口，先有单据，再落主单和明细。</span>
+			</div>
+			<div class="evidence-item">
+				<b>流转口径</b>
+				<span>operate(...) 反射执行处理器；AbstractPerformProcessor.analyzeProcess 读取 flow_form_json 的 edges，再按 fieldLists 命中目标状态。</span>
+			</div>
+			<div class="evidence-item">
+				<b>广播口径</b>
+				<span>状态变化后写 KxtServicePerformTrack，并通过 SAAS_BUSINESS_STATUS_CHANGE_EXCHANGE fanout 给任务和通知消费者。</span>
+			</div>
+			<div class="evidence-item">
+				<b>兼容口径</b>
+				<span>KxtServicePerformMapping 只表达新老 serviceCode 映射，同步 VAT/EPR/资产等老数据，不等同于新的协同交付模型。</span>
+			</div>
+		</section>
 
 		<section class="shell">
 			<div class="map-card" id="mapCard" aria-label="履约实体关系星图">
@@ -974,29 +1035,47 @@
 
 	<script>
 		const layerMeta = {
-			entry: { name: "入口层", color: "#f8c76b" },
+			entry: { name: "入口/商品层", color: "#f8c76b" },
 			config: { name: "配置层", color: "#8ab4ff" },
 			flow: { name: "流程层", color: "#67e8f9" },
-			fulfillment: { name: "履约层", color: "#7ee787" },
-			formContract: { name: "表单合同层", color: "#f58abc" },
+			fulfillment: { name: "履约实例层", color: "#7ee787" },
+			relation: { name: "关联映射层", color: "#ffb86b" },
+			formContract: { name: "资料合同层", color: "#f58abc" },
 			runtime: { name: "运行结果层", color: "#b49cff" }
 		};
 
 		const entities = [
 			{
 				id: "receiptDto",
-				name: "订单/申报入口",
+				name: "履约生成入口",
 				code: "ServiceReceiptDTO",
 				layer: "entry",
 				x: 13,
 				y: 47,
 				size: 72,
-				desc: "履约生成的入口数据。系统先从订单、申报、基础配置里拿到服务信息，再决定要生成哪些履约单据。",
+				desc: "履约生成入口 DTO。generateServiceReceipt(...) 按 receiptType 分流：订单进入 planAnOrder(...)，续费和退款先定位 dataInfo.serviceCode 对应的原履约主单，再更新服务期限或生成续费服务单。",
 				fields: [
-					["serviceCode", "服务唯一编码，后续履约主单和合同都会围绕它关联"],
-					["categoryId / typeId", "用于匹配流程规则"],
-					["countryCode", "服务国家，参与流程匹配"],
-					["merchandId", "商户或主体，影响流程、合同模板和签署配置"]
+					["receiptType", "ORDER 走 planAnOrder，RENEWAL/REFUND 走续费或退款处理"],
+					["orderNo / itemId / number", "用于防重复生成，并决定本次需要补几张履约单据"],
+					["skuId / categoryId / typeId", "用于读取商品信息并匹配流程"],
+					["dataInfo.serviceCode", "增值、追加、续费、退款场景下指向原服务单"],
+					["isAppendAfterFulfillment", "履约完成后追加商品时，按产品明细逐条生成服务"]
+				]
+			},
+			{
+				id: "merchandSku",
+				name: "商品/SKU 信息",
+				code: "MerchandSkuDTO",
+				layer: "entry",
+				x: 18,
+				y: 25,
+				size: 66,
+				desc: "生成履约主单前会通过 skuId 查询商品域。商品返回的 merchandType、categoryCode、typeCode、serviceProcessId 会影响基础/增值判断、流程匹配和特殊授权代表流程。",
+				fields: [
+					["skuId", "ServiceReceiptDTO 传入，查询商品域"],
+					["merchandType / typeCode", "判断基础服务、增值服务、追加服务等履约形态"],
+					["categoryCode / countryCode", "参与流程匹配和特殊业务分支"],
+					["serviceProcessId", "部分授权代表场景直接指定流程主体"]
 				]
 			},
 			{
@@ -1007,12 +1086,13 @@
 				x: 27,
 				y: 47,
 				size: 78,
-				desc: "履约单据是服务粒度的单据承载。generateServiceReceipt 会按服务拆分逻辑判断本次需要生成几张单据。",
+				desc: "履约单据先按订单 item 落库，随后 generateServicePerform(...) 创建真实履约主单，再回写 service_code、服务区间和 serviceStatus。续费/退款场景也会把单据推给财务分摊。",
 				fields: [
 					["service_code", "履约服务编码，和主单、合同继续串联"],
 					["receipt_code", "单据编号"],
-					["service_status", "单据当前服务状态"],
-					["merchand_id", "商户或主体维度"]
+					["receipt_type", "订单、续费、退款等单据类型"],
+					["service_status", "回写履约主单初始 state_id"],
+					["service_start/end_time", "服务开始和结束时间"]
 				]
 			},
 			{
@@ -1023,7 +1103,7 @@
 				x: 27,
 				y: 23,
 				size: 74,
-				desc: "生成履约单时，先按服务类目、服务类型、国家等条件匹配流程规则，拿到要使用的 flowId。",
+				desc: "生成履约主单时，代码用 categoryId、typeId、countryCode 调用 getProductProcessMatching(...) 获取 flowId。特殊授权代表场景会跳过规则，直接使用商品配置的 serviceProcessId。",
 				fields: [
 					["category_id", "服务类目"],
 					["type_id", "服务类型"],
@@ -1039,7 +1119,7 @@
 				x: 50,
 				y: 19,
 				size: 90,
-				desc: "流程主体承载一个履约流程的当前可用版本、流程 JSON 和发布状态。履约单通过 flow_id 绑定它。",
+				desc: "流程主体承载当前生效的 flow_form_json 和版本号。履约主单通过 flow_id 绑定流程主体，初始化状态和操作流转都从这里读取流程 JSON。",
 				fields: [
 					["id", "流程 ID，履约主单的 flow_id 指向这里"],
 					["name", "流程名称"],
@@ -1055,12 +1135,12 @@
 				x: 66,
 				y: 16,
 				size: 68,
-				desc: "流程每次保存、发布会形成版本。发布后，流程主体会刷新当前版本和当前流程 JSON。",
+				desc: "流程版本保存草稿、历史和发布版本。publishVersion(...) 会把发布版本的 flow_form_json 写回流程主体，并刷新 current_version_id/current_version_no。",
 				fields: [
 					["flow_id", "归属流程主体"],
 					["version_no", "版本号"],
 					["flow_form_json", "该版本保存的流程结构"],
-					["status", "版本状态"]
+					["status / publish_time", "版本状态和发布时间"]
 				]
 			},
 			{
@@ -1071,12 +1151,12 @@
 				x: 50,
 				y: 34,
 				size: 84,
-				desc: "后台点击操作时，系统读取流程 JSON，找到当前节点下这个操作按钮对应的目标状态和字段判断规则。",
+				desc: "流程 JSON 是状态流转的代码依据。它包含 nodes、edges，edge 里带 sourceOperateCode、sourceOperateAction、targetStateId 和 fieldLists 条件。",
 				fields: [
 					["nodes[]", "流程节点，含 stateId、stateCode、children"],
 					["children[]", "当前节点可用操作，含 operateCode、optionType"],
 					["edges[]", "流转线，含 sourceOperateCode、targetStateId、fieldLists"],
-					["fieldLists", "操作后的字段判断条件，可决定不同流转路径"]
+					["fieldLists / skuLists", "字段条件或 SKU 条件决定不同流转路径"]
 				]
 			},
 			{
@@ -1087,12 +1167,12 @@
 				x: 69,
 				y: 34,
 				size: 64,
-				desc: "流程 JSON 中的节点定义，不是单独的业务单据；它引用状态节点库，并挂载该节点可点击的操作项。",
+				desc: "流程 JSON 中的节点定义，不是单独业务表。节点引用状态节点库，并在 data.children 中挂载当前节点可展示和可执行的按钮。",
 				fields: [
 					["stateId", "引用状态节点库"],
 					["stateCode", "状态编码"],
-					["children", "节点下可展示的操作项"],
-					["sort / position", "前端画流程图时使用"]
+					["data.children", "节点下可展示的操作按钮"],
+					["type / label", "流程图节点类型和展示名"]
 				]
 			},
 			{
@@ -1103,10 +1183,10 @@
 				x: 73,
 				y: 49,
 				size: 64,
-				desc: "流转线描述某个操作会把履约单从当前状态推到哪个目标状态，必要时还会带字段条件判断。",
+				desc: "流转线描述某个按钮动作会把履约单推到哪个目标状态。operate(...) 会按 sourceOperateCode、sourceOperateAction 和 fieldLists 条件选择目标 stateId。",
 				fields: [
 					["sourceOperateCode", "触发这条线的操作编码"],
-					["sourceOperateAction", "操作动作或动作值"],
+					["sourceOperateAction", "submit、reject 等按钮动作"],
 					["targetStateId", "目标状态节点"],
 					["fieldLists", "按表单字段或业务字段做分支判断"]
 				]
@@ -1119,7 +1199,7 @@
 				x: 86,
 				y: 31,
 				size: 70,
-				desc: "状态节点库提供标准状态。流程 JSON 通过 stateId 引用它，履约主单记录当前 state_id 和上一个 pre_state_id。",
+				desc: "状态节点库提供状态 ID、状态编码和业务状态口径。履约主单记录 state_id 与 pre_state_id，MQ 消息中也会带状态 code。",
 				fields: [
 					["id", "状态节点 ID"],
 					["state_code", "状态编码"],
@@ -1135,7 +1215,7 @@
 				x: 86,
 				y: 54,
 				size: 72,
-				desc: "后台按钮来自操作项库。operate(...) 根据后台点击的操作编码，在流程 JSON 中找下一步状态。",
+				desc: "后台/客户端按钮使用 operateCode。流程节点 children 挂载按钮，流程边用 sourceOperateCode 识别哪次操作触发流转。",
 				fields: [
 					["operate_code", "操作编码，和流程 JSON 的 sourceOperateCode 对应"],
 					["operate_name", "按钮名称"],
@@ -1144,19 +1224,51 @@
 				]
 			},
 			{
-				id: "operateRole",
-				name: "操作权限",
-				code: "operate_role / operate_model",
+				id: "operateModel",
+				name: "操作可见模块",
+				code: "KxtServiceProcessOperateModel / Role",
 				layer: "config",
-				x: 84,
-				y: 73,
-				size: 66,
-				desc: "控制某个角色、岗位或业务模型在当前状态能不能看到并点击某个操作按钮。",
+				x: 94,
+				y: 64,
+				size: 62,
+				desc: "操作项的可见和权限范围不是产品文档推断出来的，而是由 kxt_service_process_operate_model 与 kxt_service_process_operate_role 表达。模块值包含 JOB、SERVICE、VAT_DECLARE、EPR_DECLARE。",
 				fields: [
-					["operate_id / operate_code", "绑定操作项"],
-					["role_id / model_id", "绑定角色或业务模型"],
-					["state_id", "限制在哪个状态下可用"],
-					["permission", "按钮可见或可操作口径"]
+					["operate_id", "关联操作项 ID"],
+					["model", "JOB、SERVICE、VAT_DECLARE、EPR_DECLARE 等可用模块"],
+					["role_id", "角色权限维度"],
+					["ablePermission / enablePermission", "Mapper 中按模块和角色返回可用操作"]
+				]
+			},
+			{
+				id: "processorMapping",
+				name: "处理器/方法映射",
+				code: "sys_dict: perform_mapped",
+				layer: "config",
+				x: 85,
+				y: 72,
+				size: 66,
+				desc: "operate(...) 先按顶层类目和是否基础服务找 targetBeanName，再按 国家-类目-类型-操作码 找 targetMethodName；找不到时回退到 PerformOperateEnum。",
+				fields: [
+					["PERFORM_INIT_MAPPED", "按顶层类目 + isBasic 找初始处理器"],
+					["PERFORM_MAPPED", "按 country-category-type 找业务处理器"],
+					["PERFORM_OPERATE_MAPPED", "按 country-category-type-operate 找方法"],
+					["PerformOperateEnum", "字典未命中时的枚举兜底"]
+				]
+			},
+			{
+				id: "operateEntry",
+				name: "统一操作入口",
+				code: "KxtServicePerformServiceImpl.operate(...)",
+				layer: "runtime",
+				x: 76,
+				y: 64,
+				size: 72,
+				desc: "后台、客户端、定时任务最终进入 operate(...)。它校验用户和服务单，定位处理器方法，执行业务操作，并结合流程 JSON 推进状态。",
+				fields: [
+					["performId", "定位履约主单"],
+					["operateCode", "决定处理方法和流程边"],
+					["sourceOperateAction", "submit、save、reject 等动作"],
+					["operateJson", "表单内容、操作人和业务参数"]
 				]
 			},
 			{
@@ -1167,13 +1279,14 @@
 				x: 50,
 				y: 48,
 				size: 108,
-				desc: "履约主单是运行时核心实体。它绑定服务、流程、当前状态和上一个状态，是后台操作流转、消息、任务、合同的主要承载点。",
+				desc: "履约主单是运行时核心聚合。它绑定客户、订单、商品、父服务、流程、当前状态和上一个状态，是操作流转、轨迹、任务、消息、合同和老系统映射的中心。",
 				fields: [
 					["service_code", "服务编码，串联单据、明细、合同"],
 					["flow_id", "使用哪个流程主体"],
 					["state_id", "当前状态节点"],
 					["pre_state_id", "上一个状态节点"],
-					["merchand_id", "商户或主体维度"]
+					["parent_service_code", "增值、追加、迁移场景下指向基础服务"],
+					["form_data_info", "履约主单级表单数据，加密存储"]
 				]
 			},
 			{
@@ -1184,13 +1297,61 @@
 				x: 50,
 				y: 65,
 				size: 78,
-				desc: "履约明细挂在履约主单下，保存表单数据、合同文件、协议等过程资料。",
+				desc: "履约明细挂在履约主单下。generateServicePerform(...) 会插入明细，后续保存资料包、公司信息、附件、协议、证书、合同文件、税号等过程数据。",
 				fields: [
 					["perform_id", "关联履约主单"],
-					["form_data_info", "履约表单数据"],
+					["form_data_info", "新表单数据，加密存储"],
+					["material_url / file_info", "资料包和附件信息"],
 					["contract_file", "合同文件"],
-					["agreement", "协议内容或协议文件"],
-					["service_code", "服务编码冗余串联"]
+					["agreement_json / certificate_json", "协议、证书、发票等结果资料"]
+				]
+			},
+			{
+				id: "parentService",
+				name: "父服务关系",
+				code: "parent_service_code",
+				layer: "relation",
+				x: 32,
+				y: 67,
+				size: 64,
+				desc: "代码里的父子服务关系主要靠 KxtServicePerform.parentServiceCode 表达。生成增值服务时来自 dataInfo.serviceCode；迁移保存基础服务关系时也会回填该字段。",
+				fields: [
+					["parent_service_code", "指向基础服务 service_code"],
+					["is_basic", "区分基础服务和增值/追加/续费服务"],
+					["dataInfo.serviceCode", "生成子服务时的父服务来源"],
+					["saveBaseServiceRelation(...)", "迁移时通过映射回填父服务"]
+				]
+			},
+			{
+				id: "oldNewMapping",
+				name: "新老服务映射",
+				code: "KxtServicePerformMapping",
+				layer: "relation",
+				x: 22,
+				y: 78,
+				size: 72,
+				desc: "新老系统服务编码的桥。dealServiceRelation(...) 会把 oldServiceCode 映射到新履约 serviceCode；查询接口再通过映射联查履约主单、明细和状态。",
+				fields: [
+					["service_code", "新履约主单服务编号"],
+					["old_service_code", "老 VAT/EPR 等业务模块服务编号"],
+					["type", "新写老、老写新、迁移、完成迁移"],
+					["queryMappingToServicePerform", "按 oldServiceCode 联查新履约主单和明细"]
+				]
+			},
+			{
+				id: "legacyService",
+				name: "老业务服务",
+				code: "oldServiceCode",
+				layer: "relation",
+				x: 11,
+				y: 82,
+				size: 60,
+				desc: "老 VAT、EPR 等业务模块中的原服务编码。当前代码不是用它直接跑新流程，而是通过 KxtServicePerformMapping 找到新履约服务。",
+				fields: [
+					["old_service_code", "老系统服务编号"],
+					["source", "VAT、EPR 等历史业务来源"],
+					["parent_order_no", "迁移查询时可关联原订单"],
+					["deleted / online_type", "老服务状态和服务形态"]
 				]
 			},
 			{
@@ -1199,9 +1360,9 @@
 				code: "KxtServiceProcessForm",
 				layer: "formContract",
 				x: 31,
-				y: 74,
+				y: 88,
 				size: 72,
-				desc: "表单模板配置流程或履约要填写的表单结构。流程节点或操作可通过配置引用表单字段做展示和判断。",
+				desc: "表单模板是流程按钮和资料填写的结构来源。流程节点的按钮可关联表单，流程边上的 fieldLists 则读取提交后的字段值做条件流转。",
 				fields: [
 					["id", "表单模板 ID"],
 					["formJson", "表单结构 JSON"],
@@ -1215,14 +1376,14 @@
 				code: "form_data_info",
 				layer: "formContract",
 				x: 36,
-				y: 86,
+				y: 76,
 				size: 68,
-				desc: "用户或后台在履约过程中填写的真实数据。operate(...) 流转时，部分分支会读取这些字段判断目标状态。",
+				desc: "用户或后台在履约过程中填写的真实数据。KxtServicePerform 和 KxtServicePerformInfo 都有 formDataInfo，当前字段按 PIIJsonCrypto 加解密。",
 				fields: [
 					["perform_id", "归属履约主单或明细"],
-					["fieldCode", "表单字段编码"],
-					["fieldValue", "表单字段值"],
-					["form_data_info", "明细中的表单数据快照"]
+					["targetComponent", "fieldLists 使用的字段 key"],
+					["targetComponentValue", "字段条件命中的目标值"],
+					["form_data_info", "表单数据 JSON 快照，加密入库"]
 				]
 			},
 			{
@@ -1233,12 +1394,13 @@
 				x: 59,
 				y: 86,
 				size: 76,
-				desc: "合同模板不按 flowId 匹配，而是按商户、签署类型、模板 key 匹配到 e签宝 templateId。",
+				desc: "合同模板配置按 merchandId、signerType、templateKey 匹配 e签宝 templateId，并记录盖章关键字、模板名称、模板类型等信息。",
 				fields: [
-					["merchandId", "商户或主体"],
+					["merchand_id", "商品 ID"],
 					["signerType", "签署类型"],
 					["templateKey", "业务模板 key"],
-					["templateId", "e签宝合同模板 ID"]
+					["templateId", "e签宝模板 ID"],
+					["stampKeyWord", "盖章定位关键字"]
 				]
 			},
 			{
@@ -1249,7 +1411,7 @@
 				x: 69,
 				y: 74,
 				size: 78,
-				desc: "合同记录通过 service_code 关联履约服务，并记录模板、文件、签署流程和签署状态。",
+				desc: "合同记录通过 serviceCode 关联履约服务，记录模板、e签宝文件、签署流程、签署 URL、待盖章/已盖章文件和合同状态。对应 Basic 模块的 KxtContract 实体和 mapper/contract/KxtContractMapper.xml。",
 				fields: [
 					["service_code", "关联履约服务"],
 					["template_id", "使用的合同模板"],
@@ -1266,7 +1428,7 @@
 				x: 69,
 				y: 91,
 				size: 64,
-				desc: "外部电子签服务。系统用模板生成合同文件，发起签署流程，再回写签署链接、文件和状态。",
+				desc: "外部电子签服务。合同模块用模板生成文件，发起签署流程，回写 signFlowId、signUrl、fileId，并通过回调更新合同状态和盖章文件。",
 				fields: [
 					["templateId", "外部模板 ID"],
 					["fileId", "外部文件 ID"],
@@ -1275,83 +1437,149 @@
 				]
 			},
 			{
-				id: "statusMessage",
-				name: "状态变更消息",
-				code: "StatusMessage",
+				id: "track",
+				name: "操作轨迹",
+				code: "KxtServicePerformTrack",
+				layer: "runtime",
+				x: 36,
+				y: 13,
+				size: 68,
+				desc: "operate(...) 和 updatePerformState(...) 都会记录轨迹。轨迹保存操作实例、方法、操作码、动作、操作 JSON、前后状态和操作人类型；SLA、任务和质检类逻辑主要再通过 RemotePerformService 读取轨迹。",
+				fields: [
+					["service_code", "关联履约主单服务编号"],
+					["operate_code / operate_action", "操作编码和动作"],
+					["before_state_id / after_state_id", "状态变化前后节点"],
+					["operator_type", "客户、系统或处理人"]
+				]
+			},
+			{
+				id: "changeContext",
+				name: "状态变更上下文",
+				code: "PerformChangeContext",
 				layer: "runtime",
 				x: 20,
-				y: 65,
+				y: 61,
+				size: 68,
+				desc: "状态变更广播前的内部上下文。生成服务单、统一操作、直接改状态都会构造它，再由 sendOperateMq(...) 转成对外的 PerformStateChangeMsg。",
+				fields: [
+					["isGenerate", "是否刚生成服务单"],
+					["isSystem", "是否系统操作"],
+					["operateCode / actionCode", "本次操作和动作"],
+					["currentStatus", "本次状态节点"],
+					["abnormal / reject", "异常、驳回原因等补充信息"]
+				]
+			},
+			{
+				id: "statusMessage",
+				name: "状态变更消息",
+				code: "PerformStateChangeMsg",
+				layer: "runtime",
+				x: 14,
+				y: 47,
+				size: 70,
+				desc: "sendOperateMq(...) 组装的 MQ 消息。消息带 bizCode、bizStatus、bizOperateCode、flowId、country、category、merchantId、customerId、状态 code、异常和驳回信息。",
+				fields: [
+					["bizCode", "履约 serviceCode"],
+					["bizStatus / bizPreStatus", "业务状态"],
+					["bizOperateCode / actionCode", "触发操作"],
+					["flowId / country / category", "流程、国家、类目上下文"],
+					["parentStateCode / preStateCode", "状态节点 code"]
+				]
+			},
+			{
+				id: "taskExchange",
+				name: "任务/通知交换机",
+				code: "SAAS_BUSINESS_STATUS_CHANGE_EXCHANGE",
+				layer: "runtime",
+				x: 16,
+				y: 34,
 				size: 66,
-				desc: "后台操作导致履约状态变化后，会按业务需要发送状态变更消息，通知用户、后台或其他服务。",
+				desc: "履约状态变更的 fanout 交换机。sendOperateMq(...) 发送 PerformStateChangeMsg，basic 模块的任务队列和 msg 模块的企业微信通知队列都消费同一个交换机。",
 				fields: [
-					["performId", "关联履约主单"],
-					["oldState / newState", "状态变化"],
-					["operateCode", "触发操作"],
-					["receiver", "接收方"]
+					["exchange", "SAAS_BUSINESS_STATUS_CHANGE_EXCHANGE"],
+					["SAAS_BUSINESS_STATUS_CHANGE_QUEUE", "任务平台监听队列"],
+					["SEND_QYWX_EXCHANGE_QUEUE_NODE", "企业微信通知监听队列"],
+					["fanout", "一次状态变更可广播给多个消费者"]
 				]
 			},
 			{
-				id: "task",
-				name: "履约任务",
-				code: "PerformTask",
+				id: "assignmentTask",
+				name: "业务任务生成",
+				code: "AssignmentMQListener",
 				layer: "runtime",
-				x: 13,
-				y: 78,
+				x: 10,
+				y: 21,
 				size: 64,
-				desc: "部分状态或操作会生成后台任务，给运营、客服或业务人员继续处理。",
+				desc: "任务平台监听 SAAS_BUSINESS_STATUS_CHANGE_QUEUE，按 MakeTaskMsgDTO 解析消息后交给 BizTaskCreateProcessor.process(...)，再依据 BizToTaskConfig 生成或更新任务。",
 				fields: [
-					["performId", "关联履约主单"],
-					["stateId", "任务所属状态"],
-					["assignee", "处理人"],
-					["taskStatus", "任务状态"]
+					["MakeTaskMsgDTO", "消息入参模型"],
+					["BizTaskCreateProcessor", "任务创建处理器"],
+					["BizToTaskConfig", "业务状态到任务规则的配置"],
+					["TaskManageService", "任务处理与时效消息处理"]
 				]
 			},
 			{
-				id: "track",
-				name: "跟单/质控",
-				code: "Track / Quality",
+				id: "notice",
+				name: "通知消费",
+				code: "NoticeSmsMqListener",
 				layer: "runtime",
-				x: 13,
-				y: 27,
-				size: 64,
-				desc: "跟单、质控、状态展示等围绕履约主单产生，用于过程管理和后台列表展示。",
+				x: 6,
+				y: 40,
+				size: 60,
+				desc: "msg 模块的 NoticeSmsMqListener 绑定 SAAS_BUSINESS_STATUS_CHANGE_EXCHANGE，用 MessageSendModel 做企业微信行为通知。这里是已落地的通知消费，不是新的协同模型。",
 				fields: [
-					["performId", "关联履约主单"],
-					["followUserId", "跟单人"],
-					["qualityStatus", "质控状态"],
-					["remark", "过程备注"]
+					["operateNoticeQYWX", "企业微信行为操作通知"],
+					["MessageSendModel", "通知消息模型"],
+					["msg service", "消息模块消费"],
+					["same exchange", "与任务生成共用状态变更广播"]
 				]
 			},
 			{
 				id: "sla",
-				name: "SLA/提醒",
-				code: "SLA / Reminder",
+				name: "SLA/时效",
+				code: "KxtSlaFlowProgressService",
 				layer: "runtime",
-				x: 31,
-				y: 13,
+				x: 24,
+				y: 12,
 				size: 62,
-				desc: "根据履约状态、截止时间或规则生成提醒，辅助后台判断是否超时或需要催办。",
+				desc: "SLA 模块不直接推断履约进度，而是通过 RemotePerformService.getServicePerformTrack(serviceCode) 读取 KxtServicePerformTrackDataVO，再按流程进度配置判断起止节点和是否已处理。",
 				fields: [
-					["performId", "关联履约主单"],
-					["stateId", "对应状态"],
-					["deadline", "截止时间"],
-					["remindStatus", "提醒状态"]
+					["serviceCode", "按服务编号查询履约轨迹"],
+					["KxtServicePerformTrackDataVO", "轨迹 RPC 返回模型"],
+					["startProgress / endProgress", "时效计算使用的起止节点"],
+					["createProgress(...)", "生成流程进度时效记录"]
+				]
+			},
+			{
+				id: "remotePerform",
+				name: "履约远程接口",
+				code: "RemotePerformService",
+				layer: "runtime",
+				x: 33,
+				y: 26,
+				size: 62,
+				desc: "其他模块访问履约域的 Feign 接口。代码里已暴露查询轨迹、查询新老映射、按服务编码改状态、查询履约主单和同步新老数据等能力。",
+				fields: [
+					["getServicePerformTrack", "按 serviceCode 查询轨迹"],
+					["queryPerformMapping", "按 oldServiceCode 查询新履约主单"],
+					["updatePerformState", "按服务编码直接改状态"],
+					["syncNewDataInfoAndStatus", "同步新老服务资料与状态"]
 				]
 			},
 			{
 				id: "userInfo",
 				name: "客户/人员信息",
-				code: "User / Merchand",
+				code: "User / SysUser / Merchand",
 				layer: "entry",
-				x: 9,
-				y: 58,
+				x: 8,
+				y: 62,
 				size: 62,
-				desc: "履约过程中用到的客户、商户、处理人、签署人等信息。它们不是流程本身，但会影响权限、合同签署和消息接收。",
+				desc: "履约主单和消息中带 userId、puid、customerId、sUserId、cUserId、merchandId 等信息。它们影响权限、客户经理、合同签署和任务/通知接收。",
 				fields: [
-					["userId", "用户或处理人"],
-					["merchandId", "商户或主体"],
-					["signer", "合同签署人"],
-					["mobile / email", "通知或签署联系方式"]
+					["userId / puid", "客户和父级客户"],
+					["sUserId / cUserId", "客户经理、客服等处理人"],
+					["merchandId / skuId", "商品和 SKU 维度"],
+					["customerId", "MQ 消息中的客户维度"]
 				]
 			}
 		];
@@ -1371,11 +1599,15 @@
 			["flowEdge", "operate", "sourceOperateCode"],
 			["flowEdge", "state", "targetStateId"],
 			["flowEdge", "formData", "fieldLists 判断"],
-			["operate", "operateRole", "按钮权限"],
+			["operate", "operateModel", "模块/角色权限"],
+			["operateModel", "userInfo", "角色和模块"],
 			["serviceReceipt", "servicePerform", "生成履约主单"],
 			["servicePerform", "processFlow", "flow_id"],
 			["servicePerform", "state", "state_id / pre_state_id"],
 			["servicePerform", "operate", "operate(...) 点击"],
+			["operateEntry", "processorMapping", "字典定位处理器"],
+			["operateEntry", "track", "写操作轨迹"],
+			["operateEntry", "changeContext", "状态变更上下文"],
 			["servicePerform", "servicePerformInfo", "perform_id"],
 			["servicePerformInfo", "formData", "form_data_info"],
 			["formTemplate", "formData", "字段结构"],
@@ -1386,16 +1618,33 @@
 			["contract", "esign", "生成/签署"],
 			["userInfo", "contractTemplate", "merchandId / signerType"],
 			["userInfo", "contract", "签署人/主体"],
-			["servicePerform", "statusMessage", "状态变更"],
-			["servicePerform", "task", "生成任务"],
-			["servicePerform", "track", "跟单/质控"],
-			["servicePerform", "sla", "提醒/超时"],
+			["servicePerform", "track", "状态前后节点"],
+			["servicePerform", "changeContext", "状态变更"],
+			["changeContext", "statusMessage", "sendOperateMq"],
+			["statusMessage", "taskExchange", "fanout 广播"],
+			["taskExchange", "assignmentTask", "任务队列消费"],
+			["taskExchange", "notice", "通知队列消费"],
+			["remotePerform", "track", "getServicePerformTrack"],
+			["remotePerform", "oldNewMapping", "queryPerformMapping"],
+			["remotePerform", "servicePerform", "updatePerformState"],
+			["sla", "remotePerform", "读取轨迹"],
+			["assignmentTask", "remotePerform", "任务侧读取履约"],
 			["statusMessage", "userInfo", "消息接收人"],
-			["task", "userInfo", "处理人"],
-			["track", "userInfo", "跟单人"]
+			["assignmentTask", "userInfo", "处理人/客服"],
+			["track", "userInfo", "操作人"],
+			["servicePerform", "parentService", "parent_service_code"],
+			["parentService", "servicePerform", "基础/增值服务"],
+			["legacyService", "oldNewMapping", "old_service_code"],
+			["oldNewMapping", "servicePerform", "service_code"]
 		].map(([from, to, label]) => ({ from, to, label }));
 
 		const entityById = new Map(entities.map(entity => [entity.id, entity]));
+		const missingRelationTargets = relations
+			.flatMap(relation => [relation.from, relation.to])
+			.filter(entityId => !entityById.has(entityId));
+		if (missingRelationTargets.length) {
+			console.error("实体星图关系引用了不存在的节点", [...new Set(missingRelationTargets)]);
+		}
 		const galaxy = document.getElementById("galaxy");
 		const mapCard = document.getElementById("mapCard");
 		const spaceCamera = document.getElementById("spaceCamera");

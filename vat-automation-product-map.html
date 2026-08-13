@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>VAT 自动化产品地图</title>
+	<style>
+		:root {
+			color-scheme: light;
+			--bg: #f5f7fa;
+			--surface: #ffffff;
+			--surface-soft: #f9fbfd;
+			--text: #172033;
+			--muted: #667085;
+			--line: #d8e0ea;
+			--navy: #23314a;
+			--blue: #1769e0;
+			--teal: #0c9271;
+			--amber: #b7791f;
+			--red: #b42318;
+			--slate: #596579;
+			--green-soft: #eaf8f2;
+			--blue-soft: #eaf2ff;
+			--amber-soft: #fff6df;
+			--red-soft: #fff0ed;
+			--slate-soft: #eef2f7;
+			--shadow: 0 12px 30px rgba(23, 32, 51, 0.08);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			background: var(--bg);
+			color: var(--text);
+			font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+			letter-spacing: 0;
+		}
+
+		.page {
+			width: min(1360px, calc(100vw - 40px));
+			margin: 28px auto 44px;
+		}
+
+		.hero {
+			display: grid;
+			grid-template-columns: 1fr auto;
+			gap: 24px;
+			align-items: start;
+			padding: 24px 0 18px;
+		}
+
+		.eyebrow {
+			margin: 0 0 8px;
+			color: var(--teal);
+			font-size: 13px;
+			font-weight: 700;
+		}
+
+		h1,
+		h2,
+		h3,
+		p {
+			margin: 0;
+		}
+
+		h1 {
+			font-size: 32px;
+			line-height: 1.25;
+			color: var(--navy);
+		}
+
+		.report-meta {
+			min-width: 250px;
+			border: 1px solid var(--line);
+			border-radius: 8px;
+			background: var(--surface);
+			padding: 14px 16px;
+			box-shadow: var(--shadow);
+			color: var(--muted);
+			font-size: 13px;
+			line-height: 1.8;
+		}
+
+		.report-meta strong {
+			display: block;
+			color: var(--text);
+			font-size: 18px;
+			line-height: 1.4;
+		}
+
+		.kpis {
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			gap: 14px;
+			margin: 10px 0 18px;
+		}
+
+		.kpi {
+			min-height: 118px;
+			border: 1px solid var(--line);
+			border-radius: 8px;
+			background: var(--surface);
+			padding: 16px;
+			box-shadow: var(--shadow);
+		}
+
+		.kpi span {
+			display: block;
+			color: var(--muted);
+			font-size: 13px;
+			line-height: 1.5;
+		}
+
+		.kpi strong {
+			display: block;
+			margin-top: 10px;
+			color: var(--navy);
+			font-size: 30px;
+			line-height: 1.1;
+		}
+
+		.kpi small {
+			display: block;
+			margin-top: 8px;
+			color: var(--muted);
+			font-size: 12px;
+			line-height: 1.5;
+		}
+
+		.band {
+			margin-top: 18px;
+			border: 1px solid var(--line);
+			border-radius: 8px;
+			background: var(--surface);
+			box-shadow: var(--shadow);
+			overflow: hidden;
+		}
+
+		.band-head {
+			display: flex;
+			justify-content: space-between;
+			gap: 18px;
+			padding: 18px 20px;
+			border-bottom: 1px solid var(--line);
+			background: var(--surface-soft);
+		}
+
+		.band-head h2 {
+			color: var(--navy);
+			font-size: 19px;
+			line-height: 1.35;
+		}
+
+		.band-head p {
+			margin-top: 5px;
+			color: var(--muted);
+			font-size: 13px;
+			line-height: 1.6;
+		}
+
+		.legend {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: flex-end;
+			gap: 8px;
+			align-items: center;
+			min-width: 370px;
+		}
+
+		.legend .pill {
+			white-space: nowrap;
+		}
+
+		.table-scroll {
+			overflow-x: auto;
+		}
+
+		table {
+			width: 100%;
+			min-width: 1120px;
+			border-collapse: collapse;
+			background: var(--surface);
+		}
+
+		th,
+		td {
+			padding: 13px 14px;
+			border-bottom: 1px solid var(--line);
+			text-align: left;
+			vertical-align: top;
+			font-size: 13px;
+			line-height: 1.55;
+		}
+
+		th {
+			position: sticky;
+			top: 0;
+			z-index: 2;
+			background: #f3f7fb;
+			color: #415066;
+			font-weight: 700;
+			white-space: nowrap;
+		}
+
+		tbody tr:last-child td {
+			border-bottom: 0;
+		}
+
+		tbody tr:hover {
+			background: #fbfdff;
+		}
+
+		.country-cell {
+			min-width: 188px;
+		}
+
+		.country-title {
+			display: flex;
+			align-items: baseline;
+			gap: 8px;
+			font-weight: 800;
+			color: var(--navy);
+			font-size: 15px;
+		}
+
+		.country-title small {
+			color: var(--muted);
+			font-weight: 700;
+			font-size: 12px;
+		}
+
+		.volume {
+			min-width: 150px;
+		}
+
+		.volume strong {
+			display: block;
+			color: var(--navy);
+			font-size: 20px;
+			line-height: 1.1;
+		}
+
+		.bar {
+			width: 120px;
+			height: 8px;
+			margin-top: 8px;
+			border-radius: 999px;
+			background: #e4ebf4;
+			overflow: hidden;
+		}
+
+		.bar i {
+			display: block;
+			width: var(--w);
+			min-width: 4px;
+			height: 100%;
+			border-radius: inherit;
+			background: linear-gradient(90deg, var(--teal), var(--blue));
+		}
+
+		.node {
+			min-width: 180px;
+		}
+
+		.node strong {
+			display: block;
+			margin-bottom: 7px;
+			color: var(--text);
+			font-size: 13px;
+		}
+
+		.node p {
+			color: var(--muted);
+			font-size: 12px;
+			line-height: 1.55;
+		}
+
+		.pill {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			min-height: 26px;
+			padding: 4px 9px;
+			border: 1px solid transparent;
+			border-radius: 999px;
+			font-size: 12px;
+			font-weight: 700;
+			line-height: 1.3;
+		}
+
+		.pill.auto {
+			border-color: rgba(12, 146, 113, 0.24);
+			background: var(--green-soft);
+			color: var(--teal);
+		}
+
+		.pill.batch {
+			border-color: rgba(23, 105, 224, 0.2);
+			background: var(--blue-soft);
+			color: var(--blue);
+		}
+
+		.pill.dev {
+			border-color: rgba(183, 121, 31, 0.24);
+			background: var(--amber-soft);
+			color: var(--amber);
+		}
+
+		.pill.risk {
+			border-color: rgba(180, 35, 24, 0.2);
+			background: var(--red-soft);
+			color: var(--red);
+		}
+
+		.pill.semi {
+			border-color: rgba(89, 101, 121, 0.22);
+			background: var(--slate-soft);
+			color: var(--slate);
+		}
+
+		.priority {
+			min-width: 168px;
+			color: var(--muted);
+		}
+
+		.priority strong {
+			display: block;
+			margin-bottom: 5px;
+			color: var(--text);
+		}
+
+		.timeline {
+			position: relative;
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			gap: 18px;
+			padding: 28px 20px 24px;
+		}
+
+		.timeline::before {
+			content: "";
+			position: absolute;
+			left: 48px;
+			right: 48px;
+			top: 48px;
+			height: 2px;
+			background: #cfdae8;
+		}
+
+		.milestone {
+			position: relative;
+			padding-top: 42px;
+		}
+
+		.milestone::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			top: 12px;
+			width: 18px;
+			height: 18px;
+			border: 4px solid var(--surface);
+			border-radius: 999px;
+			background: var(--teal);
+			box-shadow: 0 0 0 2px rgba(12, 146, 113, 0.28);
+			z-index: 1;
+		}
+
+		.milestone.plan::before {
+			background: var(--amber);
+			box-shadow: 0 0 0 2px rgba(183, 121, 31, 0.28);
+		}
+
+		.milestone time {
+			display: inline-block;
+			margin-bottom: 8px;
+			color: var(--teal);
+			font-size: 13px;
+			font-weight: 800;
+		}
+
+		.milestone.plan time {
+			color: var(--amber);
+		}
+
+		.milestone h3 {
+			color: var(--navy);
+			font-size: 15px;
+			line-height: 1.4;
+		}
+
+		.milestone p {
+			margin-top: 8px;
+			color: var(--muted);
+			font-size: 13px;
+			line-height: 1.7;
+		}
+
+		.note {
+			padding: 16px 20px 20px;
+			color: var(--muted);
+			font-size: 12px;
+			line-height: 1.8;
+			border-top: 1px solid var(--line);
+			background: #fbfcfe;
+		}
+
+		.note strong {
+			color: var(--text);
+		}
+
+		@media (max-width: 1080px) {
+			.hero {
+				grid-template-columns: 1fr;
+			}
+
+			.report-meta {
+				min-width: 0;
+			}
+
+			.kpis,
+			.timeline {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+			}
+
+			.legend {
+				justify-content: flex-start;
+				min-width: 0;
+			}
+		}
+
+		@media (max-width: 720px) {
+			.page {
+				width: min(100vw - 24px, 1360px);
+				margin-top: 16px;
+			}
+
+			h1 {
+				font-size: 26px;
+			}
+
+			.kpis,
+			.timeline {
+				grid-template-columns: 1fr;
+			}
+
+			.band-head {
+				display: grid;
+			}
+
+			.timeline {
+				gap: 0;
+				padding: 20px 20px 20px 34px;
+			}
+
+			.timeline::before {
+				left: 22px;
+				right: auto;
+				top: 30px;
+				bottom: 38px;
+				width: 2px;
+				height: auto;
+			}
+
+			.milestone {
+				padding: 0 0 22px 22px;
+			}
+
+			.milestone::before {
+				left: -20px;
+				top: 0;
+			}
+		}
+
+		@media print {
+			body {
+				background: #fff;
+			}
+
+			.page {
+				width: 100%;
+				margin: 0;
+			}
+
+			.band,
+			.kpi,
+			.report-meta {
+				box-shadow: none;
+			}
+
+			th {
+				position: static;
+			}
+		}
+	</style>
+</head>
+<body>
+	<main class="page">
+		<header class="hero">
+			<div>
+				<p class="eyebrow">VAT 自动化进程产品地图</p>
+				<h1>VAT 自动化进程产品地图</h1>
+			</div>
+			<div class="report-meta">
+				<strong>统计口径</strong>
+				<div>时间：2026-07-01 至 2026-07-31</div>
+				<div>范围：VAT 类目，基础服务单</div>
+				<div>指标：资料审核通过数量</div>
+			</div>
+		</header>
+
+		<section class="kpis" aria-label="核心指标">
+			<div class="kpi">
+				<span>七月审核通过基础服务单</span>
+				<strong>2,647</strong>
+				<small>VAT 类目国家线合计</small>
+			</div>
+			<div class="kpi">
+				<span>已完全自动化国家</span>
+				<strong>1</strong>
+				<small>德国，三节点已完成闭环</small>
+			</div>
+			<div class="kpi">
+				<span>8 月底补齐国家</span>
+				<strong>2</strong>
+				<small>波兰补齐资料制作和税号录入，捷克完成全自动</small>
+			</div>
+			<div class="kpi">
+				<span>TOP 6 国家承载量</span>
+				<strong>92.1%</strong>
+				<small>德国、英国、波兰、法国、西班牙、捷克</small>
+			</div>
+		</section>
+
+		<section class="band">
+			<div class="band-head">
+				<div>
+					<h2>国家线自动化矩阵</h2>
+					<p>按 2026 年 7 月审核通过的 VAT 基础服务单数量排序，展示资料制作、注册递交、税号录入三节点进度。</p>
+				</div>
+				<div class="legend" aria-label="状态图例">
+					<span class="pill auto">已自动化</span>
+					<span class="pill batch">批量自动化</span>
+					<span class="pill dev">开发中</span>
+					<span class="pill risk">体验风险</span>
+					<span class="pill semi">待自动化 / 半自动</span>
+				</div>
+			</div>
+			<div class="table-scroll">
+				<table>
+					<thead>
+						<tr>
+							<th>排名 / 国家线</th>
+							<th>7 月审核通过量</th>
+							<th>资料制作</th>
+							<th>注册递交</th>
+							<th>税号录入</th>
+							<th>管理关注点</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="country-cell"><div class="country-title">1. 德国 <small>DE</small></div></td>
+							<td class="volume"><strong>753</strong><div class="bar"><i style="--w:100%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料包制作和校验后流转已自动化。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>注册递交已实现自动化。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入已完成自动化闭环。</p></td>
+							<td class="priority"><strong>固化标杆</strong>沉淀德国三节点规则、异常处理和验收口径，作为其他国家复制样板。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">2. 英国 <small>GB</small></div></td>
+							<td class="volume"><strong>519</strong><div class="bar"><i style="--w:69%"></i></div></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill risk">RPA 已实现，体验差</span></strong><p>已有 RPA 递交，但稳定性和使用体验不达预期。</p></td>
+							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入以通用模板上传为主。</p></td>
+							<td class="priority"><strong>先稳递交</strong>七月审核通过 519 单，量级排第二；9 月自动化前，优先治理 RPA 稳定性和操作体验。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">3. 波兰 <small>PL</small></div></td>
+							<td class="volume"><strong>477</strong><div class="bar"><i style="--w:63%"></i></div></td>
+							<td class="node"><strong><span class="pill dev">8 月底完成</span></strong><p>资料制作自动化开发中。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>注册递交自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill dev">8 月底完成</span></strong><p>上传税号自动化开发中。</p></td>
+							<td class="priority"><strong>月底验收</strong>重点验收资料制作和税号录入，确保与已完成的注册递交形成闭环。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">4. 法国 <small>FR</small></div></td>
+							<td class="volume"><strong>355</strong><div class="bar"><i style="--w:47%"></i></div></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作未形成国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill batch">批量自动化</span></strong><p>已实现批量上传税号。</p></td>
+							<td class="priority"><strong>9 月推进</strong>单量靠前，资料制作和注册递交是主要缺口；税号批量上传能力先作为过渡承接。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">5. 西班牙 <small>ES</small></div></td>
+							<td class="volume"><strong>223</strong><div class="bar"><i style="--w:30%"></i></div></td>
+							<td class="node"><strong><span class="pill dev">8 月底前自动化</span></strong><p>资料制作自动化预计 8 月底前实现。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill batch">批量自动化</span></strong><p>已实现批量上传税号。</p></td>
+							<td class="priority"><strong>盯资料交付</strong>8 月底前先看资料制作落地效果；注册递交仍需单独评估自动化方案。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">6. 捷克 <small>CZ</small></div></td>
+							<td class="volume"><strong>111</strong><div class="bar"><i style="--w:15%"></i></div></td>
+							<td class="node"><strong><span class="pill dev">8 月底完成</span></strong><p>自动化开发中。</p></td>
+							<td class="node"><strong><span class="pill dev">8 月底完成</span></strong><p>注册递交自动化随整体链路完成。</p></td>
+							<td class="node"><strong><span class="pill dev">8 月底完成</span></strong><p>税号录入自动化随整体链路完成。</p></td>
+							<td class="priority"><strong>全链路验收</strong>以 8 月底全自动为目标，重点看三节点联动和异常回退是否可用。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">7. 意大利 <small>IT</small></div></td>
+							<td class="volume"><strong>83</strong><div class="bar"><i style="--w:11%"></i></div></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
+							<td class="priority"><strong>候选储备</strong>单量进入第二梯队，先确认资料制作和递交规则是否适合模板化。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">8. 沙特 <small>SA</small></div></td>
+							<td class="volume"><strong>38</strong><div class="bar"><i style="--w:5%"></i></div></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
+							<td class="priority"><strong>通用承接</strong>短期使用通用税号录入能力，资料制作和递交暂不单独立项。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">9. 墨西哥 <small>MX</small></div></td>
+							<td class="volume"><strong>32</strong><div class="bar"><i style="--w:4%"></i></div></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
+							<td class="priority"><strong>通用承接</strong>短期使用通用税号录入能力，资料制作和递交暂不单独立项。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">10. 阿联酋 <small>UAE</small></div></td>
+							<td class="volume"><strong>30</strong><div class="bar"><i style="--w:4%"></i></div></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
+							<td class="priority"><strong>通用承接</strong>短期使用通用税号录入能力，资料制作和递交暂不单独立项。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">11. 爱尔兰 <small>IE</small></div></td>
+							<td class="volume"><strong>13</strong><div class="bar"><i style="--w:2%"></i></div></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
+							<td class="priority"><strong>低量观察</strong>保留在通用能力池，待单量或合规复杂度提升后再评估。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">12. 荷兰 <small>NL</small></div></td>
+							<td class="volume"><strong>4</strong><div class="bar"><i style="--w:1%"></i></div></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
+							<td class="priority"><strong>低量观察</strong>保留在通用能力池，待单量或合规复杂度提升后再评估。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">13. 奥地利 <small>AT</small></div></td>
+							<td class="volume"><strong>3</strong><div class="bar"><i style="--w:1%"></i></div></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
+							<td class="priority"><strong>低量观察</strong>保留在通用能力池，待单量或合规复杂度提升后再评估。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">14. 日本 <small>JPN</small></div></td>
+							<td class="volume"><strong>3</strong><div class="bar"><i style="--w:1%"></i></div></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
+							<td class="priority"><strong>低量观察</strong>保留在通用能力池，待单量或合规复杂度提升后再评估。</td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">15. 瑞典 <small>SWE</small></div></td>
+							<td class="volume"><strong>3</strong><div class="bar"><i style="--w:1%"></i></div></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
+							<td class="priority"><strong>低量观察</strong>保留在通用能力池，待单量或合规复杂度提升后再评估。</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="note">
+				<strong>数据说明：</strong>按 VAT 类目、基础服务单、资料审核通过时间落在 2026 年 7 月统计；排除退款中、停止服务、已注销、注销中状态。
+			</div>
+		</section>
+
+		<section class="band">
+			<div class="band-head">
+				<div>
+					<h2>自动化里程碑</h2>
+					<p>用于汇报当前完成度、开发中事项和后续排期重点。</p>
+				</div>
+			</div>
+			<div class="timeline">
+				<div class="milestone">
+					<time>7.15</time>
+					<h3>德国实现全自动化</h3>
+					<p>德国资料制作、注册递交、税号录入三节点完成自动化闭环。</p>
+				</div>
+				<div class="milestone">
+					<time>8.6</time>
+					<h3>录入税号实现半自动化</h3>
+					<p>税号录入具备通用模板/批量上传能力，作为各国家线过渡能力。</p>
+				</div>
+				<div class="milestone plan">
+					<time>预计 8 月底</time>
+					<h3>波兰、捷克实现全自动化</h3>
+					<p>波兰补齐资料制作和税号录入，捷克完成资料制作、注册递交、税号录入全链路自动化。</p>
+				</div>
+				<div class="milestone plan">
+					<time>预计 9 月</time>
+					<h3>法国、英国实现自动化</h3>
+					<p>法国重点补齐资料制作和注册递交，英国重点治理递交能力并推进资料制作自动化。</p>
+				</div>
+			</div>
+		</section>
+	</main>
+</body>
+</html>

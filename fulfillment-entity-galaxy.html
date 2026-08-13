@@ -194,10 +194,10 @@
 
 		.shell {
 			display: grid;
-			grid-template-columns: minmax(720px, 1fr) 390px;
-			gap: 18px;
+			grid-template-columns: minmax(780px, 1fr) 380px;
+			gap: 20px;
 			align-items: start;
-			max-width: 1520px;
+			max-width: 1660px;
 			margin: 0 auto;
 		}
 
@@ -212,15 +212,15 @@
 		}
 
 		.map-card {
-			min-height: 780px;
-			height: 780px;
+			min-height: 860px;
+			height: 860px;
 			border-radius: 18px;
 		}
 
 		.detail-card {
 			border-radius: 18px;
 			padding: 18px;
-			min-height: 780px;
+			min-height: 860px;
 		}
 
 		.map-card::before {
@@ -383,7 +383,7 @@
 
 		.space-camera {
 			position: absolute;
-			inset: 0;
+			inset: -8%;
 			z-index: 1;
 			transform-origin: center;
 			transform: translate(var(--cam-x, 0px), var(--cam-y, 0px)) scale(var(--cam-scale, 1));
@@ -861,8 +861,8 @@
 			}
 
 			.map-card {
-				height: min(780px, 78vh);
-				min-height: 620px;
+				height: min(840px, 80vh);
+				min-height: 680px;
 			}
 
 			.detail-card {
@@ -899,8 +899,8 @@
 			}
 
 			.map-card {
-				height: 620px;
-				min-height: 620px;
+				height: 700px;
+				min-height: 700px;
 				border-radius: 14px;
 			}
 
@@ -918,13 +918,13 @@
 			}
 
 			.planet-name {
-				width: 94px;
-				font-size: 11px;
+				width: 86px;
+				font-size: 10.5px;
 			}
 
 			.planet {
-				width: calc(var(--size) * .74);
-				height: calc(var(--size) * .74);
+				width: calc(var(--size) * .62);
+				height: calc(var(--size) * .62);
 			}
 
 			.planet-code {
@@ -1638,6 +1638,42 @@
 			["oldNewMapping", "servicePerform", "service_code"]
 		].map(([from, to, label]) => ({ from, to, label }));
 
+		const layoutOverrides = {
+			receiptDto: { x: 8, y: 54, size: 62 },
+			merchandSku: { x: 19, y: 20, size: 56 },
+			serviceReceipt: { x: 27, y: 43, size: 68 },
+			processRules: { x: 34, y: 20, size: 64 },
+			processFlow: { x: 51, y: 13, size: 78 },
+			processVersion: { x: 64, y: 11, size: 58 },
+			flowJson: { x: 50, y: 29, size: 72 },
+			flowNode: { x: 67, y: 28, size: 56 },
+			flowEdge: { x: 72, y: 44, size: 56 },
+			state: { x: 90, y: 24, size: 60 },
+			operate: { x: 90, y: 49, size: 62 },
+			operateModel: { x: 95, y: 64, size: 54 },
+			processorMapping: { x: 83, y: 72, size: 56 },
+			operateEntry: { x: 73, y: 64, size: 62 },
+			servicePerform: { x: 50, y: 48, size: 96 },
+			servicePerformInfo: { x: 51, y: 68, size: 68 },
+			parentService: { x: 31, y: 72, size: 56 },
+			oldNewMapping: { x: 20, y: 84, size: 62 },
+			legacyService: { x: 7, y: 90, size: 52 },
+			formTemplate: { x: 32, y: 91, size: 62 },
+			formData: { x: 40, y: 79, size: 58 },
+			contractTemplate: { x: 62, y: 89, size: 64 },
+			contract: { x: 73, y: 81, size: 66 },
+			esign: { x: 74, y: 94, size: 56 },
+			track: { x: 38, y: 6, size: 54 },
+			changeContext: { x: 20, y: 63, size: 58 },
+			statusMessage: { x: 13, y: 43, size: 58 },
+			taskExchange: { x: 16, y: 31, size: 56 },
+			assignmentTask: { x: 8, y: 13, size: 54 },
+			notice: { x: 5, y: 37, size: 50 },
+			sla: { x: 27, y: 7, size: 54 },
+			remotePerform: { x: 32, y: 30, size: 54 },
+			userInfo: { x: 6, y: 64, size: 54 }
+		};
+
 		const entityById = new Map(entities.map(entity => [entity.id, entity]));
 		const missingRelationTargets = relations
 			.flatMap(relation => [relation.from, relation.to])
@@ -1685,14 +1721,19 @@
 
 		function positionedEntity(id) {
 			const base = entityById.get(id);
-			const position = currentPositions.get(id) || { x: base.x, y: base.y };
+			const position = currentPositions.get(id) || layoutOverrides[id] || { x: base.x, y: base.y, size: base.size };
 			return { ...base, ...position };
 		}
 
 		function computePositions() {
 			const positions = new Map();
 			entities.forEach(entity => {
-				positions.set(entity.id, { x: entity.x, y: entity.y });
+				const override = layoutOverrides[entity.id] || {};
+				positions.set(entity.id, {
+					x: override.x ?? entity.x,
+					y: override.y ?? entity.y,
+					size: override.size ?? entity.size
+				});
 			});
 
 			currentPositions = positions;

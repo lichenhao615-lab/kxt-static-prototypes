@@ -18,11 +18,13 @@
 			--teal: #0f8b78;
 			--amber: #a56416;
 			--red: #b42318;
+			--cyan: #0e7490;
 			--slate: #596579;
 			--green-soft: #e8f7f2;
 			--blue-soft: #edf4ff;
 			--amber-soft: #fff4df;
 			--red-soft: #fff0ed;
+			--cyan-soft: #ecfeff;
 			--slate-soft: #eef3f8;
 			--shadow: 0 18px 45px rgba(22, 36, 61, 0.09);
 			--shadow-soft: 0 10px 24px rgba(22, 36, 61, 0.06);
@@ -359,6 +361,12 @@
 			color: var(--slate);
 		}
 
+		.pill.none {
+			border-color: rgba(14, 116, 144, 0.2);
+			background: var(--cyan-soft);
+			color: var(--cyan);
+		}
+
 		.priority {
 			min-width: 168px;
 			color: var(--muted);
@@ -613,7 +621,7 @@
 						<tr>
 							<td class="country-cell"><div class="country-title">2. 英国 <small>GB</small></div></td>
 							<td class="volume"><strong>519</strong><div class="bar"><i style="--w:69%"></i></div></td>
-							<td class="node"><strong><span class="pill semi">无需制作</span></strong><p>英国资料制作环节无需制作，不纳入资料制作自动化范围。</p></td>
+							<td class="node"><strong><span class="pill none">无需制作</span></strong><p>英国资料制作环节无需制作，不纳入资料制作自动化范围。</p></td>
 							<td class="node"><strong><span class="pill risk">RPA 已实现，体验差</span></strong><p>已有 RPA 递交，但稳定性和使用体验不达预期。</p></td>
 							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入以通用模板上传为主。</p></td>
 							<td class="priority"><strong>先稳递交</strong>七月审核通过 519 单，量级排第二；9 月自动化前，优先治理 RPA 稳定性和操作体验。</td>

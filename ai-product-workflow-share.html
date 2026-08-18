@@ -1488,6 +1488,253 @@
 				text-align: center;
 			}
 
+			.density-demo-decision,
+			.density-risk-matrix,
+			.density-low-cost {
+				justify-content: flex-start;
+				padding-top: 40px;
+			}
+
+			.density-task { gap: 14px; }
+			.task-compare-table {
+				display: grid;
+				grid-template-rows: 52px repeat(5, minmax(0, 1fr));
+				height: 340px;
+			}
+
+			.task-compare-table .table-row { grid-template-columns: 180px minmax(0, 0.8fr) minmax(0, 1.35fr); }
+			.task-compare-table .table-row span {
+				display: flex;
+				align-items: center;
+				min-width: 0;
+				padding: 10px 14px;
+				font-size: 17px;
+			}
+
+			.density-task > .statement { margin-top: 0 !important; }
+
+			.density-demo-decision { gap: 14px; }
+			.density-demo-decision .decision-split { min-height: 300px; }
+			.density-demo-decision .decision {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
+			.demo-quick-check { min-height: 220px; }
+			.demo-quick-check .panel {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding: 20px;
+			}
+
+			.demo-quick-check .panel h3 { margin-top: 12px; font-size: 21px; }
+			.demo-quick-check .panel p { font-size: 17px; }
+			.density-demo-decision > .statement { margin-top: 0 !important; }
+
+			.density-reference-matrix {
+				display: flex;
+				gap: 14px;
+				padding-top: 36px;
+			}
+
+			.density-reference-matrix .priority-rail { min-height: 90px; margin: 0; }
+			.density-reference-matrix > .grid-5 { min-height: 200px; }
+			.density-reference-matrix .constraint { padding: 18px 12px; }
+			.constraint-example-table {
+				display: grid;
+				grid-template-rows: 48px repeat(3, minmax(0, 1fr));
+				height: 230px;
+			}
+
+			.constraint-example-table .table-row { grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.38fr) minmax(0, 1.1fr); }
+			.constraint-example-table .table-row span {
+				display: flex;
+				align-items: center;
+				min-width: 0;
+				padding: 9px 14px;
+				font-size: 17px;
+			}
+
+			.density-delta-compare { gap: 16px; }
+			.correction-scope {
+				flex: 0 0 auto;
+				min-height: 84px;
+				margin-top: 0 !important;
+			}
+
+			.density-acceptance-matrix {
+				gap: 14px;
+				padding-top: 40px;
+			}
+
+			.density-acceptance-matrix > .grid-5 {
+				grid-template-columns: repeat(5, minmax(0, 1fr));
+				grid-template-rows: minmax(0, 1fr);
+				min-height: 330px;
+			}
+
+			.density-acceptance-matrix .acceptance-layer,
+			.density-acceptance-matrix .acceptance-layer:nth-child(4),
+			.density-acceptance-matrix .acceptance-layer:nth-child(5) {
+				grid-column: auto;
+				min-height: 0;
+				padding: 22px;
+			}
+
+			.acceptance-record {
+				flex: 0 0 auto;
+				min-height: 84px;
+				margin-top: 0 !important;
+			}
+
+			.density-acceptance-matrix > .statement {
+				margin-top: 0 !important;
+				font-size: 18px;
+			}
+
+			.density-prd-skeleton {
+				display: flex;
+				gap: 16px;
+				padding-top: 40px;
+			}
+
+			.density-prd-skeleton .skeleton {
+				grid-template-columns: repeat(4, minmax(0, 1fr));
+				min-height: 250px;
+			}
+
+			.density-prd-skeleton .skeleton-group {
+				display: block;
+				padding: 20px;
+			}
+
+			.density-prd-skeleton .skeleton-group strong {
+				margin-bottom: 12px;
+				font-size: 21px;
+			}
+
+			.density-prd-skeleton .skeleton-group span { font-size: 16px; }
+			.prd-crop-grid { min-height: 250px; }
+			.prd-crop-grid .panel {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding: 22px;
+			}
+
+			.prd-crop-grid .panel h3 { margin-top: 12px; font-size: 21px; }
+			.prd-crop-grid .panel li { font-size: 16px; }
+			.prd-crop-grid .tag { min-height: 36px; font-size: 15px; }
+
+			.density-reuse {
+				align-content: start;
+				padding-top: 48px;
+				grid-auto-rows: 540px;
+			}
+
+			.density-reuse .panel {
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				padding: 28px;
+			}
+
+			.density-reuse .panel h3 { margin: 18px 0 20px; }
+			.density-reuse .panel p {
+				display: flex;
+				flex: 1;
+				align-items: center;
+				gap: 4px;
+				margin: 0;
+				border-top: 1px solid var(--line);
+				font-size: 18px;
+			}
+
+			.density-reuse .panel p strong { flex: 0 0 auto; }
+
+			.density-call-chain {
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				padding-top: 40px;
+				gap: 14px;
+			}
+
+			.density-call-chain .call-formula {
+				flex: 0 0 auto;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-items: center;
+				min-height: 76px;
+			}
+
+			.call-example-grid { min-height: 210px; }
+			.call-example-grid .panel {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding: 22px;
+			}
+
+			.call-example-grid .panel h3 { margin-top: 10px; font-size: 20px; }
+			.call-example-grid .panel p { font-size: 17px; line-height: 1.45; }
+			.density-call-chain .call-types {
+				grid-template-columns: repeat(4, minmax(0, 1fr));
+				min-height: 180px;
+				margin: 0;
+				gap: 12px;
+			}
+
+			.density-call-chain .call-type {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding: 20px;
+			}
+
+			.density-call-chain > .statement { margin-top: 0 !important; }
+
+			.risk-matrix {
+				display: grid;
+				grid-template-rows: 54px repeat(6, minmax(0, 1fr));
+				height: 560px;
+			}
+
+			.risk-matrix .table-row { grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.08fr) minmax(0, 1.6fr); }
+			.risk-matrix .table-row span {
+				display: flex;
+				align-items: center;
+				min-width: 0;
+				padding: 10px 16px;
+				font-size: 18px;
+				line-height: 1.4;
+			}
+
+			.risk-matrix .table-row:not(.header) span:first-child {
+				background: var(--coral-soft);
+				color: #8f4638;
+				font-weight: 800;
+			}
+
+			.density-low-cost { gap: 16px; }
+			.low-cost-grid {
+				grid-template-rows: repeat(2, minmax(0, 1fr));
+				min-height: 500px;
+			}
+
+			.low-cost-grid .panel {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding: 24px;
+			}
+
+			.low-cost-grid .panel h3 { margin-top: 12px; font-size: 21px; }
+			.low-cost-grid .panel p { font-size: 17px; }
+			.density-low-cost > .statement { margin-top: 0 !important; }
+
 			.align-close .check-item { align-items: center; }
 		}
 
@@ -1538,7 +1785,7 @@
 				<div class="brand-copy">AI 产品工作台 · 产品经理工作流分享</div>
 			</div>
 			<div class="chapter-name" id="chapterName">开场</div>
-			<div class="screen-count"><span id="currentScreen">01</span> / <span id="totalScreens">22</span></div>
+			<div class="screen-count"><span id="currentScreen">01</span> / <span id="totalScreens">25</span></div>
 		</header>
 
 		<main class="deck" id="deck">
@@ -1607,15 +1854,16 @@
 					<h2>先把任务说清，再让事实约束答案</h2>
 					<p class="lead">同一业务，给领导看的地图和给研发评审的方案，不应该拥有相同的信息结构。</p>
 					<div class="stage-body density-task">
-						<div class="panel accent">
-							<h3>一次讲清六个要素</h3>
-							<div class="tag-cloud" style="margin-top:18px">
-								<span class="tag">业务背景</span><span class="tag">目标用户</span><span class="tag">要解决的问题</span>
-								<span class="tag">期望产物</span><span class="tag">证据边界</span><span class="tag">完成标准</span>
-							</div>
-							<div class="statement" style="margin-top:22px">任务 = 背景 + 对象 + 要决定的问题 + 产物 + 依据 + 完成标准</div>
+						<div class="call-formula"><b>任务 =</b><span>背景</span><span>对象</span><span>要决定的问题</span><span>产物</span><span>依据</span><span>完成标准</span></div>
+						<div class="table-sample task-compare-table">
+							<div class="table-row header"><span>维度</span><span>普通提问</span><span>产品任务单</span></div>
+							<div class="table-row"><span>受众</span><span>未说明</span><span>税务产品负责人</span></div>
+							<div class="table-row"><span>决策问题</span><span>VAT 自动化做得怎么样？</span><span>哪些国家值得优先补齐，依据是什么？</span></div>
+							<div class="table-row"><span>事实来源</span><span>未说明，容易依赖模型常识</span><span>7 月审核通过的基础服务单 + 当前代码能力</span></div>
+							<div class="table-row"><span>目标产物</span><span>一段分析文字</span><span>可浏览产品地图 + 口径说明</span></div>
+							<div class="table-row"><span>完成标准</span><span>看起来合理</span><span>区分已实现 / 规划 / 待确认；数据复算；发布回读</span></div>
 						</div>
-						<div class="statement amber" style="margin-top:18px">目标对象一变，信息结构、证据深度和完成标准都要随之变化。</div>
+						<div class="statement amber">同一个 VAT 主题，任务定义不同，信息结构、证据深度和完成标准就完全不同。</div>
 					</div>
 				</div>
 			</section>
@@ -1670,7 +1918,7 @@
 				<div class="slide-inner">
 					<div class="eyebrow">03 · 先判断是否需要 DEMO</div>
 					<h2>判断标准不是“能不能做”，而是“能否减少关键不确定性”</h2>
-					<div class="stage-body">
+					<div class="stage-body density-demo-decision">
 						<div class="decision-split">
 							<div class="decision">
 								<span class="decision-label">优先做 DEMO</span>
@@ -1684,7 +1932,12 @@
 								<ul class="clean-list"><li>字段与业务规则</li><li>权限、接口映射</li><li>数据来源与统计口径</li><li>代码边界或明确小改动</li></ul>
 							</div>
 						</div>
-						<div class="statement" style="margin-top:16px">能显著减少当前最大的未知，DEMO 才值得投入。</div>
+						<div class="grid-3 demo-quick-check">
+							<div class="panel accent"><span class="badge">30 秒判断 · 01</span><h3>是否存在多种合理界面解释？</h3><p>是：先做 DEMO，把想象变成同一个操作对象。</p></div>
+							<div class="panel blue"><span class="badge blue">30 秒判断 · 02</span><h3>是否必须操作才会暴露分歧？</h3><p>是：先验证入口、状态、动作和保存归属。</p></div>
+							<div class="panel amber"><span class="badge amber">30 秒判断 · 03</span><h3>主要未知只在规则或数据口径？</h3><p>是：不必先做 DEMO，直接取证或固化规则。</p></div>
+						</div>
+						<div class="statement">不做 DEMO ≠ 不做产物：流程图｜规则表｜数据查询｜代码取证。</div>
 					</div>
 				</div>
 			</section>
@@ -1723,6 +1976,12 @@
 							<div class="constraint"><strong>交互链路</strong><span>进入、点击、保存、关闭、回显</span></div>
 							<div class="constraint"><strong>状态覆盖</strong><span>默认、空、编辑、失败、成功、上限</span></div>
 						</div>
+						<div class="table-sample constraint-example-table">
+							<div class="table-row header"><span>模糊反馈</span><span>可执行约束</span><span>验收证据</span></div>
+							<div class="table-row"><span>不要单独保存</span><span>移除子模块保存按钮；随父级“确定”统一提交</span><span>父级确认后重开抽屉，数据正确回显</span></div>
+							<div class="table-row"><span>入口放回主流程</span><span>删除列表独立入口；仅在发布商品编辑抽屉保留管理能力</span><span>旧入口命中为 0；主流程可连续进入和返回</span></div>
+							<div class="table-row"><span>文案统一改掉</span><span>首字段统一为“回收费年份”，同步标签、表头、占位、校验与 PRD</span><span>旧文案命中为 0；页面与 PRD 新文案一致</span></div>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -1738,6 +1997,7 @@
 							<div class="delta keep"><span class="badge blue">必须保留</span><h3>保护已经确认的能力</h3><ul class="clean-list"><li>嵌入式管理能力</li><li>必填校验</li><li>父级统一保存</li></ul></div>
 							<div class="delta forbid"><span class="badge coral">禁止出现</span><h3>消除旧入口与旧口径</h3><ul class="clean-list"><li>独立管理入口</li><li>过期字段名称</li><li>未经确认的新样式</li></ul></div>
 						</div>
+						<div class="call-formula correction-scope"><b>一次入口 / 文案纠偏必须穿透：</b><span>页面展示</span><span>占位提示</span><span>校验文案</span><span>PRD</span><span>已发布版本</span></div>
 					</div>
 				</div>
 			</section>
@@ -1755,6 +2015,8 @@
 							<div class="acceptance-layer"><strong>交互</strong><span>空、编辑、增删、上限、拦截、保存与再次回显。</span></div>
 							<div class="acceptance-layer"><strong>运行</strong><span>页面错误和控制台错误为 0；关键结果有截图。</span></div>
 						</div>
+						<div class="call-formula acceptance-record"><b>验收记录 =</b><span>操作路径</span><span>前置状态</span><span>动作</span><span>预期</span><span>实际</span><span>证据</span><span>结论</span></div>
+						<div class="statement">SKU 必填校验｜路径：发布商品 &gt; 编辑抽屉｜前置：金额有值、年份为空｜动作：点击父级“确定”｜预期：精确提示并阻断｜实际：提示出现、抽屉保持编辑态｜证据：截图 + 控制台 0 错误｜结论：通过</div>
 					</div>
 				</div>
 			</section>
@@ -1807,6 +2069,11 @@
 							<div class="skeleton-group"><strong>做到哪里</strong><span>范围内</span><span>范围外</span><span>用户场景</span><span>方案总览</span></div>
 							<div class="skeleton-group"><strong>怎样工作</strong><span>业务流程</span><span>页面与交互</span><span>业务规则</span><span>保存与回显</span></div>
 							<div class="skeleton-group"><strong>怎样完成</strong><span>异常与历史影响</span><span>验收标准</span><span>待确认事项</span><span>版本变更</span></div>
+						</div>
+						<div class="grid-3 prd-crop-grid">
+							<div class="panel coral"><span class="badge coral">不可省略</span><h3>再小的需求也要写清</h3><div class="tag-cloud"><span class="tag">目标</span><span class="tag">范围</span><span class="tag">异常</span><span class="tag">验收</span></div></div>
+							<div class="panel blue"><span class="badge blue">按复杂度展开</span><h3>按风险增加细节</h3><div class="tag-cloud"><span class="tag">页面拆分</span><span class="tag">权限细则</span><span class="tag">历史迁移</span><span class="tag">外部依赖</span></div></div>
+							<div class="panel amber"><span class="badge amber">防漂移控制</span><h3>让当前口径可识别</h3><ul class="clean-list"><li>版本：有效版本与变更点</li><li>范围：本期做 / 不做</li><li>待确认：问题、影响、负责人、决策节点</li></ul></div>
 						</div>
 					</div>
 				</div>
@@ -1874,6 +2141,20 @@
 				</div>
 			</section>
 
+			<section class="slide" data-section="DEMO 与 PRD">
+				<div class="slide-inner">
+					<div class="eyebrow">06 · 后续调用</div>
+					<h2>交付不是把文件发出去，而是让同一结论继续被调用</h2>
+					<p class="lead">DEMO、PRD、证据与验收记录留在同一工作空间，后续角色不必重新解释需求。</p>
+					<div class="stage-body grid-4 density-reuse">
+						<div class="panel accent"><span class="badge">评审</span><h3>决定入口、流程与取舍</h3><p><strong>怎么用：</strong>直接操作 DEMO，逐项确认争议。</p><p><strong>典型产物：</strong>DEMO + 差异清单。</p><p><strong>完成条件：</strong>争议项进入已确认或待确认。</p></div>
+						<div class="panel blue"><span class="badge blue">研发</span><h3>追溯对象、规则与边界</h3><p><strong>怎么用：</strong>从 PRD 定位字段、保存、异常和来源。</p><p><strong>典型产物：</strong>页面表 + 规则表 + 代码证据。</p><p><strong>完成条件：</strong>关键规则有来源、有执行边界。</p></div>
+						<div class="panel amber"><span class="badge amber">测试</span><h3>把验收语言变成用例</h3><p><strong>怎么用：</strong>覆盖主路径、异常、保存与再次回显。</p><p><strong>典型产物：</strong>验收记录 + 截图证据。</p><p><strong>完成条件：</strong>预期、实际、证据和结论完整。</p></div>
+						<div class="panel coral"><span class="badge coral">运营</span><h3>沿用口径与当前版本</h3><p><strong>怎么用：</strong>查看口径说明、可访问页面和变更记录。</p><p><strong>典型产物：</strong>口径说明 + 发布页面。</p><p><strong>完成条件：</strong>线上地址、数据口径和有效版本可回读。</p></div>
+					</div>
+				</div>
+			</section>
+
 			<section class="slide" data-section="真实案例">
 				<div class="slide-inner">
 					<div class="eyebrow">07 · 三种证据路径</div>
@@ -1922,6 +2203,10 @@
 					<h2>第一次讲清工作空间，后续用短指令精确纠偏</h2>
 					<div class="stage-body density-call-chain">
 						<div class="call-formula"><b>首次调用 =</b><span>背景</span><span>目标受众</span><span>目标产物</span><span>事实来源</span><span>约束与保留项</span><span>验收标准</span><span>交付位置</span></div>
+						<div class="grid-2 call-example-grid">
+							<div class="panel accent"><span class="badge">完整首次调用</span><h3>把任务、证据、边界与完成标准一次讲清</h3><p>请在 kxt-cloud-platform 中梳理 VAT 自动化现状，面向税务产品负责人产出一张可浏览产品地图。事实以 7 月审核通过的基础服务单和当前代码能力为准；区分已实现、规划、待确认，不把规划画成现状。保留现有案例入口，不扩展为结果汇报。完成后在 1920×1080 验收，发布并回读线上地址。</p></div>
+							<div class="panel blue"><span class="badge blue">短纠偏模板</span><h3>只补充本轮变化，不重写整份上下文</h3><p>推翻：旧统计口径｜保留：国家分层与页面结构｜只改：查询与对应文案｜同步：页面、PRD、线上版本｜验证：结果复算 + 旧口径命中为 0</p></div>
+						</div>
 						<div class="call-types">
 							<div class="call-type"><strong>纠偏调用</strong><span>什么被推翻、什么必须保留、哪些区域不要修改。</span></div>
 							<div class="call-type"><strong>证据调用</strong><span>指定代码、数据或正式文档为依据，区分现状与规划。</span></div>
@@ -1943,6 +2228,42 @@
 							<div class="boundary pm"><span class="badge">产品经理必须负责</span><h3>问题、口径、取舍、风险</h3><div class="tag-cloud"><span class="tag">定义业务问题与优先级</span><span class="tag">确认统计口径与例外</span><span class="tag">判断现状与规划边界</span><span class="tag">决定体验与协作取舍</span><span class="tag">对最终方案负责</span></div></div>
 						</div>
 						<div class="pitfall-strip"><div class="pitfall">回答了错误的数据问题</div><div class="pitfall">把未来方案画成现状</div><div class="pitfall">DEMO 与 PRD 不一致</div><div class="pitfall">只生成，不验证</div><div class="pitfall">修改范围失控</div></div>
+					</div>
+				</div>
+			</section>
+
+			<section class="slide" data-section="边界与防错">
+				<div class="slide-inner">
+					<div class="eyebrow">09 · 防错机制</div>
+					<h2>把踩过的坑，固化成下一次的检查动作</h2>
+					<div class="stage-body density-risk-matrix">
+						<div class="table-sample risk-matrix">
+							<div class="table-row header"><span>失败模式</span><span>常见根因</span><span>检查动作</span></div>
+							<div class="table-row"><span>错误数据口径</span><span>把相近指标当成目标口径，或只改结论不重算</span><span>明确业务对象、时间字段、有效状态和去重方式；回到查询层复算</span></div>
+							<div class="table-row"><span>未来画成现状</span><span>未标记证据身份，把方案或推断当成已实现</span><span>标注已实现 / 规划 / 待确认；逐项补充当前产品或代码依据</span></div>
+							<div class="table-row"><span>DEMO 与 PRD 不一致</span><span>纠偏只改一个产物，入口、字段或保存语义发生漂移</span><span>对入口、字段、必填、保存、校验等共同决策项逐项核对</span></div>
+							<div class="table-row"><span>只生成不验证</span><span>把文件存在或页面能打开当作完成</span><span>跑主路径与异常；检查溢出、控制台、截图证据和线上回读</span></div>
+							<div class="table-row"><span>修改范围失控</span><span>每轮重做整页，误伤已确认区域</span><span>写清推翻 / 保留 / 只改 / 同步 / 验证；旧内容命中为 0</span></div>
+							<div class="table-row"><span>高风险操作</span><span>把任务上下文误当成写入、发布或通知授权</span><span>默认只读隔离；写入、发布、消息与审批前确认授权</span></div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="slide" data-section="边界与防错">
+				<div class="slide-inner">
+					<div class="eyebrow">09 · 低成本开始</div>
+					<h2>先跑通一个真实小任务，再扩大工作流</h2>
+					<div class="stage-body density-low-cost">
+						<div class="grid-3 low-cost-grid">
+							<div class="panel accent"><span class="badge">01</span><h3>选一个真实小任务</h3><p>从高频、边界可控、能独立验收的工作开始，不先设计一套宏大流程。</p></div>
+							<div class="panel blue"><span class="badge blue">02</span><h3>提供稳定工作空间</h3><p>给出仓库、文档、数据口径、已有页面和已确认结论，让后续调用共享上下文。</p></div>
+							<div class="panel amber"><span class="badge amber">03</span><h3>先要最小可评审产物</h3><p>优先产出可操作页面、规则表或可评审草案，尽快让关键分歧显现。</p></div>
+							<div class="panel coral"><span class="badge coral">04</span><h3>用验收语言纠偏</h3><p>描述入口、状态、动作、保存、文案和禁止项，不只说“再像一点”。</p></div>
+							<div class="panel blue"><span class="badge blue">05</span><h3>要求主动验证</h3><p>跑主路径、异常、错误检查、截图与回读，并明确说明尚未验证的部分。</p></div>
+							<div class="panel accent"><span class="badge">06</span><h3>连续复用上下文</h3><p>在同一任务里增量修改，明确推翻、保留和同步范围，避免每次从零解释。</p></div>
+						</div>
+						<div class="statement">起点不是学会更多提示词，而是完成一次可回读的小闭环。</div>
 					</div>
 				</div>
 			</section>

@@ -1,0 +1,2034 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>履约全链路实体星图</title>
+	<style>
+		:root {
+			--bg: #080b14;
+			--bg-deep: #03050b;
+			--panel: rgba(12, 18, 32, .82);
+			--panel-strong: rgba(15, 24, 43, .94);
+			--line: rgba(157, 180, 230, .22);
+			--line-active: rgba(103, 232, 249, .94);
+			--text: #f4f7fb;
+			--muted: #a9b5c7;
+			--dim: #69758c;
+			--gold: #f8c76b;
+			--cyan: #67e8f9;
+			--green: #7ee787;
+			--pink: #f58abc;
+			--violet: #b49cff;
+			--orange: #ffb86b;
+			--blue: #8ab4ff;
+			--red: #ff8f8f;
+			--shadow: 0 22px 70px rgba(0, 0, 0, .38);
+			color-scheme: dark;
+			font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			min-height: 100vh;
+			color: var(--text);
+			background:
+				radial-gradient(circle at 18% 14%, rgba(46, 134, 193, .28), transparent 27%),
+				radial-gradient(circle at 82% 20%, rgba(248, 199, 107, .14), transparent 25%),
+				radial-gradient(circle at 66% 84%, rgba(245, 138, 188, .16), transparent 26%),
+				linear-gradient(135deg, var(--bg-deep), var(--bg) 56%, #101323);
+			overflow-x: hidden;
+		}
+
+		button {
+			font: inherit;
+		}
+
+		.app {
+			position: relative;
+			min-height: 100vh;
+			padding: 22px;
+			isolation: isolate;
+		}
+
+		.stars,
+		.stars::before,
+		.stars::after {
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			background-image:
+				radial-gradient(circle, rgba(255, 255, 255, .72) 0 1px, transparent 1.5px),
+				radial-gradient(circle, rgba(103, 232, 249, .48) 0 1px, transparent 1.4px);
+			background-size: 91px 91px, 137px 137px;
+			background-position: 0 0, 28px 36px;
+			opacity: .35;
+			z-index: -3;
+		}
+
+		.stars::before {
+			content: "";
+			transform: rotate(7deg) scale(1.18);
+			animation: driftStars 26s linear infinite;
+			opacity: .22;
+		}
+
+		.stars::after {
+			content: "";
+			background-size: 173px 173px, 211px 211px;
+			background-position: 42px 17px, 10px 76px;
+			animation: driftStars 38s linear infinite reverse;
+			opacity: .18;
+		}
+
+		@keyframes driftStars {
+			from { translate: 0 0; }
+			to { translate: 80px 44px; }
+		}
+
+		.topbar {
+			display: grid;
+			grid-template-columns: minmax(280px, 1fr) auto;
+			align-items: start;
+			gap: 18px;
+			margin: 0 auto 16px;
+			max-width: 1520px;
+		}
+
+		.title-block {
+			min-width: 0;
+		}
+
+		h1 {
+			margin: 0;
+			font-size: clamp(26px, 3vw, 42px);
+			line-height: 1.15;
+			letter-spacing: 0;
+			font-weight: 760;
+		}
+
+		.lead {
+			margin: 10px 0 0;
+			max-width: 900px;
+			color: var(--muted);
+			font-size: 15px;
+			line-height: 1.8;
+		}
+
+		.evidence-strip {
+			display: grid;
+			grid-template-columns: repeat(4, minmax(180px, 1fr));
+			gap: 10px;
+			max-width: 1520px;
+			margin: 0 auto 16px;
+		}
+
+		.evidence-item {
+			min-height: 82px;
+			padding: 12px;
+			border: 1px solid rgba(255, 255, 255, .11);
+			border-radius: 10px;
+			background: rgba(8, 13, 25, .66);
+			backdrop-filter: blur(12px);
+		}
+
+		.evidence-item b {
+			display: block;
+			margin-bottom: 6px;
+			color: #f7fbff;
+			font-size: 13px;
+		}
+
+		.evidence-item span {
+			display: block;
+			color: var(--muted);
+			font-size: 12px;
+			line-height: 1.55;
+		}
+
+		.toolbar {
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+
+		.control-btn,
+		.layer-btn,
+		.next-btn,
+		.mobile-toggle {
+			border: 1px solid rgba(255, 255, 255, .14);
+			color: var(--text);
+			background: rgba(255, 255, 255, .08);
+			border-radius: 8px;
+			min-height: 38px;
+			padding: 0 13px;
+			cursor: pointer;
+			transition: border-color .18s ease, background .18s ease, color .18s ease, transform .18s ease;
+		}
+
+		.control-btn:hover,
+		.layer-btn:hover,
+		.next-btn:hover,
+		.mobile-toggle:hover {
+			border-color: rgba(103, 232, 249, .6);
+			background: rgba(103, 232, 249, .12);
+		}
+
+		.control-btn:active,
+		.layer-btn:active,
+		.next-btn:active,
+		.mobile-toggle:active {
+			transform: translateY(1px);
+		}
+
+		.control-btn.primary {
+			background: linear-gradient(135deg, rgba(103, 232, 249, .22), rgba(248, 199, 107, .18));
+			border-color: rgba(103, 232, 249, .42);
+		}
+
+		.shell {
+			display: grid;
+			grid-template-columns: minmax(780px, 1fr) 380px;
+			gap: 20px;
+			align-items: start;
+			max-width: 1660px;
+			margin: 0 auto;
+		}
+
+		.map-card,
+		.detail-card {
+			position: relative;
+			border: 1px solid rgba(255, 255, 255, .12);
+			background: linear-gradient(180deg, rgba(14, 21, 38, .72), rgba(8, 13, 25, .9));
+			box-shadow: var(--shadow);
+			backdrop-filter: blur(18px);
+			overflow: hidden;
+		}
+
+		.map-card {
+			min-height: 860px;
+			height: 860px;
+			border-radius: 18px;
+		}
+
+		.detail-card {
+			border-radius: 18px;
+			padding: 18px;
+			min-height: 860px;
+		}
+
+		.map-card::before {
+			content: "";
+			position: absolute;
+			inset: 6%;
+			background:
+				radial-gradient(ellipse at center, rgba(103, 232, 249, .09), transparent 42%),
+				conic-gradient(from 140deg, rgba(103, 232, 249, .09), rgba(248, 199, 107, .08), rgba(245, 138, 188, .08), rgba(126, 231, 135, .08), rgba(103, 232, 249, .09));
+			filter: blur(30px);
+			opacity: .72;
+			pointer-events: none;
+		}
+
+		.map-card::after {
+			content: "";
+			position: absolute;
+			inset: 46px;
+			border: 1px solid rgba(255, 255, 255, .09);
+			border-radius: 50%;
+			box-shadow:
+				0 0 0 90px rgba(255, 255, 255, .025),
+				0 0 0 178px rgba(255, 255, 255, .018),
+				0 0 0 268px rgba(255, 255, 255, .012);
+			pointer-events: none;
+		}
+
+		.map-card.warping::before {
+			animation: nebulaPulse .9s ease both;
+		}
+
+		.map-card.warping::after {
+			animation: orbitShock .9s ease both;
+		}
+
+		@keyframes nebulaPulse {
+			0% { opacity: .72; filter: blur(30px) saturate(1); }
+			46% { opacity: 1; filter: blur(18px) saturate(1.7); }
+			100% { opacity: .72; filter: blur(30px) saturate(1); }
+		}
+
+		@keyframes orbitShock {
+			0% { opacity: 1; transform: scale(1); }
+			45% { opacity: .88; transform: scale(1.035); box-shadow: 0 0 0 110px rgba(103, 232, 249, .04), 0 0 0 210px rgba(248, 199, 107, .03), 0 0 0 304px rgba(245, 138, 188, .025); }
+			100% { opacity: 1; transform: scale(1); }
+		}
+
+		.map-head {
+			position: absolute;
+			z-index: 5;
+			top: 18px;
+			left: 18px;
+			right: 18px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			pointer-events: none;
+		}
+
+		.focus-label {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			min-width: 0;
+			padding: 9px 12px;
+			border: 1px solid rgba(255, 255, 255, .12);
+			border-radius: 10px;
+			background: rgba(5, 10, 20, .62);
+		}
+
+		.focus-label b {
+			white-space: nowrap;
+		}
+
+		.focus-label span {
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			color: var(--muted);
+			font-size: 13px;
+		}
+
+		.legend {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: flex-end;
+			gap: 6px;
+		}
+
+		.legend-item {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			padding: 6px 8px;
+			border-radius: 8px;
+			background: rgba(5, 10, 20, .52);
+			border: 1px solid rgba(255, 255, 255, .1);
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.dot {
+			width: 8px;
+			height: 8px;
+			border-radius: 999px;
+			background: var(--dot, var(--cyan));
+			box-shadow: 0 0 14px var(--dot, var(--cyan));
+		}
+
+		.galaxy {
+			position: absolute;
+			inset: 0;
+			overflow: hidden;
+		}
+
+		.galaxy::before {
+			content: "";
+			position: absolute;
+			left: calc(var(--focus-x, 50) * 1%);
+			top: calc(var(--focus-y, 48) * 1%);
+			z-index: 2;
+			width: 220px;
+			height: 220px;
+			border-radius: 50%;
+			background:
+				radial-gradient(circle, rgba(255, 255, 255, .18) 0 6%, rgba(103, 232, 249, .2) 7% 18%, transparent 52%),
+				conic-gradient(from var(--spin, 0deg), transparent, rgba(103, 232, 249, .36), transparent, rgba(248, 199, 107, .22), transparent);
+			filter: blur(3px);
+			opacity: .72;
+			transform: translate(-50%, -50%);
+			transition: left .72s cubic-bezier(.18, .84, .2, 1), top .72s cubic-bezier(.18, .84, .2, 1), opacity .2s ease;
+			animation: coreSpin 8s linear infinite;
+			pointer-events: none;
+		}
+
+		.galaxy::after {
+			content: "";
+			position: absolute;
+			left: calc(var(--focus-x, 50) * 1%);
+			top: calc(var(--focus-y, 48) * 1%);
+			z-index: 2;
+			width: 360px;
+			height: 360px;
+			border-radius: 50%;
+			background:
+				repeating-conic-gradient(from var(--spin, 0deg), rgba(255,255,255,.08) 0 2deg, transparent 2deg 16deg),
+				radial-gradient(circle, transparent 44%, rgba(103, 232, 249, .16) 45%, transparent 56%);
+			opacity: .26;
+			transform: translate(-50%, -50%) rotate(var(--spin, 0deg));
+			transition: left .72s cubic-bezier(.18, .84, .2, 1), top .72s cubic-bezier(.18, .84, .2, 1), transform .72s cubic-bezier(.18, .84, .2, 1);
+			pointer-events: none;
+		}
+
+		@keyframes coreSpin {
+			from { rotate: 0deg; }
+			to { rotate: 360deg; }
+		}
+
+		.space-camera {
+			position: absolute;
+			inset: -8%;
+			z-index: 1;
+			transform-origin: center;
+			transform: translate(var(--cam-x, 0px), var(--cam-y, 0px)) scale(var(--cam-scale, 1));
+			transition: transform .82s cubic-bezier(.18, .84, .2, 1);
+			will-change: transform;
+		}
+
+		.map-card.warping .space-camera {
+			transition-duration: .92s;
+			filter: saturate(1.25);
+		}
+
+		.warp-flash {
+			position: absolute;
+			inset: 0;
+			z-index: 6;
+			pointer-events: none;
+			background:
+				radial-gradient(circle at calc(var(--focus-x, 50) * 1%) calc(var(--focus-y, 48) * 1%), rgba(255, 255, 255, .34), rgba(103, 232, 249, .22) 8%, transparent 31%),
+				linear-gradient(115deg, transparent 0 38%, rgba(255, 255, 255, .16) 48%, transparent 59% 100%);
+			mix-blend-mode: screen;
+			opacity: 0;
+		}
+
+		.map-card.warping .warp-flash {
+			animation: warpFlash .86s ease both;
+		}
+
+		@keyframes warpFlash {
+			0% { opacity: 0; transform: scale(.96); }
+			32% { opacity: .88; transform: scale(1.02); }
+			100% { opacity: 0; transform: scale(1.12); }
+		}
+
+		.particle-field {
+			position: absolute;
+			inset: 0;
+			z-index: 7;
+			pointer-events: none;
+			overflow: hidden;
+		}
+
+		.spark {
+			position: absolute;
+			left: var(--sx);
+			top: var(--sy);
+			width: var(--sw, 4px);
+			height: var(--sw, 4px);
+			border-radius: 50%;
+			background: var(--sc, var(--cyan));
+			box-shadow: 0 0 18px var(--sc, var(--cyan));
+			opacity: 0;
+			transform: translate(-50%, -50%);
+			animation: sparkFlight .76s cubic-bezier(.22, .78, .26, 1) both;
+		}
+
+		.spark::after {
+			content: "";
+			position: absolute;
+			top: 50%;
+			right: 50%;
+			width: var(--tail, 42px);
+			height: 1px;
+			background: linear-gradient(90deg, transparent, var(--sc, var(--cyan)));
+			transform: translateY(-50%) rotate(var(--sr, 0deg));
+			transform-origin: right center;
+		}
+
+		@keyframes sparkFlight {
+			0% { opacity: 0; translate: 0 0; scale: .4; }
+			16% { opacity: .95; }
+			100% { opacity: 0; translate: var(--tx) var(--ty); scale: .08; }
+		}
+
+		#relationLayer {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			z-index: 1;
+		}
+
+		.relation-path {
+			fill: none;
+			stroke: rgba(160, 180, 220, .2);
+			stroke-width: 1.3;
+			stroke-dasharray: 4 7;
+			transition: stroke .24s ease, stroke-width .24s ease, opacity .24s ease, filter .24s ease;
+		}
+
+		.relation-path.active {
+			stroke: var(--line-active);
+			stroke-width: 2.7;
+			stroke-dasharray: none;
+			filter: drop-shadow(0 0 8px rgba(103, 232, 249, .5));
+			stroke-linecap: round;
+			animation: lineSurge 1.4s ease-in-out infinite;
+		}
+
+		@keyframes lineSurge {
+			0%, 100% { stroke-width: 2.35; opacity: .88; }
+			50% { stroke-width: 3.15; opacity: 1; }
+		}
+
+		.relation-path.muted {
+			opacity: .14;
+		}
+
+		.relation-label {
+			position: absolute;
+			z-index: 3;
+			max-width: 150px;
+			padding: 5px 7px;
+			border-radius: 7px;
+			color: #d8e7ff;
+			background: rgba(4, 9, 18, .72);
+			border: 1px solid rgba(255, 255, 255, .1);
+			font-size: 11px;
+			line-height: 1.35;
+			pointer-events: none;
+			opacity: .28;
+			transform: translate(-50%, -50%);
+			transition: opacity .2s ease, border-color .2s ease, color .2s ease;
+		}
+
+		.relation-label.active {
+			opacity: 1;
+			border-color: rgba(103, 232, 249, .44);
+			color: #f6fbff;
+		}
+
+		.relation-label.muted {
+			display: none;
+		}
+
+		.planet {
+			position: absolute;
+			left: calc(var(--x) * 1%);
+			top: calc(var(--y) * 1%);
+			z-index: 4;
+			width: var(--size);
+			height: var(--size);
+			border: 0;
+			border-radius: 50%;
+			padding: 0;
+			color: var(--text);
+			background:
+				radial-gradient(circle at 30% 28%, rgba(255, 255, 255, .9), rgba(255, 255, 255, .2) 12%, transparent 28%),
+				radial-gradient(circle at 70% 75%, rgba(0, 0, 0, .28), transparent 38%),
+				linear-gradient(135deg, color-mix(in srgb, var(--planet) 95%, #ffffff 12%), color-mix(in srgb, var(--planet) 72%, #061020 28%));
+			box-shadow:
+				0 0 0 1px rgba(255, 255, 255, .17) inset,
+				0 16px 35px rgba(0, 0, 0, .34),
+				0 0 32px color-mix(in srgb, var(--planet) 45%, transparent);
+			cursor: pointer;
+			transform: translate(-50%, -50%) scale(.98);
+			transition: left .74s cubic-bezier(.18, .84, .2, 1), top .74s cubic-bezier(.18, .84, .2, 1), transform .24s ease, opacity .24s ease, filter .24s ease, box-shadow .24s ease;
+			will-change: left, top, transform;
+		}
+
+		.planet::before {
+			content: "";
+			position: absolute;
+			inset: -10px;
+			border-radius: 50%;
+			border: 1px solid color-mix(in srgb, var(--planet) 46%, transparent);
+			opacity: .38;
+			transform: rotate(-16deg) scaleX(1.34);
+			pointer-events: none;
+		}
+
+		.planet::after {
+			content: "";
+			position: absolute;
+			inset: 16%;
+			border-radius: 50%;
+			border-top: 1px solid rgba(255, 255, 255, .2);
+			opacity: .34;
+			pointer-events: none;
+		}
+
+		.planet:hover {
+			transform: translate(-50%, -50%) scale(1.08);
+			filter: saturate(1.12) brightness(1.06);
+		}
+
+		.planet.active {
+			transform: translate(-50%, -50%) scale(1.22);
+			box-shadow:
+				0 0 0 2px rgba(255, 255, 255, .24) inset,
+				0 22px 50px rgba(0, 0, 0, .42),
+				0 0 58px color-mix(in srgb, var(--planet) 72%, transparent);
+			z-index: 8;
+			animation: activePlanetPulse 1.7s ease-in-out infinite;
+		}
+
+		.planet.related {
+			transform: translate(-50%, -50%) scale(1.06);
+			box-shadow:
+				0 0 0 1px rgba(255, 255, 255, .2) inset,
+				0 18px 36px rgba(0, 0, 0, .38),
+				0 0 44px color-mix(in srgb, var(--planet) 60%, transparent);
+		}
+
+		@keyframes activePlanetPulse {
+			0%, 100% { filter: brightness(1.05) saturate(1.08); }
+			50% { filter: brightness(1.22) saturate(1.22); }
+		}
+
+		.planet.just-arrived {
+			animation: activePlanetPulse 1.7s ease-in-out infinite, arrivalBounce .72s cubic-bezier(.18, .84, .2, 1) both;
+		}
+
+		@keyframes arrivalBounce {
+			0% { scale: .72; }
+			58% { scale: 1.16; }
+			100% { scale: 1; }
+		}
+
+		.planet.muted {
+			opacity: .32;
+			filter: grayscale(.45);
+		}
+
+		.planet.hidden {
+			display: none;
+		}
+
+		.planet-name {
+			position: absolute;
+			left: 50%;
+			top: calc(100% + 9px);
+			width: 118px;
+			transform: translateX(-50%);
+			text-align: center;
+			color: #f7fbff;
+			font-size: 12px;
+			line-height: 1.35;
+			text-shadow: 0 2px 10px rgba(0, 0, 0, .72);
+			pointer-events: none;
+		}
+
+		.planet-code {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			width: 88%;
+			color: rgba(255, 255, 255, .9);
+			font-size: 11px;
+			font-weight: 700;
+			line-height: 1.2;
+			text-align: center;
+			text-shadow: 0 2px 8px rgba(0, 0, 0, .48);
+			pointer-events: none;
+		}
+
+		.jump-ship {
+			position: absolute;
+			z-index: 7;
+			left: calc(var(--ship-x) * 1%);
+			top: calc(var(--ship-y) * 1%);
+			width: 18px;
+			height: 18px;
+			border-radius: 50%;
+			background: radial-gradient(circle, #fff 0 24%, var(--cyan) 25% 52%, transparent 53%);
+			filter: drop-shadow(0 0 12px rgba(103, 232, 249, .75));
+			transform: translate(-50%, -50%);
+			transition: left .48s cubic-bezier(.2, .82, .2, 1), top .48s cubic-bezier(.2, .82, .2, 1);
+			pointer-events: none;
+		}
+
+		.jump-ship::before {
+			content: "";
+			position: absolute;
+			left: -54px;
+			top: 50%;
+			width: 58px;
+			height: 2px;
+			border-radius: 999px;
+			background: linear-gradient(90deg, transparent, rgba(103, 232, 249, .95));
+			transform: translateY(-50%) rotate(var(--ship-angle, 0deg));
+			transform-origin: right center;
+			opacity: .78;
+		}
+
+		.map-card.warping .jump-ship {
+			animation: shipBoost .82s ease both;
+		}
+
+		@keyframes shipBoost {
+			0% { scale: .8; opacity: .6; }
+			38% { scale: 1.7; opacity: 1; }
+			100% { scale: 1; opacity: 1; }
+		}
+
+		.layer-row {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 7px;
+			margin: 0 0 16px;
+		}
+
+		.layer-btn {
+			min-height: 32px;
+			padding: 0 10px;
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.layer-btn.on {
+			color: var(--text);
+			background: rgba(103, 232, 249, .14);
+			border-color: rgba(103, 232, 249, .4);
+		}
+
+		.detail-kicker {
+			margin: 0 0 7px;
+			color: var(--cyan);
+			font-size: 12px;
+			font-weight: 700;
+		}
+
+		.detail-title {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr);
+			align-items: start;
+			gap: 8px;
+			margin: 0 0 6px;
+		}
+
+		.detail-title h2 {
+			margin: 0;
+			font-size: 25px;
+			line-height: 1.25;
+			letter-spacing: 0;
+		}
+
+		.badge {
+			display: inline-flex;
+			align-items: center;
+			justify-self: start;
+			max-width: 100%;
+			min-height: 27px;
+			padding: 0 9px;
+			border-radius: 8px;
+			color: var(--text);
+			background: rgba(255, 255, 255, .08);
+			border: 1px solid rgba(255, 255, 255, .12);
+			font-size: 12px;
+			line-height: 1.35;
+			overflow-wrap: anywhere;
+		}
+
+		.detail-desc {
+			margin: 0 0 16px;
+			color: #d7dfec;
+			font-size: 14px;
+			line-height: 1.75;
+		}
+
+		.section {
+			margin-top: 16px;
+			padding-top: 15px;
+			border-top: 1px solid rgba(255, 255, 255, .1);
+		}
+
+		.section h3 {
+			margin: 0 0 10px;
+			color: #f4f7fb;
+			font-size: 14px;
+			letter-spacing: 0;
+		}
+
+		.field-list,
+		.relation-list {
+			display: grid;
+			gap: 7px;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		.field-list li,
+		.relation-list li {
+			display: grid;
+			gap: 4px;
+			padding: 10px;
+			border-radius: 9px;
+			background: rgba(255, 255, 255, .055);
+			border: 1px solid rgba(255, 255, 255, .08);
+		}
+
+		.field-list b,
+		.relation-list b {
+			color: #f7fbff;
+			font-size: 13px;
+			line-height: 1.35;
+		}
+
+		.field-list span,
+		.relation-list span {
+			color: var(--muted);
+			font-size: 12px;
+			line-height: 1.45;
+		}
+
+		.next-grid {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 8px;
+		}
+
+		.next-btn {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			width: 100%;
+			min-height: 42px;
+			text-align: left;
+			background: rgba(255, 255, 255, .055);
+		}
+
+		.next-btn span {
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.pathbar {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 7px;
+			margin-top: 12px;
+		}
+
+		.path-chip {
+			max-width: 100%;
+			padding: 6px 8px;
+			border: 1px solid rgba(255, 255, 255, .1);
+			border-radius: 8px;
+			background: rgba(255, 255, 255, .055);
+			color: var(--muted);
+			font-size: 12px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.mobile-toggle {
+			display: none;
+		}
+
+		@media (max-width: 1180px) {
+			.topbar {
+				grid-template-columns: 1fr;
+			}
+
+			.evidence-strip {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+			}
+
+			.toolbar {
+				justify-content: flex-start;
+			}
+
+			.shell {
+				grid-template-columns: 1fr;
+			}
+
+			.map-card,
+			.detail-card {
+				min-height: auto;
+			}
+
+			.map-card {
+				height: min(840px, 80vh);
+				min-height: 680px;
+			}
+
+			.detail-card {
+				padding-bottom: 24px;
+			}
+		}
+
+		@media (max-width: 760px) {
+			.app {
+				padding: 14px;
+			}
+
+			.evidence-strip {
+				grid-template-columns: 1fr;
+			}
+
+			.topbar {
+				margin-bottom: 12px;
+			}
+
+			.toolbar {
+				gap: 7px;
+			}
+
+			.control-btn,
+			.mobile-toggle {
+				min-height: 36px;
+				padding: 0 10px;
+				font-size: 13px;
+			}
+
+			.shell {
+				gap: 12px;
+			}
+
+			.map-card {
+				height: 700px;
+				min-height: 700px;
+				border-radius: 14px;
+			}
+
+			.detail-card {
+				border-radius: 14px;
+				padding: 14px;
+			}
+
+			.map-head {
+				display: none;
+			}
+
+			.legend-item {
+				font-size: 11px;
+			}
+
+			.planet-name {
+				width: 86px;
+				font-size: 10.5px;
+			}
+
+			.planet {
+				width: calc(var(--size) * .62);
+				height: calc(var(--size) * .62);
+			}
+
+			.planet-code {
+				font-size: 10px;
+			}
+
+			.relation-label {
+				display: none;
+			}
+
+			.detail-title h2 {
+				font-size: 22px;
+			}
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			*,
+			*::before,
+			*::after {
+				animation-duration: .001ms !important;
+				animation-iteration-count: 1 !important;
+				scroll-behavior: auto !important;
+				transition-duration: .001ms !important;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="stars"></div>
+	<main class="app">
+		<header class="topbar">
+			<div class="title-block">
+				<h1>履约全链路实体星图</h1>
+				<p class="lead">代码实现视角：只按当前实现抽取实体关系。主线是 ServiceReceiptDTO 生成履约单据和 KxtServicePerform，再由 flow_id、state_id、operate(...)、parent_service_code、KxtServicePerformMapping、KxtServicePerformTrack 和 SAAS_BUSINESS_STATUS_CHANGE_EXCHANGE 串起已落地的履约、任务、通知关系。</p>
+			</div>
+			<div class="toolbar" aria-label="页面操作">
+				<button class="control-btn primary" id="homeBtn" type="button">回到履约主单</button>
+				<button class="control-btn" id="allBtn" type="button">查看全部关系</button>
+				<button class="control-btn" id="pathBtn" type="button">清空轨迹</button>
+			</div>
+		</header>
+
+		<section class="evidence-strip" aria-label="代码依据">
+			<div class="evidence-item">
+				<b>生成口径</b>
+				<span>KxtServicePerformServiceImpl.generateServiceReceipt / generateServicePerform 是履约主单生成入口，先有单据，再落主单和明细。</span>
+			</div>
+			<div class="evidence-item">
+				<b>流转口径</b>
+				<span>operate(...) 反射执行处理器；AbstractPerformProcessor.analyzeProcess 读取 flow_form_json 的 edges，再按 fieldLists 命中目标状态。</span>
+			</div>
+			<div class="evidence-item">
+				<b>广播口径</b>
+				<span>状态变化后写 KxtServicePerformTrack，并通过 SAAS_BUSINESS_STATUS_CHANGE_EXCHANGE fanout 给任务和通知消费者。</span>
+			</div>
+			<div class="evidence-item">
+				<b>兼容口径</b>
+				<span>KxtServicePerformMapping 只表达新老 serviceCode 映射，同步 VAT/EPR/资产等老数据，不等同于新的协同交付模型。</span>
+			</div>
+		</section>
+
+		<section class="shell">
+			<div class="map-card" id="mapCard" aria-label="履约实体关系星图">
+				<div class="map-head">
+					<div class="focus-label">
+						<b>当前实体</b>
+						<span id="focusText">履约主单 KxtServicePerform</span>
+					</div>
+					<div class="legend" id="legend"></div>
+				</div>
+				<div class="galaxy" id="galaxy">
+					<div class="space-camera" id="spaceCamera">
+						<svg id="relationLayer" viewBox="0 0 1000 760" preserveAspectRatio="none" aria-hidden="true"></svg>
+					</div>
+					<div class="jump-ship" id="ship" style="--ship-x:50;--ship-y:48"></div>
+					<div class="warp-flash"></div>
+					<div class="particle-field" id="particleField"></div>
+				</div>
+			</div>
+
+			<aside class="detail-card" aria-live="polite">
+				<div class="layer-row" id="layers"></div>
+				<p class="detail-kicker" id="detailLayer">履约层</p>
+				<div class="detail-title">
+					<h2 id="detailTitle">履约主单</h2>
+					<span class="badge" id="detailCode">KxtServicePerform</span>
+				</div>
+				<p class="detail-desc" id="detailDesc"></p>
+				<div class="pathbar" id="pathbar"></div>
+
+				<div class="section">
+					<h3>核心字段</h3>
+					<ul class="field-list" id="fieldList"></ul>
+				</div>
+
+				<div class="section">
+					<h3>直接关联</h3>
+					<ul class="relation-list" id="relationList"></ul>
+				</div>
+
+				<div class="section">
+					<h3>继续跳转</h3>
+					<div class="next-grid" id="nextGrid"></div>
+				</div>
+			</aside>
+		</section>
+	</main>
+
+	<script>
+		const layerMeta = {
+			entry: { name: "入口/商品层", color: "#f8c76b" },
+			config: { name: "配置层", color: "#8ab4ff" },
+			flow: { name: "流程层", color: "#67e8f9" },
+			fulfillment: { name: "履约实例层", color: "#7ee787" },
+			relation: { name: "关联映射层", color: "#ffb86b" },
+			formContract: { name: "资料合同层", color: "#f58abc" },
+			runtime: { name: "运行结果层", color: "#b49cff" }
+		};
+
+		const entities = [
+			{
+				id: "receiptDto",
+				name: "履约生成入口",
+				code: "ServiceReceiptDTO",
+				layer: "entry",
+				x: 13,
+				y: 47,
+				size: 72,
+				desc: "履约生成入口 DTO。generateServiceReceipt(...) 按 receiptType 分流：订单进入 planAnOrder(...)，续费和退款先定位 dataInfo.serviceCode 对应的原履约主单，再更新服务期限或生成续费服务单。",
+				fields: [
+					["receiptType", "ORDER 走 planAnOrder，RENEWAL/REFUND 走续费或退款处理"],
+					["orderNo / itemId / number", "用于防重复生成，并决定本次需要补几张履约单据"],
+					["skuId / categoryId / typeId", "用于读取商品信息并匹配流程"],
+					["dataInfo.serviceCode", "增值、追加、续费、退款场景下指向原服务单"],
+					["isAppendAfterFulfillment", "履约完成后追加商品时，按产品明细逐条生成服务"]
+				]
+			},
+			{
+				id: "merchandSku",
+				name: "商品/SKU 信息",
+				code: "MerchandSkuDTO",
+				layer: "entry",
+				x: 18,
+				y: 25,
+				size: 66,
+				desc: "生成履约主单前会通过 skuId 查询商品域。商品返回的 merchandType、categoryCode、typeCode、serviceProcessId 会影响基础/增值判断、流程匹配和特殊授权代表流程。",
+				fields: [
+					["skuId", "ServiceReceiptDTO 传入，查询商品域"],
+					["merchandType / typeCode", "判断基础服务、增值服务、追加服务等履约形态"],
+					["categoryCode / countryCode", "参与流程匹配和特殊业务分支"],
+					["serviceProcessId", "部分授权代表场景直接指定流程主体"]
+				]
+			},
+			{
+				id: "serviceReceipt",
+				name: "履约单据",
+				code: "KxtServiceReceipt",
+				layer: "fulfillment",
+				x: 27,
+				y: 47,
+				size: 78,
+				desc: "履约单据先按订单 item 落库，随后 generateServicePerform(...) 创建真实履约主单，再回写 service_code、服务区间和 serviceStatus。续费/退款场景也会把单据推给财务分摊。",
+				fields: [
+					["service_code", "履约服务编码，和主单、合同继续串联"],
+					["receipt_code", "单据编号"],
+					["receipt_type", "订单、续费、退款等单据类型"],
+					["service_status", "回写履约主单初始 state_id"],
+					["service_start/end_time", "服务开始和结束时间"]
+				]
+			},
+			{
+				id: "processRules",
+				name: "流程匹配规则",
+				code: "kxt_process_rules",
+				layer: "config",
+				x: 27,
+				y: 23,
+				size: 74,
+				desc: "生成履约主单时，代码用 categoryId、typeId、countryCode 调用 getProductProcessMatching(...) 获取 flowId。特殊授权代表场景会跳过规则，直接使用商品配置的 serviceProcessId。",
+				fields: [
+					["category_id", "服务类目"],
+					["type_id", "服务类型"],
+					["country_code", "国家编码"],
+					["flow_id", "匹配出的流程主体 ID"]
+				]
+			},
+			{
+				id: "processFlow",
+				name: "流程主体",
+				code: "KxtServiceProcessFlow",
+				layer: "flow",
+				x: 50,
+				y: 19,
+				size: 90,
+				desc: "流程主体承载当前生效的 flow_form_json 和版本号。履约主单通过 flow_id 绑定流程主体，初始化状态和操作流转都从这里读取流程 JSON。",
+				fields: [
+					["id", "流程 ID，履约主单的 flow_id 指向这里"],
+					["name", "流程名称"],
+					["flow_form_json", "当前流程结构 JSON"],
+					["current_version_id / current_version_no", "当前发布版本"]
+				]
+			},
+			{
+				id: "processVersion",
+				name: "流程版本",
+				code: "KxtServiceProcessFlowVersion",
+				layer: "flow",
+				x: 66,
+				y: 16,
+				size: 68,
+				desc: "流程版本保存草稿、历史和发布版本。publishVersion(...) 会把发布版本的 flow_form_json 写回流程主体，并刷新 current_version_id/current_version_no。",
+				fields: [
+					["flow_id", "归属流程主体"],
+					["version_no", "版本号"],
+					["flow_form_json", "该版本保存的流程结构"],
+					["status / publish_time", "版本状态和发布时间"]
+				]
+			},
+			{
+				id: "flowJson",
+				name: "流程 JSON",
+				code: "flow_form_json",
+				layer: "flow",
+				x: 50,
+				y: 34,
+				size: 84,
+				desc: "流程 JSON 是状态流转的代码依据。它包含 nodes、edges，edge 里带 sourceOperateCode、sourceOperateAction、targetStateId 和 fieldLists 条件。",
+				fields: [
+					["nodes[]", "流程节点，含 stateId、stateCode、children"],
+					["children[]", "当前节点可用操作，含 operateCode、optionType"],
+					["edges[]", "流转线，含 sourceOperateCode、targetStateId、fieldLists"],
+					["fieldLists / skuLists", "字段条件或 SKU 条件决定不同流转路径"]
+				]
+			},
+			{
+				id: "flowNode",
+				name: "节点定义",
+				code: "nodes[]",
+				layer: "flow",
+				x: 69,
+				y: 34,
+				size: 64,
+				desc: "流程 JSON 中的节点定义，不是单独业务表。节点引用状态节点库，并在 data.children 中挂载当前节点可展示和可执行的按钮。",
+				fields: [
+					["stateId", "引用状态节点库"],
+					["stateCode", "状态编码"],
+					["data.children", "节点下可展示的操作按钮"],
+					["type / label", "流程图节点类型和展示名"]
+				]
+			},
+			{
+				id: "flowEdge",
+				name: "流转线",
+				code: "edges[]",
+				layer: "flow",
+				x: 73,
+				y: 49,
+				size: 64,
+				desc: "流转线描述某个按钮动作会把履约单推到哪个目标状态。operate(...) 会按 sourceOperateCode、sourceOperateAction 和 fieldLists 条件选择目标 stateId。",
+				fields: [
+					["sourceOperateCode", "触发这条线的操作编码"],
+					["sourceOperateAction", "submit、reject 等按钮动作"],
+					["targetStateId", "目标状态节点"],
+					["fieldLists", "按表单字段或业务字段做分支判断"]
+				]
+			},
+			{
+				id: "state",
+				name: "状态节点库",
+				code: "KxtServiceProcessState",
+				layer: "config",
+				x: 86,
+				y: 31,
+				size: 70,
+				desc: "状态节点库提供状态 ID、状态编码和业务状态口径。履约主单记录 state_id 与 pre_state_id，MQ 消息中也会带状态 code。",
+				fields: [
+					["id", "状态节点 ID"],
+					["state_code", "状态编码"],
+					["name", "状态名称"],
+					["service_status", "业务服务状态口径"]
+				]
+			},
+			{
+				id: "operate",
+				name: "操作项库",
+				code: "KxtServiceProcessOperate",
+				layer: "config",
+				x: 86,
+				y: 54,
+				size: 72,
+				desc: "后台/客户端按钮使用 operateCode。流程节点 children 挂载按钮，流程边用 sourceOperateCode 识别哪次操作触发流转。",
+				fields: [
+					["operate_code", "操作编码，和流程 JSON 的 sourceOperateCode 对应"],
+					["operate_name", "按钮名称"],
+					["option_type", "操作类型"],
+					["status", "是否启用"]
+				]
+			},
+			{
+				id: "operateModel",
+				name: "操作可见模块",
+				code: "KxtServiceProcessOperateModel / Role",
+				layer: "config",
+				x: 94,
+				y: 64,
+				size: 62,
+				desc: "操作项的可见和权限范围不是产品文档推断出来的，而是由 kxt_service_process_operate_model 与 kxt_service_process_operate_role 表达。模块值包含 JOB、SERVICE、VAT_DECLARE、EPR_DECLARE。",
+				fields: [
+					["operate_id", "关联操作项 ID"],
+					["model", "JOB、SERVICE、VAT_DECLARE、EPR_DECLARE 等可用模块"],
+					["role_id", "角色权限维度"],
+					["ablePermission / enablePermission", "Mapper 中按模块和角色返回可用操作"]
+				]
+			},
+			{
+				id: "processorMapping",
+				name: "处理器/方法映射",
+				code: "sys_dict: perform_mapped",
+				layer: "config",
+				x: 85,
+				y: 72,
+				size: 66,
+				desc: "operate(...) 先按顶层类目和是否基础服务找 targetBeanName，再按 国家-类目-类型-操作码 找 targetMethodName；找不到时回退到 PerformOperateEnum。",
+				fields: [
+					["PERFORM_INIT_MAPPED", "按顶层类目 + isBasic 找初始处理器"],
+					["PERFORM_MAPPED", "按 country-category-type 找业务处理器"],
+					["PERFORM_OPERATE_MAPPED", "按 country-category-type-operate 找方法"],
+					["PerformOperateEnum", "字典未命中时的枚举兜底"]
+				]
+			},
+			{
+				id: "operateEntry",
+				name: "统一操作入口",
+				code: "KxtServicePerformServiceImpl.operate(...)",
+				layer: "runtime",
+				x: 76,
+				y: 64,
+				size: 72,
+				desc: "后台、客户端、定时任务最终进入 operate(...)。它校验用户和服务单，定位处理器方法，执行业务操作，并结合流程 JSON 推进状态。",
+				fields: [
+					["performId", "定位履约主单"],
+					["operateCode", "决定处理方法和流程边"],
+					["sourceOperateAction", "submit、save、reject 等动作"],
+					["operateJson", "表单内容、操作人和业务参数"]
+				]
+			},
+			{
+				id: "servicePerform",
+				name: "履约主单",
+				code: "KxtServicePerform",
+				layer: "fulfillment",
+				x: 50,
+				y: 48,
+				size: 108,
+				desc: "履约主单是运行时核心聚合。它绑定客户、订单、商品、父服务、流程、当前状态和上一个状态，是操作流转、轨迹、任务、消息、合同和老系统映射的中心。",
+				fields: [
+					["service_code", "服务编码，串联单据、明细、合同"],
+					["flow_id", "使用哪个流程主体"],
+					["state_id", "当前状态节点"],
+					["pre_state_id", "上一个状态节点"],
+					["parent_service_code", "增值、追加、迁移场景下指向基础服务"],
+					["form_data_info", "履约主单级表单数据，加密存储"]
+				]
+			},
+			{
+				id: "servicePerformInfo",
+				name: "履约明细",
+				code: "KxtServicePerformInfo",
+				layer: "fulfillment",
+				x: 50,
+				y: 65,
+				size: 78,
+				desc: "履约明细挂在履约主单下。generateServicePerform(...) 会插入明细，后续保存资料包、公司信息、附件、协议、证书、合同文件、税号等过程数据。",
+				fields: [
+					["perform_id", "关联履约主单"],
+					["form_data_info", "新表单数据，加密存储"],
+					["material_url / file_info", "资料包和附件信息"],
+					["contract_file", "合同文件"],
+					["agreement_json / certificate_json", "协议、证书、发票等结果资料"]
+				]
+			},
+			{
+				id: "parentService",
+				name: "父服务关系",
+				code: "parent_service_code",
+				layer: "relation",
+				x: 32,
+				y: 67,
+				size: 64,
+				desc: "代码里的父子服务关系主要靠 KxtServicePerform.parentServiceCode 表达。生成增值服务时来自 dataInfo.serviceCode；迁移保存基础服务关系时也会回填该字段。",
+				fields: [
+					["parent_service_code", "指向基础服务 service_code"],
+					["is_basic", "区分基础服务和增值/追加/续费服务"],
+					["dataInfo.serviceCode", "生成子服务时的父服务来源"],
+					["saveBaseServiceRelation(...)", "迁移时通过映射回填父服务"]
+				]
+			},
+			{
+				id: "oldNewMapping",
+				name: "新老服务映射",
+				code: "KxtServicePerformMapping",
+				layer: "relation",
+				x: 22,
+				y: 78,
+				size: 72,
+				desc: "新老系统服务编码的桥。dealServiceRelation(...) 会把 oldServiceCode 映射到新履约 serviceCode；查询接口再通过映射联查履约主单、明细和状态。",
+				fields: [
+					["service_code", "新履约主单服务编号"],
+					["old_service_code", "老 VAT/EPR 等业务模块服务编号"],
+					["type", "新写老、老写新、迁移、完成迁移"],
+					["queryMappingToServicePerform", "按 oldServiceCode 联查新履约主单和明细"]
+				]
+			},
+			{
+				id: "legacyService",
+				name: "老业务服务",
+				code: "oldServiceCode",
+				layer: "relation",
+				x: 11,
+				y: 82,
+				size: 60,
+				desc: "老 VAT、EPR 等业务模块中的原服务编码。当前代码不是用它直接跑新流程，而是通过 KxtServicePerformMapping 找到新履约服务。",
+				fields: [
+					["old_service_code", "老系统服务编号"],
+					["source", "VAT、EPR 等历史业务来源"],
+					["parent_order_no", "迁移查询时可关联原订单"],
+					["deleted / online_type", "老服务状态和服务形态"]
+				]
+			},
+			{
+				id: "formTemplate",
+				name: "表单模板",
+				code: "KxtServiceProcessForm",
+				layer: "formContract",
+				x: 31,
+				y: 88,
+				size: 72,
+				desc: "表单模板是流程按钮和资料填写的结构来源。流程节点的按钮可关联表单，流程边上的 fieldLists 则读取提交后的字段值做条件流转。",
+				fields: [
+					["id", "表单模板 ID"],
+					["formJson", "表单结构 JSON"],
+					["name", "表单名称"],
+					["status", "启用状态"]
+				]
+			},
+			{
+				id: "formData",
+				name: "履约表单数据",
+				code: "form_data_info",
+				layer: "formContract",
+				x: 36,
+				y: 76,
+				size: 68,
+				desc: "用户或后台在履约过程中填写的真实数据。KxtServicePerform 和 KxtServicePerformInfo 都有 formDataInfo，当前字段按 PIIJsonCrypto 加解密。",
+				fields: [
+					["perform_id", "归属履约主单或明细"],
+					["targetComponent", "fieldLists 使用的字段 key"],
+					["targetComponentValue", "字段条件命中的目标值"],
+					["form_data_info", "表单数据 JSON 快照，加密入库"]
+				]
+			},
+			{
+				id: "contractTemplate",
+				name: "合同模板配置",
+				code: "KxtContractTemplateConfig",
+				layer: "formContract",
+				x: 59,
+				y: 86,
+				size: 76,
+				desc: "合同模板配置按 merchandId、signerType、templateKey 匹配 e签宝 templateId，并记录盖章关键字、模板名称、模板类型等信息。",
+				fields: [
+					["merchand_id", "商品 ID"],
+					["signerType", "签署类型"],
+					["templateKey", "业务模板 key"],
+					["templateId", "e签宝模板 ID"],
+					["stampKeyWord", "盖章定位关键字"]
+				]
+			},
+			{
+				id: "contract",
+				name: "合同记录",
+				code: "KxtContract",
+				layer: "formContract",
+				x: 69,
+				y: 74,
+				size: 78,
+				desc: "合同记录通过 serviceCode 关联履约服务，记录模板、e签宝文件、签署流程、签署 URL、待盖章/已盖章文件和合同状态。对应 Basic 模块的 KxtContract 实体和 mapper/contract/KxtContractMapper.xml。",
+				fields: [
+					["service_code", "关联履约服务"],
+					["template_id", "使用的合同模板"],
+					["file_id", "生成后的合同文件"],
+					["sign_flow_id", "e签宝签署流程 ID"],
+					["sign_url / status", "签署链接和合同状态"]
+				]
+			},
+			{
+				id: "esign",
+				name: "e签宝",
+				code: "eSign",
+				layer: "formContract",
+				x: 69,
+				y: 91,
+				size: 64,
+				desc: "外部电子签服务。合同模块用模板生成文件，发起签署流程，回写 signFlowId、signUrl、fileId，并通过回调更新合同状态和盖章文件。",
+				fields: [
+					["templateId", "外部模板 ID"],
+					["fileId", "外部文件 ID"],
+					["signFlowId", "外部签署流程 ID"],
+					["signUrl", "签署链接"]
+				]
+			},
+			{
+				id: "track",
+				name: "操作轨迹",
+				code: "KxtServicePerformTrack",
+				layer: "runtime",
+				x: 36,
+				y: 13,
+				size: 68,
+				desc: "operate(...) 和 updatePerformState(...) 都会记录轨迹。轨迹保存操作实例、方法、操作码、动作、操作 JSON、前后状态和操作人类型；SLA、任务和质检类逻辑主要再通过 RemotePerformService 读取轨迹。",
+				fields: [
+					["service_code", "关联履约主单服务编号"],
+					["operate_code / operate_action", "操作编码和动作"],
+					["before_state_id / after_state_id", "状态变化前后节点"],
+					["operator_type", "客户、系统或处理人"]
+				]
+			},
+			{
+				id: "changeContext",
+				name: "状态变更上下文",
+				code: "PerformChangeContext",
+				layer: "runtime",
+				x: 20,
+				y: 61,
+				size: 68,
+				desc: "状态变更广播前的内部上下文。生成服务单、统一操作、直接改状态都会构造它，再由 sendOperateMq(...) 转成对外的 PerformStateChangeMsg。",
+				fields: [
+					["isGenerate", "是否刚生成服务单"],
+					["isSystem", "是否系统操作"],
+					["operateCode / actionCode", "本次操作和动作"],
+					["currentStatus", "本次状态节点"],
+					["abnormal / reject", "异常、驳回原因等补充信息"]
+				]
+			},
+			{
+				id: "statusMessage",
+				name: "状态变更消息",
+				code: "PerformStateChangeMsg",
+				layer: "runtime",
+				x: 14,
+				y: 47,
+				size: 70,
+				desc: "sendOperateMq(...) 组装的 MQ 消息。消息带 bizCode、bizStatus、bizOperateCode、flowId、country、category、merchantId、customerId、状态 code、异常和驳回信息。",
+				fields: [
+					["bizCode", "履约 serviceCode"],
+					["bizStatus / bizPreStatus", "业务状态"],
+					["bizOperateCode / actionCode", "触发操作"],
+					["flowId / country / category", "流程、国家、类目上下文"],
+					["parentStateCode / preStateCode", "状态节点 code"]
+				]
+			},
+			{
+				id: "taskExchange",
+				name: "任务/通知交换机",
+				code: "SAAS_BUSINESS_STATUS_CHANGE_EXCHANGE",
+				layer: "runtime",
+				x: 16,
+				y: 34,
+				size: 66,
+				desc: "履约状态变更的 fanout 交换机。sendOperateMq(...) 发送 PerformStateChangeMsg，basic 模块的任务队列和 msg 模块的企业微信通知队列都消费同一个交换机。",
+				fields: [
+					["exchange", "SAAS_BUSINESS_STATUS_CHANGE_EXCHANGE"],
+					["SAAS_BUSINESS_STATUS_CHANGE_QUEUE", "任务平台监听队列"],
+					["SEND_QYWX_EXCHANGE_QUEUE_NODE", "企业微信通知监听队列"],
+					["fanout", "一次状态变更可广播给多个消费者"]
+				]
+			},
+			{
+				id: "assignmentTask",
+				name: "业务任务生成",
+				code: "AssignmentMQListener",
+				layer: "runtime",
+				x: 10,
+				y: 21,
+				size: 64,
+				desc: "任务平台监听 SAAS_BUSINESS_STATUS_CHANGE_QUEUE，按 MakeTaskMsgDTO 解析消息后交给 BizTaskCreateProcessor.process(...)，再依据 BizToTaskConfig 生成或更新任务。",
+				fields: [
+					["MakeTaskMsgDTO", "消息入参模型"],
+					["BizTaskCreateProcessor", "任务创建处理器"],
+					["BizToTaskConfig", "业务状态到任务规则的配置"],
+					["TaskManageService", "任务处理与时效消息处理"]
+				]
+			},
+			{
+				id: "notice",
+				name: "通知消费",
+				code: "NoticeSmsMqListener",
+				layer: "runtime",
+				x: 6,
+				y: 40,
+				size: 60,
+				desc: "msg 模块的 NoticeSmsMqListener 绑定 SAAS_BUSINESS_STATUS_CHANGE_EXCHANGE，用 MessageSendModel 做企业微信行为通知。这里是已落地的通知消费，不是新的协同模型。",
+				fields: [
+					["operateNoticeQYWX", "企业微信行为操作通知"],
+					["MessageSendModel", "通知消息模型"],
+					["msg service", "消息模块消费"],
+					["same exchange", "与任务生成共用状态变更广播"]
+				]
+			},
+			{
+				id: "sla",
+				name: "SLA/时效",
+				code: "KxtSlaFlowProgressService",
+				layer: "runtime",
+				x: 24,
+				y: 12,
+				size: 62,
+				desc: "SLA 模块不直接推断履约进度，而是通过 RemotePerformService.getServicePerformTrack(serviceCode) 读取 KxtServicePerformTrackDataVO，再按流程进度配置判断起止节点和是否已处理。",
+				fields: [
+					["serviceCode", "按服务编号查询履约轨迹"],
+					["KxtServicePerformTrackDataVO", "轨迹 RPC 返回模型"],
+					["startProgress / endProgress", "时效计算使用的起止节点"],
+					["createProgress(...)", "生成流程进度时效记录"]
+				]
+			},
+			{
+				id: "remotePerform",
+				name: "履约远程接口",
+				code: "RemotePerformService",
+				layer: "runtime",
+				x: 33,
+				y: 26,
+				size: 62,
+				desc: "其他模块访问履约域的 Feign 接口。代码里已暴露查询轨迹、查询新老映射、按服务编码改状态、查询履约主单和同步新老数据等能力。",
+				fields: [
+					["getServicePerformTrack", "按 serviceCode 查询轨迹"],
+					["queryPerformMapping", "按 oldServiceCode 查询新履约主单"],
+					["updatePerformState", "按服务编码直接改状态"],
+					["syncNewDataInfoAndStatus", "同步新老服务资料与状态"]
+				]
+			},
+			{
+				id: "userInfo",
+				name: "客户/人员信息",
+				code: "User / SysUser / Merchand",
+				layer: "entry",
+				x: 8,
+				y: 62,
+				size: 62,
+				desc: "履约主单和消息中带 userId、puid、customerId、sUserId、cUserId、merchandId 等信息。它们影响权限、客户经理、合同签署和任务/通知接收。",
+				fields: [
+					["userId / puid", "客户和父级客户"],
+					["sUserId / cUserId", "客户经理、客服等处理人"],
+					["merchandId / skuId", "商品和 SKU 维度"],
+					["customerId", "MQ 消息中的客户维度"]
+				]
+			}
+		];
+
+		const relations = [
+			["receiptDto", "serviceReceipt", "生成履约单据"],
+			["receiptDto", "processRules", "类目+类型+国家"],
+			["receiptDto", "userInfo", "客户/商户信息"],
+			["processRules", "processFlow", "flow_id"],
+			["processFlow", "processVersion", "发布版本刷新"],
+			["processFlow", "flowJson", "flow_form_json"],
+			["processVersion", "flowJson", "保存版本 JSON"],
+			["flowJson", "flowNode", "nodes[]"],
+			["flowJson", "flowEdge", "edges[]"],
+			["flowNode", "state", "stateId 引用"],
+			["flowNode", "operate", "children 操作"],
+			["flowEdge", "operate", "sourceOperateCode"],
+			["flowEdge", "state", "targetStateId"],
+			["flowEdge", "formData", "fieldLists 判断"],
+			["operate", "operateModel", "模块/角色权限"],
+			["operateModel", "userInfo", "角色和模块"],
+			["serviceReceipt", "servicePerform", "生成履约主单"],
+			["servicePerform", "processFlow", "flow_id"],
+			["servicePerform", "state", "state_id / pre_state_id"],
+			["servicePerform", "operate", "operate(...) 点击"],
+			["operateEntry", "processorMapping", "字典定位处理器"],
+			["operateEntry", "track", "写操作轨迹"],
+			["operateEntry", "changeContext", "状态变更上下文"],
+			["servicePerform", "servicePerformInfo", "perform_id"],
+			["servicePerformInfo", "formData", "form_data_info"],
+			["formTemplate", "formData", "字段结构"],
+			["flowJson", "formTemplate", "节点/操作表单配置"],
+			["servicePerformInfo", "contract", "contract_file / service_code"],
+			["contractTemplate", "contract", "template_id"],
+			["contractTemplate", "esign", "templateId"],
+			["contract", "esign", "生成/签署"],
+			["userInfo", "contractTemplate", "merchandId / signerType"],
+			["userInfo", "contract", "签署人/主体"],
+			["servicePerform", "track", "状态前后节点"],
+			["servicePerform", "changeContext", "状态变更"],
+			["changeContext", "statusMessage", "sendOperateMq"],
+			["statusMessage", "taskExchange", "fanout 广播"],
+			["taskExchange", "assignmentTask", "任务队列消费"],
+			["taskExchange", "notice", "通知队列消费"],
+			["remotePerform", "track", "getServicePerformTrack"],
+			["remotePerform", "oldNewMapping", "queryPerformMapping"],
+			["remotePerform", "servicePerform", "updatePerformState"],
+			["sla", "remotePerform", "读取轨迹"],
+			["assignmentTask", "remotePerform", "任务侧读取履约"],
+			["statusMessage", "userInfo", "消息接收人"],
+			["assignmentTask", "userInfo", "处理人/客服"],
+			["track", "userInfo", "操作人"],
+			["servicePerform", "parentService", "parent_service_code"],
+			["parentService", "servicePerform", "基础/增值服务"],
+			["legacyService", "oldNewMapping", "old_service_code"],
+			["oldNewMapping", "servicePerform", "service_code"]
+		].map(([from, to, label]) => ({ from, to, label }));
+
+		const layoutOverrides = {
+			receiptDto: { x: 8, y: 54, size: 62 },
+			merchandSku: { x: 19, y: 20, size: 56 },
+			serviceReceipt: { x: 27, y: 43, size: 68 },
+			processRules: { x: 34, y: 20, size: 64 },
+			processFlow: { x: 51, y: 13, size: 78 },
+			processVersion: { x: 64, y: 11, size: 58 },
+			flowJson: { x: 50, y: 29, size: 72 },
+			flowNode: { x: 67, y: 28, size: 56 },
+			flowEdge: { x: 72, y: 44, size: 56 },
+			state: { x: 90, y: 24, size: 60 },
+			operate: { x: 90, y: 49, size: 62 },
+			operateModel: { x: 95, y: 64, size: 54 },
+			processorMapping: { x: 83, y: 72, size: 56 },
+			operateEntry: { x: 73, y: 64, size: 62 },
+			servicePerform: { x: 50, y: 48, size: 96 },
+			servicePerformInfo: { x: 51, y: 68, size: 68 },
+			parentService: { x: 31, y: 72, size: 56 },
+			oldNewMapping: { x: 20, y: 84, size: 62 },
+			legacyService: { x: 7, y: 90, size: 52 },
+			formTemplate: { x: 32, y: 91, size: 62 },
+			formData: { x: 40, y: 79, size: 58 },
+			contractTemplate: { x: 62, y: 89, size: 64 },
+			contract: { x: 73, y: 81, size: 66 },
+			esign: { x: 74, y: 94, size: 56 },
+			track: { x: 38, y: 6, size: 54 },
+			changeContext: { x: 20, y: 63, size: 58 },
+			statusMessage: { x: 13, y: 43, size: 58 },
+			taskExchange: { x: 16, y: 31, size: 56 },
+			assignmentTask: { x: 8, y: 13, size: 54 },
+			notice: { x: 5, y: 37, size: 50 },
+			sla: { x: 27, y: 7, size: 54 },
+			remotePerform: { x: 32, y: 30, size: 54 },
+			userInfo: { x: 6, y: 64, size: 54 }
+		};
+
+		const entityById = new Map(entities.map(entity => [entity.id, entity]));
+		const missingRelationTargets = relations
+			.flatMap(relation => [relation.from, relation.to])
+			.filter(entityId => !entityById.has(entityId));
+		if (missingRelationTargets.length) {
+			console.error("实体星图关系引用了不存在的节点", [...new Set(missingRelationTargets)]);
+		}
+		const galaxy = document.getElementById("galaxy");
+		const mapCard = document.getElementById("mapCard");
+		const spaceCamera = document.getElementById("spaceCamera");
+		const relationLayer = document.getElementById("relationLayer");
+		const relationList = document.getElementById("relationList");
+		const fieldList = document.getElementById("fieldList");
+		const nextGrid = document.getElementById("nextGrid");
+		const pathbar = document.getElementById("pathbar");
+		const ship = document.getElementById("ship");
+		const particleField = document.getElementById("particleField");
+		const focusText = document.getElementById("focusText");
+		const detailLayer = document.getElementById("detailLayer");
+		const detailTitle = document.getElementById("detailTitle");
+		const detailCode = document.getElementById("detailCode");
+		const detailDesc = document.getElementById("detailDesc");
+		const legend = document.getElementById("legend");
+		const layers = document.getElementById("layers");
+		let activeId = "servicePerform";
+		let showAll = false;
+		let activeLayers = new Set(Object.keys(layerMeta));
+		let pathTrail = ["履约主单"];
+		let currentPositions = new Map();
+		let previousActiveId = activeId;
+		let galaxyRotation = 0;
+		let warpTimer = null;
+
+		function percentToSvg(value, axis) {
+			return axis === "x" ? value * 10 : value * 7.6;
+		}
+
+		function relatedRelations(id) {
+			return relations.filter(relation => relation.from === id || relation.to === id);
+		}
+
+		function relatedIds(id) {
+			return [...new Set(relatedRelations(id).flatMap(relation => [relation.from, relation.to]).filter(nextId => nextId !== id))];
+		}
+
+		function positionedEntity(id) {
+			const base = entityById.get(id);
+			const position = currentPositions.get(id) || layoutOverrides[id] || { x: base.x, y: base.y, size: base.size };
+			return { ...base, ...position };
+		}
+
+		function computePositions() {
+			const positions = new Map();
+			entities.forEach(entity => {
+				const override = layoutOverrides[entity.id] || {};
+				positions.set(entity.id, {
+					x: override.x ?? entity.x,
+					y: override.y ?? entity.y,
+					size: override.size ?? entity.size
+				});
+			});
+
+			currentPositions = positions;
+			const active = positionedEntity(activeId);
+			const mapRect = galaxy.getBoundingClientRect();
+			const offsetX = ((50 - active.x) / 100) * mapRect.width;
+			const offsetY = ((48 - active.y) / 100) * mapRect.height;
+			galaxy.style.setProperty("--focus-x", 50);
+			galaxy.style.setProperty("--focus-y", 48);
+			galaxy.style.setProperty("--spin", `${galaxyRotation}deg`);
+			spaceCamera.style.setProperty("--cam-x", `${offsetX}px`);
+			spaceCamera.style.setProperty("--cam-y", `${offsetY}px`);
+			spaceCamera.style.setProperty("--cam-scale", showAll ? 1 : 1.02);
+		}
+
+		function clamp(value, min, max) {
+			return Math.min(max, Math.max(min, value));
+		}
+
+		function isLayerVisible(entityId) {
+			return activeLayers.has(entityById.get(entityId).layer);
+		}
+
+		function relationVisible(relation) {
+			return isLayerVisible(relation.from) && isLayerVisible(relation.to);
+		}
+
+		function makePath(from, to) {
+			const x1 = percentToSvg(from.x, "x");
+			const y1 = percentToSvg(from.y, "y");
+			const x2 = percentToSvg(to.x, "x");
+			const y2 = percentToSvg(to.y, "y");
+			const dx = x2 - x1;
+			const dy = y2 - y1;
+			const curve = Math.max(38, Math.hypot(dx, dy) * .16);
+			const cx1 = x1 + dx * .42 - dy / curve * 12;
+			const cy1 = y1 + dy * .18 + dx / curve * 12;
+			const cx2 = x1 + dx * .64 + dy / curve * 12;
+			const cy2 = y1 + dy * .82 - dx / curve * 12;
+			return `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`;
+		}
+
+		function renderChrome() {
+			legend.innerHTML = "";
+			layers.innerHTML = "";
+			Object.entries(layerMeta).forEach(([key, meta]) => {
+				const item = document.createElement("div");
+				item.className = "legend-item";
+				item.innerHTML = `<span class="dot" style="--dot:${meta.color}"></span>${meta.name}`;
+				legend.appendChild(item);
+
+				const btn = document.createElement("button");
+				btn.type = "button";
+				btn.className = `layer-btn ${activeLayers.has(key) ? "on" : ""}`;
+				btn.textContent = meta.name;
+				btn.addEventListener("click", () => {
+					if (activeLayers.has(key) && activeLayers.size > 1) {
+						activeLayers.delete(key);
+					} else {
+						activeLayers.add(key);
+					}
+					render();
+				});
+				layers.appendChild(btn);
+			});
+		}
+
+		function triggerWarp(fromId, toId) {
+			if (warpTimer) window.clearTimeout(warpTimer);
+			mapCard.classList.remove("warping");
+			void mapCard.offsetWidth;
+			mapCard.classList.add("warping");
+			warpTimer = window.setTimeout(() => mapCard.classList.remove("warping"), 930);
+
+			document.querySelectorAll(".planet.just-arrived").forEach(node => node.classList.remove("just-arrived"));
+			window.setTimeout(() => {
+				const activeNode = document.querySelector(`.planet[data-id="${toId}"]`);
+				if (activeNode) {
+					activeNode.classList.add("just-arrived");
+					window.setTimeout(() => activeNode.classList.remove("just-arrived"), 780);
+				}
+			}, 80);
+
+			const from = currentPositions.get(toId) || entityById.get(toId) || { x: 50, y: 48 };
+			const active = currentPositions.get(activeId) || entityById.get(activeId) || { x: 50, y: 48 };
+			const screenFrom = {
+				x: from.x + (50 - active.x),
+				y: from.y + (48 - active.y)
+			};
+			const to = { x: 50, y: 48 };
+			const angle = Math.atan2(to.y - screenFrom.y, to.x - screenFrom.x) * 180 / Math.PI;
+			ship.style.setProperty("--ship-x", screenFrom.x);
+			ship.style.setProperty("--ship-y", screenFrom.y);
+			void ship.offsetWidth;
+			ship.style.setProperty("--ship-angle", `${angle}deg`);
+			createSparks(screenFrom, to, layerMeta[entityById.get(toId).layer].color);
+		}
+
+		function createSparks(from, to, color) {
+			particleField.innerHTML = "";
+			const count = window.innerWidth <= 760 ? 18 : 28;
+			for (let index = 0; index < count; index += 1) {
+				const spark = document.createElement("span");
+				spark.className = "spark";
+				const jitterX = (Math.random() - .5) * 10;
+				const jitterY = (Math.random() - .5) * 10;
+				const sx = clamp(from.x + jitterX, 3, 97);
+				const sy = clamp(from.y + jitterY, 3, 97);
+				const tx = (to.x - sx) * (galaxy.clientWidth / 100) + (Math.random() - .5) * 130;
+				const ty = (to.y - sy) * (galaxy.clientHeight / 100) + (Math.random() - .5) * 100;
+				spark.style.setProperty("--sx", `${sx}%`);
+				spark.style.setProperty("--sy", `${sy}%`);
+				spark.style.setProperty("--tx", `${tx}px`);
+				spark.style.setProperty("--ty", `${ty}px`);
+				spark.style.setProperty("--sc", Math.random() > .55 ? color : "var(--cyan)");
+				spark.style.setProperty("--sw", `${2 + Math.random() * 4}px`);
+				spark.style.setProperty("--tail", `${28 + Math.random() * 72}px`);
+				spark.style.setProperty("--sr", `${Math.atan2(ty, tx) * 180 / Math.PI}deg`);
+				spark.style.animationDelay = `${Math.random() * 90}ms`;
+				particleField.appendChild(spark);
+			}
+			window.setTimeout(() => {
+				particleField.innerHTML = "";
+			}, 980);
+		}
+
+		function renderPlanets() {
+			spaceCamera.querySelectorAll(".planet").forEach(node => node.remove());
+			entities.forEach(entity => {
+				const position = positionedEntity(entity.id);
+				const button = document.createElement("button");
+				button.type = "button";
+				button.className = "planet";
+				button.style.setProperty("--x", position.x);
+				button.style.setProperty("--y", position.y);
+				button.style.setProperty("--size", `${entity.size}px`);
+				button.style.setProperty("--planet", layerMeta[entity.layer].color);
+				button.dataset.id = entity.id;
+				button.setAttribute("aria-label", `查看${entity.name}`);
+				button.innerHTML = `<span class="planet-code">${shortCode(entity.code)}</span><span class="planet-name">${entity.name}</span>`;
+				button.addEventListener("click", () => selectEntity(entity.id));
+				spaceCamera.appendChild(button);
+			});
+		}
+
+		function shortCode(code) {
+			return code
+				.replace("KxtService", "")
+				.replace("KxtContract", "Contract")
+				.replace("Kxt", "")
+				.replace("flow_form_json", "JSON")
+				.replace("ServiceReceiptDTO", "入口");
+		}
+
+		function renderRelations() {
+			computePositions();
+			relationLayer.innerHTML = "";
+			document.querySelectorAll(".relation-label").forEach(node => node.remove());
+			const activeRelated = new Set(relatedRelations(activeId).flatMap(relation => [relation.from, relation.to]));
+			relations.forEach((relation, index) => {
+				const from = positionedEntity(relation.from);
+				const to = positionedEntity(relation.to);
+				const isActive = relation.from === activeId || relation.to === activeId;
+				const visible = relationVisible(relation);
+				const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+				path.setAttribute("d", makePath(from, to));
+				path.classList.add("relation-path");
+				if (isActive) path.classList.add("active");
+				if ((!showAll && !isActive) || !visible) path.classList.add("muted");
+				relationLayer.appendChild(path);
+
+				const label = document.createElement("div");
+				label.className = "relation-label";
+				if (isActive) label.classList.add("active");
+				if ((!showAll && !isActive) || !visible) label.classList.add("muted");
+				label.textContent = relation.label;
+				label.style.left = `${(from.x + to.x) / 2}%`;
+				label.style.top = `${(from.y + to.y) / 2}%`;
+				label.style.transitionDelay = `${Math.min(index * 8, 160)}ms`;
+				spaceCamera.appendChild(label);
+			});
+
+			document.querySelectorAll(".planet").forEach(node => {
+				const id = node.dataset.id;
+				const position = currentPositions.get(id) || positionedEntity(id);
+				node.style.setProperty("--x", position.x);
+				node.style.setProperty("--y", position.y);
+				node.classList.toggle("active", id === activeId);
+				node.classList.toggle("related", activeRelated.has(id) && id !== activeId);
+				node.classList.toggle("muted", !showAll && !activeRelated.has(id));
+				node.classList.toggle("hidden", !isLayerVisible(id));
+			});
+		}
+
+		function renderDetail() {
+			const entity = entityById.get(activeId);
+			const meta = layerMeta[entity.layer];
+			focusText.textContent = `${entity.name} ${entity.code}`;
+			detailLayer.textContent = meta.name;
+			detailLayer.style.color = meta.color;
+			detailTitle.textContent = entity.name;
+			detailCode.textContent = entity.code;
+			detailDesc.textContent = entity.desc;
+			ship.style.setProperty("--ship-x", 50);
+			ship.style.setProperty("--ship-y", 48);
+
+			fieldList.innerHTML = "";
+			entity.fields.forEach(([name, desc]) => {
+				const li = document.createElement("li");
+				li.innerHTML = `<b>${name}</b><span>${desc}</span>`;
+				fieldList.appendChild(li);
+			});
+
+			const direct = relatedRelations(activeId).filter(relationVisible);
+			relationList.innerHTML = "";
+			nextGrid.innerHTML = "";
+			if (!direct.length) {
+				relationList.innerHTML = "<li><b>暂无当前筛选层级下的直接关系</b><span>打开更多层级后可继续查看。</span></li>";
+			}
+			direct.forEach(relation => {
+				const nextId = relation.from === activeId ? relation.to : relation.from;
+				const next = entityById.get(nextId);
+				const direction = relation.from === activeId ? "指向" : "来源";
+				const li = document.createElement("li");
+				li.innerHTML = `<b>${direction}：${next.name}</b><span>${relation.label}</span>`;
+				relationList.appendChild(li);
+
+				const btn = document.createElement("button");
+				btn.type = "button";
+				btn.className = "next-btn";
+				btn.innerHTML = `<b>${next.name}</b><span>${relation.label}</span>`;
+				btn.addEventListener("click", () => selectEntity(nextId));
+				nextGrid.appendChild(btn);
+			});
+
+			pathbar.innerHTML = "";
+			pathTrail.slice(-8).forEach((name, index, arr) => {
+				const chip = document.createElement("span");
+				chip.className = "path-chip";
+				chip.textContent = index === arr.length - 1 ? name : `${name} →`;
+				pathbar.appendChild(chip);
+			});
+		}
+
+		function selectEntity(id) {
+			if (!entityById.has(id)) return;
+			previousActiveId = activeId;
+			activeId = id;
+			galaxyRotation += 28;
+			const name = entityById.get(id).name;
+			if (pathTrail[pathTrail.length - 1] !== name) pathTrail.push(name);
+			triggerWarp(previousActiveId, id);
+			render();
+		}
+
+		function render() {
+			renderChrome();
+			computePositions();
+			renderRelations();
+			renderDetail();
+		}
+
+		document.getElementById("homeBtn").addEventListener("click", () => {
+			pathTrail.push("履约主单");
+			selectEntity("servicePerform");
+		});
+
+		document.getElementById("allBtn").addEventListener("click", event => {
+			showAll = !showAll;
+			event.currentTarget.textContent = showAll ? "只看当前关系" : "查看全部关系";
+			render();
+		});
+
+		document.getElementById("pathBtn").addEventListener("click", () => {
+			pathTrail = [entityById.get(activeId).name];
+			renderDetail();
+		});
+
+		window.addEventListener("hashchange", () => {
+			const id = decodeURIComponent(location.hash.replace("#", ""));
+			if (entityById.has(id)) {
+				pathTrail = [entityById.get(id).name];
+				selectEntity(id);
+			}
+		});
+
+		const initialId = decodeURIComponent(location.hash.replace("#", ""));
+		if (entityById.has(initialId)) {
+			activeId = initialId;
+			pathTrail = [entityById.get(initialId).name];
+		}
+
+		computePositions();
+		renderPlanets();
+		render();
+	</script>
+</body>
+</html>

@@ -1271,6 +1271,226 @@
 			to { opacity: 1; transform: translateX(0); }
 		}
 
+		@media (width: 1920px) and (height: 1080px) {
+			.slide-inner { width: min(100%, 1720px); }
+
+			.density-conditions,
+			.density-loop,
+			.density-task,
+			.density-branch,
+			.density-capability-flow,
+			.density-reference-matrix,
+			.density-delta-compare,
+			.density-acceptance-matrix,
+			.density-prd-layers,
+			.density-prd-skeleton,
+			.density-rule-chain,
+			.density-consistency,
+			.density-tool-chain,
+			.density-call-chain,
+			.density-boundary-compare {
+				justify-content: flex-start;
+				padding-top: 56px;
+			}
+
+			.density-conditions > .grid-4 { min-height: 350px; }
+			.density-conditions .metric,
+			.density-capability-flow .capability,
+			.density-delta-compare .delta,
+			.density-prd-layers .layer,
+			.density-rule-chain .rule-step,
+			.density-tool-chain .tool-stage,
+			.density-call-chain .call-formula,
+			.density-call-chain .call-type,
+			.density-boundary-compare .boundary {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
+			.density-loop .loop-diagram { min-height: 460px; }
+			.density-loop .loop-row { flex: 1; }
+			.density-loop .loop-node { min-height: 0; }
+
+			.density-task .panel.accent {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				min-height: 350px;
+			}
+
+			.align-facts .source,
+			.align-facts .panel.blue,
+			.align-format .format-item {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
+			.align-format > div:last-child {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
+			.density-branch .branch-diagram {
+				min-height: 520px;
+				align-items: stretch;
+			}
+
+			.density-branch .branch-options {
+				grid-template-columns: 1fr;
+				grid-template-rows: repeat(3, minmax(0, 1fr));
+			}
+
+			.density-branch .branch-option {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				min-height: 0;
+			}
+
+			.density-capability-flow .demo-capabilities { min-height: 430px; }
+
+			.density-reference-matrix .priority-rail { min-height: 110px; }
+			.density-reference-matrix > .grid-5 { min-height: 370px; }
+			.density-reference-matrix .constraint {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding: 28px 18px;
+			}
+
+			.density-reference-matrix .constraint strong { font-size: 25px; }
+			.density-reference-matrix .constraint span { font-size: 17px; }
+
+			.density-delta-compare .delta-flow { min-height: 520px; }
+
+			.density-acceptance-matrix > .grid-5 {
+				grid-template-columns: repeat(6, minmax(0, 1fr));
+				grid-template-rows: repeat(2, minmax(0, 1fr));
+				min-height: 520px;
+				gap: 14px;
+			}
+
+			.density-acceptance-matrix .acceptance-layer {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				grid-column: span 2;
+				min-height: 0;
+				padding: 24px;
+			}
+
+			.density-acceptance-matrix .acceptance-layer:nth-child(4),
+			.density-acceptance-matrix .acceptance-layer:nth-child(5) { grid-column: span 3; }
+
+			.density-acceptance-matrix .acceptance-layer strong { font-size: 25px; }
+			.density-acceptance-matrix .acceptance-layer span { font-size: 18px; }
+
+			.density-prd-layers .layer-stack {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				min-height: 430px;
+			}
+
+			.density-prd-layers .layer { padding: 28px; }
+			.density-prd-layers .layer strong { font-size: 25px; }
+			.density-prd-layers .layer span { font-size: 18px; }
+
+			.density-prd-skeleton .skeleton {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				min-height: 520px;
+			}
+
+			.density-prd-skeleton .skeleton-group {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				align-content: center;
+				gap: 12px 24px;
+				padding: 28px;
+			}
+
+			.density-prd-skeleton .skeleton-group strong {
+				grid-column: 1 / -1;
+				margin-bottom: 8px;
+				font-size: 25px;
+			}
+
+			.density-prd-skeleton .skeleton-group span {
+				margin: 0;
+				font-size: 18px;
+			}
+
+			.density-rule-chain .rule-chain { min-height: 430px; }
+
+			.density-consistency .consistency-grid { min-height: 400px; }
+			.density-consistency .consistency {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
+			.case-grid--large-shots.case-grid { grid-template-rows: minmax(0, 1fr); }
+			.case-grid--large-shots .case-card { grid-template-rows: 230px minmax(0, 1fr) auto; }
+			.case-grid--large-shots .case-shot { height: 230px; }
+
+			.density-tool-chain .tool-flow {
+				min-height: 520px;
+				gap: 18px;
+			}
+
+			.density-tool-chain .tool-stage {
+				position: relative;
+				min-height: 0;
+				padding: 28px 20px;
+			}
+
+			.density-tool-chain .tool-stage:not(:last-child)::after {
+				content: "→";
+				position: absolute;
+				right: -26px;
+				top: 50%;
+				z-index: 1;
+				width: 34px;
+				transform: translateY(-50%);
+				background: var(--paper);
+				color: var(--blue);
+				font-size: 24px;
+				text-align: center;
+			}
+
+			.density-call-chain {
+				display: grid;
+				grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.5fr);
+				grid-template-rows: 460px auto;
+				align-content: start;
+				gap: 20px;
+			}
+
+			.density-call-chain .call-formula { align-content: center; }
+			.density-call-chain .call-types {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				margin-top: 0;
+				gap: 14px;
+			}
+
+			.density-call-chain .call-type { padding: 24px; }
+			.density-call-chain > .statement { grid-column: 1 / -1; }
+
+			.density-boundary-compare .boundary-layout { min-height: 420px; }
+			.density-boundary-compare .boundary { padding: 30px; }
+			.density-boundary-compare .pitfall-strip { min-height: 100px; }
+			.density-boundary-compare .pitfall {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 17px;
+				text-align: center;
+			}
+
+			.align-close .check-item { align-items: center; }
+		}
+
 		@media (max-height: 760px) {
 			.app { grid-template-rows: 52px minmax(0, 1fr) 56px; }
 			.slide { padding-top: 20px; padding-bottom: 16px; }
@@ -1344,7 +1564,7 @@
 					<div class="eyebrow">01 · 从问题到工作台</div>
 					<h2>价值不在“写得更快”，而在缩短共识距离</h2>
 					<p class="lead">每次任务尽量同时满足四个条件，AI 才真正进入产品工作。</p>
-					<div class="stage-body four-conditions">
+					<div class="stage-body four-conditions density-conditions">
 						<div class="grid-4">
 							<article class="metric"><span class="metric-number">01 · CONTEXT</span><h3>真实上下文</h3><p>继续读取仓库、数据、现有页面、历史文档与已确认产物。</p></article>
 							<article class="metric"><span class="metric-number">02 · ARTIFACT</span><h3>明确产物</h3><p>落到 DEMO、PRD、关系图、分析结果或可访问页面，而非停留在答案。</p></article>
@@ -1361,7 +1581,7 @@
 					<div class="eyebrow">02 · 完整工作闭环</div>
 					<h2>把判断持续落实到可验证产物</h2>
 					<p class="lead">这条主路径保留从问题、事实到后续使用与持续纠偏的完整闭环。</p>
-					<div class="stage-body">
+					<div class="stage-body density-loop">
 						<div class="loop-diagram">
 							<div class="loop-row">
 								<div class="loop-node">业务问题与目标<small>先定义真正要决定什么</small></div><div class="loop-arrow">→</div>
@@ -1386,7 +1606,7 @@
 					<div class="eyebrow">02 · 任务与事实</div>
 					<h2>先把任务说清，再让事实约束答案</h2>
 					<p class="lead">同一业务，给领导看的地图和给研发评审的方案，不应该拥有相同的信息结构。</p>
-					<div class="stage-body">
+					<div class="stage-body density-task">
 						<div class="panel accent">
 							<h3>一次讲清六个要素</h3>
 							<div class="tag-cloud" style="margin-top:18px">
@@ -1405,7 +1625,7 @@
 					<div class="eyebrow">02 · 事实底座</div>
 					<h2>事实底座决定方案上限</h2>
 					<p class="lead">AI 可以补全一个合理世界，但产品经理必须区分什么已经存在、什么只是方案、什么仍待确认。</p>
-					<div class="stage-body grid-2">
+					<div class="stage-body grid-2 align-facts">
 						<div class="source-stack">
 							<div class="source"><strong>现有产品</strong><span>页面、菜单、流程、用户习惯</span></div>
 							<div class="source"><strong>仓库代码</strong><span>实体、接口、状态、事件与能力边界</span></div>
@@ -1430,7 +1650,7 @@
 					<div class="eyebrow">02 · 不是瀑布流程</div>
 					<h2>建立事实后，先处理最大的未知</h2>
 					<p class="lead">DEMO 不是固定关卡；代码和数据取证也不是 PRD 完成后的补课。</p>
-					<div class="stage-body">
+					<div class="stage-body density-branch">
 						<div class="branch-diagram">
 							<div class="branch-anchor">事实底座<br>先定位主要不确定性</div>
 							<div class="branch-arrow">→</div>
@@ -1474,7 +1694,7 @@
 					<div class="eyebrow">04 · DEMO 的目标</div>
 					<h2>把讨论从“各自想象”推进到“共同操作”</h2>
 					<p class="lead">DEMO 不只是像设计稿，而是要覆盖足够多的状态，让关键决策能被真实触发。</p>
-					<div class="stage-body">
+					<div class="stage-body density-capability-flow">
 						<div class="demo-capabilities">
 							<div class="capability"><strong>能点</strong><span>从正确入口进入，完成连续路径</span></div>
 							<div class="capability"><strong>能改</strong><span>字段、选项、批量与单条操作</span></div>
@@ -1492,7 +1712,7 @@
 					<div class="eyebrow">04 · 把感受变成约束</div>
 					<h2>“符合想要的样子”必须可以验收</h2>
 					<p class="lead">参考基准先排优先级，再把“像现有系统、不要太拥挤”拆成五类可执行条件。</p>
-					<div class="stage-body">
+					<div class="stage-body density-reference-matrix">
 						<div class="priority-rail">
 							<div class="priority-item">本轮明确目标</div><div class="priority-item">当前模块页面</div><div class="priority-item">同系统同类页面</div><div class="priority-item">通用设计习惯</div>
 						</div>
@@ -1512,7 +1732,7 @@
 					<div class="eyebrow">04 · 逐差异迭代</div>
 					<h2>每轮只改一组差异，不重做已经确认的区域</h2>
 					<p class="lead">把模糊反馈拆成三张清单，才能让修改边界稳定、可追溯。</p>
-					<div class="stage-body">
+					<div class="stage-body density-delta-compare">
 						<div class="delta-flow">
 							<div class="delta change"><span class="badge">本轮要改</span><h3>明确被推翻的旧结论</h3><ul class="clean-list"><li>先收敛入口</li><li>再收敛文案</li><li>再确认保存归属</li></ul></div>
 							<div class="delta keep"><span class="badge blue">必须保留</span><h3>保护已经确认的能力</h3><ul class="clean-list"><li>嵌入式管理能力</li><li>必填校验</li><li>父级统一保存</li></ul></div>
@@ -1527,7 +1747,7 @@
 					<div class="eyebrow">04 · 五层验收</div>
 					<h2>“页面能打开”不等于验证完成</h2>
 					<p class="lead">检查路径要与验收标准一一对应，并留下可复核的操作与截图证据。</p>
-					<div class="stage-body">
+					<div class="stage-body density-acceptance-matrix">
 						<div class="grid-5">
 							<div class="acceptance-layer"><strong>布局</strong><span>目标分辨率走主路径；文本不截断，元素不叠压。</span></div>
 							<div class="acceptance-layer"><strong>文案</strong><span>标题、字段、占位、错误与成功提示；旧文案命中为 0。</span></div>
@@ -1564,7 +1784,7 @@
 					<div class="eyebrow">05 · 从体验收敛到方案</div>
 					<h2>DEMO 呈现体验，PRD 定义系统怎样工作</h2>
 					<p class="lead">不是把页面文字抄进文档，而是把交互背后的规则、动作和交付边界显性化。</p>
-					<div class="stage-body">
+					<div class="stage-body density-prd-layers">
 						<div class="layer-stack">
 							<div class="layer"><strong>目标与范围</strong><span>解决什么，本期做什么、不做什么。</span></div>
 							<div class="layer"><strong>用户与流程</strong><span>谁在什么场景触发，主链路如何流转。</span></div>
@@ -1581,7 +1801,7 @@
 					<div class="eyebrow">05 · 固定骨架</div>
 					<h2>结构稳定，复杂度按需要展开</h2>
 					<p class="lead">简单需求可以合并章节，但范围、异常和验收不能省；复杂需求再按页面或能力拆分。</p>
-					<div class="stage-body">
+					<div class="stage-body density-prd-skeleton">
 						<div class="skeleton">
 							<div class="skeleton-group"><strong>为什么做</strong><span>版本信息</span><span>背景与现状</span><span>目标</span><span>名词</span></div>
 							<div class="skeleton-group"><strong>做到哪里</strong><span>范围内</span><span>范围外</span><span>用户场景</span><span>方案总览</span></div>
@@ -1596,7 +1816,7 @@
 				<div class="slide-inner">
 					<div class="eyebrow">05 · 格式约束</div>
 					<h2>让每种表达形式只承担它擅长的任务</h2>
-					<div class="stage-body format-grid">
+					<div class="stage-body format-grid align-format">
 						<div class="format-list">
 							<div class="format-item"><strong>流程图</strong><span>多步骤、分支、跨角色；写清触发、判断、成功和失败出口。</span></div>
 							<div class="format-item"><strong>表格</strong><span>字段、映射、状态、验收矩阵；用于逐行比较和长期查阅。</span></div>
@@ -1621,7 +1841,7 @@
 					<div class="eyebrow">05 · 单条规则闭环</div>
 					<h2>“点击保存后保存成功”不是可执行规则</h2>
 					<p class="lead">关键规则至少回答五个问题，开发、测试和产品才能面对同一套边界。</p>
-					<div class="stage-body">
+					<div class="stage-body density-rule-chain">
 						<div class="rule-chain">
 							<div class="rule-step"><strong>触发条件</strong><span>谁、在哪个页面、什么数据状态下执行什么动作。</span></div>
 							<div class="rule-step"><strong>系统动作</strong><span>读取什么、判断什么、更新什么，是否影响其他配置。</span></div>
@@ -1638,7 +1858,7 @@
 				<div class="slide-inner">
 					<div class="eyebrow">06 · 双向校验</div>
 					<h2>追求共同决策语义一致，不追求承载完全相同的信息</h2>
-					<div class="stage-body">
+					<div class="stage-body density-consistency">
 						<div class="consistency-grid">
 							<div class="consistency">
 								<span class="badge">必须一致</span><h3>共同决策项</h3>
@@ -1659,7 +1879,7 @@
 					<div class="eyebrow">07 · 三种证据路径</div>
 					<h2>不同不确定性，要用不同证据收敛</h2>
 					<p class="lead">SKU 解决交互分歧；下面三个补充案例分别展示代码、数据与复杂规则怎样进入同一工作空间。</p>
-					<div class="stage-body case-grid">
+					<div class="stage-body case-grid case-grid--large-shots">
 						<article class="case-card">
 							<img class="case-shot" src="ai-product-workflow-share-assets/fulfillment-entity-galaxy.png" alt="履约实体星图截图">
 							<div class="case-copy"><span class="badge blue">代码证据</span><h3>履约实体星图</h3><p>只保留能从代码实体、服务和事件中找到依据的关系，避免把规划能力画成现状。</p></div>
@@ -1684,7 +1904,7 @@
 					<div class="eyebrow">08 · 工具链</div>
 					<h2>工具按任务组织，不进入核心叙事抢位置</h2>
 					<p class="lead">并非每个任务都会使用全部工具；选择标准只有一个：能否让当前结论更可靠、更容易协作。</p>
-					<div class="stage-body">
+					<div class="stage-body density-tool-chain">
 						<div class="tool-flow">
 							<div class="tool-stage"><span class="badge">澄清与发散</span><h3>方向还不清时</h3><p>brainstorming Skill</p><p>问题清单、备选路径、逐段确认</p></div>
 							<div class="tool-stage"><span class="badge blue">建立事实</span><h3>让答案有依据</h3><p>仓库检索与代码阅读</p><p>MySQL / 文档 / Excel / PDF</p></div>
@@ -1700,7 +1920,7 @@
 				<div class="slide-inner">
 					<div class="eyebrow">08 · AI 调用方式</div>
 					<h2>第一次讲清工作空间，后续用短指令精确纠偏</h2>
-					<div class="stage-body">
+					<div class="stage-body density-call-chain">
 						<div class="call-formula"><b>首次调用 =</b><span>背景</span><span>目标受众</span><span>目标产物</span><span>事实来源</span><span>约束与保留项</span><span>验收标准</span><span>交付位置</span></div>
 						<div class="call-types">
 							<div class="call-type"><strong>纠偏调用</strong><span>什么被推翻、什么必须保留、哪些区域不要修改。</span></div>
@@ -1717,7 +1937,7 @@
 				<div class="slide-inner">
 					<div class="eyebrow">09 · 责任边界</div>
 					<h2>AI 放大执行能力，产品经理对判断负责</h2>
-					<div class="stage-body">
+					<div class="stage-body density-boundary-compare">
 						<div class="boundary-layout">
 							<div class="boundary ai"><span class="badge blue">AI 更适合承担</span><h3>读取、转换、同步、验证</h3><div class="tag-cloud"><span class="tag">读取大量代码与文档</span><span class="tag">生成多状态原型</span><span class="tag">同步重复字段规则</span><span class="tag">执行浏览器检查</span><span class="tag">保留过程证据</span></div></div>
 							<div class="boundary pm"><span class="badge">产品经理必须负责</span><h3>问题、口径、取舍、风险</h3><div class="tag-cloud"><span class="tag">定义业务问题与优先级</span><span class="tag">确认统计口径与例外</span><span class="tag">判断现状与规划边界</span><span class="tag">决定体验与协作取舍</span><span class="tag">对最终方案负责</span></div></div>
@@ -1731,7 +1951,7 @@
 				<div class="slide-inner">
 					<div class="eyebrow">09 · 验收与结语</div>
 					<h2>交付前，再确认这八件事</h2>
-					<div class="stage-body close-layout">
+					<div class="stage-body close-layout align-close">
 						<div class="checklist">
 							<div class="check-item"><span class="check-box">✓</span><span>目标用户、使用场景和预期产物明确</span></div>
 							<div class="check-item"><span class="check-box">✓</span><span>结论有代码、数据、现有产品或正式文档依据</span></div>

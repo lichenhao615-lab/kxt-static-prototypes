@@ -1093,8 +1093,7 @@
 		}
 
 		.icon-button,
-		.chapter-button,
-		.timer-button {
+		.chapter-button {
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
@@ -1108,10 +1107,8 @@
 
 		.icon-button { width: 40px; font-size: 20px; }
 		.chapter-button { gap: 8px; padding: 0 14px; font-size: 14px; font-weight: 800; }
-		.timer-button { min-width: 118px; gap: 8px; padding: 0 12px; font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; }
 		.icon-button:hover,
-		.chapter-button:hover,
-		.timer-button:hover { background: var(--teal-soft); border-color: #a8cecd; }
+		.chapter-button:hover { background: var(--teal-soft); border-color: #a8cecd; }
 		.icon-button:disabled { opacity: 0.35; cursor: default; }
 
 		.nav-hint {
@@ -1120,8 +1117,6 @@
 			font-size: 13px;
 			white-space: nowrap;
 		}
-
-		.nav-hint strong { color: var(--stage); }
 
 		.right-controls { justify-self: end; }
 
@@ -1327,7 +1322,7 @@
 		</header>
 
 		<main class="deck" id="deck">
-			<section class="slide cover active" data-section="开场" data-minute="0–2 分钟">
+			<section class="slide cover active" data-section="开场">
 				<div class="slide-inner">
 					<div class="cover-copy">
 						<div class="cover-kicker">PRODUCT WORKFLOW · 50 MIN LIVE</div>
@@ -1344,7 +1339,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="开场" data-minute="2–5 分钟">
+			<section class="slide" data-section="开场">
 				<div class="slide-inner">
 					<div class="eyebrow">01 · 从问答到工作台</div>
 					<h2>价值不在“写得更快”，而在缩短共识距离</h2>
@@ -1361,7 +1356,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="完整闭环" data-minute="5–8 分钟">
+			<section class="slide" data-section="完整闭环">
 				<div class="slide-inner">
 					<div class="eyebrow">02 · 完整工作闭环</div>
 					<h2>把判断持续落实到可验证产物</h2>
@@ -1386,7 +1381,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="完整闭环" data-minute="8–10 分钟">
+			<section class="slide" data-section="完整闭环">
 				<div class="slide-inner">
 					<div class="eyebrow">02 · 任务与事实</div>
 					<h2>先把任务说清，再让事实约束答案</h2>
@@ -1405,7 +1400,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="完整闭环" data-minute="9.5–11 分钟">
+			<section class="slide" data-section="完整闭环">
 				<div class="slide-inner">
 					<div class="eyebrow">02 · 事实底座</div>
 					<h2>事实底座决定方案上限</h2>
@@ -1430,7 +1425,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="完整闭环" data-minute="11–12 分钟">
+			<section class="slide" data-section="完整闭环">
 				<div class="slide-inner">
 					<div class="eyebrow">02 · 不是瀑布流程</div>
 					<h2>建立事实后，先处理最大的未知</h2>
@@ -1451,7 +1446,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="是否需要 DEMO" data-minute="12–14 分钟">
+			<section class="slide" data-section="是否需要 DEMO">
 				<div class="slide-inner">
 					<div class="eyebrow">03 · 先判断是否需要 DEMO</div>
 					<h2>判断标准不是“能不能做”，而是“能否减少关键不确定性”</h2>
@@ -1474,7 +1469,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="DEMO 设计" data-minute="14–16 分钟">
+			<section class="slide" data-section="DEMO 设计">
 				<div class="slide-inner">
 					<div class="eyebrow">04 · DEMO 的目标</div>
 					<h2>把讨论从“各自想象”推进到“共同操作”</h2>
@@ -1492,7 +1487,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="DEMO 设计" data-minute="16–18 分钟">
+			<section class="slide" data-section="DEMO 设计">
 				<div class="slide-inner">
 					<div class="eyebrow">04 · 把感受变成约束</div>
 					<h2>“符合想要的样子”必须可以验收</h2>
@@ -1512,7 +1507,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="DEMO 设计" data-minute="18–19 分钟">
+			<section class="slide" data-section="DEMO 设计">
 				<div class="slide-inner">
 					<div class="eyebrow">04 · 逐差异迭代</div>
 					<h2>每轮只改一组差异，不重做已经确认的区域</h2>
@@ -1527,7 +1522,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="DEMO 设计" data-minute="19–20 分钟">
+			<section class="slide" data-section="DEMO 设计">
 				<div class="slide-inner">
 					<div class="eyebrow">04 · 五层验收</div>
 					<h2>“页面能打开”不等于验证完成</h2>
@@ -1544,7 +1539,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="DEMO 设计" data-minute="20–23 分钟">
+			<section class="slide" data-section="DEMO 设计">
 				<div class="slide-inner">
 					<div class="eyebrow">04 · 主案例｜SKU / BOM</div>
 					<h2>口头纠偏，必须穿透所有相关状态</h2>
@@ -1564,7 +1559,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="PRD 设计" data-minute="23–25 分钟">
+			<section class="slide" data-section="PRD 设计">
 				<div class="slide-inner">
 					<div class="eyebrow">05 · 从体验收敛到方案</div>
 					<h2>DEMO 呈现体验，PRD 定义系统怎样工作</h2>
@@ -1581,7 +1576,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="PRD 设计" data-minute="25–27 分钟">
+			<section class="slide" data-section="PRD 设计">
 				<div class="slide-inner">
 					<div class="eyebrow">05 · 固定骨架</div>
 					<h2>结构稳定，复杂度按需要展开</h2>
@@ -1597,7 +1592,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="PRD 设计" data-minute="27–29 分钟">
+			<section class="slide" data-section="PRD 设计">
 				<div class="slide-inner">
 					<div class="eyebrow">05 · 格式约束</div>
 					<h2>让每种表达形式只承担它擅长的任务</h2>
@@ -1621,7 +1616,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="PRD 设计" data-minute="29–30 分钟">
+			<section class="slide" data-section="PRD 设计">
 				<div class="slide-inner">
 					<div class="eyebrow">05 · 单条规则闭环</div>
 					<h2>“点击保存后保存成功”不是可执行规则</h2>
@@ -1639,7 +1634,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="DEMO 与 PRD" data-minute="30–32 分钟">
+			<section class="slide" data-section="DEMO 与 PRD">
 				<div class="slide-inner">
 					<div class="eyebrow">06 · 双向校验</div>
 					<h2>追求共同决策语义一致，不追求承载完全相同的信息</h2>
@@ -1659,7 +1654,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="真实案例" data-minute="32–42 分钟">
+			<section class="slide" data-section="真实案例">
 				<div class="slide-inner">
 					<div class="eyebrow">07 · 三种证据路径</div>
 					<h2>不同不确定性，要用不同证据收敛</h2>
@@ -1684,7 +1679,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="工具与调用" data-minute="42–44 分钟">
+			<section class="slide" data-section="工具与调用">
 				<div class="slide-inner">
 					<div class="eyebrow">08 · 工具链</div>
 					<h2>工具按任务组织，不进入核心叙事抢位置</h2>
@@ -1701,7 +1696,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="工具与调用" data-minute="44–47 分钟">
+			<section class="slide" data-section="工具与调用">
 				<div class="slide-inner">
 					<div class="eyebrow">08 · AI 调用方式</div>
 					<h2>第一次讲清工作空间，后续用短指令精确纠偏</h2>
@@ -1718,7 +1713,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="边界与防错" data-minute="47–48 分钟">
+			<section class="slide" data-section="边界与防错">
 				<div class="slide-inner">
 					<div class="eyebrow">09 · 责任边界</div>
 					<h2>AI 放大执行能力，产品经理对判断负责</h2>
@@ -1732,7 +1727,7 @@
 				</div>
 			</section>
 
-			<section class="slide" data-section="边界与防错" data-minute="48–50 分钟">
+			<section class="slide" data-section="边界与防错">
 				<div class="slide-inner">
 					<div class="eyebrow">09 · 验收与结语</div>
 					<h2>交付前，再确认这八件事</h2>
@@ -1760,10 +1755,8 @@
 				<button class="icon-button" id="nextButton" title="下一屏（→ 或空格）" aria-label="下一屏">→</button>
 				<button class="chapter-button" id="chapterButton" title="打开章节导航"><span aria-hidden="true">☰</span><span>章节</span></button>
 			</div>
-			<div class="nav-hint"><strong id="minuteHint">0–2 分钟</strong> · 方向键翻页，Esc 返回</div>
+			<div class="nav-hint">方向键翻页，Esc 返回</div>
 			<div class="control-group right-controls">
-				<button class="timer-button" id="timerButton" title="开始或暂停 50 分钟计时"><span id="timerIcon" aria-hidden="true">▶</span><span id="timerText">00:00 / 50:00</span></button>
-				<button class="icon-button" id="resetTimerButton" title="重置计时" aria-label="重置计时">↺</button>
 				<button class="icon-button" id="fullscreenButton" title="进入或退出全屏" aria-label="全屏">⛶</button>
 			</div>
 		</footer>
@@ -1824,9 +1817,6 @@
 			};
 
 			let currentIndex = 0;
-			let timerSeconds = 0;
-			let timerInterval = null;
-			let timerRunning = false;
 			let activeDemo = null;
 			let demoTimeout = null;
 			let showingFallback = false;
@@ -1834,15 +1824,11 @@
 			const currentScreen = document.getElementById("currentScreen");
 			const totalScreens = document.getElementById("totalScreens");
 			const chapterName = document.getElementById("chapterName");
-			const minuteHint = document.getElementById("minuteHint");
 			const progressBar = document.getElementById("progressBar");
 			const prevButton = document.getElementById("prevButton");
 			const nextButton = document.getElementById("nextButton");
 			const chapterDialog = document.getElementById("chapterDialog");
 			const chapterList = document.getElementById("chapterList");
-			const timerButton = document.getElementById("timerButton");
-			const timerIcon = document.getElementById("timerIcon");
-			const timerText = document.getElementById("timerText");
 			const demoOverlay = document.getElementById("demoOverlay");
 			const demoTitle = document.getElementById("demoTitle");
 			const demoFrame = document.getElementById("demoFrame");
@@ -1903,7 +1889,6 @@
 				slides[currentIndex].classList.add("active");
 				currentScreen.textContent = pad(currentIndex + 1);
 				chapterName.textContent = slides[currentIndex].dataset.section;
-				minuteHint.textContent = slides[currentIndex].dataset.minute;
 				progressBar.style.width = ((currentIndex + 1) / slides.length * 100) + "%";
 				prevButton.disabled = currentIndex === 0;
 				nextButton.disabled = currentIndex === slides.length - 1;
@@ -1921,38 +1906,6 @@
 			function closeChapters() {
 				chapterDialog.classList.remove("open");
 				document.getElementById("chapterButton").focus();
-			}
-
-			function renderTimer() {
-				const minutes = Math.floor(timerSeconds / 60);
-				const seconds = timerSeconds % 60;
-				timerText.textContent = pad(minutes) + ":" + pad(seconds) + " / 50:00";
-				timerIcon.textContent = timerRunning ? "Ⅱ" : "▶";
-				timerButton.style.borderColor = timerSeconds >= 3000 ? "var(--coral)" : "var(--line)";
-			}
-
-			function toggleTimer() {
-				timerRunning = !timerRunning;
-				if (timerRunning) {
-					timerInterval = window.setInterval(function () {
-						timerSeconds += 1;
-						renderTimer();
-						if (timerSeconds === 3000) showToast("已到 50:00，进入收尾时间");
-					}, 1000);
-				} else {
-					window.clearInterval(timerInterval);
-					timerInterval = null;
-				}
-				renderTimer();
-			}
-
-			function resetTimer() {
-				window.clearInterval(timerInterval);
-				timerInterval = null;
-				timerRunning = false;
-				timerSeconds = 0;
-				renderTimer();
-				showToast("计时已重置");
 			}
 
 			function openDemo(key) {
@@ -2027,8 +1980,6 @@
 			nextButton.addEventListener("click", function () { goTo(currentIndex + 1); });
 			document.getElementById("chapterButton").addEventListener("click", openChapters);
 			document.getElementById("closeChapterButton").addEventListener("click", closeChapters);
-			timerButton.addEventListener("click", toggleTimer);
-			document.getElementById("resetTimerButton").addEventListener("click", resetTimer);
 			document.getElementById("fullscreenButton").addEventListener("click", toggleFullscreen);
 			document.getElementById("closeDemoButton").addEventListener("click", closeDemo);
 			toggleFallbackButton.addEventListener("click", function () { showingFallback ? showFrame() : showFallback(); });
@@ -2068,7 +2019,6 @@
 			totalScreens.textContent = String(slides.length);
 			const hashMatch = window.location.hash.match(/^#screen-(\d{1,2})$/);
 			goTo(hashMatch ? Number(hashMatch[1]) - 1 : 0);
-			renderTimer();
 		})();
 	</script>
 </body>

@@ -146,7 +146,6 @@
 
 		.slide.active {
 			display: flex;
-			animation: slide-in 220ms ease-out;
 		}
 
 		.slide-inner {
@@ -1266,10 +1265,67 @@
 
 		.toast.show { display: block; }
 
-		@keyframes slide-in {
-			from { opacity: 0; transform: translateX(12px); }
-			to { opacity: 1; transform: translateX(0); }
+		.page-curtain {
+			position: fixed;
+			inset: 0;
+			display: grid;
+			place-items: center;
+			z-index: 80;
+			visibility: hidden;
+			overflow: hidden;
+			pointer-events: none;
+			background: var(--stage);
+			transform: translate3d(-101%, 0, 0);
+			transition: none;
+			will-change: transform;
 		}
+
+		.page-curtain.is-active {
+			visibility: visible;
+			pointer-events: auto;
+		}
+
+		.page-curtain.direction-forward { transform: translate3d(-101%, 0, 0); }
+		.page-curtain.direction-backward { transform: translate3d(101%, 0, 0); }
+
+		.page-curtain.phase-covering,
+		.page-curtain.phase-covered { transform: translate3d(0, 0, 0); }
+
+		.page-curtain.phase-covering {
+			transition: transform var(--curtain-cover-duration) cubic-bezier(0.65, 0, 0.35, 1);
+		}
+
+		.page-curtain.phase-revealing {
+			transition: transform var(--curtain-reveal-duration) cubic-bezier(0.65, 0, 0.35, 1);
+		}
+
+		.page-curtain.phase-revealing.direction-forward { transform: translate3d(101%, 0, 0); }
+		.page-curtain.phase-revealing.direction-backward { transform: translate3d(-101%, 0, 0); }
+
+		.curtain-chapter {
+			max-width: 1480px;
+			padding: 0 72px;
+			opacity: 0;
+			color: var(--white);
+			font-size: 54px;
+			font-weight: 800;
+			line-height: 1.2;
+			letter-spacing: 0;
+			text-align: center;
+			white-space: nowrap;
+		}
+
+		.page-curtain.mode-chapter.phase-covered .curtain-chapter {
+			opacity: 1;
+			transition: opacity 80ms ease-out;
+		}
+
+		.page-curtain.mode-chapter.phase-revealing .curtain-chapter {
+			opacity: 0;
+			transition: opacity 60ms ease-in;
+		}
+
+		#app:not([data-transition-state="idle"]) .progress-bar { transition: none; }
 
 		@media (width: 1920px) and (height: 1080px) {
 			.slide-inner { width: min(100%, 1720px); }
@@ -1767,6 +1823,8 @@
 				transition-duration: 0.01ms !important;
 				scroll-behavior: auto !important;
 			}
+
+			.page-curtain { display: none !important; }
 		}
 	</style>
 </head>
@@ -1778,7 +1836,7 @@
 		</div>
 	</div>
 
-	<div class="app" id="app">
+	<div class="app" id="app" data-transition-state="idle">
 		<header class="topbar">
 			<div class="brand-lockup">
 				<div class="brand-mark" aria-hidden="true">KX</div>
@@ -2303,6 +2361,10 @@
 		</footer>
 	</div>
 
+	<div class="page-curtain" id="pageCurtain" aria-hidden="true">
+		<div class="curtain-chapter" id="curtainChapter"></div>
+	</div>
+
 	<div class="chapter-dialog" id="chapterDialog" role="dialog" aria-modal="true" aria-labelledby="chapterDialogTitle">
 		<div class="chapter-panel">
 			<div class="dialog-head"><h2 id="chapterDialogTitle">章节导航</h2><button class="icon-button" id="closeChapterButton" title="关闭章节导航" aria-label="关闭">×</button></div>
@@ -2361,7 +2423,9 @@
 			let activeDemo = null;
 			let demoTimeout = null;
 			let showingFallback = false;
+			let activeTransition = null;
 
+			const app = document.getElementById("app");
 			const currentScreen = document.getElementById("currentScreen");
 			const totalScreens = document.getElementById("totalScreens");
 			const chapterName = document.getElementById("chapterName");
@@ -2378,6 +2442,9 @@
 			const openDemoLink = document.getElementById("openDemoLink");
 			const toggleFallbackButton = document.getElementById("toggleFallbackButton");
 			const toast = document.getElementById("toast");
+			const pageCurtain = document.getElementById("pageCurtain");
+			const curtainChapter = document.getElementById("curtainChapter");
+			const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 			function pad(value) {
 				return String(value).padStart(2, "0");
@@ -2407,8 +2474,8 @@
 					button.dataset.index = String(item.index);
 					button.innerHTML = "<strong>" + pad(order + 1) + " · " + item.section + "</strong><span>第 " + pad(item.index + 1) + "–" + pad(end) + " 屏</span>";
 					button.addEventListener("click", function () {
-						goTo(Number(button.dataset.index));
 						closeChapters();
+						goTo(Number(button.dataset.index));
 					});
 					chapterList.appendChild(button);
 				});
@@ -2423,8 +2490,26 @@
 				});
 			}
 
-			function goTo(index) {
-				const nextIndex = Math.max(0, Math.min(slides.length - 1, index));
+			function clampSlideIndex(index) {
+				const numericIndex = Number(index);
+				if (!Number.isFinite(numericIndex)) return currentIndex;
+				return Math.max(0, Math.min(slides.length - 1, numericIndex));
+			}
+
+			function isTransitioning() {
+				return app.dataset.transitionState !== "idle";
+			}
+
+			function getChapterIndex(slideIndex) {
+				let chapterIndex = 0;
+				sectionStarts.forEach(function (item, index) {
+					if (item.index <= slideIndex) chapterIndex = index;
+				});
+				return chapterIndex;
+			}
+
+			function applySlide(index) {
+				const nextIndex = clampSlideIndex(index);
 				slides[currentIndex].classList.remove("active");
 				currentIndex = nextIndex;
 				slides[currentIndex].classList.add("active");
@@ -2437,7 +2522,102 @@
 				window.history.replaceState(null, "", "#screen-" + pad(currentIndex + 1));
 			}
 
+			function goTo(index, options) {
+				const nextIndex = clampSlideIndex(index);
+				const immediate = options && options.immediate;
+				if (nextIndex === currentIndex) return false;
+				if (isTransitioning()) return false;
+				if (immediate || reducedMotionQuery.matches) {
+					applySlide(nextIndex);
+					return true;
+				}
+
+				const direction = nextIndex > currentIndex ? "forward" : "backward";
+				const mode = slides[currentIndex].dataset.section === slides[nextIndex].dataset.section ? "short" : "chapter";
+				const timings = mode === "chapter"
+					? { cover: 220, hold: 180, reveal: 220 }
+					: { cover: 160, hold: 20, reveal: 180 };
+				const transition = {
+					targetIndex: nextIndex,
+					committed: false,
+					finished: false,
+					timers: []
+				};
+				activeTransition = transition;
+
+				function schedule(callback, delay) {
+					const timer = window.setTimeout(callback, delay);
+					transition.timers.push(timer);
+					return timer;
+				}
+
+				function commitTarget() {
+					if (transition.committed) return;
+					transition.committed = true;
+					applySlide(transition.targetIndex);
+				}
+
+				function finishTransition() {
+					if (transition.finished) return;
+					commitTarget();
+					transition.finished = true;
+					transition.timers.forEach(function (timer) { window.clearTimeout(timer); });
+					pageCurtain.removeEventListener("transitionend", onTransitionEnd);
+					pageCurtain.className = "page-curtain";
+					pageCurtain.style.removeProperty("--curtain-cover-duration");
+					pageCurtain.style.removeProperty("--curtain-reveal-duration");
+					curtainChapter.textContent = "";
+					app.dataset.transitionState = "idle";
+					delete app.dataset.transitionDirection;
+					delete app.dataset.transitionMode;
+					activeTransition = null;
+				}
+				transition.finishTransition = finishTransition;
+
+				function beginReveal() {
+					if (transition.finished || app.dataset.transitionState === "revealing") return;
+					void pageCurtain.offsetWidth;
+					app.dataset.transitionState = "revealing";
+					pageCurtain.classList.remove("phase-covered", "phase-covering");
+					pageCurtain.classList.add("phase-revealing");
+					schedule(finishTransition, timings.reveal + 90);
+				}
+
+				function enterCovered() {
+					if (transition.finished || app.dataset.transitionState !== "covering") return;
+					pageCurtain.classList.remove("phase-covering");
+					pageCurtain.classList.add("phase-covered");
+					app.dataset.transitionState = "covered";
+					commitTarget();
+					schedule(beginReveal, timings.hold);
+				}
+
+				function onTransitionEnd(event) {
+					if (event.target !== pageCurtain || event.propertyName !== "transform") return;
+					if (app.dataset.transitionState === "covering") enterCovered();
+					else if (app.dataset.transitionState === "revealing") finishTransition();
+				}
+
+				app.dataset.transitionDirection = direction;
+				app.dataset.transitionMode = mode;
+				app.dataset.transitionState = "covering";
+				toast.classList.remove("show");
+				pageCurtain.className = "page-curtain is-active direction-" + direction + " mode-" + mode;
+				pageCurtain.style.setProperty("--curtain-cover-duration", timings.cover + "ms");
+				pageCurtain.style.setProperty("--curtain-reveal-duration", timings.reveal + "ms");
+				curtainChapter.textContent = mode === "chapter"
+					? pad(getChapterIndex(nextIndex) + 1) + " · " + slides[nextIndex].dataset.section
+					: "";
+				pageCurtain.addEventListener("transitionend", onTransitionEnd);
+				void pageCurtain.offsetWidth;
+				pageCurtain.classList.add("phase-covering");
+				schedule(enterCovered, timings.cover + 90);
+				schedule(finishTransition, timings.cover + timings.hold + timings.reveal + 400);
+				return true;
+			}
+
 			function openChapters() {
+				if (isTransitioning()) return;
 				chapterDialog.classList.add("open");
 				updateChapterHighlight();
 				const active = chapterList.querySelector(".active");
@@ -2450,6 +2630,7 @@
 			}
 
 			function openDemo(key) {
+				if (isTransitioning()) return;
 				const demo = demoMap[key];
 				if (!demo) return;
 				activeDemo = demo;
@@ -2501,6 +2682,7 @@
 			}
 
 			function toggleFullscreen() {
+				if (isTransitioning()) return;
 				if (!document.fullscreenEnabled) {
 					showToast("当前浏览器不支持全屏 API");
 					return;
@@ -2524,6 +2706,11 @@
 			document.getElementById("fullscreenButton").addEventListener("click", toggleFullscreen);
 			document.getElementById("closeDemoButton").addEventListener("click", closeDemo);
 			toggleFallbackButton.addEventListener("click", function () { showingFallback ? showFrame() : showFallback(); });
+			reducedMotionQuery.addEventListener("change", function (event) {
+				if (event.matches && activeTransition && activeTransition.finishTransition) {
+					activeTransition.finishTransition();
+				}
+			});
 			document.querySelectorAll("[data-demo]").forEach(function (button) {
 				button.addEventListener("click", function () { openDemo(button.dataset.demo); });
 			});
@@ -2559,7 +2746,7 @@
 			buildChapterList();
 			totalScreens.textContent = String(slides.length);
 			const hashMatch = window.location.hash.match(/^#screen-(\d{1,2})$/);
-			goTo(hashMatch ? Number(hashMatch[1]) - 1 : 0);
+			applySlide(hashMatch ? Number(hashMatch[1]) - 1 : 0);
 		})();
 	</script>
 </body>

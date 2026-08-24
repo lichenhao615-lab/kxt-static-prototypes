@@ -309,6 +309,13 @@
 			color: var(--danger);
 		}
 
+		.btn:disabled {
+			border-color: #dfe3e8;
+			background: #f3f5f7;
+			color: #a0aab5;
+			cursor: not-allowed;
+		}
+
 		.action-line {
 			display: flex;
 			align-items: center;
@@ -2496,6 +2503,155 @@
 			box-shadow: 0 0 0 2px rgba(0, 165, 168, .12);
 		}
 
+		#packageMergeModal .package-merge-dialog {
+			width: min(640px, calc(100vw - 48px));
+		}
+
+		.package-merge-field {
+			display: grid;
+			grid-template-columns: 96px minmax(0, 1fr);
+			gap: 8px 12px;
+			align-items: center;
+		}
+
+		.package-merge-field .label {
+			text-align: right;
+		}
+
+		.package-merge-field-error {
+			grid-column: 2;
+			display: none;
+			color: var(--danger);
+			font-size: 12px;
+			line-height: 1.4;
+		}
+
+		.package-merge-field-error.show {
+			display: block;
+		}
+
+		.field.invalid {
+			border-color: var(--danger);
+		}
+
+		.package-merge-rule {
+			margin-top: 16px;
+			border: 1px solid #e2e8ee;
+			background: #fbfcfd;
+		}
+
+		.package-merge-rule-head,
+		.package-merge-source-row,
+		.package-merge-result {
+			display: grid;
+			grid-template-columns: 54px minmax(0, 1fr) 110px;
+			align-items: center;
+			gap: 10px;
+			padding: 10px 12px;
+		}
+
+		.package-merge-rule-head {
+			border-bottom: 1px solid #e8edf1;
+			background: #f4f6f8;
+			color: #667085;
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.package-merge-source-row {
+			border-bottom: 1px solid #edf0f2;
+			color: #344054;
+			font-size: 13px;
+		}
+
+		.package-merge-order {
+			width: 24px;
+			height: 24px;
+			display: inline-grid;
+			place-items: center;
+			border: 1px solid #b8dddd;
+			border-radius: 50%;
+			background: #eefafa;
+			color: var(--brand-dark);
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.package-merge-source-name {
+			min-width: 0;
+		}
+
+		.package-merge-source-name strong,
+		.package-merge-source-name span {
+			display: block;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.package-merge-source-name span {
+			margin-top: 2px;
+			color: #8a95a1;
+			font-size: 12px;
+		}
+
+		.package-merge-format {
+			color: var(--brand-dark);
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.package-merge-result {
+			background: #f0fbf8;
+			color: #146c5c;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.merge-group-row td {
+			height: 76px;
+			background: #f8fcfc;
+		}
+
+		.merge-group-row td:first-child {
+			box-shadow: inset 3px 0 0 var(--brand);
+		}
+
+		.merge-item-stack {
+			display: flex;
+			min-width: 0;
+			flex-direction: column;
+			gap: 6px;
+			text-align: left;
+		}
+
+		.merge-item-stack span {
+			display: block;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.merge-item-stack b {
+			display: inline-grid;
+			width: 18px;
+			height: 18px;
+			place-items: center;
+			margin-right: 5px;
+			border-radius: 50%;
+			background: #e5f7f7;
+			color: var(--brand-dark);
+			font-size: 10px;
+		}
+
+		.merge-pdf-label {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			color: var(--brand-dark);
+			font-weight: 600;
+		}
+
 		.status {
 			display: inline-flex;
 			align-items: center;
@@ -3174,6 +3330,12 @@
 			font-size: 14px;
 		}
 
+		.section-head-actions {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
 		.template-document.word-preview {
 			margin: 18px auto;
 			max-width: 760px;
@@ -3360,6 +3522,311 @@
 			color: #74808a;
 			font-size: 12px;
 			line-height: 1.6;
+		}
+
+		.confirm-dialog.variant-dialog {
+			width: min(980px, calc(100vw - 48px));
+			max-width: calc(100vw - 24px);
+			min-width: 0;
+			max-height: calc(100vh - 32px);
+			display: flex;
+			flex-direction: column;
+		}
+
+		.confirm-dialog.variant-dialog .confirm-head,
+		.confirm-dialog.variant-dialog .confirm-footer {
+			flex-shrink: 0;
+		}
+
+		.confirm-dialog.variant-dialog .confirm-body {
+			min-height: 0;
+			overflow-y: auto;
+		}
+
+		.special-rule-config-grid {
+			grid-template-columns: 118px minmax(0, 420px);
+		}
+
+		.special-rule-addon {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-top: 14px;
+			padding-top: 14px;
+			border-top: 1px solid #e7ebef;
+		}
+
+		.special-rule-addon > span {
+			color: #74808a;
+			font-size: 12px;
+		}
+
+		.special-rule-panel {
+			padding: 14px;
+			border: 1px solid #e7ebef;
+			background: #fbfcfd;
+		}
+
+		.special-rule-panel-title {
+			margin-bottom: 10px;
+			color: #17212b;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.variant-source-bar {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 10px 18px;
+			margin-bottom: 16px;
+			padding: 12px 14px;
+			border: 1px solid #dceff0;
+			background: #f5fbfb;
+			color: #475467;
+			font-size: 12px;
+		}
+
+		.variant-source-item {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			min-width: 0;
+		}
+
+		.variant-source-item strong {
+			color: #17212b;
+			font-weight: 600;
+		}
+
+		.variant-source-tip {
+			grid-column: 1 / -1;
+			color: #74808a;
+			line-height: 1.6;
+		}
+
+		.placeholder-list-table {
+			min-width: 920px;
+		}
+
+		.variant-token-cell {
+			text-align: left !important;
+		}
+
+		.variant-token-cell .placeholder-token {
+			margin-bottom: 3px;
+		}
+
+		.variant-name-sub {
+			display: block;
+			color: #8a95a1;
+			font-size: 11px;
+			line-height: 1.4;
+		}
+
+		.variant-rule-chip,
+		.variant-status-chip {
+			display: inline-flex;
+			align-items: center;
+			min-height: 23px;
+			padding: 0 8px;
+			border-radius: 2px;
+			font-size: 12px;
+			white-space: nowrap;
+		}
+
+		.variant-rule-chip {
+			margin: 2px 4px 2px 0;
+			background: #eef8f8;
+			color: var(--brand-dark);
+		}
+
+		.variant-status-chip {
+			background: #eef8f2;
+			color: #168653;
+		}
+
+		.variant-summary {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: center;
+			gap: 3px;
+			line-height: 1.4;
+			white-space: normal;
+		}
+
+		.variant-summary-count {
+			color: var(--brand-dark);
+			font-weight: 600;
+		}
+
+		.variant-summary-muted,
+		.variant-empty {
+			color: #9aa3ad;
+		}
+
+		.variant-empty {
+			padding: 34px 16px;
+			border: 1px dashed #d8e0e5;
+			background: #fbfcfd;
+			text-align: center;
+			font-size: 13px;
+			line-height: 1.7;
+		}
+
+		.variant-form-grid {
+			display: grid;
+			grid-template-columns: 118px minmax(0, 1fr);
+			gap: 14px 12px;
+			align-items: center;
+			font-size: 13px;
+		}
+
+		.variant-form-grid .label {
+			text-align: right;
+		}
+
+		.variant-code-wrap {
+			display: flex;
+			align-items: center;
+			min-width: 0;
+			border: 1px solid #d8dde3;
+			background: #fff;
+		}
+
+		.variant-code-wrap span {
+			padding: 0 7px;
+			color: #74808a;
+			font-family: Consolas, "SFMono-Regular", monospace;
+		}
+
+		.variant-code-wrap input {
+			flex: 1;
+			min-width: 0;
+			height: 30px;
+			border: 0;
+			outline: none;
+			font-family: Consolas, "SFMono-Regular", monospace;
+		}
+
+		.variant-help {
+			margin-top: 14px;
+			color: #74808a;
+			font-size: 12px;
+			line-height: 1.6;
+		}
+
+		.variant-processor {
+			margin-top: 18px;
+			padding: 14px;
+			border: 1px solid #e7ebef;
+			background: #fbfcfd;
+		}
+
+		.variant-processor.is-empty {
+			padding: 12px 14px;
+			color: #74808a;
+			font-size: 12px;
+			line-height: 1.6;
+		}
+
+		.variant-processor-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			margin-bottom: 10px;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.variant-processor-note {
+			margin-bottom: 10px;
+			color: #74808a;
+			font-size: 12px;
+			line-height: 1.6;
+		}
+
+		.variant-inline-fields {
+			display: grid;
+			grid-template-columns: 72px minmax(0, 1fr) 72px minmax(0, 1fr);
+			gap: 12px;
+			align-items: center;
+			font-size: 13px;
+		}
+
+		.variant-inline-fields .label {
+			text-align: right;
+		}
+
+		.variant-check {
+			display: inline-flex;
+			align-items: center;
+			gap: 7px;
+			color: #475467;
+			font-size: 12px;
+		}
+
+		.variant-check input {
+			accent-color: var(--brand);
+		}
+
+		.variant-mapping-wrap {
+			overflow-x: auto;
+			border: 1px solid #e1e6eb;
+			background: #fff;
+		}
+
+		.variant-mapping-table {
+			min-width: 420px;
+		}
+
+		.variant-mapping-table td {
+			height: 42px;
+			padding: 5px 7px;
+		}
+
+		.variant-mapping-table .field {
+			height: 28px;
+			font-size: 12px;
+		}
+
+		.variant-inline-error {
+			min-height: 18px;
+			margin-top: 12px;
+			color: var(--danger);
+			font-size: 12px;
+			line-height: 1.5;
+		}
+
+		.variant-rule-preview {
+			padding: 12px;
+			border: 1px solid #dceff0;
+			background: #f5fbfb;
+			color: #475467;
+			font-size: 12px;
+			line-height: 1.7;
+		}
+
+		@media (max-width: 720px) {
+			.variant-source-bar,
+			.variant-inline-fields {
+				grid-template-columns: 1fr;
+			}
+
+			.variant-source-tip {
+				grid-column: auto;
+			}
+
+			.variant-form-grid {
+				grid-template-columns: 1fr;
+				gap: 7px;
+			}
+
+			.variant-form-grid .label,
+			.variant-inline-fields .label {
+				text-align: left;
+			}
 		}
 
 		.confirm-footer {
@@ -4723,21 +5190,26 @@
 			<div class="section">
 				<div class="section-head">
 					<span>导出资料清单</span>
-					<button class="btn primary small" onclick="openMaterialItemSelectModal('package')">新增资料项</button>
+					<div class="section-head-actions">
+						<button class="btn primary small" onclick="openMaterialItemSelectModal('package')">新增资料项</button>
+						<button class="btn ghost small" id="mergePackageItemsBtn" onclick="openPackageMergeModal()" disabled>合并资料</button>
+					</div>
 				</div>
 				<div class="section-body" style="padding:0;">
 					<table class="mini-table">
 						<colgroup>
+							<col style="width:42px">
 							<col style="width:44px">
-							<col style="width:220px">
-							<col style="width:170px">
-							<col style="width:104px">
-							<col style="width:170px">
-							<col style="width:118px">
-							<col style="width:90px">
+							<col style="width:198px">
+							<col style="width:160px">
+							<col style="width:100px">
+							<col style="width:158px">
+							<col style="width:112px">
+							<col style="width:98px">
 						</colgroup>
 						<thead>
 						<tr>
+							<th>选择</th>
 							<th>序号</th>
 							<th>导出文件名</th>
 							<th>资料项</th>
@@ -4748,7 +5220,7 @@
 						</tr>
 						</thead>
 						<tbody id="packageExportRows">
-						<tr><td colspan="7">暂无资料项，请点击“新增资料项”添加</td></tr>
+						<tr><td colspan="8">暂无资料项，请点击“新增资料项”添加</td></tr>
 						</tbody>
 					</table>
 				</div>
@@ -5071,38 +5543,32 @@
 							<div class="placeholder-board-head">
 								<div class="material-group-title" style="margin-bottom:0;">现有占位符</div>
 								<div style="display:flex;align-items:center;gap:10px;">
-									<div class="placeholder-count">当前正文识别 7 个</div>
+									<div class="placeholder-count">当前正文识别 9 个</div>
 									<button class="btn small ghost" onclick="openCustomPlaceholderModal()">协议编码管理</button>
 									<button class="btn small ghost" onclick="openPlaceholderDictionaryModal()">占位符字典</button>
 								</div>
 							</div>
-							<div class="editor-tip">展示当前正文中已经存在的占位符，用于确认模板正文中已引用的系统字段。</div>
-							<table class="mini-table">
+							<div class="editor-tip">展示当前正文中已经存在的原始占位符。原始占位符负责取值，特殊处理规则负责对输出值进行翻译、图片大小、字典模式、日期特殊处理或首字母大写加工；占位符字典按钮仅用于查询可用字段。</div>
+							<table class="mini-table placeholder-list-table">
 								<colgroup>
 									<col style="width:70px">
-									<col style="width:220px">
-									<col style="width:210px">
-									<col style="width:140px">
-									<col style="width:140px">
+									<col style="width:190px">
+									<col style="width:170px">
+									<col style="width:260px">
+									<col style="width:100px">
+									<col style="width:150px">
 								</colgroup>
 								<thead>
 								<tr>
 									<th>序号</th>
-									<th>占位符</th>
+									<th>原始占位符</th>
 									<th>字段名称</th>
-									<th>转换规则</th>
+									<th>特殊处理</th>
 									<th>匹配状态</th>
+									<th>操作</th>
 								</tr>
 								</thead>
-								<tbody>
-								<tr><td>1</td><td>{{companyName}}</td><td>公司名称</td><td>无</td><td>成功</td></tr>
-								<tr><td>2</td><td>{{companyEnName}}</td><td>公司英文名称</td><td>无</td><td>成功</td></tr>
-								<tr><td>3</td><td>{{street_EN}}</td><td>街道地址</td><td>英文翻译</td><td>成功</td></tr>
-								<tr><td>4</td><td>{{street_PY}}</td><td>街道地址</td><td>拼音</td><td>成功</td></tr>
-								<tr><td>5</td><td>{{street_SP}}</td><td>街道地址</td><td>西班牙语翻译</td><td>成功</td></tr>
-								<tr><td>6</td><td>{{processName}}</td><td>流程名称</td><td>无</td><td>成功</td></tr>
-								<tr><td>7</td><td>{{exportDate}}</td><td>导出日期</td><td>无</td><td>失败</td></tr>
-								</tbody>
+								<tbody id="placeholderRows"></tbody>
 							</table>
 						</div>
 					</div>
@@ -5111,6 +5577,45 @@
 		</div>
 		<div class="drawer-footer">
 			<button class="btn primary" onclick="saveTemplateEditor()">保存模板</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="placeholderSpecialModal">
+	<div class="confirm-dialog large variant-dialog">
+		<div class="confirm-head">
+			<span>配置特殊处理</span>
+			<button class="drawer-close" onclick="closePlaceholderSpecialModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="variant-source-bar">
+				<div class="variant-source-item"><span>原始占位符</span><strong class="placeholder-token" id="specialSourcePlaceholder">{{companyName}}</strong></div>
+				<div class="variant-source-item"><span>字段名称</span><strong id="specialSourceFieldName">公司名称</strong></div>
+				<div class="variant-source-tip">选择一种主要处理规则；首字母大写可以同时开启。选择“不处理”会清空该占位符的特殊处理。</div>
+			</div>
+			<div class="special-rule-panel">
+				<div class="special-rule-panel-title">处理规则</div>
+				<div class="variant-form-grid special-rule-config-grid">
+					<div class="label">主要处理</div>
+					<select class="field" id="specialPrimaryRuleSelect" onchange="handleSpecialPrimaryRuleChange(this.value)">
+						<option value="">不处理</option>
+						<option value="翻译">翻译</option>
+						<option value="图片大小">图片大小</option>
+						<option value="字典模式">字典模式</option>
+						<option value="日期特殊处理">日期特殊处理</option>
+					</select>
+				</div>
+				<div id="specialRuleProcessorFields" class="variant-processor"></div>
+				<div class="special-rule-addon">
+					<label class="variant-check"><input type="checkbox" id="specialCapitalizationCheckbox">首字母大写</label>
+					<span>可与主要处理同时使用</span>
+				</div>
+			</div>
+			<div class="variant-inline-error" id="specialRuleEditorError"></div>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closePlaceholderSpecialModal()">取消</button>
+			<button class="btn primary" onclick="savePlaceholderSpecialConfig()">保存配置</button>
 		</div>
 	</div>
 </div>
@@ -5156,7 +5661,6 @@
 		<div class="confirm-body compact">
 			<div class="modal-toolbar">
 				<input class="input" placeholder="占位符 / 字段名称">
-				<select class="select"><option>全部来源</option><option>系统字段</option><option>表单字段</option><option>手动补充字段</option></select>
 				<button class="btn primary">查询</button>
 				<button class="btn ghost">重置</button>
 			</div>
@@ -5166,8 +5670,6 @@
 					<col style="width:70px">
 					<col style="width:220px">
 					<col style="width:190px">
-					<col style="width:130px">
-					<col style="width:180px">
 					<col style="width:120px">
 				</colgroup>
 				<thead>
@@ -5175,18 +5677,16 @@
 					<th>序号</th>
 					<th>占位符</th>
 					<th>字段名称</th>
-					<th>来源</th>
-					<th>支持转换</th>
 					<th>操作</th>
 				</tr>
 				</thead>
 				<tbody>
-				<tr><td>1</td><td>{{companyName}}</td><td>公司名称</td><td>表单字段</td><td>英文 / 拼音 / 西班牙语</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>2</td><td>{{companyEnName}}</td><td>公司英文名称</td><td>表单字段</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>3</td><td>{{street}}</td><td>街道地址</td><td>表单字段</td><td>英文 / 拼音 / 西班牙语</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>4</td><td>{{exportDate}}</td><td>导出日期</td><td>系统字段</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>5</td><td>{{legalRepresentative}}</td><td>法人姓名</td><td>表单字段</td><td>拼音</td><td><span class="action-text">复制</span></td></tr>
-				<tr><td>6</td><td>{{deware_ZD}}</td><td>德国仓储协议编码</td><td>协议编码</td><td>不支持</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>1</td><td>{{companyName}}</td><td>公司名称</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>2</td><td>{{companyEnName}}</td><td>公司英文名称</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>3</td><td>{{street}}</td><td>街道地址</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>4</td><td>{{exportDate}}</td><td>导出日期</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>5</td><td>{{legalRepresentative}}</td><td>法人姓名</td><td><span class="action-text">复制</span></td></tr>
+				<tr><td>6</td><td>{{deware_ZD}}</td><td>德国仓储协议编码</td><td><span class="action-text">复制</span></td></tr>
 				</tbody>
 			</table>
 		</div>
@@ -5450,6 +5950,40 @@
 		<div class="confirm-footer">
 			<button class="btn ghost" onclick="closeMaterialItemSelectModal()">取消</button>
 			<button class="btn primary" onclick="confirmSelectedMaterialItems()">确认添加</button>
+		</div>
+	</div>
+</div>
+
+<div class="confirm-mask" id="packageMergeModal">
+	<div class="confirm-dialog package-merge-dialog">
+		<div class="confirm-head">
+			<span>合并资料</span>
+			<button class="drawer-close" onclick="closePackageMergeModal()">×</button>
+		</div>
+		<div class="confirm-body compact">
+			<div class="package-merge-field">
+				<div class="label"><span class="required">*</span>导出文件名</div>
+				<input class="field" id="packageMergeFileName" placeholder="请输入合并后的导出文件名" oninput="clearPackageMergeFileNameError()">
+				<div class="package-merge-field-error" id="packageMergeFileNameError">请输入导出文件名</div>
+			</div>
+			<div class="modal-note" style="margin-top:14px;margin-bottom:0;">系统会按导出资料清单中的顺序，将两项资料分别转换为 PDF 后合并。</div>
+			<div class="package-merge-rule">
+				<div class="package-merge-rule-head">
+					<span>顺序</span>
+					<span>资料项</span>
+					<span>处理方式</span>
+				</div>
+				<div id="packageMergeSourceList"></div>
+				<div class="package-merge-result">
+					<span>结果</span>
+					<span>合并为一个导出文件</span>
+					<span>PDF 文件</span>
+				</div>
+			</div>
+		</div>
+		<div class="confirm-footer">
+			<button class="btn ghost" onclick="closePackageMergeModal()">取消</button>
+			<button class="btn primary" onclick="confirmPackageMerge()">确认合并</button>
 		</div>
 	</div>
 </div>
@@ -5769,6 +6303,8 @@
 	let formMaterialItems = [];
 	let materialItemSelectMode = "form";
 	let packageExportItems = [];
+	let pendingPackageMergeIndexes = [];
+	let packageMergeCounter = 1;
 	let pendingPackagePlanTab = null;
 	let pendingDeleteFormMaterial = null;
 	let activeFlowPickerTarget = null;
@@ -5799,6 +6335,71 @@
 	};
 	let materialSourceItems = [
 		{ type: "模板", code: "tcpl_908321884" }
+	];
+	const placeholderDefinitions = [
+		{ key: "companyName", name: "公司名称", status: "成功" },
+		{ key: "companyEnName", name: "公司英文名称", status: "成功" },
+		{ key: "street_EN", name: "街道地址", status: "成功" },
+		{ key: "street_PY", name: "街道地址", status: "成功" },
+		{ key: "street_SP", name: "街道地址", status: "成功" },
+		{ key: "processName", name: "流程名称", status: "成功" },
+		{ key: "exportDate", name: "导出日期", status: "失败" },
+		{ key: "version", name: "表单版本号", status: "成功" },
+		{ key: "legalIdCardFront", name: "法人身份证正面", status: "成功" }
+	];
+	let placeholderSpecialRules = {
+		companyName: [
+			{ type: "翻译", language: "英语" },
+			{ type: "首字母大写" }
+		],
+		companyEnName: [],
+		street_EN: [],
+		street_PY: [],
+		street_SP: [],
+		processName: [],
+		exportDate: [
+			{
+				type: "日期特殊处理",
+				dateSource: "date",
+				dateFormat: "YYYY_DASH_MM_DASH_DD",
+				dateFormatLabel: "YYYY-MM-DD"
+			}
+		],
+		version: [
+			{
+				type: "字典模式",
+				mappings: [
+					{ sourceValue: "1", outputValue: "Enabled" },
+					{ sourceValue: "2", outputValue: "Disabled" }
+				],
+				unmatchedPolicy: "EMPTY"
+			}
+		],
+		legalIdCardFront: [
+			{
+				type: "图片大小",
+				width: "320",
+				height: "200",
+				unit: "px",
+				keepRatio: true
+			}
+		]
+	};
+	let activePlaceholderSpecialKey = "";
+	let specialRuleDraft = null;
+	const specialDateFormats = [
+		{ value: "YYYY_DASH_MM_DASH_DD", label: "YYYY-MM-DD", sample: "2026-08-24" },
+		{ value: "DD_SLASH_MM_SLASH_YYYY", label: "DD/MM/YYYY", sample: "24/08/2026" },
+		{ value: "YYYY_DOT_MM_DOT_DD", label: "YYYY.MM.DD", sample: "2026.08.24" },
+		{ value: "DD_DOT_MM_DOT_YYYY", label: "DD.MM.YYYY", sample: "24.08.2026" },
+		{ value: "YYYY_NONE_MM_NONE_DD", label: "YYYYMMDD", sample: "20260824" },
+		{ value: "YYYY_CN_YEAR_MM_CN_MONTH_DD_CN_DAY", label: "YYYY年MM月DD日", sample: "2026年08月24日" },
+		{ value: "DD_SPACE_MMMM_SPACE_YYYY_ZH", label: "中文：DD Month YYYY", sample: "24 八月 2026" },
+		{ value: "DD_SPACE_MMMM_SPACE_YYYY_EN", label: "英语：DD Month YYYY", sample: "24 August 2026" },
+		{ value: "DD_SPACE_MMMM_SPACE_YYYY_ES", label: "西语：DD Month YYYY", sample: "24 agosto 2026" },
+		{ value: "DD_SPACE_MMMM_SPACE_YYYY_FR", label: "法语：DD Month YYYY", sample: "24 août 2026" },
+		{ value: "DD_SPACE_MMMM_SPACE_YYYY_DE", label: "德语：DD Month YYYY", sample: "24 August 2026" },
+		{ value: "DD_SPACE_MMMM_SPACE_YYYY_IT", label: "意大利语：DD Month YYYY", sample: "24 agosto 2026" }
 	];
 	let pendingTemplateImportFileName = "";
 	let flowEditorScale = 1;
@@ -6939,6 +7540,330 @@
 		openDrawer("templateEditorDrawer");
 	}
 
+	function getPlaceholderDefinition(key) {
+		return placeholderDefinitions.find(function (item) {
+			return item.key === key;
+		});
+	}
+
+	function getPlaceholderSpecialRules(key) {
+		if (!placeholderSpecialRules[key]) {
+			placeholderSpecialRules[key] = [];
+		}
+		return placeholderSpecialRules[key];
+	}
+
+	function getSpecialDateFormatDefinition(config) {
+		config = config || {};
+		const matched = specialDateFormats.find(function (item) { return item.value === config.dateFormat; });
+		if (matched) {
+			return matched;
+		}
+		if (config.dateFormat === "DD_SPACE_MMMM_SPACE_YYYY") {
+			const languageSuffix = { "中文": "ZH", "英语": "EN", "西语": "ES", "法语": "FR", "德语": "DE", "意大利语": "IT" };
+			const legacyValue = "DD_SPACE_MMMM_SPACE_YYYY_" + (languageSuffix[config.dateLanguage] || "ZH");
+			return specialDateFormats.find(function (item) { return item.value === legacyValue; }) || specialDateFormats[0];
+		}
+		return specialDateFormats[0];
+	}
+
+	function getSpecialRuleSummary(rule) {
+		if (rule.type === "翻译") {
+			return "目标语言：" + (rule.language || "未设置");
+		}
+		if (rule.type === "图片大小") {
+			return "输出尺寸：" + (rule.width || "-") + " × " + (rule.height || "-") + " " + (rule.unit || "px") + (rule.keepRatio ? "，保持比例" : "");
+		}
+		if (rule.type === "字典模式") {
+			return "映射 " + ((rule.mappings || []).length) + " 条，未匹配输出空值";
+		}
+		if (rule.type === "日期特殊处理") {
+			return "格式：" + getSpecialDateFormatDefinition(rule).label;
+		}
+		return "将输出内容首个字母转换为大写";
+	}
+
+	function renderPlaceholderSpecialSummary(rules) {
+		if (!rules.length) {
+			return '<span class="variant-summary-muted">未配置</span>';
+		}
+		return '<div class="variant-summary">' + rules.map(function (rule) {
+			const label = rule.type === "翻译"
+				? rule.type + " · " + (rule.language || "")
+				: rule.type === "日期特殊处理"
+					? rule.type + " · " + getSpecialDateFormatDefinition(rule).label
+					: rule.type;
+			return '<span class="variant-rule-chip">' + escapeHtml(label) + '</span>';
+		}).join("") + '</div>';
+	}
+
+	function renderPlaceholderSpecialRows() {
+		const tbody = document.getElementById("placeholderRows");
+		if (!tbody) {
+			return;
+		}
+		tbody.innerHTML = placeholderDefinitions.map(function (definition, index) {
+			const rules = getPlaceholderSpecialRules(definition.key);
+			return '<tr>' +
+				'<td>' + (index + 1) + '</td>' +
+				'<td><span class="placeholder-token">{{' + escapeHtml(definition.key) + '}}</span></td>' +
+				'<td>' + escapeHtml(definition.name) + '</td>' +
+				'<td>' + renderPlaceholderSpecialSummary(rules) + '</td>' +
+				'<td><span class="variant-status-chip" style="background:' + (definition.status === "成功" ? "#eef8f2" : "#fff5e8") + ';color:' + (definition.status === "成功" ? "#168653" : "#a15c00") + ';">' + escapeHtml(definition.status) + '</span></td>' +
+				'<td><span class="actions"><span class="action-text" onclick="openPlaceholderSpecialModal(\'' + definition.key + '\')">配置特殊处理</span></span></td>' +
+				'</tr>';
+		}).join("");
+	}
+
+	function openPlaceholderSpecialModal(key) {
+		const definition = getPlaceholderDefinition(key);
+		if (!definition) {
+			return;
+		}
+		activePlaceholderSpecialKey = key;
+		specialRuleDraft = createSpecialRuleDraft(key);
+		document.getElementById("specialSourcePlaceholder").textContent = "{{" + key + "}}";
+		document.getElementById("specialSourceFieldName").textContent = definition.name;
+		document.getElementById("specialPrimaryRuleSelect").value = specialRuleDraft.primaryType;
+		document.getElementById("specialCapitalizationCheckbox").checked = specialRuleDraft.capitalization;
+		document.getElementById("specialRuleEditorError").textContent = "";
+		renderSpecialRuleProcessorFields(specialRuleDraft.primaryType, getSpecialRuleDraftConfig(specialRuleDraft.primaryType));
+		document.getElementById("placeholderSpecialModal").classList.add("open");
+	}
+
+	function closePlaceholderSpecialModal() {
+		activePlaceholderSpecialKey = "";
+		specialRuleDraft = null;
+		document.getElementById("placeholderSpecialModal").classList.remove("open");
+	}
+
+	function createSpecialRuleDraft(key) {
+		const primaryTypes = ["翻译", "图片大小", "字典模式", "日期特殊处理"];
+		const rules = getPlaceholderSpecialRules(key);
+		const primary = rules.find(function (rule) { return primaryTypes.indexOf(rule.type) > -1; });
+		const configs = {};
+		if (primary) {
+			configs[primary.type] = JSON.parse(JSON.stringify(primary));
+		}
+		return {
+			primaryType: primary ? primary.type : "",
+			configs: configs,
+			capitalization: rules.some(function (rule) { return rule.type === "首字母大写"; })
+		};
+	}
+
+	function getSpecialRuleDraftConfig(type) {
+		if (!specialRuleDraft || !type) {
+			return {};
+		}
+		return specialRuleDraft.configs[type] || { type: type };
+	}
+
+	function collectSpecialRuleProcessorConfig(type) {
+		if (type === "翻译") {
+			return { language: document.getElementById("specialRuleLanguage").value };
+		}
+		if (type === "图片大小") {
+			return {
+				width: document.getElementById("specialRuleImageWidth").value,
+				height: document.getElementById("specialRuleImageHeight").value,
+				unit: document.getElementById("specialRuleImageUnit").value,
+				keepRatio: document.getElementById("specialRuleKeepRatio").checked
+			};
+		}
+		if (type === "字典模式") {
+			return {
+				mappings: Array.from(document.querySelectorAll("#specialDictionaryRows tr")).map(function (row) {
+					return {
+						sourceValue: row.querySelector("[data-special-source]").value.trim(),
+						outputValue: row.querySelector("[data-special-output]").value.trim()
+					};
+				}),
+				unmatchedPolicy: "EMPTY"
+			};
+		}
+		if (type === "日期特殊处理") {
+			const dateFormat = document.getElementById("specialRuleDateFormat").value;
+			const dateFormatDefinition = specialDateFormats.find(function (item) { return item.value === dateFormat; }) || specialDateFormats[0];
+			return {
+				dateSource: "date",
+				dateFormat: dateFormat,
+				dateFormatLabel: dateFormatDefinition.label
+			};
+		}
+		return {};
+	}
+
+	function handleSpecialPrimaryRuleChange(type) {
+		if (!specialRuleDraft) {
+			return;
+		}
+		const previousType = specialRuleDraft.primaryType;
+		if (previousType) {
+			specialRuleDraft.configs[previousType] = collectSpecialRuleProcessorConfig(previousType);
+		}
+		specialRuleDraft.primaryType = type;
+		document.getElementById("specialRuleEditorError").textContent = "";
+		renderSpecialRuleProcessorFields(type, getSpecialRuleDraftConfig(type));
+	}
+
+	function getDateSpecialPreview(format) {
+		const definition = specialDateFormats.find(function (item) { return item.value === format; }) || specialDateFormats[0];
+		return definition.sample;
+	}
+
+	function updateDateSpecialPreview() {
+		const format = document.getElementById("specialRuleDateFormat");
+		const preview = document.getElementById("specialRuleDatePreview");
+		if (format && preview) {
+			preview.textContent = getDateSpecialPreview(format.value);
+		}
+	}
+
+	function renderSpecialRuleProcessorFields(type, config) {
+		const wrap = document.getElementById("specialRuleProcessorFields");
+		if (!wrap) {
+			return;
+		}
+		config = config || {};
+		wrap.classList.toggle("is-empty", !type);
+		if (!type) {
+			wrap.innerHTML = "选择主要处理后，在这里填写对应配置。";
+			return;
+		}
+		if (type === "翻译") {
+			const languages = ["英语", "拼音", "西语", "法语", "德语", "意大利语"];
+			wrap.innerHTML = '<div class="variant-processor-head"><span>翻译配置</span></div>' +
+				'<div class="variant-inline-fields"><div class="label"><span class="required">*</span>目标语言</div><select class="field" id="specialRuleLanguage">' +
+				languages.map(function (language) {
+					return '<option' + (language === (config.language || "英语") ? " selected" : "") + '>' + language + '</option>';
+				}).join("") + '</select></div>';
+			return;
+		}
+		if (type === "图片大小") {
+			wrap.innerHTML = '<div class="variant-processor-head"><span>图片尺寸配置</span></div>' +
+				'<div class="variant-inline-fields">' +
+				'<div class="label"><span class="required">*</span>宽度</div><input class="field" id="specialRuleImageWidth" type="number" min="1" value="' + escapeHtml(config.width || "320") + '">' +
+				'<div class="label"><span class="required">*</span>高度</div><input class="field" id="specialRuleImageHeight" type="number" min="1" value="' + escapeHtml(config.height || "200") + '">' +
+				'<div class="label">单位</div><select class="field" id="specialRuleImageUnit"><option' + ((config.unit || "px") === "px" ? " selected" : "") + '>px</option><option' + (config.unit === "mm" ? " selected" : "") + '>mm</option></select>' +
+				'<label class="variant-check"><input type="checkbox" id="specialRuleKeepRatio"' + (config.keepRatio !== false ? " checked" : "") + '>保持图片比例</label>' +
+				'</div>';
+			return;
+		}
+		if (type === "日期特殊处理") {
+			const selectedFormat = getSpecialDateFormatDefinition(config);
+			wrap.innerHTML = '<div class="variant-processor-head"><span>日期处理配置</span></div>' +
+				'<div class="variant-inline-fields">' +
+				'<div class="label"><span class="required">*</span>日期格式</div><select class="field" id="specialRuleDateFormat" onchange="updateDateSpecialPreview()">' +
+				specialDateFormats.map(function (item) {
+					return '<option value="' + item.value + '"' + (item.value === selectedFormat.value ? " selected" : "") + '>' + item.label + '</option>';
+				}).join("") + '</select>' +
+				'<div class="label">格式示例</div><div class="field" id="specialRuleDatePreview" style="display:flex;align-items:center;">' + escapeHtml(getDateSpecialPreview(selectedFormat.value)) + '</div></div>' +
+				'<div class="variant-processor-note" style="margin-top:10px;margin-bottom:0;">语言已包含在日期格式选项中，选择后可查看格式示例。</div>';
+			return;
+		}
+		const mappings = config.mappings && config.mappings.length ? config.mappings : [{ sourceValue: "", outputValue: "" }];
+		wrap.innerHTML = '<div class="variant-processor-head"><span>字典映射</span><button class="btn small ghost" onclick="addSpecialDictionaryRow()">新增映射</button></div>' +
+			'<div class="variant-processor-note">按源值精确匹配输出值；源值未匹配到字典项时输出空值。字典仅属于当前原始占位符，不与其他占位符复用。</div>' +
+			'<div class="variant-mapping-wrap"><table class="mini-table variant-mapping-table"><thead><tr><th style="width:58px;">序号</th><th>源值</th><th>输出值</th><th style="width:80px;">操作</th></tr></thead><tbody id="specialDictionaryRows"></tbody></table></div>';
+		renderSpecialDictionaryRows(mappings);
+	}
+
+	function renderSpecialDictionaryRows(items) {
+		const tbody = document.getElementById("specialDictionaryRows");
+		if (!tbody) {
+			return;
+		}
+		tbody.innerHTML = items.map(function (item, index) {
+			return '<tr><td>' + (index + 1) + '</td><td><input class="field" data-special-source value="' + escapeHtml(item.sourceValue || "") + '" placeholder="例如：1"></td><td><input class="field" data-special-output value="' + escapeHtml(item.outputValue || "") + '" placeholder="例如：male"></td><td><span class="action-danger" onclick="removeSpecialDictionaryRow(this)">删除</span></td></tr>';
+		}).join("");
+	}
+
+	function addSpecialDictionaryRow() {
+		const tbody = document.getElementById("specialDictionaryRows");
+		if (!tbody) {
+			return;
+		}
+		const rowIndex = tbody.querySelectorAll("tr").length + 1;
+		tbody.insertAdjacentHTML("beforeend", '<tr><td>' + rowIndex + '</td><td><input class="field" data-special-source placeholder="例如：1"></td><td><input class="field" data-special-output placeholder="例如：male"></td><td><span class="action-danger" onclick="removeSpecialDictionaryRow(this)">删除</span></td></tr>');
+	}
+
+	function removeSpecialDictionaryRow(action) {
+		const tbody = action.closest("tbody");
+		const row = action.closest("tr");
+		if (tbody && row) {
+			row.remove();
+			tbody.querySelectorAll("tr").forEach(function (item, index) {
+				item.children[0].textContent = index + 1;
+			});
+		}
+	}
+
+	function savePlaceholderSpecialConfig() {
+		const error = document.getElementById("specialRuleEditorError");
+		const type = document.getElementById("specialPrimaryRuleSelect").value;
+		error.textContent = "";
+		let result = null;
+		if (type === "翻译") {
+			result = { type: type, language: document.getElementById("specialRuleLanguage").value };
+		} else if (type === "图片大小") {
+			const width = Number(document.getElementById("specialRuleImageWidth").value);
+			const height = Number(document.getElementById("specialRuleImageHeight").value);
+			if (!width || !height || width < 1 || height < 1) {
+				error.textContent = "请输入大于 0 的图片宽度和高度。";
+				return;
+			}
+			result = {
+				type: type,
+				width: String(width),
+				height: String(height),
+				unit: document.getElementById("specialRuleImageUnit").value,
+				keepRatio: document.getElementById("specialRuleKeepRatio").checked
+			};
+		} else if (type === "字典模式") {
+			const rows = Array.from(document.querySelectorAll("#specialDictionaryRows tr"));
+			const mappings = rows.map(function (row) {
+				return {
+					sourceValue: row.querySelector("[data-special-source]").value.trim(),
+					outputValue: row.querySelector("[data-special-output]").value.trim()
+				};
+			});
+			if (!mappings.length || mappings.some(function (item) { return !item.sourceValue || !item.outputValue; })) {
+				error.textContent = "字典映射的源值和输出值均为必填。";
+				return;
+			}
+			const sourceValues = mappings.map(function (item) { return item.sourceValue; });
+			if (new Set(sourceValues).size !== sourceValues.length) {
+				error.textContent = "同一个占位符内，字典源值不能重复。";
+				return;
+			}
+			result = { type: type, mappings: mappings, unmatchedPolicy: "EMPTY" };
+		} else if (type === "日期特殊处理") {
+			const dateFormat = document.getElementById("specialRuleDateFormat").value;
+			const dateFormatDefinition = specialDateFormats.find(function (item) { return item.value === dateFormat; });
+			if (!dateFormatDefinition) {
+				error.textContent = "请选择日期格式。";
+				return;
+			}
+			result = {
+				type: type,
+				dateSource: "date",
+				dateFormat: dateFormat,
+				dateFormatLabel: dateFormatDefinition.label
+			};
+		}
+		const rules = [];
+		if (result) {
+			rules.push(result);
+		}
+		if (document.getElementById("specialCapitalizationCheckbox").checked) {
+			rules.push({ type: "首字母大写" });
+		}
+		placeholderSpecialRules[activePlaceholderSpecialKey] = rules;
+		renderPlaceholderSpecialRows();
+		closePlaceholderSpecialModal();
+	}
+
 	function openPlaceholderDictionaryModal() {
 		document.getElementById("placeholderDictionaryModal").classList.add("open");
 	}
@@ -7117,8 +8042,14 @@
 			};
 		});
 		if (materialItemSelectMode === "package") {
-			packageExportItems = selected;
-			renderPackageExportRows(selected);
+			packageExportItems = selected.map(function (item) {
+				return Object.assign({}, item, {
+					kind: "item",
+					exportFileName: item.name,
+					convertFormat: "否"
+				});
+			});
+			renderPackageExportRows(packageExportItems);
 			closeMaterialItemSelectModal();
 			return;
 		}
@@ -7130,20 +8061,191 @@
 	function renderPackageExportRows(items) {
 		const tbody = document.getElementById("packageExportRows");
 		if (!items.length) {
-			tbody.innerHTML = '<tr><td colspan="7">暂无资料项，请点击“新增资料项”添加</td></tr>';
+			tbody.innerHTML = '<tr><td colspan="8">暂无资料项，请点击“新增资料项”添加</td></tr>';
+			updatePackageMergeAction();
 			return;
 		}
 		tbody.innerHTML = items.map(function (item, index) {
+			if (item.kind === "merge") {
+				return renderPackageMergeGroupRow(item, index);
+			}
+			const convertFormat = item.convertFormat || "否";
 			return '<tr>' +
+				'<td><input type="checkbox" class="package-export-select-check" data-index="' + index + '" onchange="updatePackageMergeAction()" aria-label="选择' + escapeHtml(item.name) + '"></td>' +
 				'<td>' + (index + 1) + '</td>' +
-				'<td><input class="table-input" value="' + item.name + '"></td>' +
-				'<td>' + item.name + '</td>' +
+				'<td><input class="table-input" value="' + escapeHtml(item.exportFileName || item.name) + '" oninput="updatePackageExportFileName(' + index + ', this.value)"></td>' +
+				'<td>' + escapeHtml(item.name) + '</td>' +
 				'<td>' + renderItemType(item.sourceType) + '</td>' +
-				'<td>' + item.form + '</td>' +
-				'<td><select class="field"><option selected>否</option><option>PDF</option></select></td>' +
+				'<td>' + escapeHtml(item.form) + '</td>' +
+				'<td><select class="field" onchange="updatePackageItemFormat(' + index + ', this.value)"><option value="否"' + (convertFormat === "否" ? ' selected' : '') + '>否</option><option value="PDF"' + (convertFormat === "PDF" ? ' selected' : '') + '>PDF</option></select></td>' +
 				'<td><span class="actions"><span class="action-danger" onclick="deletePackageExportItem(' + index + ')">删除</span></span></td>' +
 				'</tr>';
 		}).join("");
+		updatePackageMergeAction();
+	}
+
+	function renderPackageMergeGroupRow(group, index) {
+		const mergedItems = group.items || [];
+		return '<tr class="merge-group-row">' +
+			'<td><span title="合并组不可再次选择">-</span></td>' +
+			'<td>' + (index + 1) + '</td>' +
+			'<td><input class="table-input" value="' + escapeHtml(group.exportFileName) + '" oninput="updatePackageExportFileName(' + index + ', this.value)"></td>' +
+			'<td>' + renderPackageMergeStack(mergedItems, function (item) { return escapeHtml(item.name); }) + '</td>' +
+			'<td>' + renderPackageMergeStack(mergedItems, function (item) { return renderItemType(item.sourceType); }) + '</td>' +
+			'<td>' + renderPackageMergeStack(mergedItems, function (item) { return escapeHtml(item.form); }) + '</td>' +
+			'<td><span class="merge-pdf-label">PDF 合并</span></td>' +
+			'<td><span class="actions"><span class="action-text" onclick="cancelPackageMerge(' + index + ')">取消合并</span><span class="action-danger" onclick="deletePackageExportItem(' + index + ')">删除</span></span></td>' +
+			'</tr>';
+	}
+
+	function renderPackageMergeStack(items, renderer) {
+		return '<div class="merge-item-stack">' + items.map(function (item, index) {
+			return '<span><b>' + (index + 1) + '</b>' + renderer(item) + '</span>';
+		}).join("") + '</div>';
+	}
+
+	function escapeHtml(value) {
+		return String(value == null ? "" : value).replace(/[&<>"']/g, function (character) {
+			return {
+				"&": "&amp;",
+				"<": "&lt;",
+				">": "&gt;",
+				'"': "&quot;",
+				"'": "&#39;"
+			}[character];
+		});
+	}
+
+	function updatePackageExportFileName(index, value) {
+		if (packageExportItems[index]) {
+			packageExportItems[index].exportFileName = value;
+		}
+	}
+
+	function updatePackageItemFormat(index, value) {
+		const item = packageExportItems[index];
+		if (item && item.kind !== "merge") {
+			item.convertFormat = value;
+		}
+	}
+
+	function getSelectedPackageItemIndexes() {
+		return Array.from(document.querySelectorAll(".package-export-select-check:checked")).map(function (checkbox) {
+			return Number(checkbox.dataset.index);
+		}).sort(function (left, right) {
+			return left - right;
+		});
+	}
+
+	function updatePackageMergeAction() {
+		const button = document.getElementById("mergePackageItemsBtn");
+		if (button) {
+			button.disabled = getSelectedPackageItemIndexes().length !== 2;
+		}
+	}
+
+	function openPackageMergeModal() {
+		const selectedIndexes = getSelectedPackageItemIndexes();
+		if (selectedIndexes.length !== 2) {
+			return;
+		}
+		const selectedItems = selectedIndexes.map(function (index) {
+			return packageExportItems[index];
+		});
+		if (selectedItems.some(function (item) { return !item || item.kind === "merge"; })) {
+			return;
+		}
+		pendingPackageMergeIndexes = selectedIndexes;
+		const defaultName = selectedItems.map(function (item) {
+			return item.exportFileName || item.name;
+		}).join("-");
+		document.getElementById("packageMergeFileName").value = defaultName;
+		document.getElementById("packageMergeSourceList").innerHTML = selectedItems.map(function (item, index) {
+			return '<div class="package-merge-source-row">' +
+				'<span class="package-merge-order">' + (index + 1) + '</span>' +
+				'<span class="package-merge-source-name"><strong>' + escapeHtml(item.name) + '</strong><span>' + escapeHtml(renderItemType(item.sourceType) + ' · ' + item.form) + '</span></span>' +
+				'<span class="package-merge-format">转为 PDF</span>' +
+				'</div>';
+		}).join("");
+		clearPackageMergeFileNameError();
+		document.getElementById("packageMergeModal").classList.add("open");
+	}
+
+	function closePackageMergeModal() {
+		pendingPackageMergeIndexes = [];
+		clearPackageMergeFileNameError();
+		document.getElementById("packageMergeModal").classList.remove("open");
+	}
+
+	function clearPackageMergeFileNameError() {
+		const input = document.getElementById("packageMergeFileName");
+		const error = document.getElementById("packageMergeFileNameError");
+		if (input) {
+			input.classList.remove("invalid");
+		}
+		if (error) {
+			error.classList.remove("show");
+		}
+	}
+
+	function confirmPackageMerge() {
+		const fileNameInput = document.getElementById("packageMergeFileName");
+		const fileName = fileNameInput.value.trim();
+		if (!fileName) {
+			fileNameInput.classList.add("invalid");
+			document.getElementById("packageMergeFileNameError").classList.add("show");
+			fileNameInput.focus();
+			return;
+		}
+		const selectedIndexes = pendingPackageMergeIndexes.slice().sort(function (left, right) {
+			return left - right;
+		});
+		if (selectedIndexes.length !== 2) {
+			closePackageMergeModal();
+			return;
+		}
+		const selectedItems = selectedIndexes.map(function (index) {
+			return packageExportItems[index];
+		});
+		if (selectedItems.some(function (item) { return !item || item.kind === "merge"; })) {
+			closePackageMergeModal();
+			return;
+		}
+		const mergedItems = selectedItems.map(function (item) {
+			return Object.assign({}, item, {
+				previousConvertFormat: item.convertFormat || "否",
+				convertFormat: "PDF"
+			});
+		});
+		const mergeGroup = {
+			kind: "merge",
+			id: "MERGE-" + packageMergeCounter++,
+			exportFileName: fileName,
+			format: "PDF",
+			items: mergedItems
+		};
+		selectedIndexes.slice().reverse().forEach(function (index) {
+			packageExportItems.splice(index, 1);
+		});
+		packageExportItems.splice(selectedIndexes[0], 0, mergeGroup);
+		renderPackageExportRows(packageExportItems);
+		closePackageMergeModal();
+	}
+
+	function cancelPackageMerge(index) {
+		const group = packageExportItems[index];
+		if (!group || group.kind !== "merge") {
+			return;
+		}
+		const restoredItems = group.items.map(function (item) {
+			const restored = Object.assign({}, item, {
+				convertFormat: Object.prototype.hasOwnProperty.call(item, "previousConvertFormat") ? item.previousConvertFormat : "否"
+			});
+			delete restored.previousConvertFormat;
+			return restored;
+		});
+		packageExportItems.splice.apply(packageExportItems, [index, 1].concat(restoredItems));
+		renderPackageExportRows(packageExportItems);
 	}
 
 	function deletePackageExportItem(index) {
@@ -7494,6 +8596,7 @@
 		trigger.textContent = isExpanded ? "›" : "⌄";
 	}
 
+	renderPlaceholderSpecialRows();
 	initFlowEditorDrag();
 	refreshRelatedNodeOptions();
 	refreshLineRelatedNodeOptions();

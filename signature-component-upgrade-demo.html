@@ -54,6 +54,7 @@
 		.workspace { min-height: 0; flex: 1; display: grid; grid-template-columns: minmax(590px, 1fr) 302px; }
 		.editor { min-width: 0; overflow: auto; padding: 14px 14px 68px; background: #fff; }
 		.editor-top { height: 34px; display: flex; align-items: center; gap: 11px; padding: 0 9px; border: 1px solid var(--line); color: #738087; font-size: 12px; }
+		.data-summary { margin-left: auto; overflow: hidden; color: #7b8b90; text-overflow: ellipsis; white-space: nowrap; }
 		.tool-icon { width: 25px; height: 25px; display: grid; place-items: center; border: 1px solid transparent; color: #718087; background: transparent; }
 		.tool-icon:hover { border-color: var(--line); background: var(--brand-soft); }
 		.editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px 4px; }
@@ -70,6 +71,7 @@
 		.zone-title { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 14px; font-weight: 600; }
 		.zone-title .zone-badge { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 3px; color: var(--brand-deep); background: #d4f0f0; font-size: 12px; }
 		.zone-title small { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--danger); font-size: 11px; font-weight: 400; }
+		.zone-title .flow-binding { color: #71848a; }
 		.zone-actions { display: flex; gap: 4px; flex: 0 0 auto; }
 		.zone-actions button { width: 26px; height: 26px; border: 1px solid transparent; color: var(--brand-deep); background: transparent; }
 		.zone-actions button:hover { border-color: #96cfd1; background: #fff; }
@@ -82,6 +84,8 @@
 		.sign-name strong { display: block; font-size: 13px; }
 		.sign-name span { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 		.sign-required { margin-left: auto; color: var(--danger); font-size: 11px; }
+		.sign-state { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; color: #71848a; font-size: 10px; }
+		.sign-state.warn { color: #b2771c; }
 		.sign-body { padding: 13px; }
 		.sign-layout { display: grid; grid-template-columns: minmax(0, 1fr) 190px 170px; gap: 14px; align-items: stretch; }
 		.sign-write, .sample-panel, .qr-panel { min-width: 0; min-height: 236px; padding: 11px; border: 1px solid #e0eaeb; background: #fff; }
@@ -89,6 +93,7 @@
 		.panel-label b { color: var(--text); font-size: 12px; }
 		.origin { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; color: #66777e; font-size: 11px; }
 		.origin b { color: var(--text); font-weight: 600; }
+		.value-preview { overflow: hidden; color: #65787e; text-overflow: ellipsis; white-space: nowrap; }
 		.guide { position: relative; height: 181px; overflow: hidden; border: 1px dashed #bdd0d2; border-radius: 2px; background: #fff; }
 		.guide::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 28px; border-bottom: 1px solid #e8edef; }
 		.guide-label { position: absolute; top: 8px; left: 9px; color: #adbbbf; font-size: 10px; }
@@ -129,6 +134,7 @@
 		.prop label { display: block; margin-bottom: 6px; color: #56686f; font-size: 11px; }
 		.prop input, .prop select { width: 100%; height: 30px; padding: 0 8px; border: 1px solid var(--line-dark); border-radius: 2px; color: #31434a; background: #fff; font-size: 12px; }
 		.prop input[readonly] { color: #7c8d93; background: #f6f8f9; }
+		.prop select.order-select { color: var(--brand-deep); font-weight: 600; }
 		.prop-hint { margin-top: 5px; color: #8a999e; font-size: 10px; line-height: 1.45; }
 		.color-options { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
 		.color-option { height: 30px; display: flex; align-items: center; gap: 6px; padding: 0 8px; border: 1px solid var(--line-dark); border-radius: 2px; color: #53646a; background: #fff; font-size: 11px; }
@@ -139,6 +145,14 @@
 		.switch.on { background: var(--brand); }
 		.switch.on::after { left: 19px; }
 		.notice { padding: 9px 10px; color: #806018; background: #fff8e7; font-size: 11px; line-height: 1.5; }
+		.notice.info { color: #46656d; background: #eef8f8; }
+		.notice.warn { color: #8a5d17; background: #fff7e5; }
+		.status-line { display: flex; align-items: center; justify-content: space-between; gap: 7px; margin: -2px 0 13px; color: #7b8b90; font-size: 10px; }
+		.status-pill { display: inline-flex; align-items: center; min-height: 19px; padding: 0 6px; border: 1px solid #b9dedd; border-radius: 2px; color: #197277; background: #edfafa; }
+		.status-pill.warn { border-color: #ead4a7; color: #93661a; background: #fff8e8; }
+		.component-context { margin: 0 0 13px; padding: 9px 10px; border-left: 3px solid var(--brand); color: #5b7076; background: #f5fbfb; font-size: 11px; line-height: 1.5; }
+		.component-context b { color: var(--text); }
+		.mismatch-note { margin-top: 8px; padding: 7px 8px; color: #8c5e19; background: #fff8e9; font-size: 10px; line-height: 1.45; }
 		.bottom-bar { position: fixed; right: 0; bottom: 0; left: 190px; z-index: 8; height: 55px; display: flex; align-items: center; justify-content: flex-end; gap: 9px; padding: 0 24px; border-top: 1px solid var(--line); background: rgba(255,255,255,.97); }
 		.btn { height: 32px; padding: 0 15px; border: 1px solid var(--line-dark); border-radius: 2px; color: #53646a; background: #fff; font-size: 12px; }
 		.btn.primary { border-color: var(--brand); color: #fff; background: var(--brand); }
@@ -190,12 +204,12 @@
 			<div class="crumbs"><span class="crumb">履约工作台 ×</span><span class="crumb">履约工作台详情 ×</span><span class="crumb current">表单设计器 ×</span></div>
 			<div class="form-head">
 				<span class="back">‹</span><strong>返回表单列表</strong>
-				<div class="head-field"><b>类型</b><select id="typeSelect" class="head-select"><option>服务</option></select></div>
-				<div class="head-field"><b>表单名称</b><select id="scenarioSelect" class="head-select"></select></div>
+				<div class="head-field"><b>生效流程</b><select id="flowSelect" class="head-select"></select></div>
+				<div class="head-field"><b>签名表单</b><select id="formSelect" class="head-select"></select></div>
 			</div>
 			<div class="workspace">
 				<section class="editor" aria-label="表单编辑区">
-					<div class="editor-top"><button class="tool-icon" title="预览">◉</button><button class="tool-icon" title="撤销">↶</button><button class="tool-icon" title="重做">↷</button><span style="margin-left:auto;color:#9aa8ad">拖拽组件到表单区域</span></div>
+					<div class="editor-top"><button class="tool-icon" title="撤销" aria-label="撤销">↶</button><button class="tool-icon" title="重做" aria-label="重做">↷</button><span id="dataSummary" class="data-summary">读取生效流程数据</span></div>
 					<div class="editor-grid">
 						<div class="field warn"><div class="label"><span class="req">*</span>法人姓名（中文）<span class="help">?</span></div><div class="mock-input">李明</div></div>
 						<div class="field"><div class="label"><span class="req">*</span>法人姓名（拼音/英文）<span class="help">?</span></div><div class="mock-input">Li Ming</div></div>
@@ -215,7 +229,8 @@
 	</div>
 	<div class="bottom-bar"><button id="resetBtn" class="btn link">恢复默认</button><button id="saveBtn" class="btn primary">保存配置</button></div>
 	<div id="toast" class="toast" role="status"></div>
-	<script>
+	<script src="signature-effective-flow-index.js"></script>
+	<script type="text/plain" id="legacy-signature-demo-script">
 		(() => {
 			const STORAGE_KEY = "signature-component-upgrade-demo-v1";
 			const scenarioSeed = [
@@ -517,5 +532,6 @@
 			restoreSaved();
 		})();
 	</script>
+	<script src="signature-component-upgrade-demo.js"></script>
 </body>
 </html>

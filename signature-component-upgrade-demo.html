@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>签名组件升级 · 表单设计器 DEMO</title>
+	<style>
+		:root {
+			--brand: #079ca1;
+			--brand-deep: #007d83;
+			--brand-soft: #e7f7f7;
+			--nav: #eff9f9;
+			--sidebar: #f2fbfb;
+			--canvas: #f6f8f9;
+			--line: #dce4e7;
+			--line-dark: #c8d2d6;
+			--text: #18262d;
+			--muted: #6e7e86;
+			--danger: #e34848;
+			--blue: #2268c5;
+			--shadow: 0 14px 35px rgba(18, 51, 60, .13);
+		}
+		* { box-sizing: border-box; }
+		html, body { margin: 0; min-height: 100%; }
+		body { color: var(--text); background: var(--canvas); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif; letter-spacing: 0; }
+		button, input, select { font: inherit; letter-spacing: 0; }
+		button { cursor: pointer; }
+		button:disabled { cursor: not-allowed; opacity: .55; }
+		.topbar { height: 46px; display: flex; align-items: center; border-bottom: 1px solid #d6e8e8; background: var(--nav); }
+		.brand { width: 190px; display: flex; align-items: center; gap: 9px; padding-left: 24px; font-size: 14px; font-weight: 600; white-space: nowrap; }
+		.logo { width: 19px; height: 19px; display: grid; place-items: center; border: 1px solid var(--brand); border-radius: 50%; color: var(--brand-deep); font-size: 10px; font-weight: 700; }
+		.main-nav { display: flex; align-items: stretch; height: 100%; gap: 28px; font-size: 13px; }
+		.nav-item { display: flex; align-items: center; color: #31454b; border-bottom: 2px solid transparent; }
+		.nav-item.active { color: var(--brand-deep); border-color: var(--brand); }
+		.top-actions { margin-left: auto; display: flex; align-items: center; gap: 18px; padding-right: 20px; color: #7a8a90; }
+		.avatar { width: 27px; height: 27px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: #365f72; font-size: 12px; }
+		.app { display: grid; grid-template-columns: 190px minmax(0, 1fr); min-height: calc(100vh - 46px); }
+		.sidebar { border-right: 1px solid #dceced; background: var(--sidebar); padding-top: 8px; }
+		.menu { height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 23px; color: #24363b; font-size: 13px; }
+		.menu.small { height: 37px; padding-left: 46px; color: #475960; }
+		.menu.active { color: var(--brand-deep); background: #ceeaea; border-right: 3px solid var(--brand); }
+		.menu .chev { color: #819196; font-size: 12px; }
+		.main { min-width: 0; display: flex; flex-direction: column; background: #fff; }
+		.crumbs { height: 34px; display: flex; align-items: center; gap: 9px; padding: 0 16px; border-bottom: 1px solid var(--line); color: #718086; font-size: 12px; }
+		.crumb { padding: 5px 10px; border: 1px solid var(--line); background: #fff; }
+		.crumb.current { color: var(--brand-deep); border-bottom: 2px solid var(--brand); }
+		.form-head { min-height: 51px; display: flex; align-items: center; gap: 17px; padding: 0 28px; color: #fff; background: var(--brand); }
+		.form-head .back { font-size: 17px; }
+		.form-head strong { font-size: 14px; }
+		.head-field { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: 13px; }
+		.head-field + .head-field { margin-left: 0; }
+		.head-select { width: 225px; height: 29px; padding: 0 9px; border: 0; border-radius: 2px; color: #52636a; background: #fff; }
+		.workspace { min-height: 0; flex: 1; display: grid; grid-template-columns: minmax(590px, 1fr) 302px; }
+		.editor { min-width: 0; overflow: auto; padding: 14px 14px 68px; background: #fff; }
+		.editor-top { height: 34px; display: flex; align-items: center; gap: 11px; padding: 0 9px; border: 1px solid var(--line); color: #738087; font-size: 12px; }
+		.tool-icon { width: 25px; height: 25px; display: grid; place-items: center; border: 1px solid transparent; color: #718087; background: transparent; }
+		.tool-icon:hover { border-color: var(--line); background: var(--brand-soft); }
+		.editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px 4px; }
+		.field { min-width: 0; padding: 11px 12px 12px; border: 1px solid #e7ecee; background: #fff; }
+		.field.warn { border-color: #f0dcae; background: #fff9e9; }
+		.field .label { display: flex; align-items: center; gap: 5px; margin-bottom: 7px; color: #26383e; font-size: 12px; }
+		.req { color: var(--danger); }
+		.help { width: 14px; height: 14px; display: inline-grid; place-items: center; border: 1px solid var(--brand); border-radius: 50%; color: var(--brand); font-size: 10px; }
+		.mock-input { height: 30px; display: flex; align-items: center; padding: 0 9px; border: 1px solid var(--line-dark); color: #a0adb2; background: #fff; font-size: 12px; }
+		.field.full { grid-column: 1 / -1; }
+		.signature-stack { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 14px; padding: 2px 0; }
+		.signature-zone { min-width: 0; border: 1px solid #a6dadd; border-top: 4px solid var(--brand); background: #e9f8f8; }
+		.zone-head { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 14px; border-bottom: 1px solid #c8e6e7; }
+		.zone-title { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 14px; font-weight: 600; }
+		.zone-title .zone-badge { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 3px; color: var(--brand-deep); background: #d4f0f0; font-size: 12px; }
+		.zone-title small { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--danger); font-size: 11px; font-weight: 400; }
+		.zone-actions { display: flex; gap: 4px; flex: 0 0 auto; }
+		.zone-actions button { width: 26px; height: 26px; border: 1px solid transparent; color: var(--brand-deep); background: transparent; }
+		.zone-actions button:hover { border-color: #96cfd1; background: #fff; }
+		.sign-card { min-width: 0; margin: 12px; border: 1px solid #d5e5e6; background: #fff; box-shadow: 0 4px 12px rgba(0, 120, 126, .05); }
+		.sign-card.selected { box-shadow: 0 0 0 2px var(--brand); }
+		.sign-card.invalid { border-color: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
+		.sign-head { min-height: 51px; display: flex; align-items: center; gap: 9px; padding: 0 13px; border-bottom: 1px solid #e8eeee; }
+		.sign-badge { width: 29px; height: 29px; display: grid; place-items: center; border-radius: 4px; color: var(--brand-deep); background: var(--brand-soft); font-size: 14px; font-weight: 700; }
+		.sign-name { min-width: 0; }
+		.sign-name strong { display: block; font-size: 13px; }
+		.sign-name span { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+		.sign-required { margin-left: auto; color: var(--danger); font-size: 11px; }
+		.sign-body { padding: 13px; }
+		.sign-layout { display: grid; grid-template-columns: minmax(0, 1fr) 190px 170px; gap: 14px; align-items: stretch; }
+		.sign-write, .sample-panel, .qr-panel { min-width: 0; min-height: 236px; padding: 11px; border: 1px solid #e0eaeb; background: #fff; }
+		.panel-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; color: #52676d; font-size: 11px; }
+		.panel-label b { color: var(--text); font-size: 12px; }
+		.origin { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; color: #66777e; font-size: 11px; }
+		.origin b { color: var(--text); font-weight: 600; }
+		.guide { position: relative; height: 181px; overflow: hidden; border: 1px dashed #bdd0d2; border-radius: 2px; background: #fff; }
+		.guide::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 28px; border-bottom: 1px solid #e8edef; }
+		.guide-label { position: absolute; top: 8px; left: 9px; color: #adbbbf; font-size: 10px; }
+		.trace-text { position: absolute; left: 50%; top: 51%; z-index: 1; width: 90%; transform: translate(-50%, -50%); text-align: center; color: rgba(95, 115, 119, .23); font-size: 31px; pointer-events: none; user-select: none; }
+		.trace-text.cn, .sample-script.cn { font-family: "KaiTi", "STKaiti", serif; }
+		.trace-text.latin, .sample-script.latin { font-family: "Segoe Script", "Brush Script MT", cursive; font-style: italic; }
+		.sign-canvas { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+		.sign-meta { display: flex; align-items: center; gap: 7px; margin-top: 8px; color: var(--muted); font-size: 11px; }
+		.swatch { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(0,0,0,.16); }
+		.swatch.black { background: #141a1c; }
+		.swatch.blue { background: #2268c5; }
+		.sign-footer { display: flex; align-items: center; justify-content: space-between; gap: 7px; margin-top: 9px; }
+		.mini-btn { height: 27px; padding: 0 9px; border: 1px solid var(--line-dark); border-radius: 2px; color: #52636a; background: #fff; font-size: 11px; }
+		.mini-btn.primary { border-color: var(--brand); color: #fff; background: var(--brand); }
+		.mini-btn.text { border-color: transparent; color: var(--brand-deep); background: transparent; }
+		.sign-tip { margin-top: 10px; padding: 8px 10px; color: #df5b5b; background: #fffafa; font-size: 11px; line-height: 1.45; }
+		.sample-panel { display: flex; flex-direction: column; }
+		.sample-image { position: relative; flex: 1; min-height: 174px; overflow: hidden; border: 1px solid #edf0f0; background: linear-gradient(135deg, #fff, #f7faf9); }
+		.sample-image::before { content: ""; position: absolute; inset: 10px; border: 1px solid #f0d8d8; pointer-events: none; }
+		.sample-watermark { position: absolute; top: 14px; left: 16px; color: #b7c1c2; font-size: 9px; letter-spacing: .2px; }
+		.sample-script { position: absolute; top: 50%; left: 50%; width: 90%; transform: translate(-50%, -50%) rotate(-4deg); text-align: center; color: #d94c50; font-size: 28px; white-space: nowrap; }
+		.sample-line { position: absolute; right: 16px; bottom: 24px; left: 16px; border-bottom: 1px solid #e9c8c8; }
+		.sample-caption { margin-top: 8px; color: #7f8d91; font-size: 11px; text-align: center; }
+		.qr-panel { display: flex; flex-direction: column; align-items: center; }
+		.qr-box { display: grid; place-items: center; flex: 1; width: 100%; min-height: 174px; border: 1px solid #edf0f0; background: #fff; }
+		.qr-grid { display: grid; grid-template-columns: repeat(21, 5px); grid-template-rows: repeat(21, 5px); gap: 0; padding: 7px; background: #fff; }
+		.qr-grid span { width: 5px; height: 5px; background: #fff; }
+		.qr-grid span.dark { background: #101718; }
+		.qr-caption { margin-top: 8px; color: #53676d; font-size: 11px; text-align: center; }
+		.side { min-width: 0; display: flex; flex-direction: column; border-left: 1px solid var(--line); background: #fff; }
+		.side-heading { min-height: 42px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 13px; border-bottom: 1px solid var(--line); }
+		.side-heading strong { color: var(--brand-deep); font-size: 13px; }
+		.side-heading span { color: var(--muted); font-size: 11px; }
+		.side-scroll { min-height: 0; overflow: auto; padding: 13px 13px 90px; }
+		.panel-title { display: flex; align-items: center; justify-content: space-between; margin: 0 0 12px; font-size: 13px; font-weight: 600; }
+		.panel-title span { color: var(--muted); font-size: 11px; font-weight: 400; }
+		.prop { margin-bottom: 13px; }
+		.prop label { display: block; margin-bottom: 6px; color: #56686f; font-size: 11px; }
+		.prop input, .prop select { width: 100%; height: 30px; padding: 0 8px; border: 1px solid var(--line-dark); border-radius: 2px; color: #31434a; background: #fff; font-size: 12px; }
+		.prop input[readonly] { color: #7c8d93; background: #f6f8f9; }
+		.prop-hint { margin-top: 5px; color: #8a999e; font-size: 10px; line-height: 1.45; }
+		.color-options { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+		.color-option { height: 30px; display: flex; align-items: center; gap: 6px; padding: 0 8px; border: 1px solid var(--line-dark); border-radius: 2px; color: #53646a; background: #fff; font-size: 11px; }
+		.color-option.active { border-color: var(--brand); color: var(--brand-deep); background: var(--brand-soft); }
+		.switch-row { display: flex; align-items: center; justify-content: space-between; min-height: 30px; color: #53646a; font-size: 11px; }
+		.switch { position: relative; width: 34px; height: 18px; border: 0; border-radius: 10px; background: #c6d1d4; }
+		.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; border-radius: 50%; background: #fff; transition: .15s ease; }
+		.switch.on { background: var(--brand); }
+		.switch.on::after { left: 19px; }
+		.notice { padding: 9px 10px; color: #806018; background: #fff8e7; font-size: 11px; line-height: 1.5; }
+		.bottom-bar { position: fixed; right: 0; bottom: 0; left: 190px; z-index: 8; height: 55px; display: flex; align-items: center; justify-content: flex-end; gap: 9px; padding: 0 24px; border-top: 1px solid var(--line); background: rgba(255,255,255,.97); }
+		.btn { height: 32px; padding: 0 15px; border: 1px solid var(--line-dark); border-radius: 2px; color: #53646a; background: #fff; font-size: 12px; }
+		.btn.primary { border-color: var(--brand); color: #fff; background: var(--brand); }
+		.btn.primary:hover { background: var(--brand-deep); }
+		.btn.link { border-color: transparent; color: var(--brand-deep); background: transparent; }
+		.toast { position: fixed; right: 28px; bottom: 72px; z-index: 20; min-width: 250px; padding: 12px 15px; border-radius: 3px; color: #fff; background: rgba(25, 40, 45, .92); box-shadow: var(--shadow); font-size: 12px; opacity: 0; transform: translateY(10px); pointer-events: none; transition: .2s ease; }
+		.toast.show { opacity: 1; transform: translateY(0); }
+		@media (max-width: 1100px) {
+			.workspace { grid-template-columns: 1fr; }
+			.side { min-height: 520px; border-top: 1px solid var(--line); border-left: 0; }
+			.bottom-bar { left: 0; }
+		}
+		@media (max-width: 720px) {
+			.topbar { height: 44px; }
+			.brand { width: auto; padding-left: 13px; }
+			.main-nav, .top-actions .help-icon { display: none; }
+			.app { display: block; min-height: calc(100vh - 44px); }
+			.sidebar { display: none; }
+			.crumbs { padding: 0 10px; overflow: auto; white-space: nowrap; }
+			.form-head { flex-wrap: wrap; gap: 7px 11px; padding: 8px 12px; }
+			.form-head .head-field { margin-left: 0; }
+			.head-select { width: 172px; }
+			.workspace { display: block; }
+			.editor { padding: 10px 9px 72px; }
+			.editor-grid { grid-template-columns: 1fr; }
+			.field.full { grid-column: auto; }
+			.sign-layout { grid-template-columns: 1fr; }
+			.bottom-bar { height: 52px; padding: 0 10px; }
+			.btn { padding: 0 11px; }
+		}
+	</style>
+</head>
+<body>
+	<header class="topbar">
+		<div class="brand"><span class="logo">KX</span>跨信通税务管理系统</div>
+		<nav class="main-nav"><span class="nav-item">系统管理</span><span class="nav-item active">业务管理</span><span class="nav-item">CRM</span><span class="nav-item">客服工单</span><span class="nav-item">测试平台</span><span class="nav-item">埋点分析平台</span><span class="nav-item">数据平台</span><span class="nav-item">旧系统</span></nav>
+		<div class="top-actions"><span class="help-icon" title="帮助">?</span><span class="avatar">李</span><span>李晨浩</span></div>
+	</header>
+	<div class="app">
+		<aside class="sidebar">
+			<div class="menu">首页 <span class="chev">⌃</span></div>
+			<div class="menu small">履约工作台</div><div class="menu small">我的导入/导出</div><div class="menu small">导出审核</div>
+			<div class="menu">订单管理 <span class="chev">⌄</span></div><div class="menu">续费管理 <span class="chev">⌄</span></div><div class="menu">客户管理</div>
+			<div class="menu">VAT税务</div><div class="menu">EPR合规 <span class="chev">⌄</span></div><div class="menu">授权代表管理 <span class="chev">⌄</span></div>
+			<div class="menu">知识产权 <span class="chev">⌄</span></div><div class="menu">履约管理 <span class="chev">⌄</span></div><div class="menu">商品管理 <span class="chev">⌄</span></div>
+			<div class="menu active">流程管理 <span class="chev">⌃</span></div><div class="menu small">节点和操作项</div><div class="menu small">表单列表</div><div class="menu small">流程列表</div><div class="menu small">模板列表</div><div class="menu small">资料项列表</div>
+		</aside>
+		<main class="main">
+			<div class="crumbs"><span class="crumb">履约工作台 ×</span><span class="crumb">履约工作台详情 ×</span><span class="crumb current">表单设计器 ×</span></div>
+			<div class="form-head">
+				<span class="back">‹</span><strong>返回表单列表</strong>
+				<div class="head-field"><b>类型</b><select id="typeSelect" class="head-select"><option>服务</option></select></div>
+				<div class="head-field"><b>表单名称</b><select id="scenarioSelect" class="head-select"></select></div>
+			</div>
+			<div class="workspace">
+				<section class="editor" aria-label="表单编辑区">
+					<div class="editor-top"><button class="tool-icon" title="预览">◉</button><button class="tool-icon" title="撤销">↶</button><button class="tool-icon" title="重做">↷</button><span style="margin-left:auto;color:#9aa8ad">拖拽组件到表单区域</span></div>
+					<div class="editor-grid">
+						<div class="field warn"><div class="label"><span class="req">*</span>法人姓名（中文）<span class="help">?</span></div><div class="mock-input">李明</div></div>
+						<div class="field"><div class="label"><span class="req">*</span>法人姓名（拼音/英文）<span class="help">?</span></div><div class="mock-input">Li Ming</div></div>
+						<div class="field"><div class="label"><span class="req">*</span>法人国家</div><div class="mock-input">China　⌄</div></div>
+						<div class="field"><div class="label"><span class="req">*</span>法人城市（拼音或英文）</div><div class="mock-input">Shenzhen</div></div>
+						<div id="signatureGrid" class="signature-stack" aria-label="签名组件区域"></div>
+						<div class="field full"><div class="label"><span class="req">*</span>店铺后台公司名称（拼音或英文）<span class="help">?</span></div><div class="mock-input">请输入</div></div>
+						<div class="field"><div class="label"><span class="req">*</span>附件上传</div><div class="mock-input">上传文件</div></div><div class="field"><div class="label">备注</div><div class="mock-input">请输入</div></div>
+					</div>
+				</section>
+				<aside class="side" aria-label="组件属性配置面板">
+					<div class="side-heading"><strong>组件属性</strong><span>独立组件配置</span></div>
+					<div id="componentPanel" class="side-scroll"></div>
+				</aside>
+			</div>
+		</main>
+	</div>
+	<div class="bottom-bar"><button id="resetBtn" class="btn link">恢复默认</button><button id="saveBtn" class="btn primary">保存配置</button></div>
+	<div id="toast" class="toast" role="status"></div>
+	<script>
+		(() => {
+			const STORAGE_KEY = "signature-component-upgrade-demo-v1";
+			const scenarioSeed = [
+				{ id: "mx-rfc-urgent", category: "VAT", product: "墨西哥RFC注册+申报（加急）", requirement: "dual", note: "中文签字、英文/拼音签字；英文先名后姓", original: { cn: "李明", latin: "Li Ming" }, caseRules: { cn: "preserve", latin: "given-title-family-normal" } },
+				{ id: "se-vat", category: "VAT", product: "瑞典VAT注册+申报", requirement: "cn", note: "中文签字", original: { cn: "李明", latin: "Li Ming" }, caseRules: { cn: "preserve" } },
+				{ id: "pl-packaging", category: "EPR", product: "波兰包装法注册+申报", requirement: "special", note: "英文/拼音；名在前、姓在后", original: { cn: "李明", latin: "Ming LI" }, caseRules: { latin: "given-title-family-upper" } }
+			];
+			const sourceSamples = { legalInfoNameCn: "李明", legalInfoNamePy: "Li Ming", legalInfoNameEn: "Ming Li" };
+			const caseOptions = [
+				{ value: "preserve", label: "保持原文大小写" },
+				{ value: "given-title-family-normal", label: "名首字母大写，其余小写；姓首字母大写" },
+				{ value: "given-title-family-upper", label: "名首字母大写，其余小写；姓全部大写" }
+			];
+			const defaultComponents = {
+				cn: { type: "cn", title: "中文签字", field: "legalInfoSignCn", source: "legalInfoNameCn", color: "black", trace: true, required: true, original: "李明", caseRule: "preserve" },
+				latin: { type: "latin", title: "英文 / 拼音签字", field: "legalInfoSign", source: "legalInfoNamePy", color: "blue", trace: true, required: true, original: "Li Ming", caseRule: "given-title-family-normal" }
+			};
+			let selectedScenarioId = scenarioSeed[0].id;
+			let selectedComponentType = "cn";
+			let state = { components: [], selected: "cn", savedAt: null };
+			const scenarioSelect = document.getElementById("scenarioSelect");
+			const signatureGrid = document.getElementById("signatureGrid");
+			const componentPanel = document.getElementById("componentPanel");
+			const toast = document.getElementById("toast");
+			const clone = value => JSON.parse(JSON.stringify(value));
+			const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character]));
+			const getAllScenarios = () => scenarioSeed;
+			const currentScenario = () => getAllScenarios().find(item => item.id === selectedScenarioId) || scenarioSeed[0];
+			const optionMarkup = (options, selected) => options.map(option => '<option value="' + option.value + '" ' + (option.value === selected ? "selected" : "") + '>' + option.label + "</option>").join("");
+			const caseLabel = value => caseOptions.find(item => item.value === value)?.label || value;
+			const colorHex = item => item.color === "blue" ? "#2268c5" : "#141a1c";
+
+			function showToast(message) {
+				toast.textContent = message;
+				toast.classList.add("show");
+				clearTimeout(showToast.timer);
+				showToast.timer = setTimeout(() => toast.classList.remove("show"), 2600);
+			}
+
+			function componentTypesFor(scenario) {
+				if (scenario.requirement === "cn") return ["cn"];
+				if (scenario.requirement === "latin" || scenario.requirement === "special") return ["latin"];
+				return ["cn", "latin"];
+			}
+
+			function makeComponents(scenario) {
+				return componentTypesFor(scenario).map(type => {
+					const item = clone(defaultComponents[type]);
+					item.original = scenario.original[type] || item.original;
+					item.caseRule = scenario.caseRules?.[type] || item.caseRule;
+					if (scenario.requirement === "special" && type === "latin") item.color = "black";
+					return item;
+				});
+			}
+
+			function componentFieldLabel(item) {
+				return item.field;
+			}
+
+			function syncScenarioOptions() {
+				scenarioSelect.innerHTML = getAllScenarios().map(item => '<option value="' + item.id + '">' + item.product + "</option>").join("");
+				scenarioSelect.value = selectedScenarioId;
+			}
+
+			function componentByType(type) {
+				return state.components.find(item => item.type === type);
+			}
+
+			function qrCellIsDark(x, y, seed) {
+				const inFinder = (originX, originY) => x >= originX && x < originX + 7 && y >= originY && y < originY + 7;
+				const finderValue = (originX, originY) => {
+					const dx = x - originX;
+					const dy = y - originY;
+					return dx === 0 || dx === 6 || dy === 0 || dy === 6 || (dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4);
+				};
+				if (inFinder(0, 0)) return finderValue(0, 0);
+				if (inFinder(14, 0)) return finderValue(14, 0);
+				if (inFinder(0, 14)) return finderValue(0, 14);
+				return ((x * 13 + y * 17 + seed * 19 + x * y) % 7) < 3;
+			}
+
+			function renderQr(panel, item) {
+				const seed = item.type === "cn" ? 3 : 7;
+				const cells = [];
+				for (let y = 0; y < 21; y += 1) {
+					for (let x = 0; x < 21; x += 1) cells.push('<span class="' + (qrCellIsDark(x, y, seed) ? "dark" : "") + '"></span>');
+				}
+				panel.innerHTML = cells.join("");
+			}
+
+			function renderCanvas(card, item) {
+				const canvas = card.querySelector("canvas");
+				const rect = canvas.getBoundingClientRect();
+				const width = Math.max(1, rect.width);
+				const height = Math.max(1, rect.height);
+				const scale = window.devicePixelRatio || 1;
+				const ctx = canvas.getContext("2d");
+				canvas.width = Math.round(width * scale);
+				canvas.height = Math.round(height * scale);
+				ctx.setTransform(scale, 0, 0, scale, 0, 0);
+				ctx.lineCap = "round";
+				ctx.lineJoin = "round";
+				ctx.lineWidth = 2.4;
+				ctx.strokeStyle = colorHex(item);
+				const strokes = Array.isArray(item.strokes) ? item.strokes : (item.strokes = []);
+				const drawStroke = stroke => {
+					if (!stroke?.length) return;
+					ctx.beginPath();
+					ctx.moveTo(stroke[0].x, stroke[0].y);
+					stroke.slice(1).forEach(point => ctx.lineTo(point.x, point.y));
+					ctx.stroke();
+					ctx.closePath();
+				};
+				strokes.forEach(drawStroke);
+				if (!strokes.length && item.inkData) {
+					const savedInk = new Image();
+					savedInk.onload = () => ctx.drawImage(savedInk, 0, 0, width, height);
+					savedInk.src = item.inkData;
+				}
+				let currentStroke = null;
+				let drawing = false;
+				const point = event => {
+					const box = canvas.getBoundingClientRect();
+					return { x: event.clientX - box.left, y: event.clientY - box.top };
+				};
+				const start = event => {
+					event.preventDefault();
+					drawing = true;
+					canvas.setPointerCapture?.(event.pointerId);
+					currentStroke = [];
+					strokes.push(currentStroke);
+					const p = point(event);
+					currentStroke.push(p);
+					ctx.beginPath();
+					ctx.moveTo(p.x, p.y);
+				};
+				const move = event => {
+					if (!drawing) return;
+					event.preventDefault();
+					const p = point(event);
+					currentStroke.push(p);
+					ctx.lineTo(p.x, p.y);
+					ctx.stroke();
+				};
+				const end = () => {
+					if (!drawing) return;
+					drawing = false;
+					ctx.closePath();
+					if (!currentStroke || currentStroke.length <= 2) strokes.pop();
+					currentStroke = null;
+					item.hasInk = strokes.length > 0;
+					item.inkData = item.hasInk ? canvas.toDataURL("image/png") : null;
+					card.classList.toggle("has-ink", item.hasInk);
+				};
+				canvas.onpointerdown = start;
+				canvas.onpointermove = move;
+				canvas.onpointerup = end;
+				canvas.onpointercancel = end;
+				canvas.onpointerleave = end;
+				card.querySelector("[data-clear]").onclick = () => {
+					ctx.clearRect(0, 0, width, height);
+					strokes.length = 0;
+					item.hasInk = false;
+					item.inkData = null;
+					card.classList.remove("has-ink");
+					card.classList.remove("invalid");
+					showToast(item.title + "已清空，可重新书写");
+				};
+				card.querySelector("[data-trace]").onclick = () => {
+					item.trace = true;
+					const trace = card.querySelector(".trace-text");
+					if (trace) trace.style.display = "block";
+					showToast("已把原文带入临摹层");
+				};
+			}
+
+			function selectComponent(type) {
+				state.selected = type;
+				selectedComponentType = type;
+				renderSignatures();
+				renderComponentPanel();
+			}
+
+			function renderSignatures() {
+				signatureGrid.innerHTML = state.components.map(item => {
+					const selected = state.selected === item.type ? "selected" : "";
+					const ink = item.hasInk || item.inkData ? "has-ink" : "";
+					const traceDisplay = item.trace ? "block" : "none";
+					const title = escapeHtml(item.title);
+					const original = escapeHtml(item.original);
+					const sampleLabel = item.type === "cn" ? "法人中文签字示例" : "法人英文签字示例";
+					return '<section class="signature-zone" data-zone-type="' + item.type + '" aria-label="' + title + '组件">' +
+						'<div class="zone-head"><div class="zone-title"><span class="zone-badge">' + (item.type === "cn" ? "中" : "A") + '</span><span>' + title + '</span><small>' + escapeHtml(caseLabel(item.caseRule)) + '</small></div><div class="zone-actions"><button type="button" title="复制组件" aria-label="复制组件">▣</button><button type="button" title="删除组件" aria-label="删除组件">⌫</button></div></div>' +
+						'<article class="sign-card ' + selected + " " + ink + '" data-type="' + item.type + '">' +
+						'<div class="sign-head"><span class="sign-badge">' + (item.type === "cn" ? "中" : "A") + '</span><div class="sign-name"><strong>' + title + '</strong><span>' + componentFieldLabel(item) + '</span></div><span class="sign-required">' + (item.required ? "必填" : "选填") + '</span></div>' +
+						'<div class="sign-body"><div class="sign-layout">' +
+						'<div class="sign-write"><div class="panel-label"><b>签名画布</b><span>' + (item.trace ? "临摹已开启" : "临摹关闭") + '</span></div><div class="origin"><span>原文来源：<b>' + escapeHtml(item.source) + '</b></span><span>' + original + '</span></div><div class="guide"><span class="guide-label">带入原文 · 可直接书写</span><span class="trace-text ' + item.type + '" style="display:' + traceDisplay + '">' + original + '</span><canvas class="sign-canvas" aria-label="' + title + '签名画布"></canvas></div><div class="sign-meta"><span class="swatch ' + item.color + '"></span>' + (item.color === "blue" ? "蓝色" : "黑色") + '</div><div class="sign-footer"><button type="button" class="mini-btn" data-clear>清空</button><button type="button" class="mini-btn text" data-trace>临摹原文</button><button type="button" class="mini-btn primary" data-select>编辑属性</button></div></div>' +
+						'<div class="sample-panel"><div class="panel-label"><b>示例图</b><span>参考笔迹</span></div><div class="sample-image" aria-label="' + sampleLabel + '"><span class="sample-watermark">SIGNATURE SAMPLE</span><span class="sample-script ' + item.type + '" style="color:' + colorHex(item) + '">' + original + '</span><span class="sample-line"></span></div><span class="sample-caption">示例图</span></div>' +
+						'<div class="qr-panel"><div class="panel-label"><b>二维码</b><span>签署入口</span></div><div class="qr-box"><div class="qr-grid" aria-label="签署二维码"></div></div><span class="qr-caption">扫描二维码完成签名</span></div>' +
+						'</div><div class="sign-tip">提示：' + (item.trace ? "浅色原文仅用于辅助临摹，提交后不会写入签名图片。" : "当前未开启临摹，签署人将在空白画布上书写。") + '</div></div></article></section>';
+				}).join("");
+				signatureGrid.querySelectorAll(".sign-card").forEach(card => {
+					const type = card.dataset.type;
+					card.onclick = event => { if (!event.target.closest("button")) selectComponent(type); };
+					card.querySelector("[data-select]").onclick = () => selectComponent(type);
+					renderCanvas(card, componentByType(type));
+					renderQr(card.querySelector(".qr-grid"), componentByType(type));
+				});
+			}
+
+			function renderComponentPanel() {
+				const item = componentByType(selectedComponentType) || state.components[0];
+				if (!item) {
+					componentPanel.innerHTML = '<div class="panel-title">组件属性<span>暂无组件</span></div><div class="notice">当前场景暂无签名组件。</div>';
+					return;
+				}
+				componentPanel.innerHTML = '<div class="panel-title">组件属性<span>已选：' + escapeHtml(item.title) + '</span></div>' +
+					'<div class="prop"><label>数据字段</label><input readonly value="' + escapeHtml(componentFieldLabel(item)) + '"><div class="prop-hint">该字段由当前组件固定，提交时分别回写签名图片。</div></div>' +
+					'<div class="prop"><label>原文来源</label><select id="sourceSelect"><option value="legalInfoNameCn" ' + (item.source === "legalInfoNameCn" ? "selected" : "") + '>legalInfoNameCn · 法人姓名中文</option><option value="legalInfoNamePy" ' + (item.source === "legalInfoNamePy" ? "selected" : "") + '>legalInfoNamePy · 法人姓名拼音</option><option value="legalInfoNameEn" ' + (item.source === "legalInfoNameEn" ? "selected" : "") + '>legalInfoNameEn · 法人姓名英文</option></select></div>' +
+					'<div class="prop"><label>大小写规则</label><select id="caseRuleSelect">' + optionMarkup(caseOptions, item.caseRule) + '</select></div>' +
+					'<div class="prop"><label>签字颜色</label><div class="color-options"><button type="button" data-color="black" class="color-option ' + (item.color === "black" ? "active" : "") + '"><i class="swatch black"></i>黑色</button><button type="button" data-color="blue" class="color-option ' + (item.color === "blue" ? "active" : "") + '"><i class="swatch blue"></i>蓝色</button></div></div>' +
+					'<div class="prop"><div class="switch-row"><span>代入原文提供临摹</span><button type="button" id="traceSwitch" class="switch ' + (item.trace ? "on" : "") + '" aria-label="切换临摹"></button></div></div>' +
+					'<div class="prop"><div class="switch-row"><span>必填</span><button type="button" id="requiredSwitch" class="switch ' + (item.required ? "on" : "") + '" aria-label="切换必填"></button></div></div>' +
+					'<div class="notice">大小写规则属于组件属性；颜色、原文来源和临摹开关只影响本组件签名体验与生成图片。</div>';
+				componentPanel.querySelector("#sourceSelect").onchange = event => { item.source = event.target.value; item.original = sourceSamples[item.source] || "未填写原文"; renderSignatures(); renderComponentPanel(); };
+				componentPanel.querySelector("#caseRuleSelect").onchange = event => { item.caseRule = event.target.value; renderSignatures(); renderComponentPanel(); };
+				componentPanel.querySelectorAll("[data-color]").forEach(button => button.onclick = () => { item.color = button.dataset.color; renderSignatures(); renderComponentPanel(); });
+				componentPanel.querySelector("#traceSwitch").onclick = () => { item.trace = !item.trace; renderSignatures(); renderComponentPanel(); };
+				componentPanel.querySelector("#requiredSwitch").onclick = () => { item.required = !item.required; renderSignatures(); renderComponentPanel(); };
+			}
+
+			function selectScenario(id) {
+				selectedScenarioId = id;
+				const scenario = currentScenario();
+				state.components = makeComponents(scenario);
+				state.selected = state.components[0]?.type || "cn";
+				selectedComponentType = state.selected;
+				syncScenarioOptions();
+				renderSignatures();
+				renderComponentPanel();
+			}
+
+			function validate() {
+				const invalidConfig = state.components.filter(item => item.required && (!item.field || !item.source || !item.original || item.original === "未填写原文"));
+				if (invalidConfig.length) { showToast("请补充" + invalidConfig.map(item => item.title).join("、") + "的字段和原文来源"); return false; }
+				const missing = state.components.filter(item => item.required && !item.hasInk && !item.inkData);
+				signatureGrid.querySelectorAll(".sign-card").forEach(card => card.classList.toggle("invalid", missing.some(item => item.type === card.dataset.type)));
+				if (missing.length) { showToast("请完成" + missing.map(item => item.title).join("、") + "后再保存"); return false; }
+				return true;
+			}
+
+			function serialize() {
+				return { selectedScenarioId: selectedScenarioId, state: { components: state.components, selected: state.selected, savedAt: state.savedAt } };
+			}
+
+			function normalizeComponent(item) {
+				const type = item?.type === "cn" ? "cn" : "latin";
+				const base = clone(defaultComponents[type]);
+				const legacyFree = { ...(item || {}) };
+				delete legacyFree.key;
+				const normalized = { ...base, ...legacyFree, type: type, field: type === "cn" ? "legalInfoSignCn" : "legalInfoSign" };
+				delete normalized.format;
+				delete normalized.font;
+				normalized.hasInk = Boolean(normalized.hasInk || normalized.inkData);
+				normalized.strokes = Array.isArray(normalized.strokes) ? normalized.strokes : [];
+				return normalized;
+			}
+
+			function restoreSaved() {
+				try {
+					const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+					if (!saved?.state) return false;
+					selectedScenarioId = scenarioSeed.some(item => item.id === saved.selectedScenarioId) ? saved.selectedScenarioId : scenarioSeed[0].id;
+					state = { ...state, ...saved.state, components: (saved.state.components || []).map(normalizeComponent) };
+					selectedComponentType = state.selected || state.components[0]?.type || "cn";
+					syncScenarioOptions();
+					renderSignatures();
+					renderComponentPanel();
+					return true;
+				} catch (error) {
+					return false;
+				}
+			}
+
+			function reset() {
+				localStorage.removeItem(STORAGE_KEY);
+				selectScenario(scenarioSeed[0].id);
+				showToast("已恢复默认配置");
+			}
+
+			scenarioSelect.onchange = event => selectScenario(event.target.value);
+			document.getElementById("saveBtn").onclick = () => { if (!validate()) return; state.savedAt = new Date().toISOString(); localStorage.setItem(STORAGE_KEY, JSON.stringify(serialize())); showToast("配置已保存，刷新页面可验证持久化"); };
+			document.getElementById("resetBtn").onclick = reset;
+			syncScenarioOptions();
+			selectScenario(scenarioSeed[0].id);
+			restoreSaved();
+		})();
+	</script>
+</body>
+</html>

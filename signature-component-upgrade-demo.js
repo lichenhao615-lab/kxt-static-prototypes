@@ -388,6 +388,7 @@
 			selectedFormId = saved.selectedFormId || "all";
 			state.components = (saved.components || []).map(item => ({ ...item }));
 			state.savedAt = saved.savedAt || null;
+			syncFlowOptions();
 			loadSelection();
 			if (saved.selectedComponentKey && state.components.some(item => item.key === saved.selectedComponentKey)) selectComponent(saved.selectedComponentKey);
 			return true;

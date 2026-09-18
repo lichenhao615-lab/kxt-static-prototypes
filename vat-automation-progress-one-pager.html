@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>VAT 自动化进展一图流</title>
+	<style>
+		:root {
+			--bg: #f4f7f8; --surface: #fff; --ink: #172033; --muted: #687386;
+			--line: #dce4ea; --navy: #1d2d47; --teal: #087f78; --teal-soft: #e6f5f2;
+			--blue: #1d61c9; --blue-soft: #eaf2ff; --amber: #a56416; --amber-soft: #fff3df;
+			--purple: #7353b7; --shadow: 0 16px 36px rgba(29,45,71,.08);
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0; color: var(--ink); background: linear-gradient(180deg,#e8f2f2 0,rgba(232,242,242,0) 300px),var(--bg);
+			font-family: "Microsoft YaHei","PingFang SC","Segoe UI",Arial,sans-serif; letter-spacing: 0;
+		}
+		.page { width: min(1320px,calc(100vw - 40px)); margin: 28px auto 48px; }
+		.hero { display: flex; justify-content: space-between; gap: 30px; padding: 30px 34px; border-radius: 18px; background: var(--navy); box-shadow: var(--shadow); color: #fff; }
+		.eyebrow { margin: 0 0 10px; color: #91d8d1; font-size: 13px; font-weight: 700; letter-spacing: .08em; }
+		h1,h2,h3,p { margin: 0; }
+		h1 { font-size: clamp(28px,4vw,42px); line-height: 1.2; }
+		.hero-copy { max-width: 760px; }
+		.hero-copy p { margin-top: 12px; color: rgba(255,255,255,.76); font-size: 15px; line-height: 1.7; }
+		.hero-mark { align-self: center; min-width: 190px; padding-left: 24px; border-left: 1px solid rgba(255,255,255,.22); }
+		.hero-mark strong { display: block; color: #fff; font-size: 30px; line-height: 1; }
+		.hero-mark span { display: block; margin-top: 10px; color: rgba(255,255,255,.7); font-size: 13px; line-height: 1.5; }
+		.section { margin-top: 20px; padding: 24px 26px 28px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); }
+		.section-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 22px; }
+		.section-head h2 { color: var(--navy); font-size: 21px; }
+		.section-head p { color: var(--muted); font-size: 13px; }
+		.flow { position: relative; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 0; padding-top: 8px; }
+		.flow::before { content: ""; position: absolute; left: 8%; right: 8%; top: 36px; height: 2px; background: #bedbd7; }
+		.flow-step { position: relative; z-index: 1; padding: 0 12px; text-align: center; }
+		.flow-dot { display: grid; place-items: center; width: 56px; height: 56px; margin: 0 auto 14px; border: 7px solid #fff; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 1px #b9dcd7,0 8px 16px rgba(8,127,120,.18); color: #fff; font-size: 12px; font-weight: 700; }
+		.flow-step:first-child .flow-dot { background: var(--amber); box-shadow: 0 0 0 1px #ead2ad,0 8px 16px rgba(165,100,22,.16); }
+		.flow-step:last-child .flow-dot { background: var(--blue); box-shadow: 0 0 0 1px #bfd3f3,0 8px 16px rgba(29,97,201,.18); }
+		.flow-step time { display: block; color: var(--muted); font-size: 12px; font-weight: 700; }
+		.flow-step h3 { margin-top: 7px; color: var(--navy); font-size: 15px; line-height: 1.4; }
+		.flow-step p { margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+		.coverage { display: grid; grid-template-columns: 190px 1fr; gap: 22px; align-items: center; padding: 16px 0; border-top: 1px solid var(--line); }
+		.coverage:first-of-type { border-top: 0; padding-top: 0; }
+		.coverage:last-of-type { padding-bottom: 0; }
+		.coverage-label strong { display: block; color: var(--navy); font-size: 17px; }
+		.coverage-label span { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; }
+		.coverage-track { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; }
+		.coverage-cell { min-height: 74px; padding: 12px 14px; border-left: 4px solid var(--teal); background: var(--teal-soft); }
+		.coverage-cell.blue { border-color: var(--blue); background: var(--blue-soft); }
+		.coverage-cell.amber { border-color: var(--amber); background: var(--amber-soft); }
+		.coverage-cell strong { display: block; font-size: 14px; line-height: 1.35; }
+		.coverage-cell span { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+		.bottom-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 20px; }
+		.benefits { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+		.benefit { min-height: 138px; padding: 17px; border: 1px solid var(--line); border-radius: 10px; background: #fbfcfd; }
+		.benefit .num { display: block; color: var(--teal); font-size: 30px; font-weight: 800; line-height: 1; }
+		.benefit:nth-child(2) .num { color: var(--blue); } .benefit:nth-child(3) .num { color: var(--purple); }
+		.benefit strong { display: block; margin-top: 12px; color: var(--navy); font-size: 14px; }
+		.benefit p { margin-top: 6px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+		.focus-list { display: grid; gap: 11px; }
+		.focus { display: grid; grid-template-columns: 30px 1fr; gap: 11px; align-items: start; padding: 12px 14px; border-left: 3px solid var(--blue); background: var(--blue-soft); }
+		.focus:nth-child(2) { border-color: var(--teal); background: var(--teal-soft); } .focus:nth-child(3) { border-color: var(--amber); background: var(--amber-soft); }
+		.focus-index { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; background: rgba(255,255,255,.8); color: var(--navy); font-size: 12px; font-weight: 800; }
+		.focus strong { display: block; color: var(--navy); font-size: 14px; } .focus p { margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+		.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+		.legend span { display: inline-flex; align-items: center; gap: 6px; } .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--teal); } .legend .blue { background: var(--blue); } .legend .amber { background: var(--amber); }
+		.footer-note { margin-top: 16px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+		@media (max-width:900px) {
+			.hero { display: block; } .hero-mark { margin-top: 22px; padding: 16px 0 0; border-top: 1px solid rgba(255,255,255,.22); border-left: 0; }
+			.flow { grid-template-columns: 1fr; gap: 20px; padding: 0 0 0 38px; } .flow::before { left: 15px; right: auto; top: 22px; bottom: 22px; width: 2px; height: auto; }
+			.flow-step { display: grid; grid-template-columns: 46px 1fr; column-gap: 13px; padding: 0; text-align: left; } .flow-dot { grid-row: span 3; width: 46px; height: 46px; margin: 0; border-width: 5px; }
+			.flow-step time,.flow-step h3,.flow-step p { grid-column: 2; } .coverage { grid-template-columns: 1fr; gap: 12px; } .bottom-grid { grid-template-columns: 1fr; }
+		}
+		@media (max-width:600px) {
+			.page { width: min(100% - 24px,1320px); margin-top: 12px; } .hero,.section { padding: 22px 18px; } .hero h1 { font-size: 29px; }
+			.section-head { display: block; } .section-head p { margin-top: 7px; } .coverage-track,.benefits { grid-template-columns: 1fr; }
+		}
+	</style>
+</head>
+<body>
+	<main class="page">
+		<header class="hero">
+			<div class="hero-copy">
+				<p class="eyebrow">VAT AUTOMATION · MANAGEMENT VIEW</p>
+				<h1>7月至今自动化进展一图流</h1>
+				<p>从波兰注册递交单点自动化起步，逐步扩展到资料制作、注册递交与税号录入三条能力线，当前已形成主要国家的自动化闭环。</p>
+			</div>
+			<div class="hero-mark"><strong>3 条</strong><span>核心能力线持续推进<br>从单点突破走向规模化覆盖</span></div>
+		</header>
+		<section class="section">
+			<div class="section-head"><h2>从单点自动化到能力闭环</h2><p>项目演进主线 · 2026 年 7 月至今</p></div>
+			<div class="flow">
+				<div class="flow-step"><div class="flow-dot">起点</div><time>7 月初</time><h3>波兰注册递交</h3><p>以单一国家、单一节点启动自动化。</p></div>
+				<div class="flow-step"><div class="flow-dot">01</div><time>7.15</time><h3>德国三节点闭环</h3><p>德国资料制作、注册递交、税号录入实现全自动化。</p></div>
+				<div class="flow-step"><div class="flow-dot">02</div><time>7.30</time><h3>资料包能力上线</h3><p>资料包能力上线，为资料制作自动化规模化铺路。</p></div>
+				<div class="flow-step"><div class="flow-dot">03</div><time>8.6</time><h3>税号录入半自动化</h3><p>通用模板与批量上传能力形成，覆盖更多国家线。</p></div>
+				<div class="flow-step"><div class="flow-dot">现在</div><time>截至 9.18</time><h3>主要国家完成覆盖</h3><p>资料制作全部自动化，税号录入主要国家自动化，其余国家批量自动化。</p></div>
+			</div>
+		</section>
+		<section class="section">
+			<div class="section-head"><h2>三条能力线当前覆盖</h2><p>从“单点可用”推进到“多国家可复制”</p></div>
+			<div class="coverage"><div class="coverage-label"><strong>资料制作</strong><span>已完成规模化覆盖</span></div><div class="coverage-track"><div class="coverage-cell"><strong>全部国家线</strong><span>资料制作全部实现自动化</span></div><div class="coverage-cell"><strong>资料包能力</strong><span>统一资料包能力支撑自动生成与流转</span></div><div class="coverage-cell"><strong>下一阶段</strong><span>持续优化规则复用与异常处理</span></div></div></div>
+			<div class="coverage"><div class="coverage-label"><strong>注册递交</strong><span>从波兰单点起步</span></div><div class="coverage-track"><div class="coverage-cell blue"><strong>德国、波兰、捷克、西班牙</strong><span>已实现自动化能力</span></div><div class="coverage-cell blue"><strong>从单点到多国</strong><span>国家线自动化复制范围持续扩大</span></div><div class="coverage-cell blue"><strong>后续重点</strong><span>推进英国等国家线能力补齐</span></div></div></div>
+			<div class="coverage"><div class="coverage-label"><strong>税号录入</strong><span>自动化与批量能力并行</span></div><div class="coverage-track"><div class="coverage-cell amber"><strong>主要国家</strong><span>已实现自动化</span></div><div class="coverage-cell amber"><strong>其余国家</strong><span>已实现批量自动化，降低人工操作</span></div><div class="coverage-cell amber"><strong>统一能力底座</strong><span>通用模板与批量上传持续承接</span></div></div></div>
+			<div class="legend"><span><i></i>自动化闭环 / 已实现</span><span><i class="blue"></i>能力扩展 / 多国复制</span><span><i class="amber"></i>批量承接 / 半自动过渡</span></div>
+		</section>
+		<div class="bottom-grid">
+			<section class="section">
+				<div class="section-head"><h2>人力收益</h2><p>已确认与预计节省</p></div>
+				<div class="benefits"><div class="benefit"><span class="num">0.5</span><strong>西班牙节省人力</strong><p>资料制作、注册递交和税号录入能力完成覆盖。</p></div><div class="benefit"><span class="num">1</span><strong>德国节省人力</strong><p>三节点全自动化，形成稳定的国家线样板。</p></div><div class="benefit"><span class="num">预计 1</span><strong>波兰、捷克预计节省</strong><p>两国三节点自动化闭环带来后续人力释放。</p></div></div>
+				<p class="footer-note">税号录入通用能力预计节省 2 人力，覆盖主要国家自动化与其余国家批量自动化后的整体收益。</p>
+			</section>
+			<section class="section">
+				<div class="section-head"><h2>当前关注点</h2><p>从完成能力到稳定收益</p></div>
+				<div class="focus-list"><div class="focus"><div class="focus-index">01</div><div><strong>固化资料制作能力</strong><p>将资料包能力沉淀为统一规则和可复用流程。</p></div></div><div class="focus"><div class="focus-index">02</div><div><strong>扩大主要国家闭环</strong><p>持续补齐注册递交与税号录入的国家差异能力。</p></div></div><div class="focus"><div class="focus-index">03</div><div><strong>把自动化转化为稳定人力收益</strong><p>关注异常处理、回退机制和实际节省人力的持续验证。</p></div></div></div>
+			</section>
+		</div>
+	</main>
+</body>
+</html>

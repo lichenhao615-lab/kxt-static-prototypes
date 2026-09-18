@@ -50,11 +50,12 @@
 		.coverage-cell.amber { border-color: var(--amber); background: var(--amber-soft); }
 		.coverage-cell strong { display: block; font-size: 14px; line-height: 1.35; }
 		.coverage-cell span { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; line-height: 1.45; }
-		.bottom-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 20px; }
-		.benefits { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+		.bottom-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+		.benefits { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 12px; }
 		.benefit { min-height: 138px; padding: 17px; border: 1px solid var(--line); border-radius: 10px; background: #fbfcfd; }
 		.benefit .num { display: block; color: var(--teal); font-size: 30px; font-weight: 800; line-height: 1; }
 		.benefit:nth-child(2) .num { color: var(--blue); } .benefit:nth-child(3) .num { color: var(--purple); }
+		.benefit:nth-child(4) .num { color: var(--amber); } .benefit:nth-child(5) .num { color: var(--teal); }
 		.benefit strong { display: block; margin-top: 12px; color: var(--navy); font-size: 14px; }
 		.benefit p { margin-top: 6px; color: var(--muted); font-size: 12px; line-height: 1.55; }
 		.focus-list { display: grid; gap: 11px; }
@@ -69,7 +70,7 @@
 			.hero { display: block; } .hero-mark { margin-top: 22px; padding: 16px 0 0; border-top: 1px solid rgba(255,255,255,.22); border-left: 0; }
 			.flow { grid-template-columns: 1fr; gap: 20px; padding: 0 0 0 38px; } .flow::before { left: 15px; right: auto; top: 22px; bottom: 22px; width: 2px; height: auto; }
 			.flow-step { display: grid; grid-template-columns: 46px 1fr; column-gap: 13px; padding: 0; text-align: left; } .flow-dot { grid-row: span 3; width: 46px; height: 46px; margin: 0; border-width: 5px; }
-			.flow-step time,.flow-step h3,.flow-step p { grid-column: 2; } .coverage { grid-template-columns: 1fr; gap: 12px; } .bottom-grid { grid-template-columns: 1fr; }
+			.flow-step time,.flow-step h3,.flow-step p { grid-column: 2; } .coverage { grid-template-columns: 1fr; gap: 12px; } .bottom-grid { grid-template-columns: 1fr; } .benefits { grid-template-columns: repeat(3,minmax(0,1fr)); }
 		}
 		@media (max-width:600px) {
 			.page { width: min(100% - 24px,1320px); margin-top: 12px; } .hero,.section { padding: 22px 18px; } .hero h1 { font-size: 29px; }
@@ -88,6 +89,17 @@
 			<div class="hero-mark"><strong>3 条</strong><span>核心能力线持续推进<br>从单点突破走向规模化覆盖</span></div>
 		</header>
 		<section class="section">
+			<div class="section-head"><h2>人力收益</h2><p>已确认与预计节省 · 重点成果前置</p></div>
+			<div class="benefits">
+				<div class="benefit"><span class="num">0.5</span><strong>西班牙节省人力</strong><p>三节点能力完成覆盖。</p></div>
+				<div class="benefit"><span class="num">1</span><strong>德国节省人力</strong><p>三节点全自动化样板。</p></div>
+				<div class="benefit"><span class="num">预计 1</span><strong>波兰、捷克预计节省</strong><p>自动化闭环带来人力释放。</p></div>
+				<div class="benefit"><span class="num">预计 1</span><strong>税号录入预计节省</strong><p>主要国家自动化，其余国家批量自动化。</p></div>
+				<div class="benefit"><span class="num">预计 1.5</span><strong>资料制作预计节省</strong><p>资料制作全部实现自动化。</p></div>
+			</div>
+			<p class="footer-note">以上为已确认与预计节省人力，最终收益以实际运行和稳定性验证结果为准。</p>
+		</section>
+		<section class="section">
 			<div class="section-head"><h2>从单点自动化到能力闭环</h2><p>项目演进主线 · 2026 年 7 月至今</p></div>
 			<div class="flow">
 				<div class="flow-step"><div class="flow-dot">起点</div><time>7 月初</time><h3>波兰注册递交</h3><p>以单一国家、单一节点启动自动化。</p></div>
@@ -105,11 +117,6 @@
 			<div class="legend"><span><i></i>自动化闭环 / 已实现</span><span><i class="blue"></i>能力扩展 / 多国复制</span><span><i class="amber"></i>批量承接 / 半自动过渡</span></div>
 		</section>
 		<div class="bottom-grid">
-			<section class="section">
-				<div class="section-head"><h2>人力收益</h2><p>已确认与预计节省</p></div>
-				<div class="benefits"><div class="benefit"><span class="num">0.5</span><strong>西班牙节省人力</strong><p>资料制作、注册递交和税号录入能力完成覆盖。</p></div><div class="benefit"><span class="num">1</span><strong>德国节省人力</strong><p>三节点全自动化，形成稳定的国家线样板。</p></div><div class="benefit"><span class="num">预计 1</span><strong>波兰、捷克预计节省</strong><p>两国三节点自动化闭环带来后续人力释放。</p></div></div>
-				<p class="footer-note">税号录入通用能力预计节省 2 人力，覆盖主要国家自动化与其余国家批量自动化后的整体收益。</p>
-			</section>
 			<section class="section">
 				<div class="section-head"><h2>当前关注点</h2><p>从完成能力到稳定收益</p></div>
 				<div class="focus-list"><div class="focus"><div class="focus-index">01</div><div><strong>固化资料制作能力</strong><p>将资料包能力沉淀为统一规则和可复用流程。</p></div></div><div class="focus"><div class="focus-index">02</div><div><strong>扩大主要国家闭环</strong><p>持续补齐注册递交与税号录入的国家差异能力。</p></div></div><div class="focus"><div class="focus-index">03</div><div><strong>把自动化转化为稳定人力收益</strong><p>关注异常处理、回退机制和实际节省人力的持续验证。</p></div></div></div>

@@ -570,8 +570,8 @@
 		<section class="kpis" aria-label="核心指标">
 			<div class="kpi">
 				<span>9月资料审核通过量</span>
-				<strong id="totalAuditCount">1,142</strong>
-				<small>当前展示的 37 条产品线基础服务单合计</small>
+				<strong id="totalAuditCount">733</strong>
+				<small>指定商品清单对应的 37 条产品线合计</small>
 			</div>
 			<div class="kpi">
 				<span>EPR 国家 + 产品线</span>
@@ -624,7 +624,7 @@
 				</table>
 			</div>
 			<div class="note">
-				<strong>口径说明：</strong>按 2026-09-01 至 2026-09-30 的基础服务单资料审核通过数量统计，按服务单号去重；同一国家和产品线的不同商品版本合并，排除退款中、停止服务、已注销、注销中状态。合计仅含当前展示的 37 条产品线；统计更新于 2026-10-13。西包指西班牙包装法，免海牙和含海牙方案合并为一条产品线展示。<br>自动化率 = 当前自动化数 / 自动化总数；线上化率 = 当前线上化数 / 线上化总数；&mdash; 表示暂无数据。
+				<strong>口径说明：</strong>沿用旧页面指定商品清单，按 2026-09-01 至 2026-09-30 的资料审核通过数量统计，按服务单号去重；仅匹配清单中的商品全名，不扩展其他商品版本，排除退款中、停止服务、已注销、注销中状态。合计对应 37 条产品线；统计更新于 2026-10-13。比利时包装法指定商品名称未匹配到，按本清单口径计 0 单。西包指西班牙包装法，免海牙和含海牙方案合并为一条产品线展示。<br>自动化率 = 当前自动化数 / 自动化总数；线上化率 = 当前线上化数 / 线上化总数；&mdash; 表示暂无数据。
 			</div>
 		</section>
 
@@ -661,26 +661,23 @@
 
 	<script>
 		const productLines = [
-			{ country: "德国", code: "DE", line: "包装法", auditCount: 519 },
-			{ country: "西班牙", code: "ES", line: "包装法", alias: "西包", auditCount: 132, registration: "auto", automationCurrent: 14, automationTotal: 17, onlineCurrent: 18, onlineTotal: 26 },
-			{ country: "德国", code: "DE", line: "WEEE", auditCount: 106 },
-			{ country: "波兰", code: "PL", line: "包装法", auditCount: 97 },
-			{ country: "意大利", code: "IT", line: "包装法", auditCount: 86 },
-			{ country: "比利时", code: "BE", line: "包装法", auditCount: 63 },
-			{ country: "德国", code: "DE", line: "电池法", auditCount: 57 },
+			{ country: "德国", code: "DE", line: "包装法", auditCount: 439 },
+			{ country: "德国", code: "DE", line: "WEEE", auditCount: 78 },
+			{ country: "德国", code: "DE", line: "电池法", auditCount: 56 },
+			{ country: "西班牙", code: "ES", line: "包装法", alias: "西包", auditCount: 51, registration: "auto", automationCurrent: 14, automationTotal: 17, onlineCurrent: 18, onlineTotal: 26 },
+			{ country: "意大利", code: "IT", line: "包装法", auditCount: 34 },
 			{ country: "瑞典", code: "SE", line: "包装法", auditCount: 15 },
-			{ country: "西班牙", code: "ES", line: "WEEE", auditCount: 15 },
 			{ country: "法国", code: "FR", line: "DEEE", auditCount: 12 },
-			{ country: "波兰", code: "PL", line: "电池法", auditCount: 7 },
+			{ country: "波兰", code: "PL", line: "包装法", auditCount: 11 },
+			{ country: "西班牙", code: "ES", line: "WEEE", auditCount: 9 },
 			{ country: "法国", code: "FR", line: "电池法", auditCount: 5 },
 			{ country: "德国", code: "DE", line: "一次性塑料税", auditCount: 5 },
-			{ country: "捷克", code: "CZ", line: "包装法", auditCount: 3 },
 			{ country: "英国", code: "GB", line: "WEEE", auditCount: 3 },
 			{ country: "爱尔兰", code: "IE", line: "包装法", auditCount: 2 },
 			{ country: "瑞典", code: "SE", line: "电池法", auditCount: 2 },
-			{ country: "奥地利", code: "AT", line: "电池法", auditCount: 2 },
-			{ country: "捷克", code: "CZ", line: "电池法", auditCount: 2 },
-			{ country: "奥地利", code: "AT", line: "包装法", auditCount: 1 },
+			{ country: "波兰", code: "PL", line: "电池法", auditCount: 1 },
+			{ country: "捷克", code: "CZ", line: "包装法", auditCount: 1 },
+			{ country: "捷克", code: "CZ", line: "电池法", auditCount: 1 },
 			{ country: "西班牙", code: "ES", line: "电池法", auditCount: 1 },
 			{ country: "葡萄牙", code: "PT", line: "包装法", auditCount: 1 },
 			{ country: "荷兰", code: "NL", line: "WEEE", auditCount: 1 },
@@ -689,6 +686,9 @@
 			{ country: "丹麦", code: "DK", line: "包装法", auditCount: 1 },
 			{ country: "意大利", code: "IT", line: "WEEE", auditCount: 1 },
 			{ country: "英国", code: "GB", line: "电池法", auditCount: 1 },
+			{ country: "比利时", code: "BE", line: "包装法", auditCount: 0 },
+			{ country: "奥地利", code: "AT", line: "电池法", auditCount: 0 },
+			{ country: "奥地利", code: "AT", line: "包装法", auditCount: 0 },
 			{ country: "比利时", code: "BE", line: "WEEE", auditCount: 0 },
 			{ country: "捷克", code: "CZ", line: "WEEE", auditCount: 0 },
 			{ country: "芬兰", code: "FI", line: "包装法", auditCount: 0 },

@@ -569,9 +569,9 @@
 
 		<section class="kpis" aria-label="核心指标">
 			<div class="kpi">
-				<span>八月资料审核通过量</span>
-				<strong id="totalAuditCount">1,801</strong>
-				<small>指标：资料审核通过数量</small>
+				<span>9月资料审核通过量</span>
+				<strong id="totalAuditCount">1,142</strong>
+				<small>当前展示的 37 条产品线基础服务单合计</small>
 			</div>
 			<div class="kpi">
 				<span>EPR 国家 + 产品线</span>
@@ -599,7 +599,7 @@
 			<div class="band-head">
 				<div>
 					<h2>国家 + 产品线自动化矩阵</h2>
-					<p>按 2026 年 8 月资料审核通过数量排序，展示国家 + EPR 产品线的三节点进度。</p>
+					<p>按 2026 年 9 月资料审核通过数量排序，展示国家 + EPR 产品线的三节点进度。</p>
 				</div>
 				<div class="legend" aria-label="状态图例">
 					<span class="pill auto">已自动化</span>
@@ -624,7 +624,7 @@
 				</table>
 			</div>
 			<div class="note">
-				<strong>口径说明：</strong>按 2026-08-01 至 2026-08-31 的资料审核通过数量排序；德国包装法 782 单按当前确认口径纳入。西包指西班牙包装法，免海牙和含海牙方案合并为一条产品线展示。<br>自动化率 = 当前自动化数 / 自动化总数；线上化率 = 当前线上化数 / 线上化总数；&mdash; 表示暂无数据。
+				<strong>口径说明：</strong>按 2026-09-01 至 2026-09-30 的基础服务单资料审核通过数量统计，按服务单号去重；同一国家和产品线的不同商品版本合并，排除退款中、停止服务、已注销、注销中状态。合计仅含当前展示的 37 条产品线；统计更新于 2026-10-13。西包指西班牙包装法，免海牙和含海牙方案合并为一条产品线展示。<br>自动化率 = 当前自动化数 / 自动化总数；线上化率 = 当前线上化数 / 线上化总数；&mdash; 表示暂无数据。
 			</div>
 		</section>
 
@@ -661,42 +661,42 @@
 
 	<script>
 		const productLines = [
-			{ country: "德国", code: "DE", line: "包装法", auditCount: 782 },
-			{ country: "意大利", code: "IT", line: "包装法", auditCount: 283 },
-			{ country: "西班牙", code: "ES", line: "包装法", alias: "西包", auditCount: 204, registration: "auto", automationCurrent: 14, automationTotal: 17, onlineCurrent: 18, onlineTotal: 26 },
-			{ country: "德国", code: "DE", line: "WEEE", auditCount: 124 },
-			{ country: "波兰", code: "PL", line: "包装法", auditCount: 107 },
-			{ country: "瑞典", code: "SE", line: "包装法", auditCount: 103 },
-			{ country: "德国", code: "DE", line: "电池法", auditCount: 91 },
-			{ country: "法国", code: "FR", line: "DEEE", auditCount: 29 },
-			{ country: "法国", code: "FR", line: "电池法", auditCount: 15 },
-			{ country: "捷克", code: "CZ", line: "包装法", auditCount: 12 },
-			{ country: "西班牙", code: "ES", line: "WEEE", auditCount: 9 },
-			{ country: "爱尔兰", code: "IE", line: "包装法", auditCount: 6 },
-			{ country: "奥地利", code: "AT", line: "包装法", auditCount: 6 },
-			{ country: "西班牙", code: "ES", line: "电池法", auditCount: 6 },
+			{ country: "德国", code: "DE", line: "包装法", auditCount: 519 },
+			{ country: "西班牙", code: "ES", line: "包装法", alias: "西包", auditCount: 132, registration: "auto", automationCurrent: 14, automationTotal: 17, onlineCurrent: 18, onlineTotal: 26 },
+			{ country: "德国", code: "DE", line: "WEEE", auditCount: 106 },
+			{ country: "波兰", code: "PL", line: "包装法", auditCount: 97 },
+			{ country: "意大利", code: "IT", line: "包装法", auditCount: 86 },
+			{ country: "比利时", code: "BE", line: "包装法", auditCount: 63 },
+			{ country: "德国", code: "DE", line: "电池法", auditCount: 57 },
+			{ country: "瑞典", code: "SE", line: "包装法", auditCount: 15 },
+			{ country: "西班牙", code: "ES", line: "WEEE", auditCount: 15 },
+			{ country: "法国", code: "FR", line: "DEEE", auditCount: 12 },
+			{ country: "波兰", code: "PL", line: "电池法", auditCount: 7 },
+			{ country: "法国", code: "FR", line: "电池法", auditCount: 5 },
 			{ country: "德国", code: "DE", line: "一次性塑料税", auditCount: 5 },
-			{ country: "葡萄牙", code: "PT", line: "包装法", auditCount: 5 },
-			{ country: "波兰", code: "PL", line: "电池法", auditCount: 4 },
-			{ country: "比利时", code: "BE", line: "WEEE", auditCount: 2 },
-			{ country: "荷兰", code: "NL", line: "WEEE", auditCount: 2 },
+			{ country: "捷克", code: "CZ", line: "包装法", auditCount: 3 },
+			{ country: "英国", code: "GB", line: "WEEE", auditCount: 3 },
+			{ country: "爱尔兰", code: "IE", line: "包装法", auditCount: 2 },
+			{ country: "瑞典", code: "SE", line: "电池法", auditCount: 2 },
+			{ country: "奥地利", code: "AT", line: "电池法", auditCount: 2 },
+			{ country: "捷克", code: "CZ", line: "电池法", auditCount: 2 },
+			{ country: "奥地利", code: "AT", line: "包装法", auditCount: 1 },
+			{ country: "西班牙", code: "ES", line: "电池法", auditCount: 1 },
+			{ country: "葡萄牙", code: "PT", line: "包装法", auditCount: 1 },
+			{ country: "荷兰", code: "NL", line: "WEEE", auditCount: 1 },
 			{ country: "比利时", code: "BE", line: "电池法", auditCount: 1 },
-			{ country: "瑞典", code: "SE", line: "电池法", auditCount: 1 },
-			{ country: "捷克", code: "CZ", line: "WEEE", auditCount: 1 },
 			{ country: "意大利", code: "IT", line: "电池法", auditCount: 1 },
 			{ country: "丹麦", code: "DK", line: "包装法", auditCount: 1 },
-			{ country: "芬兰", code: "FI", line: "包装法", auditCount: 1 },
+			{ country: "意大利", code: "IT", line: "WEEE", auditCount: 1 },
+			{ country: "英国", code: "GB", line: "电池法", auditCount: 1 },
+			{ country: "比利时", code: "BE", line: "WEEE", auditCount: 0 },
+			{ country: "捷克", code: "CZ", line: "WEEE", auditCount: 0 },
+			{ country: "芬兰", code: "FI", line: "包装法", auditCount: 0 },
 			{ country: "爱尔兰", code: "IE", line: "WEEE", auditCount: 0 },
 			{ country: "爱尔兰", code: "IE", line: "电池法", auditCount: 0 },
-			{ country: "奥地利", code: "AT", line: "电池法", auditCount: 0 },
 			{ country: "奥地利", code: "AT", line: "WEEE", auditCount: 0 },
-			{ country: "比利时", code: "BE", line: "包装法", auditCount: 0 },
 			{ country: "波兰", code: "PL", line: "WEEE", auditCount: 0 },
 			{ country: "瑞典", code: "SE", line: "WEEE", auditCount: 0 },
-			{ country: "捷克", code: "CZ", line: "电池法", auditCount: 0 },
-			{ country: "意大利", code: "IT", line: "WEEE", auditCount: 0 },
-			{ country: "英国", code: "GB", line: "电池法", auditCount: 0 },
-			{ country: "英国", code: "GB", line: "WEEE", auditCount: 0 },
 			{ country: "希腊", code: "GR", line: "包装法", auditCount: 0 }
 		];
 
@@ -707,10 +707,12 @@
 			return `<div class="rate-value" title="${label}：${percent}%"><progress value="${current}" max="${total}" aria-label="${label} ${current}/${total}，${percent}%"></progress><span>${current}/${total}</span></div>`;
 		};
 		const matrixBody = document.getElementById("matrixBody");
+		const maxAuditCount = Math.max(1, ...productLines.map(item => item.auditCount));
+		document.getElementById("totalAuditCount").textContent = productLines.reduce((sum, item) => sum + item.auditCount, 0).toLocaleString("zh-CN");
 
 		productLines.forEach((item, index) => {
 			const isWestPack = item.registration === "auto";
-			const barWidth = item.auditCount === 0 ? 0 : Math.max(2, Math.round(item.auditCount / 782 * 100));
+			const barWidth = item.auditCount === 0 ? 0 : Math.max(2, Math.round(item.auditCount / maxAuditCount * 100));
 			const countryProductLabel = `${item.country}${item.line}`;
 			const aliasLabel = item.alias ? `<em>（${item.alias}）</em>` : "";
 			const registration = isWestPack

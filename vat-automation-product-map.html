@@ -367,16 +367,55 @@
 			color: var(--cyan);
 		}
 
-		.priority {
-			min-width: 168px;
-			color: var(--muted);
-			background: linear-gradient(90deg, rgba(15, 139, 120, 0.05), rgba(255, 255, 255, 0));
+
+		.rate-cell {
+			min-width: 150px;
+			vertical-align: middle;
+			font-variant-numeric: tabular-nums;
 		}
 
-		.priority strong {
-			display: block;
-			margin-bottom: 5px;
-			color: var(--navy);
+		.rate-value {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			white-space: nowrap;
+		}
+
+		.rate-value progress {
+			appearance: none;
+			-webkit-appearance: none;
+			flex: 0 0 84px;
+			width: 84px;
+			height: 8px;
+			border: 0;
+			border-radius: 4px;
+			overflow: hidden;
+			background: #e5e7eb;
+			accent-color: #376dff;
+		}
+
+		.rate-value progress::-webkit-progress-bar {
+			background: #e5e7eb;
+			border-radius: 4px;
+		}
+
+		.rate-value progress::-webkit-progress-value {
+			background: #376dff;
+			border-radius: 4px;
+		}
+
+		.rate-value progress::-moz-progress-bar {
+			background: #376dff;
+			border-radius: 4px;
+		}
+
+		.rate-value span {
+			min-width: 36px;
+			text-align: right;
+		}
+
+		.rate-empty {
+			color: var(--muted);
 		}
 
 		.timeline {
@@ -606,7 +645,8 @@
 							<th>资料制作</th>
 							<th>注册递交</th>
 							<th>税号录入</th>
-							<th>关注点</th>
+							<th>自动化率</th>
+							<th>线上化率</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -616,7 +656,8 @@
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>注册递交自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>上传税号自动化已完成。</p></td>
-							<td class="priority"><strong>闭环稳定性</strong>三节点已完成自动化，重点观察批量处理稳定性和异常回退。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">2. 德国 <small>DE</small></div></td>
@@ -624,23 +665,26 @@
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料包制作和校验后流转已自动化。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>注册递交已实现自动化。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入已完成自动化闭环。</p></td>
-							<td class="priority"><strong>固化标杆</strong>沉淀德国三节点规则、异常处理和验收口径，作为其他国家复制样板。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">3. 英国 <small>GB</small></div></td>
 							<td class="volume"><strong>434</strong><div class="bar"><i style="--w:89%"></i></div></td>
-							<td class="node"><strong><span class="pill none">无需制作</span></strong><p>英国资料制作环节无需制作，不纳入资料制作自动化范围。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill dev">待RPA完成</span></strong><p>注册递交待 RPA 完成。</p></td>
 							<td class="node"><strong><span class="pill dev">待RPA完成</span></strong><p>税号录入待 RPA 完成。</p></td>
-							<td class="priority"><strong>先稳递交</strong>八月审核通过 434 单，量级排第三；9 月自动化前，优先治理 RPA 稳定性和操作体验。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">4. 法国 <small>FR</small></div></td>
 							<td class="volume"><strong>349</strong><div class="bar"><i style="--w:72%"></i></div></td>
-							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作未形成国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入自动化已完成。</p></td>
-							<td class="priority"><strong>9 月推进</strong>单量靠前，资料制作和注册递交是主要缺口；税号批量上传能力先作为过渡承接。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">5. 西班牙 <small>ES</small></div></td>
@@ -648,7 +692,8 @@
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>注册递交自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入自动化已完成。</p></td>
-							<td class="priority"><strong>完成闭环</strong>资料制作与注册递交已完成，税号录入继续使用批量上传能力，关注交付稳定性。</td>
+							<td class="rate-cell"><div class="rate-value" title="自动化率：68%"><progress value="15" max="22" aria-label="自动化率 15/22，68%"></progress><span>15/22</span></div></td>
+							<td class="rate-cell"><div class="rate-value" title="线上化率：57%"><progress value="13" max="23" aria-label="线上化率 13/23，57%"></progress><span>13/23</span></div></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">6. 捷克 <small>CZ</small></div></td>
@@ -656,85 +701,95 @@
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>注册递交自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入自动化已完成。</p></td>
-							<td class="priority"><strong>闭环稳定性</strong>三节点已完成自动化，重点看联动稳定性和异常回退是否可用。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">7. 荷兰 <small>NL</small></div></td>
 							<td class="volume"><strong>81</strong><div class="bar"><i style="--w:17%"></i></div></td>
-							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
 							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
-							<td class="priority"><strong>第二梯队观察</strong>单量进入第二梯队，暂以通用能力承接，待高量国家闭环后再评估。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">8. 意大利 <small>IT</small></div></td>
 							<td class="volume"><strong>75</strong><div class="bar"><i style="--w:15%"></i></div></td>
-							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
 							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
-							<td class="priority"><strong>候选储备</strong>单量进入第二梯队，先确认资料制作和递交规则是否适合模板化。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">9. 沙特 <small>SA</small></div></td>
 							<td class="volume"><strong>47</strong><div class="bar"><i style="--w:10%"></i></div></td>
-							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
 							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
-							<td class="priority"><strong>通用承接</strong>短期使用通用税号录入能力，资料制作和递交暂不单独立项。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">10. 阿联酋 <small>UAE</small></div></td>
 							<td class="volume"><strong>27</strong><div class="bar"><i style="--w:6%"></i></div></td>
-							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
 							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
-							<td class="priority"><strong>通用承接</strong>短期使用通用税号录入能力，资料制作和递交暂不单独立项。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">11. 墨西哥 <small>MX</small></div></td>
 							<td class="volume"><strong>10</strong><div class="bar"><i style="--w:2%"></i></div></td>
-							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
 							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
-							<td class="priority"><strong>通用承接</strong>短期使用通用税号录入能力，资料制作和递交暂不单独立项。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">12. 瑞典 <small>SWE</small></div></td>
 							<td class="volume"><strong>4</strong><div class="bar"><i style="--w:1%"></i></div></td>
-							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
 							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
-							<td class="priority"><strong>低量观察</strong>保留在通用能力池，待单量或合规复杂度提升后再评估。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">13. 日本 <small>JPN</small></div></td>
 							<td class="volume"><strong>1</strong><div class="bar"><i style="--w:1%"></i></div></td>
-							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
 							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
-							<td class="priority"><strong>低量观察</strong>保留在通用能力池，待单量或合规复杂度提升后再评估。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">14. 爱尔兰 <small>IE</small></div></td>
 							<td class="volume"><strong>0</strong><div class="bar"><i style="--w:0%"></i></div></td>
-							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
 							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
-							<td class="priority"><strong>低量观察</strong>保留在通用能力池，待单量或合规复杂度提升后再评估。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">15. 奥地利 <small>AT</small></div></td>
 							<td class="volume"><strong>0</strong><div class="bar"><i style="--w:0%"></i></div></td>
-							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>资料制作待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
 							<td class="node"><strong><span class="pill semi">半自动</span></strong><p>税号录入使用通用模板上传。</p></td>
-							<td class="priority"><strong>低量观察</strong>保留在通用能力池，待单量或合规复杂度提升后再评估。</td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+							<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 			<div class="note">
-				<strong>数据说明：</strong>按 VAT 类目、基础服务单、资料审核通过时间落在 2026 年 8 月统计；排除退款中、停止服务、已注销、注销中状态。
+				<strong>数据说明：</strong>按 VAT 类目、基础服务单、资料审核通过时间落在 2026 年 8 月统计；排除退款中、停止服务、已注销、注销中状态。<br>自动化率 = 当前自动化数 / 自动化总数；线上化率 = 当前线上化数 / 线上化总数；&mdash; 表示暂无数据。
 			</div>
 		</section>
 

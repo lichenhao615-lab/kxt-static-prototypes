@@ -258,6 +258,19 @@
 
 	<script>
 		const tabs = [...document.querySelectorAll(".tab")];
+		const frames = [...document.querySelectorAll(".page-frame")];
+
+		window.addEventListener("message", (event) => {
+			const frame = frames.find((item) => item.contentWindow === event.source);
+			if (!frame || event.data?.type !== "automation-map-height") return;
+			const height = event.data.height;
+			if (Number.isFinite(height) && height > 0 && height < 100000 && !frame.closest(".tab-panel").hidden) {
+				frame.style.height = `${height}px`;
+			}
+		});
+		frames.forEach((frame) => {
+			frame.addEventListener("load", () => frame.contentWindow.postMessage({ type: "automation-map-measure" }, "*"));
+		});
 
 		const activateTab = (tab) => {
 			const targetId = tab.dataset.target;
@@ -269,6 +282,7 @@
 			document.querySelectorAll(".tab-panel").forEach((panel) => {
 				panel.hidden = panel.id !== targetId;
 			});
+			document.querySelector(`#${targetId} iframe`).contentWindow.postMessage({ type: "automation-map-measure" }, "*");
 		};
 
 		tabs.forEach((tab, index) => {

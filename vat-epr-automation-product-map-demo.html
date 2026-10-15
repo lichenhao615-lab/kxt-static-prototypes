@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>VAT & EPR 自动化进程产品地图</title>
+	<style>
+		:root {
+			color-scheme: light;
+			--bg: #f3f6fa;
+			--surface: #ffffff;
+			--text: #172033;
+			--muted: #667085;
+			--line: #dce4ef;
+			--navy: #16243d;
+			--teal: #0f8b78;
+			--blue: #1d5fd6;
+			--shadow: 0 18px 45px rgba(22, 36, 61, 0.09);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			background: linear-gradient(180deg, #eaf2f5 0, rgba(234, 242, 245, 0) 260px), var(--bg);
+			color: var(--text);
+			font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+			letter-spacing: 0;
+		}
+
+		.shell {
+			width: min(1360px, calc(100vw - 40px));
+			margin: 30px auto 48px;
+		}
+
+		.hero {
+			display: grid;
+			grid-template-columns: 1fr auto;
+			gap: 24px;
+			align-items: start;
+			padding: 28px 30px;
+			border: 1px solid rgba(255, 255, 255, 0.68);
+			border-radius: 18px;
+			background: linear-gradient(135deg, rgba(15, 139, 120, 0.96), rgba(22, 36, 61, 0.98)), var(--navy);
+			box-shadow: var(--shadow);
+		}
+
+		.eyebrow {
+			margin: 0 0 8px;
+			color: rgba(255, 255, 255, 0.74);
+			font-size: 13px;
+			font-weight: 700;
+		}
+
+		h1, p {
+			margin: 0;
+		}
+
+		h1 {
+			color: #fff;
+			font-size: 34px;
+			line-height: 1.25;
+		}
+
+		.hero-copy {
+			margin-top: 9px;
+			color: rgba(255, 255, 255, 0.78);
+			font-size: 14px;
+			line-height: 1.6;
+		}
+
+		.report-meta {
+			min-width: 260px;
+			padding: 14px 16px;
+			border: 1px solid rgba(255, 255, 255, 0.28);
+			border-radius: 12px;
+			background: rgba(255, 255, 255, 0.12);
+			color: rgba(255, 255, 255, 0.78);
+			font-size: 13px;
+			line-height: 1.8;
+			backdrop-filter: blur(10px);
+		}
+
+		.report-meta strong {
+			display: block;
+			color: #fff;
+			font-size: 18px;
+			line-height: 1.4;
+		}
+
+		.tabs {
+			margin-top: 20px;
+			border: 1px solid var(--line);
+			border-radius: 14px;
+			background: var(--surface);
+			box-shadow: var(--shadow);
+			overflow: hidden;
+		}
+
+		.tab-list {
+			display: flex;
+			gap: 8px;
+			padding: 12px;
+			border-bottom: 1px solid var(--line);
+			background: linear-gradient(90deg, #f8fbff, #f4faf8);
+		}
+
+		.tab {
+			flex: 0 0 180px;
+			min-height: 44px;
+			padding: 10px 18px;
+			border: 1px solid transparent;
+			border-radius: 9px;
+			background: transparent;
+			color: var(--muted);
+			font: inherit;
+			font-size: 15px;
+			font-weight: 800;
+			cursor: pointer;
+		}
+
+		.tab:hover {
+			background: rgba(255, 255, 255, 0.75);
+			color: var(--navy);
+		}
+
+		.tab.active {
+			border-color: rgba(15, 139, 120, 0.24);
+			background: var(--surface);
+			box-shadow: 0 5px 14px rgba(22, 36, 61, 0.08);
+			color: var(--navy);
+		}
+
+		.tab:focus-visible {
+			outline: 3px solid rgba(29, 95, 214, 0.28);
+			outline-offset: 2px;
+		}
+
+		.tab-panel {
+			background: var(--surface);
+		}
+
+		.tab-panel[hidden] {
+			display: none;
+		}
+
+		.page-frame {
+			display: block;
+			width: 100%;
+			border: 0;
+			background: var(--bg);
+		}
+
+		.vat-frame {
+			height: 2500px;
+		}
+
+		.epr-frame {
+			height: 4700px;
+		}
+
+		@media (max-width: 720px) {
+			.shell {
+				width: calc(100vw - 20px);
+				margin: 10px auto 24px;
+			}
+
+			.hero {
+				display: block;
+				padding: 22px 20px;
+			}
+
+			h1 {
+				font-size: 26px;
+			}
+
+			.report-meta {
+				min-width: 0;
+				margin-top: 18px;
+			}
+
+			.tab-list {
+				gap: 6px;
+				padding: 8px;
+			}
+
+			.tab {
+				flex: 1 1 0;
+				padding: 9px 8px;
+				font-size: 14px;
+			}
+
+			.page-frame {
+				height: auto;
+			}
+
+			.vat-frame {
+				height: 3600px;
+			}
+
+			.epr-frame {
+				height: 5750px;
+			}
+		}
+
+		@media print {
+			body {
+				background: #fff;
+			}
+
+			.hero,
+			.tab-list {
+				box-shadow: none;
+			}
+
+			.tab-panel[hidden] {
+				display: block;
+			}
+
+			.tab-panel + .tab-panel {
+				page-break-before: always;
+			}
+		}
+	</style>
+</head>
+<body>
+	<main class="shell">
+		<header class="hero">
+			<div>
+				<p class="eyebrow">管理层自动化进程总览</p>
+				<h1>VAT &amp; EPR 自动化进程产品地图</h1>
+				<p class="hero-copy">通过 Tab 切换查看 VAT 国家线与 EPR 国家 + 产品线的自动化进度。</p>
+			</div>
+			<div class="report-meta">
+				<strong>产品线总览</strong>
+				<div>VAT：国家线自动化进程</div>
+				<div>EPR：国家 + 产品线自动化进程</div>
+				<div>状态：已自动化 / 开发中 / 待自动化</div>
+			</div>
+		</header>
+
+		<section class="tabs" aria-label="产品线切换">
+			<div class="tab-list" role="tablist" aria-label="VAT 与 EPR 产品地图">
+				<button class="tab active" id="vatTab" type="button" role="tab" aria-selected="true" aria-controls="vatPanel" data-target="vatPanel">VAT 自动化</button>
+				<button class="tab" id="eprTab" type="button" role="tab" aria-selected="false" aria-controls="eprPanel" data-target="eprPanel">EPR 自动化</button>
+			</div>
+
+			<div class="tab-panel" id="vatPanel" role="tabpanel" aria-labelledby="vatTab">
+				<iframe class="page-frame vat-frame" src="vat-automation-product-map.html?v=20261013-batch-entry" title="VAT 自动化产品地图"></iframe>
+			</div>
+			<div class="tab-panel" id="eprPanel" role="tabpanel" aria-labelledby="eprTab" hidden>
+				<iframe class="page-frame epr-frame" src="epr-automation-product-map.html" title="EPR 自动化进程产品地图"></iframe>
+			</div>
+		</section>
+	</main>
+
+	<script>
+		const tabs = [...document.querySelectorAll(".tab")];
+		const frames = [...document.querySelectorAll(".page-frame")];
+
+		window.addEventListener("message", (event) => {
+			const frame = frames.find((item) => item.contentWindow === event.source);
+			if (!frame || event.data?.type !== "automation-map-height") return;
+			const height = event.data.height;
+			if (Number.isFinite(height) && height > 0 && height < 100000 && !frame.closest(".tab-panel").hidden) {
+				frame.style.height = `${height}px`;
+			}
+		});
+		frames.forEach((frame) => {
+			frame.addEventListener("load", () => frame.contentWindow.postMessage({ type: "automation-map-measure" }, "*"));
+		});
+
+		const activateTab = (tab) => {
+			const targetId = tab.dataset.target;
+			tabs.forEach((item) => {
+				const isActive = item === tab;
+				item.classList.toggle("active", isActive);
+				item.setAttribute("aria-selected", String(isActive));
+			});
+			document.querySelectorAll(".tab-panel").forEach((panel) => {
+				panel.hidden = panel.id !== targetId;
+			});
+			document.querySelector(`#${targetId} iframe`).contentWindow.postMessage({ type: "automation-map-measure" }, "*");
+		};
+
+		tabs.forEach((tab, index) => {
+			tab.addEventListener("click", () => activateTab(tab));
+			tab.addEventListener("keydown", (event) => {
+				if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+				event.preventDefault();
+				const direction = event.key === "ArrowRight" ? 1 : -1;
+				const nextTab = tabs[(index + direction + tabs.length) % tabs.length];
+				nextTab.focus();
+				activateTab(nextTab);
+			});
+		});
+	</script>
+</body>
+</html>

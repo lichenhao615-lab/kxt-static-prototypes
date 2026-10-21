@@ -197,20 +197,30 @@
 		}
 
 		.efficiency-column {
-			min-width: 240px;
-			width: 240px;
+			min-width: 360px;
+			width: 360px;
 			background: #fbfcfe;
 		}
 
 		.efficiency-reference {
 			display: grid;
-			gap: 12px;
+			gap: 10px;
 			color: var(--muted);
 			font-size: 13px;
 			line-height: 1.6;
 		}
 
-		.efficiency-reference strong {
+		.efficiency-reference-item {
+			padding-bottom: 10px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.efficiency-reference-item:last-child {
+			padding-bottom: 0;
+			border-bottom: 0;
+		}
+
+		.efficiency-reference-item strong {
 			display: block;
 			color: var(--navy);
 		}
@@ -746,7 +756,7 @@
 					<td class="node">${registration}</td>
 					<td class="node">${node("auto", "已自动化", "证书支持批量上传与录入。")}</td>
 					<td class="rate-cell">${rate(item.automationCurrent, item.automationTotal, "自动化率")}</td>
-					${index === 0 ? '<td class="efficiency-column" rowspan="37"><div class="efficiency-reference"><strong>35 单/人天</strong><strong>19 单/人天</strong><strong>19 单/人天</strong></div></td>' : ''}
+					${index === 0 ? '<td class="efficiency-column" rowspan="37"><div class="efficiency-reference"><div class="efficiency-reference-item"><strong>法国包装法：35 单/人天（≈14分钟/单）</strong>技术：龚威龙<br>交付：金思杨（Kayla负责）</div><div class="efficiency-reference-item"><strong>德国电气法：19 单/人天（≈26分钟/单）</strong>技术：张粤利<br>交付：卢焯仪牵头</div><div class="efficiency-reference-item"><strong>德国电池法：19 单/人天</strong></div></div></td>' : ''}
 				</tr>`);
 		});
 	</script>

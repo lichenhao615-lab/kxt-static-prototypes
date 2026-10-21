@@ -735,6 +735,15 @@
 			const percent = Math.round(current / total * 100);
 			return `<div class="rate-value" title="${label}：${percent}%"><progress value="${current}" max="${total}" aria-label="${label} ${current}/${total}，${percent}%"></progress><span>${current}/${total}</span></div>`;
 		};
+		const efficiencyReference = (item) => {
+			const key = `${item.country}${item.line}`;
+			const references = {
+				"德国WEEE": "<strong>德国电气法：19 单/人天（≈26分钟/单）</strong>技术：张粤利<br>交付：卢焯仪牵头",
+				"德国电池法": "<strong>德国电池法：19 单/人天</strong>"
+			};
+			const content = references[key] || '<span class="rate-empty">&mdash;</span>';
+			return `<td class="efficiency-column"><div class="efficiency-reference"><div class="efficiency-reference-item">${content}</div></div></td>`;
+		};
 		const matrixBody = document.getElementById("matrixBody");
 		const maxAuditCount = Math.max(1, ...productLines.map(item => item.auditCount));
 		document.getElementById("totalAuditCount").textContent = productLines.reduce((sum, item) => sum + item.auditCount, 0).toLocaleString("zh-CN");
@@ -756,7 +765,7 @@
 					<td class="node">${registration}</td>
 					<td class="node">${node("auto", "已自动化", "证书支持批量上传与录入。")}</td>
 					<td class="rate-cell">${rate(item.automationCurrent, item.automationTotal, "自动化率")}</td>
-					${index === 0 ? '<td class="efficiency-column" rowspan="37"><div class="efficiency-reference"><div class="efficiency-reference-item"><strong>法国包装法：35 单/人天（≈14分钟/单）</strong>技术：龚威龙<br>交付：金思杨（Kayla负责）</div><div class="efficiency-reference-item"><strong>德国电气法：19 单/人天（≈26分钟/单）</strong>技术：张粤利<br>交付：卢焯仪牵头</div><div class="efficiency-reference-item"><strong>德国电池法：19 单/人天</strong></div></div></td>' : ''}
+					${efficiencyReference(item)}
 				</tr>`);
 		});
 	</script>

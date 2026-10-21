@@ -196,35 +196,23 @@
 			background: var(--surface);
 		}
 
-
-		.matrix-efficiency {
-			display: grid;
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-			gap: 10px;
-			padding: 14px 16px;
-			border-top: 1px solid var(--line);
+		.efficiency-column {
+			min-width: 240px;
+			width: 240px;
 			background: #fbfcfe;
 		}
 
-		.matrix-efficiency-item {
-			padding: 10px 12px;
-			border: 1px solid var(--line);
-			border-radius: 10px;
-			background: var(--surface);
+		.efficiency-reference {
+			display: grid;
+			gap: 12px;
 			color: var(--muted);
 			font-size: 13px;
 			line-height: 1.6;
 		}
 
-		.matrix-efficiency-item strong {
+		.efficiency-reference strong {
+			display: block;
 			color: var(--navy);
-		}
-
-		.matrix-efficiency-label {
-			grid-column: 1 / -1;
-			color: var(--navy);
-			font-size: 13px;
-			font-weight: 700;
 		}
 
 		th, td {
@@ -648,16 +636,11 @@
 							<th>注册递交</th>
 							<th>证书录入</th>
 							<th>自动化率</th>
+							<th>注册人效参考</th>
 						</tr>
 					</thead>
 					<tbody id="matrixBody"></tbody>
 				</table>
-			</div>
-			<div class="matrix-efficiency" aria-label="注册人效参考">
-				<div class="matrix-efficiency-label">注册人效参考</div>
-				<div class="matrix-efficiency-item"><strong>法国包装法</strong>：35 单/人天，约 14 分钟/单</div>
-				<div class="matrix-efficiency-item"><strong>德国电气法</strong>：19 单/人天，约 26 分钟/单</div>
-				<div class="matrix-efficiency-item"><strong>德国电池法</strong>：19 单/人天，约 26 分钟/单</div>
 			</div>
 			<div class="note">
 				<strong>口径说明：</strong>沿用旧页面指定商品清单，按 2026-09-01 至 2026-09-30 的资料审核通过数量统计，按服务单号去重；仅匹配清单中的商品全名，不扩展其他商品版本，排除退款中、停止服务、已注销、注销中状态。合计对应 37 条产品线；统计更新于 2026-10-13。比利时包装法指定商品名称未匹配到，按本清单口径计 0 单。西包指西班牙包装法，免海牙和含海牙方案合并为一条产品线展示。<br>自动化率 = 当前自动化数 / 自动化总数&mdash; 表示暂无数据。
@@ -763,6 +746,7 @@
 					<td class="node">${registration}</td>
 					<td class="node">${node("auto", "已自动化", "证书支持批量上传与录入。")}</td>
 					<td class="rate-cell">${rate(item.automationCurrent, item.automationTotal, "自动化率")}</td>
+					${index === 0 ? '<td class="efficiency-column" rowspan="37"><div class="efficiency-reference"><div><strong>法国包装法</strong>35 单/人天<br>约 14 分钟/单</div><div><strong>德国电气法</strong>19 单/人天<br>约 26 分钟/单</div><div><strong>德国电池法</strong>19 单/人天<br>约 26 分钟/单</div></div></td>' : ''}
 				</tr>`);
 		});
 	</script>

@@ -599,17 +599,17 @@
 		<section class="kpis" aria-label="核心指标">
 			<div class="kpi">
 				<span>9月资料审核通过量</span>
-				<strong id="totalAuditCount">733</strong>
-				<small>指定商品清单对应的 37 条产品线合计</small>
+				<strong id="totalAuditCount">927</strong>
+				<small>指定商品清单及法国包装法对应的 38 条产品线合计</small>
 			</div>
 			<div class="kpi">
 				<span>EPR 国家 + 产品线</span>
-				<strong id="productLineCount">37</strong>
+				<strong id="productLineCount">38</strong>
 				<small>西班牙包装法的免海牙、含海牙方案合并展示</small>
 			</div>
 			<div class="kpi">
 				<span>资料制作已自动化</span>
-				<strong>37 / 37</strong>
+				<strong>38 / 38</strong>
 				<small>全部 EPR 产品线已具备资料制作自动化能力</small>
 			</div>
 			<div class="kpi">
@@ -619,7 +619,7 @@
 			</div>
 			<div class="kpi">
 				<span>证书录入已自动化</span>
-				<strong>37 / 37</strong>
+				<strong>38 / 38</strong>
 				<small>全部 EPR 产品线支持证书批量录入</small>
 			</div>
 		</section>
@@ -653,7 +653,7 @@
 				</table>
 			</div>
 			<div class="note">
-				<strong>口径说明：</strong>沿用旧页面指定商品清单，按 2026-09-01 至 2026-09-30 的资料审核通过数量统计，按服务单号去重；仅匹配清单中的商品全名，不扩展其他商品版本，排除退款中、停止服务、已注销、注销中状态。合计对应 37 条产品线；统计更新于 2026-10-13。比利时包装法指定商品名称未匹配到，按本清单口径计 0 单。西包指西班牙包装法，免海牙和含海牙方案合并为一条产品线展示。<br>自动化率 = 当前自动化数 / 自动化总数&mdash; 表示暂无数据。
+				<strong>口径说明：</strong>沿用旧页面指定商品清单，并新增法国包装法产品线；按 2026-09-01 至 2026-09-30 的资料审核通过数量统计，按服务单号去重。法国包装法按法国 + 包装法口径汇总 194 单；其余产品线仅匹配清单中的商品全名，不扩展其他商品版本，排除退款中、停止服务、已注销、注销中状态。合计对应 38 条产品线；统计更新于 2026-10-21。比利时包装法指定商品名称未匹配到，按本清单口径计 0 单。西包指西班牙包装法，免海牙和含海牙方案合并为一条产品线展示。<br>自动化率 = 当前自动化数 / 自动化总数&mdash; 表示暂无数据。
 			</div>
 		</section>
 
@@ -691,6 +691,7 @@
 	<script>
 		const productLines = [
 			{ country: "德国", code: "DE", line: "包装法", auditCount: 439 },
+			{ country: "法国", code: "FR", line: "包装法", auditCount: 194 },
 			{ country: "德国", code: "DE", line: "WEEE", auditCount: 78 },
 			{ country: "德国", code: "DE", line: "电池法", auditCount: 56 },
 			{ country: "西班牙", code: "ES", line: "包装法", alias: "西包", auditCount: 51, registration: "auto", automationCurrent: 14, automationTotal: 17 },

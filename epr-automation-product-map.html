@@ -589,7 +589,7 @@
 				<small>西班牙包装法（西包）已实现注册递交自动化</small>
 			</div>
 			<div class="kpi">
-				<span>证书录入批量操作</span>
+				<span>证书录入已自动化</span>
 				<strong>37 / 37</strong>
 				<small>全部 EPR 产品线支持证书批量录入</small>
 			</div>
@@ -603,7 +603,6 @@
 				</div>
 				<div class="legend" aria-label="状态图例">
 					<span class="pill auto">已自动化</span>
-					<span class="pill batch">批量操作</span>
 					<span class="pill semi">待自动化</span>
 				</div>
 			</div>
@@ -642,7 +641,7 @@
 				</div>
 				<div class="milestone">
 					<time>已完成</time>
-					<h3>证书批量操作</h3>
+					<h3>证书录入已自动化</h3>
 					<p>全部 EPR 国家 + 产品线支持证书批量录入。</p>
 				</div>
 				<div class="milestone">
@@ -725,7 +724,7 @@
 					<td class="volume"><strong>${item.auditCount.toLocaleString("zh-CN")}</strong><div class="bar"><i style="--w:${barWidth}%"></i></div></td>
 					<td class="node">${node("auto", "已自动化", "资料制作自动化已完成。")}</td>
 					<td class="node">${registration}</td>
-					<td class="node">${node("batch", "批量操作", "证书支持批量上传与录入。")}</td>
+					<td class="node">${node("auto", "已自动化", "证书支持批量上传与录入。")}</td>
 					<td class="rate-cell">${rate(item.automationCurrent, item.automationTotal, "自动化率")}</td>
 					<td class="rate-cell">${rate(item.onlineCurrent, item.onlineTotal, "线上化率")}</td>
 				</tr>`);

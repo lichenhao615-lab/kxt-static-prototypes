@@ -603,6 +603,7 @@
 				</div>
 				<div class="legend" aria-label="状态图例">
 					<span class="pill auto">已自动化</span>
+
 					<span class="pill semi">待自动化</span>
 				</div>
 			</div>
@@ -616,14 +617,13 @@
 							<th>注册递交</th>
 							<th>证书录入</th>
 							<th>自动化率</th>
-							<th>线上化率</th>
 						</tr>
 					</thead>
 					<tbody id="matrixBody"></tbody>
 				</table>
 			</div>
 			<div class="note">
-				<strong>口径说明：</strong>沿用旧页面指定商品清单，按 2026-09-01 至 2026-09-30 的资料审核通过数量统计，按服务单号去重；仅匹配清单中的商品全名，不扩展其他商品版本，排除退款中、停止服务、已注销、注销中状态。合计对应 37 条产品线；统计更新于 2026-10-13。比利时包装法指定商品名称未匹配到，按本清单口径计 0 单。西包指西班牙包装法，免海牙和含海牙方案合并为一条产品线展示。<br>自动化率 = 当前自动化数 / 自动化总数；线上化率 = 当前线上化数 / 线上化总数；&mdash; 表示暂无数据。
+				<strong>口径说明：</strong>沿用旧页面指定商品清单，按 2026-09-01 至 2026-09-30 的资料审核通过数量统计，按服务单号去重；仅匹配清单中的商品全名，不扩展其他商品版本，排除退款中、停止服务、已注销、注销中状态。合计对应 37 条产品线；统计更新于 2026-10-13。比利时包装法指定商品名称未匹配到，按本清单口径计 0 单。西包指西班牙包装法，免海牙和含海牙方案合并为一条产品线展示。<br>自动化率 = 当前自动化数 / 自动化总数&mdash; 表示暂无数据。
 			</div>
 		</section>
 
@@ -663,7 +663,7 @@
 			{ country: "德国", code: "DE", line: "包装法", auditCount: 439 },
 			{ country: "德国", code: "DE", line: "WEEE", auditCount: 78 },
 			{ country: "德国", code: "DE", line: "电池法", auditCount: 56 },
-			{ country: "西班牙", code: "ES", line: "包装法", alias: "西包", auditCount: 51, registration: "auto", automationCurrent: 14, automationTotal: 17, onlineCurrent: 18, onlineTotal: 26 },
+			{ country: "西班牙", code: "ES", line: "包装法", alias: "西包", auditCount: 51, registration: "auto", automationCurrent: 14, automationTotal: 17 },
 			{ country: "意大利", code: "IT", line: "包装法", auditCount: 34 },
 			{ country: "瑞典", code: "SE", line: "包装法", auditCount: 15 },
 			{ country: "法国", code: "FR", line: "DEEE", auditCount: 12 },
@@ -726,7 +726,6 @@
 					<td class="node">${registration}</td>
 					<td class="node">${node("auto", "已自动化", "证书支持批量上传与录入。")}</td>
 					<td class="rate-cell">${rate(item.automationCurrent, item.automationTotal, "自动化率")}</td>
-					<td class="rate-cell">${rate(item.onlineCurrent, item.onlineTotal, "线上化率")}</td>
 				</tr>`);
 		});
 	</script>

@@ -212,8 +212,35 @@
 			background: var(--surface);
 		}
 
-		table.efficiency-table {
-			min-width: 620px;
+
+		.matrix-efficiency {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 10px;
+			padding: 14px 16px;
+			border-top: 1px solid var(--line);
+			background: #fbfcfe;
+		}
+
+		.matrix-efficiency-item {
+			padding: 10px 12px;
+			border: 1px solid var(--line);
+			border-radius: 10px;
+			background: var(--surface);
+			color: var(--muted);
+			font-size: 13px;
+			line-height: 1.6;
+		}
+
+		.matrix-efficiency-item strong {
+			color: var(--navy);
+		}
+
+		.matrix-efficiency-label {
+			grid-column: 1 / -1;
+			color: var(--navy);
+			font-size: 13px;
+			font-weight: 700;
 		}
 
 		th,
@@ -629,39 +656,6 @@
 		<section class="band">
 			<div class="band-head">
 				<div>
-					<h2>注册人效参考</h2>
-					<p>按当前注册递交流程记录的参考产能展示，单位为单量/人天。</p>
-				</div>
-			</div>
-			<div class="table-scroll">
-				<table class="efficiency-table">
-					<thead>
-						<tr>
-							<th>产品线</th>
-							<th>人效</th>
-							<th>单量耗时</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td class="country-cell"><div class="country-title">德国 VAT <small>DE</small></div></td>
-							<td><strong>30 单/人天</strong></td>
-							<td>约 16.2 分钟/单</td>
-						</tr>
-						<tr>
-							<td class="country-cell"><div class="country-title">法国 VAT <small>FR</small></div></td>
-							<td><strong>35 单/人天</strong></td>
-							<td>约 14 分钟/单</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="note">人效数据仅展示注册环节参考产能。</div>
-		</section>
-
-		<section class="band">
-			<div class="band-head">
-				<div>
 					<h2>国家线自动化矩阵</h2>
 					<p>按 2026 年 9 月审核通过的 VAT 基础服务单数量排序，展示资料制作、注册递交、税号录入三节点进度。</p>
 				</div>
@@ -808,6 +802,11 @@
 						</tr>
 					</tbody>
 				</table>
+			</div>
+			<div class="matrix-efficiency" aria-label="注册人效参考">
+				<div class="matrix-efficiency-label">注册人效参考</div>
+				<div class="matrix-efficiency-item"><strong>德国 VAT</strong>：30 单/人天，约 16.2 分钟/单</div>
+				<div class="matrix-efficiency-item"><strong>法国 VAT</strong>：35 单/人天，约 14 分钟/单</div>
 			</div>
 			<div class="note">
 				<strong>数据说明：</strong>按 VAT 类目、基础服务单、资料审核通过时间落在 2026 年 9 月统计；按服务单号去重，排除退款中、停止服务、已注销、注销中状态。合计仅含当前展示的 15 条国家线，未含斯洛伐克 1 单；统计更新于 2026-10-13。<br>自动化率 = 当前自动化数 / 自动化总数&mdash; 表示暂无数据。

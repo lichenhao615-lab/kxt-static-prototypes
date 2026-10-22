@@ -218,6 +218,7 @@
 		.resource-card input { margin-top:2px; accent-color:#00a6ad; }
 		.resource-card strong { display:block; color:#394954; font-weight:500; line-height:1.5; }
 		.resource-card span { display:block; color:#929da6; font-size:11px; margin-top:3px; }
+		.resource-code, .resource-name { color:#52616c; font-size:12px; line-height:1.4; word-break:break-all; }
 		.split-summary { margin-top:13px; padding:11px 13px; background:#f8fafb; color:#687681; line-height:1.7; }
 		.split-summary strong { color:#2e404b; font-weight:500; }
 		.preview-panel { margin-top:13px; border-left:3px solid #3bc1c5; background:#f7fbfb; padding:11px 13px; color:#596a74; line-height:1.75; }
@@ -314,7 +315,7 @@
 					</div>
 					<div class="inline-confirm" id="presetApplyConfirm" hidden><span>同步预设分单方案将覆盖当前已修改的分单明细，是否继续？</span><span class="actions"><button class="btn" type="button" id="cancelPresetApply">取消</button><button class="btn primary" type="button" id="confirmPresetApply">继续同步</button></span></div>
 				</div>
-				<div class="split-section" id="multipleConfigPanel"><div class="split-section-title">分单明细 <small>可调整执行顺序、产品和渠道资源；通过新增或删除明细调整条数</small></div><table class="split-table"><thead><tr><th style="width:76px">明细</th><th>结算产品</th><th>结算渠道服务项</th><th style="width:180px">渠道资源</th><th style="width:116px">操作</th></tr></thead><tbody id="multiSplitRows"></tbody></table></div>
+				<div class="split-section" id="multipleConfigPanel"><div class="split-section-title">分单明细 <small>可调整执行顺序、产品和渠道资源；通过新增或删除明细调整条数</small></div><table class="split-table"><thead><tr><th style="width:76px">明细</th><th>结算产品</th><th>结算渠道服务项</th><th>渠道商</th><th>资源编号</th><th>渠道资源名称</th><th style="width:116px">操作</th></tr></thead><tbody id="multiSplitRows"></tbody></table></div>
 			</div>
 			<div class="modal-footer"><button class="text-link" type="button" id="saveAsPreset">＋ 保存当前为预设分单方案</button><div class="actions"><button class="btn" type="button" data-close-split>取 消</button><button class="btn primary" type="button" id="submitOneClick">提交一键分单</button></div></div>
 		</section>
@@ -499,7 +500,7 @@
 		function setOverlay(id, visible) { $(id).hidden = !visible; document.body.classList.toggle("modal-open", visible || !!draft); }
 		function closeSplitOverlays() { ["singleSplitOverlay","oneClickOverlay","splitChangeConfirmOverlay","presetOverlay"].forEach(id => setOverlay(id,false)); pendingSplitChangeAction=null; $("rowActionMenu").hidden=true; $("batchOperationMenu").hidden=true; $("batchOperationButton").setAttribute("aria-expanded","false"); }
 		function renderResourceCards(targetId, selectedId, inputName) {
-			$(targetId).innerHTML = splitResources.map(item => '<label class="resource-card' + (item.id === selectedId ? ' selected' : '') + '"><input type="radio" name="' + inputName + '" value="' + item.id + '"' + (item.id === selectedId ? ' checked' : '') + '><span><strong>' + escapeHtml(item.company) + '</strong><span>' + escapeHtml(item.code) + ' · ' + escapeHtml(item.name) + '</span></span></label>').join("");
+			$(targetId).innerHTML = splitResources.map(item => '<label class="resource-card' + (item.id === selectedId ? ' selected' : '') + '"><input type="radio" name="' + inputName + '" value="' + item.id + '"' + (item.id === selectedId ? ' checked' : '') + '><span><strong>渠道商：' + escapeHtml(item.company) + '</strong><span>资源编号：' + escapeHtml(item.code) + '</span><span>渠道资源名称：' + escapeHtml(item.name) + '</span></span></label>').join("");
 		}
 		function openRowMenu(button,rowId) {
 			const menu=$("rowActionMenu");
@@ -538,7 +539,7 @@
 		function syncSplitItems() { document.querySelectorAll("#multiSplitRows tr").forEach((row,index) => { splitState.items[index]={product:row.querySelector("[data-field=product]").value,service:row.querySelector("[data-field=service]").value,resource:row.querySelector("[data-field=resource]").value}; }); }
 		function renderMultiRows() {
 			const count=Math.max(1,Math.min(10,splitState.items.length || 3)); ensureSplitItems(count); splitState.count=count;
-			$("multiSplitRows").innerHTML=splitState.items.map((item,index) => '<tr><td class="split-row-label">分单 ' + (index+1) + '</td><td><select data-field="product" aria-label="分单' + (index+1) + '结算产品">' + splitProducts.map(p=>'<option' + (p===item.product?' selected':'') + '>' + p + '</option>').join("") + '</select></td><td><select data-field="service" aria-label="分单' + (index+1) + '渠道服务项">' + splitServices.map(p=>'<option' + (p===item.service?' selected':'') + '>' + p + '</option>').join("") + '</select></td><td><select data-field="resource" aria-label="分单' + (index+1) + '渠道资源">' + splitResources.map(r=>'<option value="' + r.id + '"' + (r.id===item.resource?' selected':'') + '>' + r.name + '</option>').join("") + '</select></td><td><div class="split-row-actions"><button type="button" data-row-add="' + index + '">新增</button><button type="button" class="delete" data-row-delete="' + index + '"' + (count<=1?' disabled':'') + '>删除</button></div></td></tr>').join("");
+			$("multiSplitRows").innerHTML=splitState.items.map((item,index) => { const resource=splitResources.find(r=>r.id===item.resource) || splitResources[0]; return '<tr><td class="split-row-label">分单 ' + (index+1) + '</td><td><select data-field="product" aria-label="分单' + (index+1) + '结算产品">' + splitProducts.map(p=>'<option' + (p===item.product?' selected':'') + '>' + p + '</option>').join("") + '</select></td><td><select data-field="service" aria-label="分单' + (index+1) + '渠道服务项">' + splitServices.map(p=>'<option' + (p===item.service?' selected':'') + '>' + p + '</option>').join("") + '</select></td><td><select data-field="resource" aria-label="分单' + (index+1) + '渠道商">' + splitResources.map(r=>'<option value="' + r.id + '"' + (r.id===item.resource?' selected':'') + '>' + r.company + '</option>').join("") + '</select></td><td class="resource-code">' + escapeHtml(resource.code) + '</td><td class="resource-name">' + escapeHtml(resource.name) + '</td><td><div class="split-row-actions"><button type="button" data-row-add="' + index + '">新增</button><button type="button" class="delete" data-row-delete="' + index + '"' + (count<=1?' disabled':'') + '>删除</button></div></td></tr>'; }).join("");
 			updatePresetSummary();
 		}
 		function renderOneClick() {

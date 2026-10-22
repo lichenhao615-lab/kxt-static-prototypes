@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="data:,">
+	<title>基础服务 · 一键分单交互 DEMO</title>
+	<style>
+		:root { --brand:#00a6ad; --brand-dark:#008f98; --brand-soft:#e8f8f9; --text:#262d35; --muted:#8a929b; --line:#e8ebef; --pale:#f4f6f8; }
+		* { box-sizing:border-box; }
+		body { margin:0; color:var(--text); background:#fff; font-family:"Microsoft YaHei", "PingFang SC", Arial, sans-serif; font-size:12px; }
+		button,input,select { font:inherit; }
+		button { cursor:pointer; }
+		button:focus-visible,input:focus-visible,select:focus-visible { outline:2px solid #71d2d6; outline-offset:2px; }
+		button:disabled { cursor:not-allowed; opacity:.35; }
+		.topbar { height:40px; display:flex; align-items:center; gap:26px; padding:0 22px; background:#eef8f8; border-bottom:1px solid #dce8eb; white-space:nowrap; }
+		.brand { display:flex; align-items:center; gap:8px; font-weight:600; color:#102734; }
+		.logo { border:1px solid #28b5bf; color:#13a3b0; font-size:10px; width:15px; height:15px; border-radius:50%; display:grid; place-items:center; }
+		.topnav { display:flex; align-self:stretch; gap:22px; align-items:center; }
+		.topnav .active { color:var(--brand-dark); }
+		.topuser { margin-left:auto; display:flex; align-items:center; gap:18px; color:#8a979c; }
+		.avatar { width:25px; height:25px; border-radius:50%; background:linear-gradient(175deg,#17364b 15%,#fbba58 48%,#222a2e 62%); }
+		.shell { display:flex; min-height:calc(100vh - 40px); }
+		.sidebar { flex:0 0 168px; background:#eff9f9; padding:0 22px; color:#19313c; }
+		.menu { height:38px; display:flex; align-items:center; justify-content:space-between; white-space:nowrap; }
+		.menu[role="link"] { cursor:pointer; }
+		.menu[role="link"]:focus-visible { outline:2px solid var(--brand); outline-offset:2px; border-radius:2px; }
+		.menu.child { padding-left:19px; }
+		.menu.active { color:#00a6b0; }
+		.menu .arrow { color:#485f67; font-size:11px; }
+		.workspace { min-width:0; flex:1; }
+		.page-tabs { height:27px; padding-left:10px; display:flex; align-items:flex-end; gap:5px; border-bottom:1px solid #dfe5ea; }
+		.page-tab { height:23px; padding:3px 7px; display:flex; align-items:center; gap:6px; border:1px solid #e4e8ec; border-radius:2px 2px 0 0; background:#fff; font-size:11px; color:#4a5664; }
+		.page-tab.active { background:var(--brand); color:#fff; border-color:var(--brand); }
+		.filters { padding:5px 10px 0; }
+		.filter-line { min-height:32px; display:flex; align-items:center; gap:9px; flex-wrap:wrap; padding:3px 0; }
+		.filter-label { color:#4b5259; width:58px; flex:0 0 58px; white-space:nowrap; }
+		.chip-list { display:flex; gap:9px; align-items:center; flex-wrap:wrap; }
+		.chip { min-height:21px; padding:2px 8px; border:0; border-radius:2px; background:#f0f4f4; color:#5f6769; line-height:17px; white-space:nowrap; }
+		.chip.active { background:#e5f8f9; color:#00a2b0; font-weight:500; }
+		.chip:hover { background:#e5f3f4; }
+		.static-chip { cursor:default; }
+		.line-actions { display:flex; gap:11px; align-items:center; margin-left:2px; }
+		.text-button { padding:0; border:0; background:transparent; color:var(--brand-dark); line-height:22px; white-space:nowrap; }
+		.text-button:hover { color:#00717b; }
+		.edit-button { color:#00a3ad; }
+		.edit-icon { display:inline-block; width:11px; height:11px; margin-right:4px; vertical-align:-1px; }
+		.more-anchor { position:relative; }
+		.more-popover { z-index:30; position:absolute; top:28px; left:0; width:254px; padding:12px; background:#fff; border:1px solid #e4e8ec; border-radius:4px; box-shadow:0 5px 22px #233b4b20; }
+		.more-title { color:#88919b; font-size:11px; margin-bottom:10px; }
+		.more-grid { display:flex; gap:7px; flex-wrap:wrap; }
+		.more-item { border:1px solid #e9edf0; background:#fff; padding:5px 8px; border-radius:2px; color:#4d5962; text-align:left; }
+		.more-item.active { color:var(--brand-dark); border-color:#8ddce0; background:var(--brand-soft); }
+		.selected-hidden { color:#008f99; padding:1px 0 1px 10px; border-left:1px solid #b8e2e4; line-height:20px; white-space:nowrap; }
+		.selected-hidden small { color:#8a929b; font-size:11px; }
+		.detail-filters { padding-top:5px; }
+		.query-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:5px 0; min-height:35px; }
+		.field-group { display:flex; align-items:center; gap:8px; white-space:nowrap; }
+		.field-label { color:#52565c; }
+		.input,.select { height:27px; padding:0 9px; border:1px solid #dcdfe5; border-radius:1px; background:#fff; color:#4f5964; min-width:0; }
+		.input::placeholder { color:#b8bdc2; }
+		.select { color:#a3a9b0; width:96px; }
+		.date-field { height:27px; display:flex; align-items:center; gap:8px; padding:0 9px; border:1px solid #dcdfe5; color:#b9bfc6; width:221px; }
+		.date-field input { border:0; outline:none; width:82px; background:transparent; padding:0; color:#777f88; font-size:11px; }
+		.date-field input::placeholder { color:#bcc1c7; }
+		.date-field.deadline-field { width:278px; padding:0 7px; gap:6px; }
+		.date-field.deadline-field input { width:116px; color:#7e8892; }
+		.date-field.deadline-field.invalid { border-color:#ee8989; }
+		.query-error { color:#de5c5c; font-size:11px; padding:0 0 4px; line-height:1.6; }
+		.input.keyword { width:232px; }
+		.btn { height:27px; border:1px solid #dbe0e8; background:#fff; padding:0 13px; border-radius:2px; color:#35404c; }
+		.btn.primary { background:#27b8be; border-color:#27b8be; color:#fff; }
+		.btn.primary:hover { background:#0ba9b2; }
+		.btn.secondary { background:#fff; }
+		.query-controls { display:flex; align-items:center; gap:8px; }
+		.export-row { padding:8px 0 7px; display:flex; align-items:center; justify-content:space-between; }
+		.demo-label { font-size:11px; color:#a2aab3; display:flex; align-items:center; gap:5px; }
+		.demo-label i { width:5px; height:5px; background:#c3d1d4; border-radius:50%; }
+		.status-wrap { margin:0 10px; overflow:auto; scrollbar-width:thin; scrollbar-color:#989c9f #f4f6f7; }
+		.status-tabs { display:flex; width:max-content; align-items:center; min-height:34px; border-bottom:1px solid #e9edf1; gap:0; }
+		.status-tab { font-size:11px; height:25px; white-space:nowrap; padding:0 11px; border:0; background:#fff; color:#4a4e54; }
+		.status-tab:first-child { padding-left:7px; }
+		.status-tab.active { background:#00a5ac; color:#fff; }
+		.selection-row { height:42px; padding:0 10px; display:flex; align-items:center; justify-content:space-between; color:#717b8a; font-size:11px; }
+		.table-setting { width:26px; height:26px; border:1px solid #e0e5ec; border-radius:50%; background:#fff; color:#596775; }
+		.table-scroll { margin:0 10px; overflow:auto; border:1px solid #edf0f4; scrollbar-width:thin; scrollbar-color:#999 #f5f6f7; }
+		table { width:100%; min-width:1515px; table-layout:fixed; border-collapse:collapse; font-size:11px; }
+		th { height:38px; background:#f5f7fa; font-weight:600; color:#303843; }
+		td { height:39px; color:#30343b; }
+		th,td { border-right:1px solid #f0f2f6; border-bottom:1px solid #edf0f4; text-align:center; padding:0 7px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+		tbody tr:hover { background:#f9fdfd; }
+		.check { width:13px; height:13px; accent-color:var(--brand); cursor:pointer; margin:0; vertical-align:middle; }
+		.link { color:#00a6b2; }
+		.inline-symbol { color:#5a616a; padding-left:6px; font-size:10px; }
+		.row-action { color:#00a2b0; padding:0 3px; border:0; background:none; font-size:11px; }
+		.row-action.muted { color:#c0c4c8; }
+		.empty-row td { height:390px; color:#929ca8; background:#fff; }
+		.empty-icon { width:42px; height:34px; border:1px solid #d7dfe7; border-radius:4px; margin:0 auto 13px; background:linear-gradient(#fff,#f4f7fa); position:relative; }
+		.empty-icon::after { content:""; position:absolute; top:10px; left:10px; width:20px; height:1px; background:#dce4eb; box-shadow:0 6px 0 #dce4eb,0 12px 0 #dce4eb; }
+		.empty-title { color:#7f8b98; font-size:12px; margin-bottom:7px; }
+		.empty-desc { font-size:11px; }
+		.pagination { min-height:58px; display:flex; align-items:center; justify-content:flex-end; gap:6px; padding:10px; font-size:11px; color:#59616b; flex-wrap:wrap; }
+		.page-btn { width:26px; height:26px; border:1px solid #dce1e6; background:#fff; color:#5f6771; padding:0; }
+		.page-btn.active { border-color:#00b8c3; color:#00a5b0; }
+		.page-size { height:27px; border:1px solid #dde2e7; background:#fff; color:#737b84; padding:0 8px; }
+		.page-input { width:38px; height:26px; border:1px solid #dde2e7; padding:0 4px; text-align:center; color:#6e7882; }
+		.footer-note { padding:7px 10px 14px; color:#b1b7bd; font-size:10px; text-align:right; }
+		.toast { position:fixed; top:58px; left:50%; transform:translate(-50%,-10px); opacity:0; background:#fff; border:1px solid #e5ecef; color:#46545e; box-shadow:0 5px 22px #254d6b18; padding:10px 19px; border-radius:3px; z-index:100; pointer-events:none; transition:opacity .15s,transform .15s; }
+		.toast.show { opacity:1; transform:translate(-50%,0); }
+		.toast .tick { color:#26b29c; margin-right:7px; }
+		.toast.error { border-color:#ffd2d2; color:#c43d3d; }
+		.toast.error .tick { color:#e05252; }
+		.change-confirm-modal { width:560px; }
+		.change-warning { display:flex; gap:12px; margin:20px 24px 12px; padding:14px 16px; background:#fff8e8; border:1px solid #f6dfad; border-radius:3px; color:#66532d; line-height:1.7; }
+		.change-warning-icon { flex:0 0 22px; width:22px; height:22px; border-radius:50%; background:#e9a72d; color:#fff; display:grid; place-items:center; font-weight:700; }
+		.change-warning strong { color:#5b461d; font-weight:500; }
+		.change-warning p { margin:3px 0 0; }
+		.change-affected { margin:0 24px 16px; padding:10px 12px; background:#fafcfd; border:1px solid #e5eaee; border-radius:3px; color:#5e6b76; font-size:11px; line-height:1.8; }
+		.change-affected strong { color:#3d4a55; font-weight:500; }
+		.modal-overlay { position:fixed; inset:0; background:#1b2b3b65; z-index:80; display:flex; align-items:center; justify-content:center; padding:28px; }
+		.modal { background:#fff; width:800px; max-width:100%; border-radius:4px; box-shadow:0 15px 55px #10243a35; display:flex; flex-direction:column; max-height:calc(100vh - 56px); }
+		.modal-head { display:flex; align-items:center; justify-content:space-between; height:54px; flex:0 0 54px; padding:0 24px; border-bottom:1px solid #e8edf1; }
+		.modal-title { font-size:15px; font-weight:500; }
+		.close-btn { border:0; background:transparent; color:#9aa2ab; padding:4px; font-size:22px; line-height:22px; }
+		.modal-description { color:#7d8994; margin:17px 24px 15px; line-height:1.8; font-size:12px; }
+		.editor-columns { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; margin:0 24px; min-height:0; }
+		.editor-column { min-width:0; }
+		.column-head { height:34px; display:flex; align-items:center; gap:7px; font-weight:500; color:#475361; }
+		.count { display:inline-grid; place-items:center; min-width:18px; height:17px; border-radius:9px; background:#eef3f6; color:#8995a2; font-weight:400; font-size:10px; }
+		.column-caption { font-size:10px; font-weight:400; color:#9ba6af; margin-left:auto; }
+		.item-list { border:1px solid #e1e7ec; background:#fafcfd; padding:9px; height:350px; overflow:auto; border-radius:3px; }
+		.editor-item { min-height:40px; display:flex; align-items:center; gap:7px; padding:8px 8px; margin-bottom:7px; background:#fff; border:1px solid #e5eaee; border-radius:2px; color:#43505d; }
+		.editor-item:last-child { margin-bottom:0; }
+		.editor-item[draggable=true] { cursor:grab; }
+		.editor-item.dragging { opacity:.45; }
+		.editor-item.drag-target { border-top:2px solid var(--brand); padding-top:7px; }
+		.drag-handle { width:12px; flex:0 0 12px; color:#b1bac2; font-size:15px; line-height:16px; }
+		.item-name { min-width:0; flex:1; overflow-wrap:anywhere; font-size:11px; }
+		.item-controls { flex:0 0 auto; display:flex; align-items:center; gap:5px; }
+		.move-btn { width:22px; height:22px; border:1px solid #e1e7ec; color:#82909e; background:#fff; border-radius:2px; padding:0; font-size:12px; }
+		.item-action { border:0; background:transparent; padding:0 0 0 3px; color:#009faa; font-size:11px; white-space:nowrap; }
+		.fixed-item { background:#f3f6f8; color:#7b8793; }
+		.fixed-label { font-size:10px; color:#a0aab4; white-space:nowrap; }
+		.list-empty { min-height:195px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#a5afb8; gap:8px; line-height:1.7; font-size:11px; }
+		.list-empty strong { color:#8b99a6; font-weight:400; }
+		.editor-hint { margin:12px 24px 18px; color:#8a96a2; line-height:1.8; font-size:11px; }
+		.editor-hint strong { font-weight:400; color:#52616f; }
+		.modal-footer { border-top:1px solid #e8edf1; min-height:62px; padding:16px 24px; display:flex; justify-content:space-between; gap:15px; align-items:center; }
+		.modal-footer .actions { display:flex; gap:9px; }
+		.restore-btn { border:0; padding:0; background:transparent; color:#7d8a97; white-space:nowrap; }
+		.save-error { display:none; color:#de5c5c; background:#fff5f4; border:1px solid #ffdfdc; margin:0 24px 14px; padding:9px 11px; line-height:1.6; }
+		.save-error.show { display:block; }
+		.row-menu-anchor { position:relative; display:inline-block; }
+		.row-action-menu { position:fixed; z-index:120; width:178px; padding:6px 0; background:#fff; border:1px solid #e3e8ed; border-radius:3px; box-shadow:0 8px 24px rgba(31,54,73,.18); }
+		.row-action-menu button { width:100%; display:block; border:0; background:#fff; text-align:left; padding:9px 14px; color:#394650; font-size:11px; }
+		.row-action-menu button:hover { background:#eefafa; color:#008f98; }
+		.row-action-menu .menu-divider { height:1px; margin:5px 0; background:#edf0f3; }
+		.selection-actions { display:flex; align-items:center; gap:10px; }
+		.selection-actions .btn { height:26px; }
+		.batch-action-wrap { position:relative; display:inline-block; }
+		.batch-operation-menu { position:absolute; top:30px; left:0; z-index:60; width:178px; padding:6px 0; background:#fff; border:1px solid #e3e8ed; border-radius:3px; box-shadow:0 8px 24px rgba(31,54,73,.18); }
+		.batch-operation-menu button { width:100%; display:block; border:0; background:#fff; text-align:left; padding:9px 14px; color:#394650; font-size:11px; }
+		.batch-operation-menu button:hover { background:#eefafa; color:#008f98; }
+		.batch-operation-menu button:disabled { color:#b5bdc4; background:#fff; cursor:not-allowed; }
+		.split-modal { width:980px; max-width:100%; }
+		.batch-modal { width:760px; max-width:100%; }
+		.batch-condition-card,.batch-selection-card { margin:0 24px 14px; padding:13px 14px; border:1px solid #e4ebef; background:#fbfdfd; }
+		.batch-condition-title { color:#44535e; font-size:12px; font-weight:500; margin-bottom:10px; }
+		.batch-condition-title strong { color:#008f98; font-weight:500; }
+		.batch-condition-list { display:flex; flex-wrap:wrap; gap:7px; }
+		.batch-condition-tag { padding:5px 9px; border:1px solid #dfe8eb; background:#f5f9fa; color:#60717b; font-size:11px; }
+		.batch-condition-tag.valid { border-color:#b7e4dc; background:#f1fcf9; color:#198b77; }
+		.batch-condition-tag.invalid { border-color:#f1c6bf; background:#fff6f4; color:#c56459; }
+		.batch-selected-list { display:flex; flex-wrap:wrap; gap:7px; max-height:96px; overflow:auto; }
+		.batch-selected-item { padding:5px 8px; border:1px solid #e5ebef; background:#fff; color:#596a75; font-size:11px; }
+		.batch-validation-error { margin:0 24px 14px; padding:9px 11px; border:1px solid #f1c6bf; background:#fff6f4; color:#bd5c52; font-size:11px; line-height:1.6; }
+		.split-modal .modal-head { height:58px; }
+		.split-context { margin:16px 24px 0; padding:12px 14px; background:#f7fafb; border:1px solid #e7edf1; color:#55636f; display:flex; flex-wrap:wrap; gap:20px; line-height:1.6; }
+		.split-context strong { color:#273641; font-weight:500; }
+		.split-steps { display:flex; align-items:center; gap:0; margin:18px 24px 0; border-bottom:1px solid #e8edf1; }
+		.split-step { padding:0 20px 12px 0; margin-right:20px; color:#9aa5ae; border-bottom:2px solid transparent; font-size:12px; }
+		.split-step.active { color:#008f98; border-color:#00a6ad; }
+		.split-body { padding:0 24px 18px; overflow:auto; max-height:58vh; }
+		.split-section { padding-top:17px; }
+		.split-section-title { display:flex; align-items:center; gap:10px; margin-bottom:11px; color:#34424d; font-weight:500; }
+		.split-section-title small { color:#9aa4ad; font-weight:400; }
+		.mode-tabs { display:flex; gap:8px; }
+		.mode-tab { min-width:120px; height:34px; padding:0 15px; border:1px solid #dce4e8; background:#fff; color:#65727d; border-radius:2px; }
+		.mode-tab.active { color:#008f98; border-color:#52c8cc; background:#effcfc; }
+		.preset-line { display:flex; align-items:center; gap:9px; margin-top:13px; }
+		.preset-line label { color:#596671; }
+		.preset-select { width:300px; height:32px; border:1px solid #dce3e8; background:#fff; color:#46545f; padding:0 9px; }
+		.preset-summary-card { margin-top:8px; padding:14px 15px; border:1px solid #dfe9ec; background:#fbfdfd; border-radius:3px; }
+		.preset-summary-head { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+		.preset-summary-head .preset-line { flex:1; min-width:360px; margin-top:0; }
+		.preset-summary-head .btn { height:32px; }
+		.preset-summary { margin-top:10px; padding:9px 11px; background:#f1f8f8; color:#587079; line-height:1.6; font-size:11px; }
+		.preset-summary strong { color:#2e5960; font-weight:500; }
+		.preset-summary-empty { background:#f7f9fa; color:#82919a; }
+		.preset-summary-footer { margin-top:8px; display:flex; justify-content:flex-end; }
+		.preset-summary-footer .text-link { font-size:11px; }
+		.inline-confirm { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:10px; padding:9px 11px; border:1px solid #f0d9ad; background:#fff9ed; color:#7d653d; line-height:1.5; font-size:11px; }
+		.inline-confirm .actions { display:flex; gap:7px; flex:0 0 auto; }
+		.inline-confirm .btn { height:26px; padding:0 10px; }
+		.text-link { border:0; background:transparent; padding:0; color:#00a2ad; }
+		.split-table { width:100%; min-width:0; table-layout:fixed; margin-top:9px; border:1px solid #e7edf1; }
+		.split-table th { height:36px; background:#f7f9fb; color:#596773; font-weight:500; }
+		.split-table td { height:50px; padding:7px 9px; text-align:left; }
+		.split-table th,.split-table td { border-right:1px solid #edf1f4; border-bottom:1px solid #edf1f4; }
+		.split-table select,.split-table input { width:100%; height:30px; border:1px solid #dce3e8; padding:0 8px; background:#fff; color:#45545f; }
+		.split-row-label { color:#56656f; font-weight:500; white-space:nowrap; }
+		.split-row-actions { display:flex; gap:8px; white-space:nowrap; }
+		.split-row-actions button { border:0; background:transparent; color:#00a2ad; padding:0; font-size:11px; }
+		.split-row-actions button.delete { color:#cf7474; }
+		.resource-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+		.resource-card { display:flex; gap:9px; align-items:flex-start; padding:11px; border:1px solid #e2e9ed; border-radius:3px; cursor:pointer; }
+		.resource-card.selected { border-color:#46c3c7; background:#f3fdfd; }
+		.resource-card input { margin-top:2px; accent-color:#00a6ad; }
+		.resource-card strong { display:block; color:#394954; font-weight:500; line-height:1.5; }
+		.resource-card span { display:block; color:#929da6; font-size:11px; margin-top:3px; }
+		.split-summary { margin-top:13px; padding:11px 13px; background:#f8fafb; color:#687681; line-height:1.7; }
+		.split-summary strong { color:#2e404b; font-weight:500; }
+		.preview-panel { margin-top:13px; border-left:3px solid #3bc1c5; background:#f7fbfb; padding:11px 13px; color:#596a74; line-height:1.75; }
+		.preview-panel strong { color:#2d444d; font-weight:500; }
+		.preset-modal { width:760px; }
+		.preset-list { padding:0 24px 8px; max-height:47vh; overflow:auto; }
+		.preset-card { display:flex; align-items:center; gap:14px; padding:13px 0; border-bottom:1px solid #edf0f3; }
+		.preset-card-main { flex:1; min-width:0; }
+		.preset-card strong { display:block; color:#34434e; font-weight:500; }
+		.preset-card small { display:block; color:#99a4ad; margin-top:4px; }
+		.preset-default-badge { display:inline-block; margin-left:7px; padding:2px 6px; border-radius:10px; background:#e8f4f1; color:#3d7a6c; font-size:10px; font-weight:500; vertical-align:1px; }
+		.preset-actions { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+		.preset-actions .text-link { color:#5d7f87; }
+		.preset-actions { display:flex; gap:10px; }
+		.preset-actions button { border:0; background:transparent; color:#00a2ad; padding:0; font-size:11px; }
+		.preset-create { margin:0 24px 15px; padding:13px; background:#f8fbfc; border:1px solid #e4ecef; }
+		.preset-create label { color:#52616c; }
+		.preset-create select { height:30px; min-width:180px; margin:0 18px 0 8px; border:1px solid #dbe3e8; padding:0 8px; background:#fff; }
+		.preset-create input { height:30px; width:290px; margin-left:8px; border:1px solid #dbe3e8; padding:0 8px; }
+		td:last-child { overflow:visible; }
+		[hidden] { display:none !important; }
+		body.modal-open { overflow:hidden; }
+		@media (max-width:1500px) { .topbar { gap:20px; } .topnav { gap:17px; } .query-row { gap:10px; } .date-field { width:205px; } .date-field input { width:75px; } .field-group { gap:7px; } }
+		@media (max-width:1050px) { .sidebar { flex-basis:142px; padding:0 15px; } .topnav { gap:12px; } .topuser { gap:9px; } .topbar { padding:0 15px; gap:20px; } .topnav .optional { display:none; } .filter-line { gap:7px; } .chip-list { gap:7px; } }
+		@media (max-width:720px) { .topbar { min-width:0; padding:0 12px; gap:14px; } .topnav { display:none; } .topuser { gap:8px; } .sidebar { display:none; } .page-tab { font-size:10px; } .filter-label { flex-basis:53px; width:53px; } .filter-line { align-items:flex-start; padding:6px 0; } .filter-label { padding-top:3px; } .chip-list { flex:1; } .line-actions { margin-left:60px; } .selected-hidden { margin-left:60px; } .modal-overlay { padding:12px; } .modal { max-height:calc(100vh - 24px); } .modal-head { padding:0 16px; } .modal-description { margin:12px 16px; } .editor-columns { margin:0 16px; gap:9px; } .column-caption { display:none; } .item-list { height:340px; padding:5px; } .editor-item { gap:3px; padding:7px 5px; flex-wrap:wrap; } .item-controls { margin-left:auto; } .drag-handle { width:8px; flex-basis:8px; } .item-name { font-size:10px; } .move-btn { width:19px; height:20px; } .editor-hint { margin:10px 16px; } .modal-footer { padding:13px 16px; } .save-error { margin:0 16px 12px; } .date-field { width:205px; } .query-row { gap:8px; } .more-popover { left:auto; right:-100px; } }
+	</style>
+</head>
+<body>
+	<header class="topbar">
+		<div class="brand"><span class="logo">Kx</span>跨信通税务管理系统</div>
+		<nav class="topnav" aria-label="主导航"><span>系统管理</span><span class="active">业务管理</span><span>CRM</span><span>客服工单</span><span class="optional">测试平台</span><span class="optional">埋点分析平台</span><span class="optional">数据平台</span></nav>
+		<div class="topuser"><span>⌕</span><span>ⓘ</span><span>♧</span><span class="avatar" aria-hidden="true"></span><span>李晨浩</span></div>
+	</header>
+	<div class="shell">
+		<aside class="sidebar" aria-label="业务菜单">
+			<div class="menu">首页 <span class="arrow">⌄</span></div><div class="menu active" id="fulfillmentWorkbenchNav" data-testid="fulfillment-workbench-nav" role="link" tabindex="0" aria-current="page">履约工作台 <span class="arrow">⌃</span></div><div class="menu child">我的待办 <span class="arrow">⌄</span></div><div class="menu child">我的效能 <span class="arrow">⌄</span></div><div class="menu">订单管理 <span class="arrow">⌄</span></div><div class="menu">续费管理 <span class="arrow">⌄</span></div><div class="menu">客户管理 <span class="arrow">⌄</span></div><div class="menu">VAT税务 <span class="arrow">⌄</span></div><div class="menu">EPR合规 <span class="arrow">⌄</span></div><div class="menu">授权代表管理 <span class="arrow">⌄</span></div><div class="menu">知识产权 <span class="arrow">⌄</span></div><div class="menu">履约管理 <span class="arrow">⌄</span></div><div class="menu child active">服务管理 <span class="arrow">⌄</span></div><div class="menu child">任务管理 <span class="arrow">⌄</span></div><div class="menu child">SLA管理 <span class="arrow">⌄</span></div><div class="menu child">跟单管理 <span class="arrow">⌄</span></div><div class="menu child">信件管理 <span class="arrow">⌄</span></div><div class="menu child">驳回管理 <span class="arrow">⌄</span></div><div class="menu">商品管理 <span class="arrow">⌄</span></div><div class="menu">流程管理 <span class="arrow">⌄</span></div><div class="menu">业绩管理 <span class="arrow">⌄</span></div><div class="menu">RPA管理 <span class="arrow">⌄</span></div><div class="menu">产品管理 <span class="arrow">⌄</span></div><div class="menu">渠道管理 <span class="arrow">⌄</span></div><div class="menu">财务管理 <span class="arrow">⌄</span></div><div class="menu">营销管理 <span class="arrow">⌄</span></div>
+		</aside>
+		<main class="workspace">
+			<div class="page-tabs"><span class="page-tab" id="fulfillmentWorkbenchTab">履约工作台 ×</span><span class="page-tab active">● 基础服务 ×</span><span class="page-tab">表单列表 ×</span><span class="page-tab">续费列表 ×</span></div>
+			<section class="filters" aria-label="基础服务筛选">
+				<div class="filter-line"><span class="filter-label">一级类目：</span><div class="chip-list"><span class="chip static-chip active">VAT</span><span class="chip static-chip">国内工商财税</span><span class="chip static-chip">EPR</span><span class="chip static-chip">产品合规</span><span class="chip static-chip">知识产权</span><span class="chip static-chip">海外工商财税</span></div><span style="color:#7b858d;margin-left:2px">☷</span></div>
+				<div class="filter-line"><span class="filter-label">二级类目：</span><div class="chip-list"><span class="chip static-chip active">全部</span><span class="chip static-chip">成本结算测试专用</span><span class="chip static-chip">其他</span><span class="chip static-chip">IOSS</span><span class="chip static-chip">OSS</span><span class="chip static-chip">VAT</span></div></div>
+				<div class="filter-line" data-testid="country-filter-row"><span class="filter-label">国家：</span><div class="chip-list" id="countryChips" role="group" aria-label="国家筛选" data-testid="country-chips"></div><div class="line-actions"><span class="more-anchor"><button class="text-button" id="countryMoreButton" data-testid="country-more" type="button" aria-haspopup="true" aria-expanded="false">更多⌄</button><div class="more-popover" id="countryMore" data-testid="country-more-panel" hidden></div></span><button class="text-button edit-button" type="button" data-edit="country" data-testid="country-edit" aria-label="编辑国家"><svg class="edit-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m10.2 2.8 3 3M2.5 10.5l-.7 3.7 3.7-.7L14 5l-3-3-8.5 8.5Z" stroke="currentColor" stroke-width="1.2"/></svg>编辑</button></div><span class="selected-hidden" id="countryHiddenSelected" data-testid="country-hidden-selection" hidden></span></div>
+				<div class="filter-line" data-testid="type-filter-row"><span class="filter-label">类型：</span><div class="chip-list" id="typeChips" role="group" aria-label="类型筛选" data-testid="type-chips"></div><div class="line-actions"><span class="more-anchor"><button class="text-button" id="typeMoreButton" data-testid="type-more" type="button" aria-haspopup="true" aria-expanded="false">更多⌄</button><div class="more-popover" id="typeMore" data-testid="type-more-panel" hidden></div></span><button class="text-button edit-button" type="button" data-edit="type" data-testid="type-edit" aria-label="编辑类型"><svg class="edit-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m10.2 2.8 3 3M2.5 10.5l-.7 3.7 3.7-.7L14 5l-3-3-8.5 8.5Z" stroke="currentColor" stroke-width="1.2"/></svg>编辑</button></div><span class="selected-hidden" id="typeHiddenSelected" data-testid="type-hidden-selection" hidden></span></div>
+				<div class="detail-filters" id="detailFilters">
+					<div class="query-row"><label class="field-group"><span class="field-label">提交资料时间</span><span class="date-field"><input placeholder="开始时间" aria-label="提交资料开始时间"><span>→</span><input placeholder="结束时间" aria-label="提交资料结束时间"><span>▢</span></span></label><label class="field-group"><span class="field-label">资料审核通过时间</span><span class="date-field"><input placeholder="开始时间" aria-label="资料审核通过开始时间"><span>→</span><input placeholder="结束时间" aria-label="资料审核通过结束时间"><span>▢</span></span></label><label class="field-group"><span class="field-label">资料审核驳回时间</span><span class="date-field"><input placeholder="开始时间" aria-label="资料审核驳回开始时间"><span>→</span><input placeholder="结束时间" aria-label="资料审核驳回结束时间"><span>▢</span></span></label><label class="field-group"><span class="field-label">服务完成时间</span><span class="date-field"><input placeholder="开始时间" aria-label="服务完成开始时间"><span>→</span><input placeholder="结束时间" aria-label="服务完成结束时间"><span>▢</span></span></label><div class="field-group" data-testid="service-deadline-filter"><span class="field-label">服务截止时间</span><span class="date-field deadline-field" id="serviceDeadlineField"><input type="date" id="serviceDeadlineStart" data-testid="service-deadline-start" aria-label="服务截止开始日期" aria-describedby="serviceDeadlineError" title="开始日期"><span>→</span><input type="date" id="serviceDeadlineEnd" data-testid="service-deadline-end" aria-label="服务截止结束日期" aria-describedby="serviceDeadlineError" title="结束日期"></span></div></div>
+					<div class="query-error" id="serviceDeadlineError" data-testid="service-deadline-error" role="alert" hidden>服务截止时间的开始日期不能晚于结束日期</div>
+				</div>
+				<div class="query-row"><select class="select" id="customerLevel" aria-label="客户级别"><option value="">客户级别</option><option>A</option><option>B</option><option>C</option><option>D</option></select><select class="select" aria-label="当前处理人"><option>当前处理人</option><option>李晨浩</option></select><label class="field-group"><span class="field-label">服务管家</span><input class="input" placeholder="请选择服务管家" style="width:144px" aria-label="服务管家"></label><label class="field-group"><span class="field-label">客户经理</span><input class="input" placeholder="选择人员" style="width:144px" aria-label="客户经理"></label><select class="select" aria-label="服务类型"><option>服务类型</option><option>SAAS服务</option></select><select class="select" aria-label="编号类型"><option>基础服务编号</option><option>订单号</option></select><input class="input keyword" id="keyword" data-testid="keyword" placeholder="请输入" aria-label="基础服务编号或订单号"><div class="query-controls"><button class="btn primary" id="searchButton" data-testid="search" type="button">搜 索</button><button class="btn secondary" id="resetButton" data-testid="reset" type="button">重 置</button><button class="text-button" id="detailToggle" type="button" aria-expanded="true">⌃ 收起</button></div></div>
+				<div class="export-row"><div class="selection-actions"><button class="btn" id="exportButton" type="button">导出 ⌄</button><span class="batch-action-wrap"><button class="btn primary" id="batchOperationButton" type="button" aria-haspopup="menu" aria-expanded="false">批量操作⌄</button><span class="batch-operation-menu" id="batchOperationMenu" role="menu" hidden><button type="button" role="menuitem" data-batch-command="batch-one-click">批量一键分单</button><button type="button" role="menuitem" data-batch-command="batch-split">批量分单</button><button type="button" role="menuitem" data-batch-command="batch-change">批量变更分单</button></span></span></div><span class="demo-label"><i></i>演示数据</span></div>
+			</section>
+			<div class="status-wrap"><div class="status-tabs" id="statusTabs" role="group" aria-label="服务状态筛选"></div></div>
+			<div class="selection-row"><span id="selectionCount">已选择 0 项</span><button class="table-setting" type="button" id="tableSettings" aria-label="表格设置">▦</button></div>
+			<div class="table-scroll"><table aria-label="基础服务列表" data-testid="service-table"><colgroup><col style="width:31px"><col style="width:49px"><col style="width:260px"><col style="width:89px"><col style="width:438px"><col style="width:67px"><col style="width:65px"><col style="width:175px"><col style="width:76px"><col style="width:170px"><col style="width:220px"></colgroup><thead><tr><th><input type="checkbox" class="check" id="selectAll" aria-label="选择本页全部服务"></th><th>序号</th><th>基础服务编号</th><th>服务类型</th><th>商品规格</th><th>客户级别</th><th>数据来源</th><th>订单号</th><th>订单来源</th><th>商品名称</th><th>操作</th></tr></thead><tbody id="serviceRows" data-testid="service-rows"></tbody></table></div>
+			<div class="pagination" id="pagination" data-testid="pagination"></div>
+			<div class="footer-note">本页面为交互 DEMO，列表内容均为演示数据。</div>
+		</main>
+	</div>
+	<div class="row-action-menu" id="rowActionMenu" hidden role="menu"></div>
+	<div class="toast" id="toast" role="status" aria-live="polite"></div>
+	<div class="modal-overlay" id="editorOverlay" hidden>
+		<section class="modal" role="dialog" aria-modal="true" aria-labelledby="editorTitle" aria-describedby="editorDescription" data-testid="filter-editor">
+			<div class="modal-head"><span class="modal-title" id="editorTitle">编辑国家</span><button class="close-btn" id="editorClose" data-testid="editor-close" type="button" aria-label="关闭编辑">×</button></div>
+			<p class="modal-description" id="editorDescription">将常用选项放在页面上，拖动或使用箭头调整顺序。进入页面时，默认选择页面展示的第一项。</p>
+			<div class="editor-columns"><section class="editor-column"><div class="column-head">页面展示 <span class="count" id="visibleCount">9</span><span class="column-caption">拖动调整顺序</span></div><div class="item-list" id="visibleList" data-testid="visible-list" aria-label="页面展示选项"></div></section><section class="editor-column"><div class="column-head">已收起 <span class="count" id="hiddenCount">0</span><span class="column-caption">通过“更多”筛选</span></div><div class="item-list" id="hiddenList" data-testid="hidden-list" aria-label="已收起选项"></div></section></div>
+			<div class="editor-hint"><strong>“全部”固定展示在最后，不可收起、不可调序。</strong><br>保存后生效；将当前页面选中项收起时，自动切换为第一项。仅调序保留当前选择。恢复默认后也需保存。</div>
+			<div class="save-error" id="saveError" data-testid="save-error" role="alert">保存失败，本次调整尚未生效，请重试。</div>
+			<div class="modal-footer"><button class="restore-btn" id="restoreButton" data-testid="restore-defaults" type="button">↻ 恢复默认</button><div class="actions"><button class="btn" id="editorCancel" data-testid="editor-cancel" type="button">取消</button><button class="btn primary" id="editorSave" data-testid="editor-save" type="button">保存</button></div></div>
+		</section>
+	</div>
+	<div class="modal-overlay" id="singleSplitOverlay" hidden>
+		<section class="modal split-modal" role="dialog" aria-modal="true" aria-labelledby="singleSplitTitle">
+			<div class="modal-head"><span class="modal-title" id="singleSplitTitle">分单</span><button class="close-btn" type="button" data-close-split aria-label="关闭分单">×</button></div>
+			<div class="split-context"><span>商品名称：<strong id="singleProduct">德国VAT注册+申报</strong></span><span>规格名称：<strong>公司注册地（中国公司及其他）</strong></span><span>国家：<strong>德国</strong></span></div>
+			<div class="split-body">
+				<div class="split-section"><div class="split-section-title">结算产品 <small>当前可分配产品</small></div><div class="mode-tabs"><button class="mode-tab active">P00967</button><button class="mode-tab">P00966</button><button class="mode-tab">P00965</button><button class="mode-tab">P00959</button></div></div>
+				<div class="split-section"><div class="split-section-title">结算渠道服务项</div><div class="mode-tabs"><button class="mode-tab active">S88583</button></div></div>
+				<div class="split-section"><div class="split-section-title">结算产品名称 <small>德国新注册+申报有限公司</small></div><div class="split-section-title">结算渠道服务项名称 <small>德国-&gt;VAT-&gt;VAT-&gt;新注册-&gt;非欧盟公司</small></div></div>
+				<div class="split-section"><div class="split-section-title">选择渠道资源</div><div class="resource-list" id="singleResourceList"></div></div>
+			</div>
+			<div class="modal-footer"><button class="text-link" type="button" id="saveSingleAsPreset">＋ 保存当前为预设分单方案</button><div class="actions"><span class="modal-description" style="margin:0;color:#9aa5ad">现有单次分单流程，提交后立即生成一条分单记录。</span><button class="btn" type="button" data-close-split>取 消</button><button class="btn primary" type="button" id="singleSubmit">提 交</button></div></div>
+		</section>
+	</div>
+	<div class="modal-overlay" id="oneClickOverlay" hidden>
+		<section class="modal split-modal" role="dialog" aria-modal="true" aria-labelledby="oneClickTitle">
+			<div class="modal-head"><span class="modal-title" id="oneClickTitle">一键分单</span><button class="close-btn" type="button" data-close-split aria-label="关闭一键分单">×</button></div>
+			<div class="split-context"><span>服务单号：<strong id="oneClickService">SV202610152547011591</strong></span><span>商品：<strong id="oneClickProduct">德国VAT注册+申报</strong></span><span>国家：<strong>德国</strong></span></div>
+			<div class="split-body">
+				<div class="split-section"><div class="split-section-title"><small>默认按顺序生成多条分单</small></div>
+					<div class="preset-summary-card">
+						<div class="preset-summary-head"><div class="preset-line"><label for="splitPreset">预设分单方案</label><select class="preset-select" id="splitPreset"><option value="">未选择预设分单方案</option></select></div></div>
+						<div class="preset-summary preset-summary-empty" id="presetSummary">未选择预设分单方案，当前明细可直接手动配置。</div>
+						<div class="preset-summary-footer"><button class="text-link" type="button" id="managePresets">管理预设分单方案</button></div>
+					</div>
+					<div class="inline-confirm" id="presetApplyConfirm" hidden><span>同步预设分单方案将覆盖当前已修改的分单明细，是否继续？</span><span class="actions"><button class="btn" type="button" id="cancelPresetApply">取消</button><button class="btn primary" type="button" id="confirmPresetApply">继续同步</button></span></div>
+				</div>
+				<div class="split-section" id="multipleConfigPanel"><div class="split-section-title">分单明细 <small>可调整执行顺序、产品和渠道资源；通过复制或删除明细调整条数</small></div><table class="split-table"><thead><tr><th style="width:76px">明细</th><th>结算产品</th><th>结算渠道服务项</th><th style="width:180px">渠道资源</th><th style="width:116px">操作</th></tr></thead><tbody id="multiSplitRows"></tbody></table></div>
+			</div>
+			<div class="modal-footer"><button class="text-link" type="button" id="saveAsPreset">＋ 保存当前为预设分单方案</button><div class="actions"><button class="btn" type="button" data-close-split>取 消</button><button class="btn primary" type="button" id="submitOneClick">提交一键分单</button></div></div>
+		</section>
+	</div>
+	<div class="modal-overlay" id="splitChangeConfirmOverlay" hidden>
+		<section class="modal change-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="splitChangeConfirmTitle">
+			<div class="modal-head"><span class="modal-title" id="splitChangeConfirmTitle">变更分单确认</span><button class="close-btn" type="button" id="cancelSplitChangeTop" aria-label="关闭变更分单确认">×</button></div>
+			<div class="change-warning"><span class="change-warning-icon">!</span><div><strong>检测到已有分单并已完成结算</strong><p id="splitChangeConfirmText">继续操作将变更已有分单关系，请确认是否继续。</p></div></div>
+			<div class="change-affected" id="splitChangeAffectedList"></div>
+			<div class="modal-footer"><span class="modal-description" style="margin:0;color:#9aa5ad">确认后进入分单配置，提交后将按新配置处理。</span><div class="actions"><button class="btn" type="button" id="cancelSplitChange">取消</button><button class="btn primary" type="button" id="confirmSplitChange">确认变更分单</button></div></div>
+		</section>
+	</div>
+	<div class="modal-overlay" id="presetOverlay" hidden>
+		<section class="modal preset-modal" role="dialog" aria-modal="true" aria-labelledby="presetTitle">
+			<div class="modal-head"><span class="modal-title" id="presetTitle">预设分单方案</span><button class="close-btn" type="button" data-close-split aria-label="关闭预设分单方案">×</button></div>
+			<p class="modal-description">方案保存单条或按顺序的产品、服务项、渠道资源组合。选择后会同步到当前分单明细。</p>
+			<div class="preset-create" id="presetCreate" hidden><label for="presetSaveTarget">保存方式</label><select id="presetSaveTarget" aria-label="预设分单方案保存方式"><option value="new">新建方案</option></select><label for="presetName">方案名称</label><input id="presetName" placeholder="例如：德国 VAT 三段式方案"><button class="btn primary" type="button" id="createPreset" style="margin-left:8px">保存</button></div>
+			<div class="preset-list" id="presetList"></div>
+			<div class="modal-footer"><div class="actions"><button class="btn" type="button" data-close-split>关 闭</button></div></div>
+		</section>
+	</div>
+	<script>
+	(() => {
+		"use strict";
+		const STORAGE_KEY = "kxt-one-click-split-order-v1";
+		const definitions = {
+			country: { label:"国家", items:[{id:"de",label:"德国"},{id:"mx",label:"墨西哥"},{id:"es",label:"西班牙"},{id:"eu",label:"欧盟"},{id:"ca",label:"加拿大"},{id:"nl",label:"荷兰"},{id:"jp",label:"日本"},{id:"fr",label:"法国"}] },
+			type: { label:"类型", items:[{id:"registration",label:"注册"},{id:"registration-declaration",label:"注册+申报"},{id:"transfer-declaration",label:"转代理+申报"},{id:"difference",label:"差价"},{id:"other",label:"其他"},{id:"registration-managed",label:"注册+申报（半托管）"},{id:"transfer-managed",label:"转代理+申报（半托管）"}] }
+		};
+		const statuses = ["全部","待上传资料","待审核","待制作","待提交","处理中","部分完成","已完成","资料被驳回","资料支持","已挂起","已驳回","待处理","录入账号","待邮寄","邮寄机构","退款中","注销中","已注销","待复核资料"];
+		const defaultVisible = key => definitions[key].items.map(item => item.id).concat("all");
+		const normalizeVisible = (key, value) => {
+			if (!Array.isArray(value)) return defaultVisible(key);
+			const allowed = new Set(definitions[key].items.map(item => item.id));
+			return [...new Set(value.filter(id => allowed.has(id))), "all"];
+		};
+		const nameOf = (key, id) => id === "all" ? "全部" : definitions[key].items.find(item => item.id === id)?.label || "";
+		const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
+		let config = { country:{visible:defaultVisible("country")}, type:{visible:defaultVisible("type")} };
+		try {
+			const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+			if (saved && saved.version === 1) {
+				for (const key of Object.keys(definitions)) config[key].visible = normalizeVisible(key, saved[key]?.visible);
+			}
+		} catch (_) { /* 默认配置可继续体验，保存时仍会明确反馈失败。 */ }
+		const state = { selected:{country:config.country.visible[0],type:config.type.visible[0]}, status:"全部", page:1, pageSize:10, checked:new Set(), appliedKeyword:"", appliedLevel:"", appliedDeadline:{start:"",end:""} };
+		let draft = null;
+		let editorKey = null;
+		let editorTrigger = null;
+		let dragId = null;
+		let toastTimer = null;
+		let pendingSplitChangeAction = null;
+		let openMoreKey = null;
+		const $ = id => document.getElementById(id);
+		const sampleRows = [];
+		let seed = 0;
+		for (const [countryIndex, country] of definitions.country.items.entries()) {
+			for (const [typeIndex, type] of definitions.type.items.entries()) {
+				const count = country.id === "de" && type.id === "registration" ? 26 : (country.id === "mx" && type.id === "difference" ? 0 : 2 + ((countryIndex * 2 + typeIndex) % 4));
+				for (let i = 0; i < count; i++) {
+					seed++;
+					sampleRows.push({ id:String(seed), country:country.id, type:type.id, category:"VAT", node:country.id === "de" && type.id === "registration" && i < 3 ? "资料审核" : (i % 2 ? "订单录入" : "资料审核"), customer:country.id === "de" && type.id === "registration" && i < 3 ? "深圳跨信通科技有限公司" : "客户" + String((seed % 6) + 1), deadline:i % 11 === 10 ? "" : "2026-" + String(10 + (i % 3)).padStart(2,"0") + "-" + String(1 + ((i * 3 + countryIndex + typeIndex) % 28)).padStart(2,"0"), code:"SV20261015" + String(2547011590 + seed).padStart(10,"0"), order:"DD261015" + String(687210199 + seed), status:i < 10 && country.id === "de" && type.id === "registration" ? ["待上传资料","待审核","待提交","处理中","已完成"][i % 5] : statuses[1 + (seed % 9)], level:["D","D","D","C","B","A"][i % 6], source:i % 3 === 0 ? "crm" : "saas客户端", product:country.label + "VAT" + type.label, splitGenerated:country.id === "de" && type.id === "registration" && i === 4, settlementCompleted:country.id === "de" && type.id === "registration" && i === 4, settledProduct:"P00967 · 注册+申报", spec:i % 4 === 0 ? "公司注册地（香港公司） 税号类型（本土税号+VIES税号） 服务类型（Saas服务）" : "公司注册地（中国公司及其他） " + (i % 2 ? "是否进行ZM申报（否） " : "") + "服务类型（Saas服务）" });
+				}
+			}
+		}
+		function notify(message, tone="success") {
+			clearTimeout(toastTimer);
+			$("toast").classList.toggle("error", tone === "error");
+			$("toast").innerHTML = '<span class="tick">' + (tone === "error" ? "!" : "✓") + '</span>' + escapeHtml(message);
+			$("toast").classList.add("show");
+			toastTimer = setTimeout(() => $("toast").classList.remove("show"), 2300);
+		}
+		function enterFulfillmentWorkbench() {
+			document.querySelectorAll(".sidebar .menu.active").forEach(menu => menu.classList.remove("active"));
+			const nav = $("fulfillmentWorkbenchNav");
+			nav.classList.add("active");
+			nav.setAttribute("aria-current", "page");
+			document.querySelectorAll(".page-tabs .page-tab.active").forEach(tab => tab.classList.remove("active"));
+			$("fulfillmentWorkbenchTab").classList.add("active");
+			notify("已进入履约工作台，可在当前列表使用批量操作");
+			$("batchOperationButton").focus();
+		}
+		function closeMore() {
+			for (const key of Object.keys(definitions)) { $(key + "More").hidden = true; $(key + "MoreButton").setAttribute("aria-expanded","false"); }
+			openMoreKey = null;
+		}
+		function renderFilter(key) {
+			const selected = state.selected[key];
+			$(key + "Chips").innerHTML = config[key].visible.map(id => '<button type="button" class="chip' + (selected === id ? ' active' : '') + '" data-filter="' + key + '" data-value="' + id + '" data-testid="' + key + '-option-' + id + '" aria-pressed="' + (selected === id) + '">' + escapeHtml(nameOf(key,id)) + '</button>').join("");
+			const hiddenItems = definitions[key].items.filter(item => !config[key].visible.includes(item.id));
+			$(key + "MoreButton").hidden = !hiddenItems.length;
+			$(key + "MoreButton").textContent = "更多（" + hiddenItems.length + "）⌄";
+			$(key + "More").innerHTML = '<div class="more-title">已收起的' + definitions[key].label + ' · 点击即可筛选</div><div class="more-grid">' + hiddenItems.map(item => '<button type="button" class="more-item' + (selected === item.id ? ' active' : '') + '" data-filter="' + key + '" data-value="' + item.id + '" data-testid="' + key + '-more-option-' + item.id + '">' + escapeHtml(item.label) + '</button>').join("") + '</div>';
+			const isHiddenSelection = !config[key].visible.includes(selected);
+			$(key + "HiddenSelected").hidden = !isHiddenSelection;
+			$(key + "HiddenSelected").innerHTML = isHiddenSelection ? '当前选中：<strong>' + escapeHtml(nameOf(key,selected)) + '</strong> <small>（已收起）</small>' : "";
+		}
+		function baseRows() {
+			const {start,end}=state.appliedDeadline;
+			return sampleRows.filter(row => (state.selected.country === "all" || row.country === state.selected.country) && (state.selected.type === "all" || row.type === state.selected.type) && (!state.appliedKeyword || row.code.toLowerCase().includes(state.appliedKeyword) || row.order.toLowerCase().includes(state.appliedKeyword)) && (!state.appliedLevel || row.level === state.appliedLevel) && ((!start && !end) || (row.deadline && (!start || row.deadline >= start) && (!end || row.deadline <= end))));
+		}
+		function renderResults() {
+			const base = baseRows();
+			$("statusTabs").innerHTML = statuses.map(status => {
+				const count = status === "全部" ? base.length : base.filter(row => row.status === status).length;
+				return '<button class="status-tab' + (state.status === status ? ' active' : '') + '" type="button" data-status="' + status + '" aria-pressed="' + (state.status === status) + '">' + status + ' (' + count + ')</button>';
+			}).join("");
+			const result = base.filter(row => state.status === "全部" || row.status === state.status);
+			const pages = Math.max(1,Math.ceil(result.length/state.pageSize));
+			state.page = Math.min(state.page,pages);
+			const rows = result.slice((state.page-1)*state.pageSize,state.page*state.pageSize);
+			$("serviceRows").innerHTML = rows.length ? rows.map((row,index) => '<tr data-row-id="' + row.id + '"><td><input type="checkbox" class="check row-check" data-row="' + row.id + '" aria-label="选择服务 ' + row.code + '"' + (state.checked.has(row.id) ? ' checked' : '') + '></td><td>' + ((state.page-1)*state.pageSize+index+1) + '</td><td><span class="link">' + row.code + '</span><span class="inline-symbol">▢ ♧</span></td><td>SAAS服务</td><td title="' + escapeHtml(row.spec) + '">' + escapeHtml(row.spec) + '</td><td>' + row.level + '</td><td>线上</td><td><span class="link">' + row.order + '</span><span class="inline-symbol">▢</span></td><td>' + row.source + '</td><td title="' + escapeHtml(row.product) + '">' + escapeHtml(row.product) + '</td><td><button type="button" class="row-action" data-row-action="上传资料">上传资料</button><button type="button" class="row-action" data-row-action="强制驳回">强制驳回</button><button type="button" class="row-action" data-row-action="更多" aria-haspopup="menu">更多⌄</button></td></tr>').join("") : '<tr class="empty-row" data-testid="empty-state"><td colspan="11"><div class="empty-icon" aria-hidden="true"></div><div class="empty-title">暂无符合条件的服务</div><div class="empty-desc">请调整国家、类型或其他筛选条件后重试</div></td></tr>';
+			const pageButtons = Array.from({length:Math.min(pages,5)},(_,i) => '<button type="button" class="page-btn' + (state.page === i+1 ? ' active' : '') + '" data-page="' + (i+1) + '" aria-label="第' + (i+1) + '页">' + (i+1) + '</button>').join("");
+			$("pagination").innerHTML = '<span style="margin-right:5px" data-testid="result-count">共有 ' + result.length + ' 条数据</span><button type="button" class="page-btn" data-page="' + (state.page-1) + '" aria-label="上一页"' + (state.page === 1 ? ' disabled' : '') + '>〈</button>' + pageButtons + '<button type="button" class="page-btn" data-page="' + (state.page+1) + '" aria-label="下一页"' + (state.page === pages ? ' disabled' : '') + '>〉</button><select class="page-size" id="pageSize" aria-label="每页条数"><option value="10"' + (state.pageSize===10 ? ' selected' : '') + '>10条/页</option><option value="20"' + (state.pageSize===20 ? ' selected' : '') + '>20条/页</option></select><span>跳至</span><input class="page-input" id="pageJump" type="number" min="1" max="' + pages + '" value="' + state.page + '" aria-label="跳转页码"><span>页</span>';
+			updateSelection(rows);
+		}
+		function updateSelection(rows) {
+			$("selectionCount").textContent = "已选择 " + state.checked.size + " 项";
+			$("batchOperationButton").classList.toggle("has-selection", state.checked.size > 0);
+			const shown = rows || [...document.querySelectorAll(".row-check")].map(input => ({id:input.dataset.row}));
+			const count = shown.filter(row => state.checked.has(row.id)).length;
+			$("selectAll").checked = !!shown.length && count === shown.length;
+			$("selectAll").indeterminate = count > 0 && count < shown.length;
+		}
+		function refreshSelection() { state.page=1; state.checked.clear(); renderFilter("country"); renderFilter("type"); renderResults(); }
+		function selectFilter(key,id) { state.selected[key]=id; closeMore(); refreshSelection(); }
+		function openEditor(key,trigger) {
+			closeMore(); editorKey=key; editorTrigger=trigger; draft={visible:[...config[key].visible]};
+			$("editorTitle").textContent="编辑"+definitions[key].label;
+			$("saveError").classList.remove("show");
+			$("editorOverlay").hidden=false; document.body.classList.add("modal-open"); renderEditor();
+			$("editorClose").focus();
+		}
+		function closeEditor() {
+			$("editorOverlay").hidden=true; document.body.classList.remove("modal-open");
+			draft=null; editorKey=null; dragId=null;
+			if (editorTrigger) editorTrigger.focus();
+		}
+		function renderEditor() {
+			const ordinary = draft.visible.filter(id => id !== "all");
+			const hidden = definitions[editorKey].items.filter(item => !draft.visible.includes(item.id));
+			$("visibleCount").textContent=draft.visible.length; $("hiddenCount").textContent=hidden.length;
+			$("visibleList").innerHTML=ordinary.map((id,index) => '<div class="editor-item" draggable="true" data-editor-id="' + id + '" data-testid="editor-item-' + id + '"><span class="drag-handle" aria-hidden="true">⠿</span><span class="item-name">' + escapeHtml(nameOf(editorKey,id)) + '</span><span class="item-controls"><button type="button" class="move-btn" data-move="-1" data-id="' + id + '" aria-label="前移' + escapeHtml(nameOf(editorKey,id)) + '"' + (index===0 ? ' disabled' : '') + '>↑</button><button type="button" class="move-btn" data-move="1" data-id="' + id + '" aria-label="后移' + escapeHtml(nameOf(editorKey,id)) + '"' + (index===ordinary.length-1 ? ' disabled' : '') + '>↓</button><button type="button" class="item-action" data-hide="' + id + '" aria-label="收起' + escapeHtml(nameOf(editorKey,id)) + '">收起</button></span></div>').join("") + '<div class="editor-item fixed-item" data-editor-id="all" data-testid="editor-item-all" draggable="false"><span class="drag-handle" aria-hidden="true">▣</span><span class="item-name">全部</span><span class="fixed-label">固定最后 · 不可收起</span></div>';
+			$("hiddenList").innerHTML=hidden.length ? hidden.map(item => '<div class="editor-item" data-testid="hidden-item-' + item.id + '"><span class="item-name">' + escapeHtml(item.label) + '</span><button type="button" class="item-action" data-show="' + item.id + '" aria-label="将' + escapeHtml(item.label) + '放到页面">放到页面</button></div>').join("") : '<div class="list-empty"><strong>暂无收起选项</strong><span>不常用选项可从左侧收起</span></div>';
+		}
+		function editDraft(action,id,direction) {
+			if (!draft || id === "all") return;
+			const current=draft.visible.indexOf(id);
+			if (action === "hide" && current>=0) draft.visible.splice(current,1);
+			if (action === "show" && current<0) draft.visible.splice(draft.visible.length-1,0,id);
+			if (action === "move") {
+				const next=current+direction;
+				if (current<0 || next<0 || next>=draft.visible.length-1) return;
+				[draft.visible[current],draft.visible[next]]=[draft.visible[next],draft.visible[current]];
+			}
+			$("saveError").classList.remove("show"); renderEditor();
+		}
+		function saveEditor() {
+			if (!draft || !editorKey) return;
+			const next={version:1,country:{visible:[...config.country.visible]},type:{visible:[...config.type.visible]}};
+			next[editorKey].visible=normalizeVisible(editorKey,draft.visible);
+			try { localStorage.setItem(STORAGE_KEY,JSON.stringify(next)); }
+			catch (_) { $("saveError").classList.add("show"); return; }
+			const key=editorKey;
+			const selectedWasVisible=config[key].visible.includes(state.selected[key]);
+			config={country:next.country,type:next.type};
+			if (selectedWasVisible && !config[key].visible.includes(state.selected[key])) state.selected[key]=config[key].visible[0];
+			closeEditor(); refreshSelection(); notify(definitions[key].label+"展示配置已保存");
+		}
+		const splitResources = [
+			{id:"kzep", company:"深圳跨信通科技有限公司", code:"KXTEPunkt000", name:"KZEPKT000"},
+			{id:"khzx", company:"深圳普睿达知识产权有限公司", code:"KZX2112", name:"KHZX1007"},
+			{id:"kxtams", company:"AMS APEX E-commerce GmbH", code:"KXTAMS", name:"KXT普官AMS"}
+		];
+		let splitState = { rowId:null, batchIds:[], mode:"multiple", count:3, resource:"kzep", items:[], appliedPresetId:null, pendingPresetId:null, presetContext:"multiple", dirty:false, presets:[
+			{id:"renewal", name:"德国 VAT 年度申报预设", isDefault:true, detail:"按顺序 · KZEPKT000 / KHZX1007", mode:"multiple", count:3, resource:"kzep", items:[{product:"P00967 · 注册+申报",service:"S88583 · 德国 VAT 服务",resource:"kzep"},{product:"P00966 · 注册",service:"S88583 · 德国 VAT 服务",resource:"kzep"},{product:"P00965 · 申报",service:"S88583 · 德国 VAT 服务",resource:"khzx"}]},
+			{id:"vat-three-step", name:"德国 VAT 三段式预设", detail:"按顺序 · KZEPKT000 / KHZX1007", mode:"multiple", count:3, resource:"kzep", items:[{product:"P00967 · 注册+申报",service:"S88583 · 德国 VAT 服务",resource:"kzep"},{product:"P00966 · 注册",service:"S88583 · 德国 VAT 服务",resource:"kzep"},{product:"P00959 · 代理申报",service:"S88583 · 德国 VAT 服务",resource:"khzx"}]}
+		]};
+		const splitProducts = ["P00967 · 注册+申报","P00966 · 注册","P00965 · 申报","P00959 · 代理申报"];
+		const splitServices = ["S88583 · 德国 VAT 服务","S88584 · 德国申报服务"];
+		function getService(id) { return sampleRows.find(row => row.id === id) || sampleRows[0]; }
+		function setOverlay(id, visible) { $(id).hidden = !visible; document.body.classList.toggle("modal-open", visible || !!draft); }
+		function closeSplitOverlays() { ["singleSplitOverlay","oneClickOverlay","splitChangeConfirmOverlay","presetOverlay"].forEach(id => setOverlay(id,false)); pendingSplitChangeAction=null; $("rowActionMenu").hidden=true; $("batchOperationMenu").hidden=true; $("batchOperationButton").setAttribute("aria-expanded","false"); }
+		function renderResourceCards(targetId, selectedId, inputName) {
+			$(targetId).innerHTML = splitResources.map(item => '<label class="resource-card' + (item.id === selectedId ? ' selected' : '') + '"><input type="radio" name="' + inputName + '" value="' + item.id + '"' + (item.id === selectedId ? ' checked' : '') + '><span><strong>' + escapeHtml(item.company) + '</strong><span>' + escapeHtml(item.code) + ' · ' + escapeHtml(item.name) + '</span></span></label>').join("");
+		}
+		function openRowMenu(button,rowId) {
+			const menu=$("rowActionMenu");
+			menu.innerHTML='<button type="button" role="menuitem" data-menu-command="single">分单</button><button type="button" role="menuitem" data-menu-command="one-click">一键分单</button><div class="menu-divider"></div><button type="button" role="menuitem" data-menu-command="view-split">查看分单</button>';
+			const rect=button.getBoundingClientRect(); const width=178;
+			menu.style.left=Math.max(8,Math.min(window.innerWidth-width-8,rect.right-width))+'px';
+			menu.style.top=Math.min(window.innerHeight-150,rect.bottom+4)+'px'; menu.hidden=false; splitState.rowId=rowId;
+		}
+		function selectedRows() { return [...state.checked].map(id=>sampleRows.find(row=>row.id===id)).filter(Boolean); }
+		function batchConditionKeys() { return [{key:"customer",label:"同客户"},{key:"type",label:"同类型"},{key:"category",label:"同类目"},{key:"country",label:"同国家"},{key:"node",label:"同节点"}]; }
+		function validateBatchRows(rows) { if (rows.length < 2) return {valid:false, message:"请至少选择 2 条服务单后再进行批量一键分单。", differences:[]}; const differences=batchConditionKeys().filter(condition=>new Set(rows.map(row=>row[condition.key])).size>1); return {valid:differences.length===0, message:differences.length ? "所选服务单不满足批量一键分单条件：" + differences.map(item=>item.label).join("、") + "不一致。" : "", differences}; }
+		function splitChangeRows(rows) { return rows.filter(row => row.splitGenerated && row.settlementCompleted); }
+		function requestSplitChangeConfirmation(rows, action) { const affected=splitChangeRows(rows); if (!affected.length) { action(); return; } pendingSplitChangeAction=action; $("splitChangeConfirmText").textContent="以下服务单的结算产品已完成结算，继续操作将变更已有分单关系。"; $("splitChangeAffectedList").innerHTML=affected.map(row=>'<div><strong>'+escapeHtml(row.code)+'</strong> · '+escapeHtml(row.settledProduct || row.product)+' · 已完成结算</div>').join(""); setOverlay("splitChangeConfirmOverlay",true); $("confirmSplitChange").focus(); }
+		function confirmSplitChange() { const action=pendingSplitChangeAction; pendingSplitChangeAction=null; setOverlay("splitChangeConfirmOverlay",false); if (action) action(); }
+		function cancelSplitChange() { pendingSplitChangeAction=null; setOverlay("splitChangeConfirmOverlay",false); }
+		function proceedBatchOneClick(rows) { splitState.batchIds=rows.map(row=>row.id); openOneClick(rows[0].id); $("oneClickTitle").textContent="批量一键分单"; $("oneClickService").textContent=rows.length+" 条服务单"; $("oneClickProduct").textContent=rows[0].customer+" · "+nameOf("type",rows[0].type)+" · "+rows[0].category+" · "+nameOf("country",rows[0].country)+" · "+rows[0].node; }
+		function startBatchOneClick() { const rows=selectedRows(); const validation=validateBatchRows(rows); if (!validation.valid) { notify(validation.message,"error"); return; } requestSplitChangeConfirmation(rows,() => proceedBatchOneClick(rows)); }
+		function startSingleOneClick(rowId) { const row=getService(rowId); requestSplitChangeConfirmation([row],() => openOneClick(rowId)); }
+		function openSingleSplit(rowId) {
+			const row=getService(rowId); splitState.rowId=rowId; splitState.presetContext="single"; $("singleProduct").textContent=row.product || "德国VAT注册+申报"; renderResourceCards("singleResourceList",splitState.resource,"single-resource"); setOverlay("singleSplitOverlay",true); $("singleSplitOverlay").querySelector("[data-close-split]").focus();
+		}
+		function startSingleSplit(rowId) { const row=getService(rowId); requestSplitChangeConfirmation([row],() => openSingleSplit(rowId)); }
+		function createSplitItem(index, source) { return { product:source?.product || splitProducts[index % splitProducts.length], service:source?.service || splitServices[0], resource:source?.resource || (index % 2 === 0 ? splitState.resource : "khzx") }; }
+		function ensureSplitItems(count) { while (splitState.items.length < count) splitState.items.push(createSplitItem(splitState.items.length)); if (splitState.items.length > count) splitState.items=splitState.items.slice(0,count); }
+		function getDefaultPreset() { return splitState.presets.find(item=>item.isDefault) || splitState.presets[0] || null; }
+		function normalizeDefaultPreset() { const first=getDefaultPreset(); splitState.presets.forEach(item=>{ item.isDefault=Boolean(first && item.id===first.id); }); return first; }
+		function renderPresetOptions(selectedId) { const select=$("splitPreset"); select.innerHTML='<option value="">未选择预设分单方案</option>'+splitState.presets.map(preset=>'<option value="'+escapeHtml(preset.id)+'">'+escapeHtml(preset.name)+(preset.isDefault?'（默认）':'')+'</option>').join(""); select.value=selectedId || ""; }
+		function presetResourceSummary(preset) { return (preset.items || []).map(item => splitResources.find(resource=>resource.id===item.resource)?.name || item.resource).filter(Boolean).filter((name,index,array)=>array.indexOf(name)===index).join(" / "); }
+		function updatePresetSummary() {
+			const id=$("splitPreset").value, preset=splitState.presets.find(item=>item.id===id);
+			const summary=$("presetSummary");
+			if (!preset) { summary.className="preset-summary preset-summary-empty"; summary.innerHTML="未选择预设分单方案，当前明细可直接手动配置。"; return; }
+			summary.className="preset-summary";
+			summary.innerHTML='<strong>' + escapeHtml(preset.name) + '</strong> · ' + escapeHtml(presetResourceSummary(preset) || preset.detail) + '　<span>' + (id===splitState.appliedPresetId ? '已同步' : '待同步') + '</span>';
+		}
+		function syncSplitItems() { document.querySelectorAll("#multiSplitRows tr").forEach((row,index) => { splitState.items[index]={product:row.querySelector("[data-field=product]").value,service:row.querySelector("[data-field=service]").value,resource:row.querySelector("[data-field=resource]").value}; }); }
+		function renderMultiRows() {
+			const count=Math.max(2,Math.min(5,splitState.items.length || 3)); ensureSplitItems(count); splitState.count=count;
+			$("multiSplitRows").innerHTML=splitState.items.map((item,index) => '<tr><td class="split-row-label">分单 ' + (index+1) + '</td><td><select data-field="product" aria-label="分单' + (index+1) + '结算产品">' + splitProducts.map(p=>'<option' + (p===item.product?' selected':'') + '>' + p + '</option>').join("") + '</select></td><td><select data-field="service" aria-label="分单' + (index+1) + '渠道服务项">' + splitServices.map(p=>'<option' + (p===item.service?' selected':'') + '>' + p + '</option>').join("") + '</select></td><td><select data-field="resource" aria-label="分单' + (index+1) + '渠道资源">' + splitResources.map(r=>'<option value="' + r.id + '"' + (r.id===item.resource?' selected':'') + '>' + r.name + '</option>').join("") + '</select></td><td><div class="split-row-actions"><button type="button" data-row-copy="' + index + '">复制</button><button type="button" class="delete" data-row-delete="' + index + '"' + (count<=2?' disabled':'') + '>删除</button></div></td></tr>').join("");
+			updatePresetSummary();
+		}
+		function renderOneClick() {
+			const row=getService(splitState.rowId); const defaultPreset=normalizeDefaultPreset(); $("oneClickService").textContent=row.code; $("oneClickProduct").textContent=row.product || "德国VAT注册+申报"; splitState.items=defaultPreset ? defaultPreset.items.map(item=>({...item})) : [createSplitItem(0),createSplitItem(1),createSplitItem(2)]; splitState.count=defaultPreset?.count || splitState.items.length; splitState.resource=defaultPreset?.resource || splitState.resource; splitState.appliedPresetId=defaultPreset?.id || null; splitState.pendingPresetId=null; splitState.presetContext="multiple"; splitState.dirty=false; renderPresetOptions(defaultPreset?.id || ""); $("presetApplyConfirm").hidden=true; renderMultiRows();
+		}
+		function openOneClick(rowId) { splitState.rowId=rowId; splitState.mode="multiple"; renderOneClick(); setOverlay("oneClickOverlay",true); }
+		function renderPresets() { $("presetList").innerHTML=splitState.presets.map(preset=>'<div class="preset-card"><div class="preset-card-main"><strong>' + escapeHtml(preset.name) + (preset.isDefault?'<span class="preset-default-badge">默认</span>':'') + '</strong><small>' + escapeHtml(preset.detail || (preset.mode === "single" ? "单条 · " : "按顺序 · ") + presetResourceSummary(preset)) + '</small></div><div class="preset-actions"><button type="button" data-preset-default="' + preset.id + '" class="text-link"' + (preset.isDefault?' disabled':'') + '>' + (preset.isDefault?'当前默认':'设为默认') + '</button><button type="button" data-preset-apply="' + preset.id + '">同步</button></div></div>').join(""); }
+		function renderPresetSaveTargets(selectedId) { const select=$("presetSaveTarget"); select.innerHTML='<option value="new">新建方案</option>'+splitState.presets.map(preset=>'<option value="'+escapeHtml(preset.id)+'">覆盖：'+escapeHtml(preset.name)+'</option>').join(""); select.value=selectedId || "new"; updatePresetSaveForm(); }
+		function updatePresetSaveForm() { const target=$("presetSaveTarget").value, isNew=target==="new", preset=splitState.presets.find(item=>item.id===target); $("presetName").disabled=!isNew; $("presetName").value=isNew ? "" : (preset?.name || ""); $("presetName").placeholder=isNew ? "例如：德国 VAT 三段式方案" : "覆盖时沿用现有方案名称"; }
+		function openPresets(create, context) { if (context) splitState.presetContext=context; renderPresets(); $("presetCreate").hidden=!create; if (create) renderPresetSaveTargets("new"); setOverlay("presetOverlay",true); }
+		function applySinglePreset(preset) { const item=(preset.items && preset.items[0]) || createSplitItem(0,{resource:preset.resource}); splitState.resource=item.resource; renderResourceCards("singleResourceList",splitState.resource,"single-resource"); setOverlay("presetOverlay",false); setOverlay("singleSplitOverlay",true); notify("已同步预设分单方案："+preset.name); }
+		function applyPresetNow(id) { const preset=splitState.presets.find(item=>item.id===id); if (!preset) return; splitState.mode="multiple"; const sourceItems=preset.items && preset.items.length ? preset.items : [createSplitItem(0,{resource:preset.resource})]; const targetCount=Math.max(2,Math.min(5,preset.mode === "single" ? 2 : (preset.count || sourceItems.length))); splitState.count=targetCount; splitState.resource=sourceItems[0].resource; splitState.items=Array.from({length:targetCount},(_,index)=>({...sourceItems[index % sourceItems.length]})); splitState.appliedPresetId=id; splitState.pendingPresetId=null; splitState.dirty=false; renderPresetOptions(id); $("presetApplyConfirm").hidden=true; setOverlay("presetOverlay",false); setOverlay("oneClickOverlay",true); renderMultiRows(); notify("已同步预设分单方案："+preset.name); }
+		function requestPresetApply(id) { const preset=splitState.presets.find(item=>item.id===id); if (!preset) return; if (splitState.presetContext === "single") { applySinglePreset(preset); return; } splitState.pendingPresetId=id; if (splitState.dirty) { $("presetApplyConfirm").hidden=false; return; } applyPresetNow(id); }
+		function handlePresetSelection(id) { if (!id) { splitState.pendingPresetId=null; splitState.appliedPresetId=null; updatePresetSummary(); return; } requestPresetApply(id); }
+		function submitOneClick() { if (splitState.batchIds.length) notify("已提交批量一键分单，共处理 "+splitState.batchIds.length+" 条服务单，生成 "+(splitState.batchIds.length*splitState.count)+" 条分单记录"); else notify("已提交一键分单，共生成 "+splitState.count+" 条分单记录"); closeSplitOverlays(); splitState.batchIds=[]; }
+		document.addEventListener("click",event => {
+			const batchCommand=event.target.closest("[data-batch-command]");
+			if (batchCommand) { $("batchOperationMenu").hidden=true; $("batchOperationButton").setAttribute("aria-expanded","false"); if (batchCommand.dataset.batchCommand === "batch-one-click") startBatchOneClick(); else notify("此 DEMO 暂仅演示批量一键分单"); return; }
+			const command=event.target.closest("[data-menu-command]");
+			if (command) {
+				$("rowActionMenu").hidden=true;
+				if (command.dataset.menuCommand === "single") startSingleSplit(splitState.rowId);
+				if (command.dataset.menuCommand === "one-click") startSingleOneClick(splitState.rowId);
+				if (command.dataset.menuCommand === "view-split") notify("当前服务单暂无已生成的分单记录");
+				return;
+			}
+			const filter=event.target.closest("[data-filter]");
+			if (filter) { selectFilter(filter.dataset.filter,filter.dataset.value); return; }
+			const edit=event.target.closest("[data-edit]");
+			if (edit) { openEditor(edit.dataset.edit,edit); return; }
+			const status=event.target.closest("[data-status]");
+			if (status) { state.status=status.dataset.status; state.page=1; state.checked.clear(); renderResults(); return; }
+			const page=event.target.closest("[data-page]");
+			if (page && !page.disabled) { state.page=Number(page.dataset.page); state.checked.clear(); renderResults(); return; }
+			const action=event.target.closest("[data-row-action]");
+			if (action) {
+				if (action.dataset.rowAction === "更多") { openRowMenu(action,action.closest("tr").dataset.rowId); return; }
+				notify("此 DEMO 仅演示一键分单交互");
+			}
+			if (!event.target.closest("#rowActionMenu") && !event.target.closest("[data-row-action=\"更多\"]")) $("rowActionMenu").hidden=true;
+			if (!event.target.closest(".batch-action-wrap")) { $("batchOperationMenu").hidden=true; $("batchOperationButton").setAttribute("aria-expanded","false"); }
+			if (!event.target.closest(".more-anchor")) closeMore();
+		});
+		for (const key of Object.keys(definitions)) $(key+"MoreButton").addEventListener("click",() => {
+			const isOpen=openMoreKey===key; closeMore();
+			if (!isOpen) { $(key+"More").hidden=false; $(key+"MoreButton").setAttribute("aria-expanded","true"); openMoreKey=key; }
+		});
+		$("visibleList").addEventListener("click",event => {
+			const move=event.target.closest("[data-move]"); const hide=event.target.closest("[data-hide]");
+			if (move && !move.disabled) editDraft("move",move.dataset.id,Number(move.dataset.move));
+			if (hide) editDraft("hide",hide.dataset.hide);
+		});
+		$("hiddenList").addEventListener("click",event => { const show=event.target.closest("[data-show]"); if (show) editDraft("show",show.dataset.show); });
+		$("visibleList").addEventListener("dragstart",event => {
+			const row=event.target.closest("[data-editor-id]"); if (!row || row.dataset.editorId === "all" || !draft) { event.preventDefault(); return; }
+			dragId=row.dataset.editorId; row.classList.add("dragging"); event.dataTransfer.effectAllowed="move"; event.dataTransfer.setData("text/plain",dragId);
+		});
+		$("visibleList").addEventListener("dragover",event => {
+			if (!dragId) return; event.preventDefault(); event.dataTransfer.dropEffect="move";
+			document.querySelectorAll(".drag-target").forEach(row => row.classList.remove("drag-target"));
+			const target=event.target.closest("[data-editor-id]"); if (target && target.dataset.editorId!==dragId) target.classList.add("drag-target");
+		});
+		$("visibleList").addEventListener("drop",event => {
+			if (!dragId || !draft) return; event.preventDefault();
+			const target=event.target.closest("[data-editor-id]"); const targetId=target ? target.dataset.editorId : "all";
+			if (targetId!==dragId) { draft.visible=draft.visible.filter(id => id!==dragId); draft.visible.splice(draft.visible.indexOf(targetId),0,dragId); $("saveError").classList.remove("show"); }
+			dragId=null; renderEditor();
+		});
+		$("visibleList").addEventListener("dragend",() => { dragId=null; document.querySelectorAll(".drag-target,.dragging").forEach(row => row.classList.remove("drag-target","dragging")); });
+		$("editorClose").addEventListener("click",closeEditor); $("editorCancel").addEventListener("click",closeEditor); $("editorSave").addEventListener("click",saveEditor);
+		$("editorOverlay").addEventListener("click",event => { if (event.target === $("editorOverlay")) closeEditor(); });
+		$("restoreButton").addEventListener("click",() => { if (!draft) return; draft.visible=defaultVisible(editorKey); $("saveError").classList.remove("show"); renderEditor(); });
+		document.addEventListener("keydown",event => {
+			if (event.key === "Escape") { if (draft) closeEditor(); else if (!$('splitChangeConfirmOverlay').hidden) cancelSplitChange(); else closeMore(); }
+			if (event.key === "Tab" && draft) {
+				const focusable=[...$("editorOverlay").querySelectorAll("button:not(:disabled)")].filter(button => !button.hidden);
+				const first=focusable[0],last=focusable[focusable.length-1];
+				if (event.shiftKey && document.activeElement===first) { event.preventDefault(); last.focus(); }
+				if (!event.shiftKey && document.activeElement===last) { event.preventDefault(); first.focus(); }
+			}
+		});
+		function setDeadlineError(visible) {
+			$("serviceDeadlineError").hidden=!visible;
+			$("serviceDeadlineField").classList.toggle("invalid",visible);
+			$("serviceDeadlineStart").setAttribute("aria-invalid",String(visible));
+			$("serviceDeadlineEnd").setAttribute("aria-invalid",String(visible));
+		}
+		function applySearch() {
+			const start=$("serviceDeadlineStart").value,end=$("serviceDeadlineEnd").value;
+			if (start && end && start>end) {
+				setDeadlineError(true); $("detailFilters").hidden=false; $("detailToggle").textContent="⌃ 收起"; $("detailToggle").setAttribute("aria-expanded","true"); $("serviceDeadlineStart").focus(); return;
+			}
+			setDeadlineError(false); state.appliedDeadline={start,end}; state.appliedKeyword=$("keyword").value.trim().toLowerCase(); state.appliedLevel=$("customerLevel").value; state.page=1; state.checked.clear(); renderResults();
+		}
+		$("searchButton").addEventListener("click",applySearch);
+		$("keyword").addEventListener("keydown",event => { if (event.key === "Enter") applySearch(); });
+		for (const id of ["serviceDeadlineStart","serviceDeadlineEnd"]) {
+			$(id).addEventListener("keydown",event => { if (event.key === "Enter") applySearch(); });
+			$(id).addEventListener("input",() => setDeadlineError(false));
+		}
+		$("resetButton").addEventListener("click",() => {
+			state.selected.country=config.country.visible[0]; state.selected.type=config.type.visible[0]; state.status="全部"; state.appliedKeyword=""; state.appliedLevel=""; state.appliedDeadline={start:"",end:""}; setDeadlineError(false);
+			document.querySelectorAll(".filters input").forEach(input => input.value="");
+			document.querySelectorAll(".filters select").forEach(select => select.selectedIndex=0);
+			closeMore(); refreshSelection(); notify("筛选条件已重置，展示配置已保留");
+		});
+		$("detailToggle").addEventListener("click",() => { const expanded=!$("detailFilters").hidden; $("detailFilters").hidden=expanded; $("detailToggle").textContent=expanded ? "⌄ 展开" : "⌃ 收起"; $("detailToggle").setAttribute("aria-expanded",String(!expanded)); });
+		$("serviceRows").addEventListener("change",event => { const input=event.target.closest(".row-check"); if (!input) return; if (input.checked) state.checked.add(input.dataset.row); else state.checked.delete(input.dataset.row); updateSelection(); });
+		$("selectAll").addEventListener("change",event => { document.querySelectorAll(".row-check").forEach(input => { input.checked=event.target.checked; if (input.checked) state.checked.add(input.dataset.row); else state.checked.delete(input.dataset.row); }); updateSelection(); });
+		$("pagination").addEventListener("change",event => { if (event.target.id === "pageSize") { state.pageSize=Number(event.target.value); state.page=1; state.checked.clear(); renderResults(); } if (event.target.id === "pageJump") { const max=Number(event.target.max); state.page=Math.min(max,Math.max(1,Number(event.target.value)||1)); state.checked.clear(); renderResults(); } });
+		$("exportButton").addEventListener("click",() => notify("此 DEMO 仅演示国家与类型筛选及展示配置"));
+		$("tableSettings").addEventListener("click",() => notify("此 DEMO 仅演示一键分单交互"));
+		$("fulfillmentWorkbenchNav").addEventListener("click",enterFulfillmentWorkbench);
+		$("fulfillmentWorkbenchNav").addEventListener("keydown",event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); enterFulfillmentWorkbench(); } });
+		$("batchOperationButton").addEventListener("click",event => { event.stopPropagation(); const menu=$("batchOperationMenu"); const visible=!menu.hidden; menu.hidden=visible; $("batchOperationButton").setAttribute("aria-expanded",String(!visible)); });
+		$("confirmSplitChange").addEventListener("click",confirmSplitChange);
+		$("cancelSplitChange").addEventListener("click",cancelSplitChange);
+		$("cancelSplitChangeTop").addEventListener("click",cancelSplitChange);
+		document.querySelectorAll("[data-close-split]").forEach(button => button.addEventListener("click",closeSplitOverlays));
+		["singleSplitOverlay","oneClickOverlay","splitChangeConfirmOverlay","presetOverlay"].forEach(id => $(id).addEventListener("click",event => { if (event.target === $(id)) { if (id === "splitChangeConfirmOverlay") cancelSplitChange(); else closeSplitOverlays(); } }));
+		$("singleResourceList").addEventListener("change",event => { if (event.target.name === "single-resource") { splitState.resource=event.target.value; renderResourceCards("singleResourceList",splitState.resource,"single-resource"); } });
+		$("multiSplitRows").addEventListener("change",event => { if (!event.target.dataset.field) return; syncSplitItems(); splitState.dirty=true; splitState.appliedPresetId=null; updatePresetSummary(); });
+		$("multiSplitRows").addEventListener("click",event => { const copy=event.target.closest("[data-row-copy]"); const del=event.target.closest("[data-row-delete]"); if (copy) { syncSplitItems(); if (splitState.items.length>=5) return notify("最多支持 5 条分单"); const source=splitState.items[Number(copy.dataset.rowCopy)]; splitState.items.splice(Number(copy.dataset.rowCopy)+1,0,{...source}); splitState.count=splitState.items.length; splitState.dirty=true; renderMultiRows(); } if (del && !del.disabled) { syncSplitItems(); if (splitState.items.length<=2) return; splitState.items.splice(Number(del.dataset.rowDelete),1); splitState.count=splitState.items.length; splitState.dirty=true; renderMultiRows(); } });
+		$("splitPreset").addEventListener("change",event => handlePresetSelection(event.target.value));
+		$("cancelPresetApply").addEventListener("click",() => { splitState.pendingPresetId=null; renderPresetOptions(splitState.appliedPresetId || ""); $("presetApplyConfirm").hidden=true; updatePresetSummary(); });
+		$("confirmPresetApply").addEventListener("click",() => { if (splitState.pendingPresetId) applyPresetNow(splitState.pendingPresetId); });
+		$("managePresets").addEventListener("click",() => openPresets(false));
+		$("saveAsPreset").addEventListener("click",() => openPresets(true,"multiple"));
+		$("saveSingleAsPreset").addEventListener("click",() => openPresets(true,"single"));
+		$("presetSaveTarget").addEventListener("change",updatePresetSaveForm);
+		$("createPreset").addEventListener("click",() => { const target=$("presetSaveTarget").value; const name=$("presetName").value.trim(); if (target==="new" && !name) { $("presetName").focus(); return; } const existing=splitState.presets.find(item=>item.id===target); const id=existing?.id || "custom-"+Date.now(); const presetName=existing?.name || name; let preset; if (splitState.presetContext === "single") { preset={id,name:presetName,detail:"单条 · "+(splitResources.find(r=>r.id===splitState.resource)?.name || splitState.resource),mode:"single",count:1,resource:splitState.resource,items:[{product:splitProducts[0],service:splitServices[0],resource:splitState.resource}]}; } else { syncSplitItems(); preset={id,name:presetName,detail:"按顺序 · "+splitState.items.map(item=>splitResources.find(r=>r.id===item.resource)?.name || item.resource).filter((value,index,array)=>array.indexOf(value)===index).join(" / "),mode:"multiple",count:splitState.count,resource:splitState.items[0]?.resource || splitState.resource,items:splitState.items.map(item=>({...item}))}; } if (existing) { preset.isDefault=existing.isDefault; splitState.presets=splitState.presets.map(item=>item.id===existing.id ? preset : item); } else { if (!getDefaultPreset()) preset.isDefault=true; splitState.presets.push(preset); } renderPresetOptions($("splitPreset").value); renderPresets(); $("presetCreate").hidden=true; notify(existing ? "预设分单方案已覆盖保存" : "预设分单方案已保存"); });
+		$("presetList").addEventListener("click",event => { const makeDefault=event.target.closest("[data-preset-default]"); const use=event.target.closest("[data-preset-apply]"); if (makeDefault && !makeDefault.disabled) { const id=makeDefault.dataset.presetDefault; splitState.presets.forEach(item=>{ item.isDefault=item.id===id; }); renderPresetOptions($("splitPreset").value); renderPresets(); updatePresetSummary(); notify("已设为默认方案"); return; } if (use) requestPresetApply(use.dataset.presetApply); });
+		$("submitOneClick").addEventListener("click",submitOneClick);
+		$("singleSubmit").addEventListener("click",() => { notify("单次分单已提交"); closeSplitOverlays(); });
+		refreshSelection();
+		window.__serviceFilterDemo = { storageKey:STORAGE_KEY, getState:() => ({config:JSON.parse(JSON.stringify(config)),selected:{...state.selected},status:state.status,appliedDeadline:{...state.appliedDeadline},draft:draft ? {key:editorKey,visible:[...draft.visible]} : null,resultCount:baseRows().filter(row => state.status==="全部" || row.status===state.status).length,splitMode:splitState.mode,splitCount:splitState.count,presets:splitState.presets.map(item=>item.name)}) };
+	})();
+	</script>
+</body>
+</html>

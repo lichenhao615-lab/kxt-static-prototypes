@@ -146,6 +146,7 @@
 		.editor-hint { margin:12px 24px 18px; color:#8a96a2; line-height:1.8; font-size:11px; }
 		.editor-hint strong { font-weight:400; color:#52616f; }
 		.modal-footer { border-top:1px solid #e8edf1; min-height:62px; padding:16px 24px; display:flex; justify-content:space-between; gap:15px; align-items:center; }
+		.modal-footer.one-click-footer { justify-content:flex-end; }
 		.modal-footer .actions { display:flex; gap:9px; }
 		.restore-btn { border:0; padding:0; background:transparent; color:#7d8a97; white-space:nowrap; }
 		.save-error { display:none; color:#de5c5c; background:#fff5f4; border:1px solid #ffdfdc; margin:0 24px 14px; padding:9px 11px; line-height:1.6; }
@@ -287,7 +288,7 @@
 			<div class="split-body">
 				<div class="split-section" id="multipleConfigPanel"><div class="split-section-title">分单明细 <small>配置产品和渠道；通过新增或删除明细调整条数</small></div><table class="split-table"><thead><tr><th style="width:68px">明细</th><th style="width:190px">产品名称</th><th style="width:260px">渠道服务项</th><th style="width:230px">渠道</th><th style="width:100px">操作</th></tr></thead><tbody id="multiSplitRows"></tbody></table></div>
 			</div>
-			<div class="modal-footer"><div class="actions"><button class="btn" type="button" data-close-split>取 消</button><button class="btn primary" type="button" id="submitOneClick">提交一键分单</button></div></div>
+			<div class="modal-footer one-click-footer"><div class="actions"><button class="btn" type="button" data-close-split>取 消</button><button class="btn primary" type="button" id="submitOneClick">提交一键分单</button></div></div>
 		</section>
 	</div>
 	<div class="modal-overlay" id="splitChangeConfirmOverlay" hidden>

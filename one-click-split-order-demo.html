@@ -162,7 +162,7 @@
 		.batch-operation-menu button { width:100%; display:block; border:0; background:#fff; text-align:left; padding:9px 14px; color:#394650; font-size:11px; }
 		.batch-operation-menu button:hover { background:#eefafa; color:#008f98; }
 		.batch-operation-menu button:disabled { color:#b5bdc4; background:#fff; cursor:not-allowed; }
-		.split-modal { width:980px; max-width:100%; }
+		.split-modal { width:1120px; max-width:100%; }
 		.batch-modal { width:760px; max-width:100%; }
 		.batch-condition-card,.batch-selection-card { margin:0 24px 14px; padding:13px 14px; border:1px solid #e4ebef; background:#fbfdfd; }
 		.batch-condition-title { color:#44535e; font-size:12px; font-weight:500; margin-bottom:10px; }
@@ -185,8 +185,11 @@
 		.split-section-title { display:flex; align-items:center; gap:10px; margin-bottom:11px; color:#34424d; font-weight:500; }
 		.split-section-title small { color:#9aa4ad; font-weight:400; }
 		.mode-tabs { display:flex; gap:8px; }
-		.mode-tab { min-width:120px; height:34px; padding:0 15px; border:1px solid #dce4e8; background:#fff; color:#65727d; border-radius:2px; }
+		.mode-tab { min-width:150px; min-height:34px; height:auto; padding:6px 15px; border:1px solid #dce4e8; background:#fff; color:#65727d; border-radius:2px; text-align:left; }
 		.mode-tab.active { color:#008f98; border-color:#52c8cc; background:#effcfc; }
+		.mode-tab strong,.mode-tab small { display:block; }
+		.mode-tab strong { font-weight:500; line-height:1.35; }
+		.mode-tab small { margin-top:2px; color:#8998a1; font-size:10px; line-height:1.3; }
 		.preset-line { display:flex; align-items:center; gap:9px; margin-top:13px; }
 		.preset-line label { color:#596671; }
 		.preset-select { width:300px; height:32px; border:1px solid #dce3e8; background:#fff; color:#46545f; padding:0 9px; }
@@ -208,6 +211,8 @@
 		.split-table td { height:50px; padding:7px 9px; text-align:left; }
 		.split-table th,.split-table td { border-right:1px solid #edf1f4; border-bottom:1px solid #edf1f4; }
 		.split-table select,.split-table input { width:100%; height:30px; border:1px solid #dce3e8; padding:0 8px; background:#fff; color:#45545f; }
+		.split-table .field-meta { display:block; margin-top:5px; color:#8997a1; font-size:10px; line-height:1.35; white-space:normal; overflow-wrap:anywhere; }
+		.split-table .field-meta strong { color:#62737e; font-weight:500; }
 		.split-row-label { color:#56656f; font-weight:500; white-space:nowrap; }
 		.split-row-actions { display:flex; gap:8px; white-space:nowrap; }
 		.split-row-actions button { border:0; background:transparent; color:#00a2ad; padding:0; font-size:11px; }
@@ -294,8 +299,8 @@
 			<div class="modal-head"><span class="modal-title" id="singleSplitTitle">分单</span><button class="close-btn" type="button" data-close-split aria-label="关闭分单">×</button></div>
 			<div class="split-context"><span>商品名称：<strong id="singleProduct">德国VAT注册+申报</strong></span><span>规格名称：<strong>公司注册地（中国公司及其他）</strong></span><span>国家：<strong>德国</strong></span></div>
 			<div class="split-body">
-				<div class="split-section"><div class="split-section-title">结算产品 <small>当前可分配产品</small></div><div class="mode-tabs"><button class="mode-tab active">P00967</button><button class="mode-tab">P00966</button><button class="mode-tab">P00965</button><button class="mode-tab">P00959</button></div></div>
-				<div class="split-section"><div class="split-section-title">结算渠道服务项</div><div class="mode-tabs"><button class="mode-tab active">S88583</button></div></div>
+				<div class="split-section"><div class="split-section-title">结算产品 <small>当前可分配产品</small></div><div class="mode-tabs"><button class="mode-tab active"><strong>德国新注册+申报有限公司</strong><small>产品ID：P00967</small></button><button class="mode-tab"><strong>德国新注册有限公司</strong><small>产品ID：P00966</small></button><button class="mode-tab"><strong>德国 VAT 申报服务</strong><small>产品ID：P00965</small></button><button class="mode-tab"><strong>德国 VAT 代理申报服务</strong><small>产品ID：P00959</small></button></div></div>
+				<div class="split-section"><div class="split-section-title">结算渠道服务项</div><div class="mode-tabs"><button class="mode-tab active"><strong>德国 VAT 服务</strong><small>S88583 · 关联渠道商：深圳跨信通科技有限公司</small></button><button class="mode-tab"><strong>德国申报服务</strong><small>S88584 · 关联渠道商：深圳普睿达知识产权有限公司</small></button></div></div>
 				<div class="split-section"><div class="split-section-title">结算产品名称 <small>德国新注册+申报有限公司</small></div><div class="split-section-title">结算渠道服务项名称 <small>德国-&gt;VAT-&gt;VAT-&gt;新注册-&gt;非欧盟公司</small></div></div>
 				<div class="split-section"><div class="split-section-title">选择渠道资源</div><div class="resource-list" id="singleResourceList"></div></div>
 			</div>
@@ -315,7 +320,7 @@
 					</div>
 					<div class="inline-confirm" id="presetApplyConfirm" hidden><span>同步预设分单方案将覆盖当前已修改的分单明细，是否继续？</span><span class="actions"><button class="btn" type="button" id="cancelPresetApply">取消</button><button class="btn primary" type="button" id="confirmPresetApply">继续同步</button></span></div>
 				</div>
-				<div class="split-section" id="multipleConfigPanel"><div class="split-section-title">分单明细 <small>可调整执行顺序、产品和渠道资源；通过新增或删除明细调整条数</small></div><table class="split-table"><thead><tr><th style="width:76px">明细</th><th>结算产品</th><th>结算渠道服务项</th><th>渠道资源名称</th><th>渠道商</th><th>资源编号</th><th style="width:116px">操作</th></tr></thead><tbody id="multiSplitRows"></tbody></table></div>
+				<div class="split-section" id="multipleConfigPanel"><div class="split-section-title">分单明细 <small>可调整执行顺序、产品和渠道资源；通过新增或删除明细调整条数</small></div><table class="split-table"><thead><tr><th style="width:68px">明细</th><th style="width:190px">结算产品</th><th style="width:260px">结算渠道服务项</th><th style="width:190px">渠道资源名称</th><th style="width:210px">渠道商</th><th style="width:130px">资源编号</th><th style="width:100px">操作</th></tr></thead><tbody id="multiSplitRows"></tbody></table></div>
 			</div>
 			<div class="modal-footer"><button class="text-link" type="button" id="saveAsPreset">＋ 保存当前为预设分单方案</button><div class="actions"><button class="btn" type="button" data-close-split>取 消</button><button class="btn primary" type="button" id="submitOneClick">提交一键分单</button></div></div>
 		</section>
@@ -486,16 +491,28 @@
 			closeEditor(); refreshSelection(); notify(definitions[key].label+"展示配置已保存");
 		}
 		const splitResources = [
-			{id:"kzep", company:"深圳跨信通科技有限公司", code:"KXTEPunkt000", name:"KZEPKT000"},
-			{id:"khzx", company:"深圳普睿达知识产权有限公司", code:"KZX2112", name:"KHZX1007"},
-			{id:"kxtams", company:"AMS APEX E-commerce GmbH", code:"KXTAMS", name:"KXT普官AMS"}
+			{id:"kzep", company:"深圳跨信通科技有限公司", code:"KXTEPunkt000", name:"德国 VAT 注册渠道", type:"机构"},
+			{id:"khzx", company:"深圳普睿达知识产权有限公司", code:"KZX2112", name:"德国 VAT 申报渠道", type:"机构"},
+			{id:"kxtams", company:"AMS APEX E-commerce GmbH", code:"KXTAMS", name:"AMS 德国税务服务渠道", type:"机构"}
 		];
 		let splitState = { rowId:null, batchIds:[], mode:"multiple", count:3, resource:"kzep", items:[], appliedPresetId:null, pendingPresetId:null, presetContext:"multiple", dirty:false, presets:[
-			{id:"renewal", name:"德国 VAT 年度申报预设", isDefault:true, detail:"按顺序 · KZEPKT000 / KHZX1007", mode:"multiple", count:3, resource:"kzep", items:[{product:"P00967 · 注册+申报",service:"S88583 · 德国 VAT 服务",resource:"kzep"},{product:"P00966 · 注册",service:"S88583 · 德国 VAT 服务",resource:"kzep"},{product:"P00965 · 申报",service:"S88583 · 德国 VAT 服务",resource:"khzx"}]},
-			{id:"vat-three-step", name:"德国 VAT 三段式预设", detail:"按顺序 · KZEPKT000 / KHZX1007", mode:"multiple", count:3, resource:"kzep", items:[{product:"P00967 · 注册+申报",service:"S88583 · 德国 VAT 服务",resource:"kzep"},{product:"P00966 · 注册",service:"S88583 · 德国 VAT 服务",resource:"kzep"},{product:"P00959 · 代理申报",service:"S88583 · 德国 VAT 服务",resource:"khzx"}]}
+			{id:"renewal", name:"德国 VAT 年度申报预设", isDefault:true, detail:"按顺序 · 德国 VAT 注册渠道 / 德国 VAT 申报渠道", mode:"multiple", count:3, resource:"kzep", items:[{product:"P00967",service:"S88583",resource:"kzep"},{product:"P00966",service:"S88583",resource:"kzep"},{product:"P00965",service:"S88583",resource:"khzx"}]},
+			{id:"vat-three-step", name:"德国 VAT 三段式预设", detail:"按顺序 · 德国 VAT 注册渠道 / 德国 VAT 申报渠道", mode:"multiple", count:3, resource:"kzep", items:[{product:"P00967",service:"S88583",resource:"kzep"},{product:"P00966",service:"S88583",resource:"kzep"},{product:"P00959",service:"S88583",resource:"khzx"}]}
 		]};
-		const splitProducts = ["P00967 · 注册+申报","P00966 · 注册","P00965 · 申报","P00959 · 代理申报"];
-		const splitServices = ["S88583 · 德国 VAT 服务","S88584 · 德国申报服务"];
+		const splitProducts = [
+			{id:"P00967", name:"德国新注册+申报有限公司"},
+			{id:"P00966", name:"德国新注册有限公司"},
+			{id:"P00965", name:"德国 VAT 申报服务"},
+			{id:"P00959", name:"德国 VAT 代理申报服务"}
+		];
+		const splitServices = [
+			{id:"S88583", name:"德国 VAT 服务", channel:"德国 VAT 服务渠道", merchant:"深圳跨信通科技有限公司"},
+			{id:"S88584", name:"德国申报服务", channel:"德国申报服务渠道", merchant:"深圳普睿达知识产权有限公司"}
+		];
+		function findSplitProduct(value) { return splitProducts.find(item=>item.id===value || item.name===value || (item.id+" · "+item.name)===value) || splitProducts[0]; }
+		function findSplitService(value) { return splitServices.find(item=>item.id===value || item.name===value || (item.id+" · "+item.name)===value) || splitServices[0]; }
+		function splitProductId(value) { return findSplitProduct(value)?.id || value; }
+		function splitServiceId(value) { return findSplitService(value)?.id || value; }
 		function getService(id) { return sampleRows.find(row => row.id === id) || sampleRows[0]; }
 		function setOverlay(id, visible) { $(id).hidden = !visible; document.body.classList.toggle("modal-open", visible || !!draft); }
 		function closeSplitOverlays() { ["singleSplitOverlay","oneClickOverlay","splitChangeConfirmOverlay","presetOverlay"].forEach(id => setOverlay(id,false)); pendingSplitChangeAction=null; $("rowActionMenu").hidden=true; $("batchOperationMenu").hidden=true; $("batchOperationButton").setAttribute("aria-expanded","false"); }
@@ -523,7 +540,7 @@
 			const row=getService(rowId); splitState.rowId=rowId; splitState.presetContext="single"; $("singleProduct").textContent=row.product || "德国VAT注册+申报"; renderResourceCards("singleResourceList",splitState.resource,"single-resource"); setOverlay("singleSplitOverlay",true); $("singleSplitOverlay").querySelector("[data-close-split]").focus();
 		}
 		function startSingleSplit(rowId) { const row=getService(rowId); requestSplitChangeConfirmation([row],() => openSingleSplit(rowId)); }
-		function createSplitItem(index, source) { return { product:source?.product || splitProducts[index % splitProducts.length], service:source?.service || splitServices[0], resource:source?.resource || (index % 2 === 0 ? splitState.resource : "khzx") }; }
+		function createSplitItem(index, source) { return { product:splitProductId(source?.product || splitProducts[index % splitProducts.length].id), service:splitServiceId(source?.service || splitServices[0].id), resource:source?.resource || (index % 2 === 0 ? splitState.resource : "khzx") }; }
 		function ensureSplitItems(count) { while (splitState.items.length < count) splitState.items.push(createSplitItem(splitState.items.length)); if (splitState.items.length > count) splitState.items=splitState.items.slice(0,count); }
 		function getDefaultPreset() { return splitState.presets.find(item=>item.isDefault) || splitState.presets[0] || null; }
 		function normalizeDefaultPreset() { const first=getDefaultPreset(); splitState.presets.forEach(item=>{ item.isDefault=Boolean(first && item.id===first.id); }); return first; }
@@ -539,7 +556,7 @@
 		function syncSplitItems() { document.querySelectorAll("#multiSplitRows tr").forEach((row,index) => { splitState.items[index]={product:row.querySelector("[data-field=product]").value,service:row.querySelector("[data-field=service]").value,resource:row.querySelector("[data-field=resource]").value}; }); }
 		function renderMultiRows() {
 			const count=Math.max(1,Math.min(10,splitState.items.length || 3)); ensureSplitItems(count); splitState.count=count;
-			$("multiSplitRows").innerHTML=splitState.items.map((item,index) => { const resource=splitResources.find(r=>r.id===item.resource) || splitResources[0]; return '<tr><td class="split-row-label">分单 ' + (index+1) + '</td><td><select data-field="product" aria-label="分单' + (index+1) + '结算产品">' + splitProducts.map(p=>'<option' + (p===item.product?' selected':'') + '>' + p + '</option>').join("") + '</select></td><td><select data-field="service" aria-label="分单' + (index+1) + '渠道服务项">' + splitServices.map(p=>'<option' + (p===item.service?' selected':'') + '>' + p + '</option>').join("") + '</select></td><td><select data-field="resource" aria-label="分单' + (index+1) + '渠道资源名称">' + splitResources.map(r=>'<option value="' + r.id + '"' + (r.id===item.resource?' selected':'') + '>' + r.name + '</option>').join("") + '</select></td><td class="resource-merchant">' + escapeHtml(resource.company) + '</td><td class="resource-code">' + escapeHtml(resource.code) + '</td><td><div class="split-row-actions"><button type="button" data-row-add="' + index + '">新增</button><button type="button" class="delete" data-row-delete="' + index + '"' + (count<=1?' disabled':'') + '>删除</button></div></td></tr>'; }).join("");
+			$("multiSplitRows").innerHTML=splitState.items.map((item,index) => { const product=findSplitProduct(item.product), service=findSplitService(item.service), resource=splitResources.find(r=>r.id===item.resource) || splitResources[0]; return '<tr><td class="split-row-label">分单 ' + (index+1) + '</td><td><select data-field="product" aria-label="分单' + (index+1) + '结算产品">' + splitProducts.map(p=>'<option value="' + p.id + '"' + (p.id===product.id?' selected':'') + '>' + escapeHtml(p.name) + '</option>').join("") + '</select><small class="field-meta">产品ID：' + escapeHtml(product.id) + '</small></td><td><select data-field="service" aria-label="分单' + (index+1) + '渠道服务项">' + splitServices.map(p=>'<option value="' + p.id + '"' + (p.id===service.id?' selected':'') + '>' + escapeHtml(p.name) + '</option>').join("") + '</select><small class="field-meta">关联渠道：' + escapeHtml(service.channel) + '<br>渠道商：' + escapeHtml(service.merchant) + '</small></td><td><select data-field="resource" aria-label="分单' + (index+1) + '渠道资源名称">' + splitResources.map(r=>'<option value="' + r.id + '"' + (r.id===item.resource?' selected':'') + '>' + escapeHtml(r.name) + '</option>').join("") + '</select><small class="field-meta">资源类型：' + escapeHtml(resource.type) + '</small></td><td class="resource-merchant">' + escapeHtml(resource.company) + '</td><td class="resource-code">' + escapeHtml(resource.code) + '</td><td><div class="split-row-actions"><button type="button" data-row-add="' + index + '">新增</button><button type="button" class="delete" data-row-delete="' + index + '"' + (count<=1?' disabled':'') + '>删除</button></div></td></tr>'; }).join("");
 			updatePresetSummary();
 		}
 		function renderOneClick() {
@@ -670,7 +687,7 @@
 		$("saveAsPreset").addEventListener("click",() => openPresets(true,"multiple"));
 		$("saveSingleAsPreset").addEventListener("click",() => openPresets(true,"single"));
 		$("presetSaveTarget").addEventListener("change",updatePresetSaveForm);
-		$("createPreset").addEventListener("click",() => { const target=$("presetSaveTarget").value; const name=$("presetName").value.trim(); if (target==="new" && !name) { $("presetName").focus(); return; } const existing=splitState.presets.find(item=>item.id===target); const id=existing?.id || "custom-"+Date.now(); const presetName=existing?.name || name; let preset; if (splitState.presetContext === "single") { preset={id,name:presetName,detail:"单条 · "+(splitResources.find(r=>r.id===splitState.resource)?.name || splitState.resource),mode:"single",count:1,resource:splitState.resource,items:[{product:splitProducts[0],service:splitServices[0],resource:splitState.resource}]}; } else { syncSplitItems(); preset={id,name:presetName,detail:"按顺序 · "+splitState.items.map(item=>splitResources.find(r=>r.id===item.resource)?.name || item.resource).filter((value,index,array)=>array.indexOf(value)===index).join(" / "),mode:"multiple",count:splitState.count,resource:splitState.items[0]?.resource || splitState.resource,items:splitState.items.map(item=>({...item}))}; } if (existing) { preset.isDefault=existing.isDefault; splitState.presets=splitState.presets.map(item=>item.id===existing.id ? preset : item); } else { if (!getDefaultPreset()) preset.isDefault=true; splitState.presets.push(preset); } renderPresetOptions($("splitPreset").value); renderPresets(); $("presetCreate").hidden=true; notify(existing ? "预设分单方案已覆盖保存" : "预设分单方案已保存"); });
+		$("createPreset").addEventListener("click",() => { const target=$("presetSaveTarget").value; const name=$("presetName").value.trim(); if (target==="new" && !name) { $("presetName").focus(); return; } const existing=splitState.presets.find(item=>item.id===target); const id=existing?.id || "custom-"+Date.now(); const presetName=existing?.name || name; let preset; if (splitState.presetContext === "single") { preset={id,name:presetName,detail:"单条 · "+(splitResources.find(r=>r.id===splitState.resource)?.name || splitState.resource),mode:"single",count:1,resource:splitState.resource,items:[{product:splitProducts[0].id,service:splitServices[0].id,resource:splitState.resource}]}; } else { syncSplitItems(); preset={id,name:presetName,detail:"按顺序 · "+splitState.items.map(item=>splitResources.find(r=>r.id===item.resource)?.name || item.resource).filter((value,index,array)=>array.indexOf(value)===index).join(" / "),mode:"multiple",count:splitState.count,resource:splitState.items[0]?.resource || splitState.resource,items:splitState.items.map(item=>({...item,product:splitProductId(item.product),service:splitServiceId(item.service)}))}; } if (existing) { preset.isDefault=existing.isDefault; splitState.presets=splitState.presets.map(item=>item.id===existing.id ? preset : item); } else { if (!getDefaultPreset()) preset.isDefault=true; splitState.presets.push(preset); } renderPresetOptions($("splitPreset").value); renderPresets(); $("presetCreate").hidden=true; notify(existing ? "预设分单方案已覆盖保存" : "预设分单方案已保存"); });
 		$("presetList").addEventListener("click",event => { const makeDefault=event.target.closest("[data-preset-default]"); const use=event.target.closest("[data-preset-apply]"); if (makeDefault && !makeDefault.disabled) { const id=makeDefault.dataset.presetDefault; splitState.presets.forEach(item=>{ item.isDefault=item.id===id; }); renderPresetOptions($("splitPreset").value); renderPresets(); updatePresetSummary(); notify("已设为默认方案"); return; } if (use) requestPresetApply(use.dataset.presetApply); });
 		$("submitOneClick").addEventListener("click",submitOneClick);
 		$("singleSubmit").addEventListener("click",() => { notify("单次分单已提交"); closeSplitOverlays(); });

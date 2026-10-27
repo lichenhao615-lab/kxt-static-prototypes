@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href="data:,">
-	<title>基础服务 · 一键分单交互 DEMO</title>
+	<title>基础服务 · 手动分单交互 DEMO</title>
 	<style>
 		:root { --brand:#00a6ad; --brand-dark:#008f98; --brand-soft:#e8f8f9; --text:#262d35; --muted:#8a929b; --line:#e8ebef; --pale:#f4f6f8; }
 		* { box-sizing:border-box; }
@@ -247,7 +247,7 @@
 					<div class="query-error" id="serviceDeadlineError" data-testid="service-deadline-error" role="alert" hidden>服务截止时间的开始日期不能晚于结束日期</div>
 				</div>
 				<div class="query-row"><select class="select" id="customerLevel" aria-label="客户级别"><option value="">客户级别</option><option>A</option><option>B</option><option>C</option><option>D</option></select><select class="select" aria-label="当前处理人"><option>当前处理人</option><option>李晨浩</option></select><label class="field-group"><span class="field-label">服务管家</span><input class="input" placeholder="请选择服务管家" style="width:144px" aria-label="服务管家"></label><label class="field-group"><span class="field-label">客户经理</span><input class="input" placeholder="选择人员" style="width:144px" aria-label="客户经理"></label><select class="select" aria-label="服务类型"><option>服务类型</option><option>SAAS服务</option></select><select class="select" aria-label="编号类型"><option>基础服务编号</option><option>订单号</option></select><input class="input keyword" id="keyword" data-testid="keyword" placeholder="请输入" aria-label="基础服务编号或订单号"><div class="query-controls"><button class="btn primary" id="searchButton" data-testid="search" type="button">搜 索</button><button class="btn secondary" id="resetButton" data-testid="reset" type="button">重 置</button><button class="text-button" id="detailToggle" type="button" aria-expanded="true">⌃ 收起</button></div></div>
-				<div class="export-row"><div class="selection-actions"><button class="btn" id="exportButton" type="button">导出 ⌄</button><span class="batch-action-wrap"><button class="btn primary" id="batchOperationButton" type="button" aria-haspopup="menu" aria-expanded="false">批量操作⌄</button><span class="batch-operation-menu" id="batchOperationMenu" role="menu" hidden><button type="button" role="menuitem" data-batch-command="batch-one-click">批量一键分单</button><button type="button" role="menuitem" data-batch-command="batch-split">批量分单</button><button type="button" role="menuitem" data-batch-command="batch-change">批量变更分单</button></span></span></div><span class="demo-label"><i></i>演示数据</span></div>
+				<div class="export-row"><div class="selection-actions"><button class="btn" id="exportButton" type="button">导出 ⌄</button><span class="batch-action-wrap"><button class="btn primary" id="batchOperationButton" type="button" aria-haspopup="menu" aria-expanded="false">批量操作⌄</button><span class="batch-operation-menu" id="batchOperationMenu" role="menu" hidden><button type="button" role="menuitem" data-batch-command="batch-one-click">批量手动分单</button><button type="button" role="menuitem" data-batch-command="batch-split">批量分单</button><button type="button" role="menuitem" data-batch-command="batch-change">批量变更分单</button></span></span></div><span class="demo-label"><i></i>演示数据</span></div>
 			</section>
 			<div class="status-wrap"><div class="status-tabs" id="statusTabs" role="group" aria-label="服务状态筛选"></div></div>
 			<div class="selection-row"><span id="selectionCount">已选择 0 项</span><button class="table-setting" type="button" id="tableSettings" aria-label="表格设置">▦</button></div>
@@ -273,9 +273,9 @@
 			<div class="modal-head"><span class="modal-title" id="singleSplitTitle">分单</span><button class="close-btn" type="button" data-close-split aria-label="关闭分单">×</button></div>
 			<div class="split-context"><span>商品名称：<strong id="singleProduct">德国VAT注册+申报</strong></span><span>规格名称：<strong>公司注册地（中国公司及其他）</strong></span><span>国家：<strong>德国</strong></span></div>
 			<div class="split-body">
-				<div class="split-section"><div class="split-section-title">产品名称 <small>当前可分配产品</small></div><div class="mode-tabs"><button class="mode-tab active"><strong>德国新注册+申报有限公司</strong><small>产品ID：P00967</small></button><button class="mode-tab"><strong>德国新注册有限公司</strong><small>产品ID：P00966</small></button><button class="mode-tab"><strong>德国 VAT 申报服务</strong><small>产品ID：P00965</small></button><button class="mode-tab"><strong>德国 VAT 代理申报服务</strong><small>产品ID：P00959</small></button></div></div>
-				<div class="split-section"><div class="split-section-title">渠道服务项</div><div class="mode-tabs"><button class="mode-tab active"><strong>德国-&gt;VAT-&gt;VAT-&gt;新注册-&gt;非欧盟公司</strong><small>渠道服务项ID：S88583</small></button><button class="mode-tab"><strong>德国-&gt;VAT-&gt;VAT-&gt;申报-&gt;非欧盟公司</strong><small>渠道服务项ID：S88584</small></button></div></div>
-				<div class="split-section"><div class="split-section-title">产品名称 <small>德国新注册+申报有限公司</small></div><div class="split-section-title">渠道服务项 <small>德国-&gt;VAT-&gt;VAT-&gt;新注册-&gt;非欧盟公司</small></div></div>
+				<div class="split-section"><div class="split-section-title">服务项目 <small>当前可分配项目</small></div><div class="mode-tabs"><button class="mode-tab active"><strong>德国新注册+申报有限公司</strong><small>项目ID：P00967</small></button><button class="mode-tab"><strong>德国新注册有限公司</strong><small>项目ID：P00966</small></button><button class="mode-tab"><strong>德国 VAT 申报服务</strong><small>项目ID：P00965</small></button><button class="mode-tab"><strong>德国 VAT 代理申报服务</strong><small>项目ID：P00959</small></button></div></div>
+				<div class="split-section"><div class="split-section-title">服务明细</div><div class="mode-tabs"><button class="mode-tab active"><strong>德国-&gt;VAT-&gt;VAT-&gt;新注册-&gt;非欧盟公司</strong><small>服务明细ID：S88583</small></button><button class="mode-tab"><strong>德国-&gt;VAT-&gt;VAT-&gt;申报-&gt;非欧盟公司</strong><small>服务明细ID：S88584</small></button></div></div>
+				<div class="split-section"><div class="split-section-title">服务项目 <small>德国新注册+申报有限公司</small></div><div class="split-section-title">服务明细 <small>德国-&gt;VAT-&gt;VAT-&gt;新注册-&gt;非欧盟公司</small></div></div>
 				<div class="split-section"><div class="split-section-title">选择渠道资源</div><div class="resource-list" id="singleResourceList"></div></div>
 			</div>
 			<div class="modal-footer"><div class="actions"><span class="modal-description" style="margin:0;color:#9aa5ad">现有单次分单流程，提交后立即生成一条分单记录。</span><button class="btn" type="button" data-close-split>取 消</button><button class="btn primary" type="button" id="singleSubmit">提 交</button></div></div>
@@ -283,12 +283,12 @@
 	</div>
 	<div class="modal-overlay" id="oneClickOverlay" hidden>
 		<section class="modal split-modal" role="dialog" aria-modal="true" aria-labelledby="oneClickTitle">
-			<div class="modal-head"><span class="modal-title" id="oneClickTitle">一键分单</span><button class="close-btn" type="button" data-close-split aria-label="关闭一键分单">×</button></div>
+			<div class="modal-head"><span class="modal-title" id="oneClickTitle">手动分单</span><button class="close-btn" type="button" data-close-split aria-label="关闭手动分单">×</button></div>
 			<div class="split-context"><span>服务单号：<strong id="oneClickService">SV202610152547011591</strong></span><span>商品：<strong id="oneClickProduct">德国VAT注册+申报</strong></span><span>国家：<strong>德国</strong></span></div>
 			<div class="split-body">
-				<div class="split-section" id="multipleConfigPanel"><div class="split-section-title">分单明细 <small>配置产品和渠道；通过新增或删除明细调整条数</small></div><table class="split-table"><thead><tr><th style="width:68px">明细</th><th style="width:190px">产品名称</th><th style="width:260px">渠道服务项</th><th style="width:230px">渠道</th><th style="width:100px">操作</th></tr></thead><tbody id="multiSplitRows"></tbody></table></div>
+				<div class="split-section" id="multipleConfigPanel"><div class="split-section-title">分单明细 <small>配置服务项目和服务商；通过复制或删除明细调整条数</small></div><table class="split-table"><thead><tr><th style="width:68px">明细</th><th style="width:190px">服务项目</th><th style="width:260px">服务明细</th><th style="width:230px">服务商</th><th style="width:100px">操作</th></tr></thead><tbody id="multiSplitRows"></tbody></table></div>
 			</div>
-			<div class="modal-footer one-click-footer"><div class="actions"><button class="btn" type="button" data-close-split>取 消</button><button class="btn primary" type="button" id="submitOneClick">提交一键分单</button></div></div>
+			<div class="modal-footer one-click-footer"><div class="actions"><button class="btn" type="button" data-close-split>取 消</button><button class="btn primary" type="button" id="submitOneClick">提交手动分单</button></div></div>
 		</section>
 	</div>
 	<div class="modal-overlay" id="splitChangeConfirmOverlay" hidden>
@@ -471,23 +471,23 @@
 		function setOverlay(id, visible) { $(id).hidden = !visible; document.body.classList.toggle("modal-open", visible || !!draft); }
 		function closeSplitOverlays() { ["singleSplitOverlay","oneClickOverlay","splitChangeConfirmOverlay"].forEach(id => setOverlay(id,false)); pendingSplitChangeAction=null; $("rowActionMenu").hidden=true; $("batchOperationMenu").hidden=true; $("batchOperationButton").setAttribute("aria-expanded","false"); }
 		function renderResourceCards(targetId, selectedId, inputName) {
-			$(targetId).innerHTML = splitResources.map(item => '<label class="resource-card' + (item.id === selectedId ? ' selected' : '') + '"><input type="radio" name="' + inputName + '" value="' + item.id + '"' + (item.id === selectedId ? ' checked' : '') + '><span><strong>渠道：' + escapeHtml(item.name) + '</strong><span class="field-meta">渠道商：' + escapeHtml(item.company) + '</span><span class="field-meta">资源编号：' + escapeHtml(item.code) + '</span></span></label>').join("");
+			$(targetId).innerHTML = splitResources.map(item => '<label class="resource-card' + (item.id === selectedId ? ' selected' : '') + '"><input type="radio" name="' + inputName + '" value="' + item.id + '"' + (item.id === selectedId ? ' checked' : '') + '><span><strong>服务商：' + escapeHtml(item.name) + '</strong><span class="field-meta">渠道商：' + escapeHtml(item.company) + '</span><span class="field-meta">资源编号：' + escapeHtml(item.code) + '</span></span></label>').join("");
 		}
 		function openRowMenu(button,rowId) {
 			const menu=$("rowActionMenu");
-			menu.innerHTML='<button type="button" role="menuitem" data-menu-command="single">分单</button><button type="button" role="menuitem" data-menu-command="one-click">一键分单</button><div class="menu-divider"></div><button type="button" role="menuitem" data-menu-command="view-split">查看分单</button>';
+			menu.innerHTML='<button type="button" role="menuitem" data-menu-command="single">分单</button><button type="button" role="menuitem" data-menu-command="one-click">手动分单</button><div class="menu-divider"></div><button type="button" role="menuitem" data-menu-command="view-split">查看分单</button>';
 			const rect=button.getBoundingClientRect(); const width=178;
 			menu.style.left=Math.max(8,Math.min(window.innerWidth-width-8,rect.right-width))+'px';
 			menu.style.top=Math.min(window.innerHeight-150,rect.bottom+4)+'px'; menu.hidden=false; splitState.rowId=rowId;
 		}
 		function selectedRows() { return [...state.checked].map(id=>sampleRows.find(row=>row.id===id)).filter(Boolean); }
 		function batchConditionKeys() { return [{key:"customer",label:"同客户"},{key:"type",label:"同类型"},{key:"category",label:"同类目"},{key:"country",label:"同国家"},{key:"node",label:"同节点"}]; }
-		function validateBatchRows(rows) { if (rows.length < 2) return {valid:false, message:"请至少选择 2 条服务单后再进行批量一键分单。", differences:[]}; const differences=batchConditionKeys().filter(condition=>new Set(rows.map(row=>row[condition.key])).size>1); return {valid:differences.length===0, message:differences.length ? "所选服务单不满足批量一键分单条件：" + differences.map(item=>item.label).join("、") + "不一致。" : "", differences}; }
+		function validateBatchRows(rows) { if (rows.length < 2) return {valid:false, message:"请至少选择 2 条服务单后再进行批量手动分单。", differences:[]}; const differences=batchConditionKeys().filter(condition=>new Set(rows.map(row=>row[condition.key])).size>1); return {valid:differences.length===0, message:differences.length ? "所选服务单不满足批量手动分单条件：" + differences.map(item=>item.label).join("、") + "不一致。" : "", differences}; }
 		function splitChangeRows(rows) { return rows.filter(row => row.splitGenerated && row.settlementCompleted); }
-		function requestSplitChangeConfirmation(rows, action) { const affected=splitChangeRows(rows); if (!affected.length) { action(); return; } pendingSplitChangeAction=action; $("splitChangeConfirmText").textContent="以下服务单的产品名称已完成结算，继续操作将变更已有分单关系。"; $("splitChangeAffectedList").innerHTML=affected.map(row=>'<div><strong>'+escapeHtml(row.code)+'</strong> · '+escapeHtml(row.settledProduct || row.product)+' · 已完成结算</div>').join(""); setOverlay("splitChangeConfirmOverlay",true); $("confirmSplitChange").focus(); }
+		function requestSplitChangeConfirmation(rows, action) { const affected=splitChangeRows(rows); if (!affected.length) { action(); return; } pendingSplitChangeAction=action; $("splitChangeConfirmText").textContent="以下服务单的服务项目已完成结算，继续操作将变更已有分单关系。"; $("splitChangeAffectedList").innerHTML=affected.map(row=>'<div><strong>'+escapeHtml(row.code)+'</strong> · '+escapeHtml(row.settledProduct || row.product)+' · 已完成结算</div>').join(""); setOverlay("splitChangeConfirmOverlay",true); $("confirmSplitChange").focus(); }
 		function confirmSplitChange() { const action=pendingSplitChangeAction; pendingSplitChangeAction=null; setOverlay("splitChangeConfirmOverlay",false); if (action) action(); }
 		function cancelSplitChange() { pendingSplitChangeAction=null; setOverlay("splitChangeConfirmOverlay",false); }
-		function proceedBatchOneClick(rows) { splitState.batchIds=rows.map(row=>row.id); openOneClick(rows[0].id); $("oneClickTitle").textContent="批量一键分单"; $("oneClickService").textContent=rows.length+" 条服务单"; $("oneClickProduct").textContent=rows[0].customer+" · "+nameOf("type",rows[0].type)+" · "+rows[0].category+" · "+nameOf("country",rows[0].country)+" · "+rows[0].node; }
+		function proceedBatchOneClick(rows) { splitState.batchIds=rows.map(row=>row.id); openOneClick(rows[0].id); $("oneClickTitle").textContent="批量手动分单"; $("oneClickService").textContent=rows.length+" 条服务单"; $("oneClickProduct").textContent=rows[0].customer+" · "+nameOf("type",rows[0].type)+" · "+rows[0].category+" · "+nameOf("country",rows[0].country)+" · "+rows[0].node; }
 		function startBatchOneClick() { const rows=selectedRows(); const validation=validateBatchRows(rows); if (!validation.valid) { notify(validation.message,"error"); return; } requestSplitChangeConfirmation(rows,() => proceedBatchOneClick(rows)); }
 		function startSingleOneClick(rowId) { const row=getService(rowId); requestSplitChangeConfirmation([row],() => openOneClick(rowId)); }
 		function openSingleSplit(rowId) {
@@ -499,16 +499,16 @@
 		function syncSplitItems() { document.querySelectorAll("#multiSplitRows tr").forEach((row,index) => { splitState.items[index]={product:row.querySelector("[data-field=product]").value,service:row.querySelector("[data-field=service]").value,resource:row.querySelector("[data-field=resource]").value}; }); }
 		function renderMultiRows() {
 			const count=Math.max(1,Math.min(10,splitState.items.length || 3)); ensureSplitItems(count); splitState.count=count;
-			$("multiSplitRows").innerHTML=splitState.items.map((item,index) => { const product=findSplitProduct(item.product), service=findSplitService(item.service), resource=splitResources.find(r=>r.id===item.resource) || splitResources[0]; return '<tr><td class="split-row-label">分单 ' + (index+1) + '</td><td><select data-field="product" aria-label="分单' + (index+1) + '产品名称">' + splitProducts.map(p=>'<option value="' + p.id + '"' + (p.id===product.id?' selected':'') + '>' + escapeHtml(p.name) + '</option>').join("") + '</select><small class="field-meta">产品ID：' + escapeHtml(product.id) + '</small></td><td><select data-field="service" aria-label="分单' + (index+1) + '渠道服务项">' + splitServices.map(p=>'<option value="' + p.id + '"' + (p.id===service.id?' selected':'') + '>' + escapeHtml(p.name) + '</option>').join("") + '</select><small class="field-meta service-id">渠道服务项ID：' + escapeHtml(service.id) + '</small></td><td><select data-field="resource" aria-label="分单' + (index+1) + '渠道">' + splitResources.map(r=>'<option value="' + r.id + '"' + (r.id===item.resource?' selected':'') + '>' + escapeHtml(r.name) + '</option>').join("") + '</select><small class="field-meta resource-details">渠道商：' + escapeHtml(resource.company) + '<br>资源编号：' + escapeHtml(resource.code) + '</small></td><td><div class="split-row-actions"><button type="button" data-row-add="' + index + '">新增</button><button type="button" class="delete" data-row-delete="' + index + '"' + (count<=1?' disabled':'') + '>删除</button></div></td></tr>'; }).join("");
+			$("multiSplitRows").innerHTML=splitState.items.map((item,index) => { const product=findSplitProduct(item.product), service=findSplitService(item.service), resource=splitResources.find(r=>r.id===item.resource) || splitResources[0]; return '<tr><td class="split-row-label">分单 ' + (index+1) + '</td><td><select data-field="product" aria-label="分单' + (index+1) + '服务项目">' + splitProducts.map(p=>'<option value="' + p.id + '"' + (p.id===product.id?' selected':'') + '>' + escapeHtml(p.name) + '</option>').join("") + '</select><small class="field-meta">项目ID：' + escapeHtml(product.id) + '</small></td><td><select data-field="service" aria-label="分单' + (index+1) + '服务明细">' + splitServices.map(p=>'<option value="' + p.id + '"' + (p.id===service.id?' selected':'') + '>' + escapeHtml(p.name) + '</option>').join("") + '</select><small class="field-meta service-id">服务明细ID：' + escapeHtml(service.id) + '</small></td><td><select data-field="resource" aria-label="分单' + (index+1) + '服务商">' + splitResources.map(r=>'<option value="' + r.id + '"' + (r.id===item.resource?' selected':'') + '>' + escapeHtml(r.name) + '</option>').join("") + '</select><small class="field-meta resource-details">渠道商：' + escapeHtml(resource.company) + '<br>资源编号：' + escapeHtml(resource.code) + '</small></td><td><div class="split-row-actions"><button type="button" data-row-add="' + index + '">复制</button><button type="button" class="delete" data-row-delete="' + index + '"' + (count<=1?' disabled':'') + '>删除</button></div></td></tr>'; }).join("");
 		}
 		function renderOneClick() {
 			const row=getService(splitState.rowId); $("oneClickService").textContent=row.code; $("oneClickProduct").textContent=row.product || "德国VAT注册+申报"; splitState.items=[createSplitItem(0),createSplitItem(1),createSplitItem(2)]; splitState.count=splitState.items.length; renderMultiRows();
 		}
 		function openOneClick(rowId) { splitState.rowId=rowId; splitState.mode="multiple"; renderOneClick(); setOverlay("oneClickOverlay",true); }
-		function submitOneClick() { if (splitState.batchIds.length) notify("已提交批量一键分单，共处理 "+splitState.batchIds.length+" 条服务单，生成 "+(splitState.batchIds.length*splitState.count)+" 条分单记录"); else notify("已提交一键分单，共生成 "+splitState.count+" 条分单记录"); closeSplitOverlays(); splitState.batchIds=[]; }
+		function submitOneClick() { if (splitState.batchIds.length) notify("已提交批量手动分单，共处理 "+splitState.batchIds.length+" 条服务单，生成 "+(splitState.batchIds.length*splitState.count)+" 条分单记录"); else notify("已提交手动分单，共生成 "+splitState.count+" 条分单记录"); closeSplitOverlays(); splitState.batchIds=[]; }
 		document.addEventListener("click",event => {
 			const batchCommand=event.target.closest("[data-batch-command]");
-			if (batchCommand) { $("batchOperationMenu").hidden=true; $("batchOperationButton").setAttribute("aria-expanded","false"); if (batchCommand.dataset.batchCommand === "batch-one-click") startBatchOneClick(); else notify("此 DEMO 暂仅演示批量一键分单"); return; }
+			if (batchCommand) { $("batchOperationMenu").hidden=true; $("batchOperationButton").setAttribute("aria-expanded","false"); if (batchCommand.dataset.batchCommand === "batch-one-click") startBatchOneClick(); else notify("此 DEMO 暂仅演示批量手动分单"); return; }
 			const command=event.target.closest("[data-menu-command]");
 			if (command) {
 				$("rowActionMenu").hidden=true;
@@ -528,7 +528,7 @@
 			const action=event.target.closest("[data-row-action]");
 			if (action) {
 				if (action.dataset.rowAction === "更多") { openRowMenu(action,action.closest("tr").dataset.rowId); return; }
-				notify("此 DEMO 仅演示一键分单交互");
+				notify("此 DEMO 仅演示手动分单交互");
 			}
 			if (!event.target.closest("#rowActionMenu") && !event.target.closest("[data-row-action=\"更多\"]")) $("rowActionMenu").hidden=true;
 			if (!event.target.closest(".batch-action-wrap")) { $("batchOperationMenu").hidden=true; $("batchOperationButton").setAttribute("aria-expanded","false"); }
@@ -602,7 +602,7 @@
 		$("selectAll").addEventListener("change",event => { document.querySelectorAll(".row-check").forEach(input => { input.checked=event.target.checked; if (input.checked) state.checked.add(input.dataset.row); else state.checked.delete(input.dataset.row); }); updateSelection(); });
 		$("pagination").addEventListener("change",event => { if (event.target.id === "pageSize") { state.pageSize=Number(event.target.value); state.page=1; state.checked.clear(); renderResults(); } if (event.target.id === "pageJump") { const max=Number(event.target.max); state.page=Math.min(max,Math.max(1,Number(event.target.value)||1)); state.checked.clear(); renderResults(); } });
 		$("exportButton").addEventListener("click",() => notify("此 DEMO 仅演示国家与类型筛选及展示配置"));
-		$("tableSettings").addEventListener("click",() => notify("此 DEMO 仅演示一键分单交互"));
+		$("tableSettings").addEventListener("click",() => notify("此 DEMO 仅演示手动分单交互"));
 		$("fulfillmentWorkbenchNav").addEventListener("click",enterFulfillmentWorkbench);
 		$("fulfillmentWorkbenchNav").addEventListener("keydown",event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); enterFulfillmentWorkbench(); } });
 		$("batchOperationButton").addEventListener("click",event => { event.stopPropagation(); const menu=$("batchOperationMenu"); const visible=!menu.hidden; menu.hidden=visible; $("batchOperationButton").setAttribute("aria-expanded",String(!visible)); });

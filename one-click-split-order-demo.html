@@ -189,6 +189,8 @@
 		.split-section { padding-top:17px; }
 		.split-section-title { display:flex; align-items:center; gap:10px; margin-bottom:11px; color:#34424d; font-weight:500; }
 		.split-section-title small { color:#9aa4ad; font-weight:400; }
+		.split-search-row { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 10px; }
+		.split-search-row input { width:220px; height:30px; border:1px solid #dce3e8; padding:0 9px; color:#45545f; }
 		.mode-tabs { display:flex; gap:8px; }
 		.mode-tab { min-width:150px; min-height:34px; height:auto; padding:6px 15px; border:1px solid #dce4e8; background:#fff; color:#65727d; border-radius:2px; text-align:left; }
 		.mode-tab.active { color:#008f98; border-color:#52c8cc; background:#effcfc; }
@@ -290,7 +292,7 @@
 			<div class="modal-head"><span class="modal-title" id="oneClickTitle">手动分单</span><button class="close-btn" type="button" data-close-split aria-label="关闭手动分单">×</button></div>
 			<div class="split-context"><span>服务单号：<strong id="oneClickService">SV202610152547011591</strong></span><span>商品：<strong id="oneClickProduct">德国VAT注册+申报</strong></span><span>国家：<strong>德国</strong></span></div>
 			<div class="split-body">
-				<div class="split-section" id="multipleConfigPanel"><div class="split-section-title">分单明细 <small>配置服务项目/结算产品和服务商/渠道；通过复制或删除明细调整条数</small></div><table class="split-table"><thead><tr><th style="width:68px">明细</th><th style="width:190px">服务项目/结算产品</th><th style="width:260px">服务明细/渠道服务项</th><th style="width:230px">服务商/渠道</th><th style="width:100px">操作</th></tr></thead><tbody id="multiSplitRows"></tbody></table></div>
+				<div class="split-section" id="multipleConfigPanel"><div class="split-section-title">分单明细 <small>配置服务项目/结算产品和服务商/渠道；通过复制或删除明细调整条数</small></div><div class="split-search-row"><input id="splitProductSearch" type="search" placeholder="搜索服务项目/结算产品 ID 或名称"><input id="splitServiceSearch" type="search" placeholder="搜索服务明细/渠道服务项 ID 或名称"><input id="splitResourceSearch" type="search" placeholder="搜索服务商/渠道 ID 或名称"></div><table class="split-table"><thead><tr><th style="width:68px">明细</th><th style="width:190px">服务项目/结算产品</th><th style="width:260px">服务明细/渠道服务项</th><th style="width:230px">服务商/渠道</th><th style="width:100px">操作</th></tr></thead><tbody id="multiSplitRows"></tbody></table></div>
 			</div>
 			<div class="modal-footer one-click-footer"><div class="actions"><button class="btn" type="button" data-close-split>取 消</button><button class="btn primary" type="button" id="submitOneClick">提交手动分单</button></div></div>
 		</section>
@@ -464,7 +466,7 @@
 			{id:"khzx", company:"深圳普睿达知识产权有限公司", code:"KZX2112", name:"德国 VAT 申报渠道", serviceId:"S88584"},
 			{id:"kxtams", company:"AMS APEX E-commerce GmbH", code:"KXTAMS", name:"AMS 德国税务服务渠道", serviceId:"S88583"}
 		];
-		let splitState = { rowId:null, batchIds:[], mode:"multiple", count:3, resource:"kzep", items:[] };
+		let splitState = { rowId:null, batchIds:[], mode:"multiple", count:3, resource:"kzep", items:[], search:{product:"",service:"",resource:""} };
 		const splitProducts = [
 			{id:"P00967", name:"德国新注册+申报有限公司"},
 			{id:"P00966", name:"德国新注册有限公司"},
@@ -479,6 +481,7 @@
 		function findSplitService(value) { return splitServices.find(item=>item.id===value || item.name===value || (item.id+" · "+item.name)===value) || splitServices[0]; }
 		function splitProductId(value) { return findSplitProduct(value)?.id || value; }
 		function splitServiceId(value) { return findSplitService(value)?.id || value; }
+		function matchSplitOption(item, query) { const q=(query||"").trim().toLowerCase(); return !q || String(item.id).toLowerCase().includes(q) || String(item.name).toLowerCase().includes(q); }
 		function getService(id) { return sampleRows.find(row => row.id === id) || sampleRows[0]; }
 		function setOverlay(id, visible) { $(id).hidden = !visible; document.body.classList.toggle("modal-open", visible || !!draft); }
 		function closeSplitOverlays() { ["singleSplitOverlay","oneClickOverlay","splitChangeConfirmOverlay","splitHistoryOverlay"].forEach(id => setOverlay(id,false)); pendingSplitChangeAction=null; $("rowActionMenu").hidden=true; $("batchOperationMenu").hidden=true; $("batchOperationButton").setAttribute("aria-expanded","false"); }
@@ -511,7 +514,7 @@
 		function syncSplitItems() { document.querySelectorAll("#multiSplitRows tr").forEach((row,index) => { splitState.items[index]={product:row.querySelector("[data-field=product]").value,service:row.querySelector("[data-field=service]").value,resource:row.querySelector("[data-field=resource]").value}; }); }
 		function renderMultiRows() {
 			const count=Math.max(1,Math.min(10,splitState.items.length || 3)); ensureSplitItems(count); splitState.count=count;
-			$("multiSplitRows").innerHTML=splitState.items.map((item,index) => { const product=findSplitProduct(item.product), service=findSplitService(item.service), resource=splitResources.find(r=>r.id===item.resource) || splitResources[0]; return '<tr><td class="split-row-label">分单 ' + (index+1) + '</td><td><select data-field="product" aria-label="分单' + (index+1) + '服务项目/结算产品">' + splitProducts.map(p=>'<option value="' + p.id + '"' + (p.id===product.id?' selected':'') + '>' + escapeHtml(p.name) + '</option>').join("") + '</select><small class="field-meta">产品ID：' + escapeHtml(product.id) + '</small></td><td><select data-field="service" aria-label="分单' + (index+1) + '服务明细/渠道服务项">' + splitServices.map(p=>'<option value="' + p.id + '"' + (p.id===service.id?' selected':'') + '>' + escapeHtml(p.name) + '</option>').join("") + '</select><small class="field-meta service-id">服务明细/渠道服务项ID：' + escapeHtml(service.id) + '</small></td><td><select data-field="resource" aria-label="分单' + (index+1) + '服务商/渠道">' + splitResources.map(r=>'<option value="' + r.id + '"' + (r.id===item.resource?' selected':'') + '>' + escapeHtml(r.name) + '</option>').join("") + '</select><small class="field-meta resource-details">渠道商：' + escapeHtml(resource.company) + '<br>资源编号：' + escapeHtml(resource.code) + '</small></td><td><div class="split-row-actions"><button type="button" data-row-add="' + index + '">复制</button><button type="button" class="delete" data-row-delete="' + index + '"' + (count<=1?' disabled':'') + '>删除</button></div></td></tr>'; }).join("");
+			$("multiSplitRows").innerHTML=splitState.items.map((item,index) => { const product=findSplitProduct(item.product), service=findSplitService(item.service), resource=splitResources.find(r=>r.id===item.resource) || splitResources[0]; const products=splitProducts.filter(p=>matchSplitOption(p,splitState.search.product)); const services=splitServices.filter(p=>matchSplitOption(p,splitState.search.service)); const resources=splitResources.filter(r=>matchSplitOption(r,splitState.search.resource)); return '<tr><td class="split-row-label">分单 ' + (index+1) + '</td><td><select data-field="product" aria-label="分单' + (index+1) + '服务项目/结算产品">' + (products.some(p=>p.id===product.id)?products:splitProducts.filter(p=>p.id===product.id).concat(products)).map(p=>'<option value="' + p.id + '"' + (p.id===product.id?' selected':'') + '>' + escapeHtml(p.name) + '</option>').join("") + '</select><small class="field-meta">产品ID：' + escapeHtml(product.id) + '</small></td><td><select data-field="service" aria-label="分单' + (index+1) + '服务明细/渠道服务项">' + (services.some(p=>p.id===service.id)?services:splitServices.filter(p=>p.id===service.id).concat(services)).map(p=>'<option value="' + p.id + '"' + (p.id===service.id?' selected':'') + '>' + escapeHtml(p.name) + '</option>').join("") + '</select><small class="field-meta service-id">服务明细/渠道服务项ID：' + escapeHtml(service.id) + '</small></td><td><select data-field="resource" aria-label="分单' + (index+1) + '服务商/渠道">' + (resources.some(r=>r.id===resource.id)?resources:splitResources.filter(r=>r.id===resource.id).concat(resources)).map(r=>'<option value="' + r.id + '"' + (r.id===resource.id?' selected':'') + '>' + escapeHtml(r.name) + '</option>').join("") + '</select><small class="field-meta resource-details">渠道商：' + escapeHtml(resource.company) + '<br>资源编号：' + escapeHtml(resource.code) + '</small></td><td><div class="split-row-actions"><button type="button" data-row-add="' + index + '">复制</button><button type="button" class="delete" data-row-delete="' + index + '"' + (count<=1?' disabled':'') + '>删除</button></div></td></tr>'; }).join("");
 		}
 		function renderOneClick() {
 			const row=getService(splitState.rowId); $("oneClickService").textContent=row.code; $("oneClickProduct").textContent=row.product || "德国VAT注册+申报"; splitState.items=[createSplitItem(0),createSplitItem(1),createSplitItem(2)]; splitState.count=splitState.items.length; renderMultiRows();
@@ -629,6 +632,7 @@
 		$("singleResourceList").addEventListener("change",event => { if (event.target.name === "single-resource") { splitState.resource=event.target.value; renderResourceCards("singleResourceList",splitState.resource,"single-resource"); } });
 		$("multiSplitRows").addEventListener("change",event => { if (!event.target.dataset.field) return; syncSplitItems(); renderMultiRows(); });
 		$("multiSplitRows").addEventListener("click",event => { const add=event.target.closest("[data-row-add]"); const del=event.target.closest("[data-row-delete]"); if (add) { syncSplitItems(); if (splitState.items.length>=10) return notify("最多支持 10 条分单"); const source=splitState.items[Number(add.dataset.rowAdd)]; splitState.items.splice(Number(add.dataset.rowAdd)+1,0,{...source}); splitState.count=splitState.items.length; splitState.dirty=true; renderMultiRows(); } if (del && !del.disabled) { syncSplitItems(); if (splitState.items.length<=1) return; splitState.items.splice(Number(del.dataset.rowDelete),1); splitState.count=splitState.items.length; splitState.dirty=true; renderMultiRows(); } });
+		["splitProductSearch","splitServiceSearch","splitResourceSearch"].forEach(id => $(id).addEventListener("input",event => { const field=id === "splitProductSearch" ? "product" : id === "splitServiceSearch" ? "service" : "resource"; splitState.search[field]=event.target.value; syncSplitItems(); renderMultiRows(); }));
 		$("submitOneClick").addEventListener("click",submitOneClick);
 		$("singleSubmit").addEventListener("click",() => { notify("单次分单已提交"); closeSplitOverlays(); });
 		refreshSelection();

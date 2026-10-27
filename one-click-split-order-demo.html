@@ -357,6 +357,8 @@
 				}
 			}
 		}
+		const existingSplitDemo = sampleRows.find(row => row.code === "SV202610152547011593");
+		if (existingSplitDemo) { existingSplitDemo.splitGenerated = true; existingSplitDemo.settlementCompleted = false; }
 		function notify(message, tone="success") {
 			clearTimeout(toastTimer);
 			$("toast").classList.toggle("error", tone === "error");

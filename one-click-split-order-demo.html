@@ -362,6 +362,8 @@
 		}
 		const existingSplitDemo = sampleRows.find(row => row.code === "SV202610152547011593");
 		if (existingSplitDemo) { existingSplitDemo.splitGenerated = true; existingSplitDemo.settlementCompleted = true; existingSplitDemo.settledProduct = "P00967 · 注册+申报"; }
+		const existingPlanDemo = sampleRows.find(row => row.code === "SV202610152547011594");
+		if (existingPlanDemo) { existingPlanDemo.splitGenerated = true; existingPlanDemo.settlementCompleted = false; existingPlanDemo.settledProduct = "P00967 · 注册+申报"; }
 		function notify(message, tone="success") {
 			clearTimeout(toastTimer);
 			$("toast").classList.toggle("error", tone === "error");

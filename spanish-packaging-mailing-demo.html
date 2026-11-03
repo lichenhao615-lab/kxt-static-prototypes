@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="data:,">
+	<title>西班牙包装法 · 授权书邮寄 DEMO</title>
+	<style>
+		:root {
+			--brand:#00a6ad;
+			--brand-dark:#008f98;
+			--brand-soft:#e8f8f9;
+			--text:#262d35;
+			--muted:#8a929b;
+			--line:#e7ebef;
+			--pale:#f4f6f8;
+			--success:#24a17c;
+			--warning:#d79038;
+			--danger:#db6262;
+		}
+		* { box-sizing:border-box; }
+		body {
+			margin:0;
+			color:var(--text);
+			background:#fff;
+			font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+			font-size:12px;
+		}
+		body.modal-open { overflow:hidden; }
+		button,input,select { font:inherit; }
+		button { cursor:pointer; }
+		button:focus-visible,input:focus-visible,select:focus-visible { outline:2px solid #71d2d6; outline-offset:2px; }
+		button:disabled { cursor:not-allowed; opacity:.4; }
+		.topbar {
+			height:40px;
+			display:flex;
+			align-items:center;
+			gap:26px;
+			padding:0 22px;
+			background:#eef8f8;
+			border-bottom:1px solid #dce8eb;
+			white-space:nowrap;
+		}
+		.brand { display:flex; align-items:center; gap:8px; font-weight:600; color:#102734; }
+		.logo { border:1px solid #28b5bf; color:#13a3b0; font-size:10px; width:15px; height:15px; border-radius:50%; display:grid; place-items:center; }
+		.topnav { display:flex; align-self:stretch; gap:22px; align-items:center; }
+		.topnav .active { color:var(--brand-dark); }
+		.topuser { margin-left:auto; display:flex; align-items:center; gap:18px; color:#8a979c; }
+		.avatar { width:25px; height:25px; border-radius:50%; background:linear-gradient(175deg,#17364b 15%,#fbba58 48%,#222a2e 62%); }
+		.shell { display:flex; min-height:calc(100vh - 40px); }
+		.sidebar { flex:0 0 168px; background:#eff9f9; padding:0 22px; color:#19313c; }
+		.menu { height:38px; display:flex; align-items:center; justify-content:space-between; white-space:nowrap; }
+		.menu.child { padding-left:19px; }
+		.menu.active { color:#00a6b0; }
+		.menu .arrow { color:#485f67; font-size:11px; }
+		.workspace { min-width:0; flex:1; }
+		.page-tabs { height:27px; padding-left:10px; display:flex; align-items:flex-end; gap:5px; border-bottom:1px solid #dfe5ea; }
+		.page-tab { height:23px; padding:3px 8px; display:flex; align-items:center; gap:6px; border:1px solid #e4e8ec; border-radius:2px 2px 0 0; background:#fff; font-size:11px; color:#4a5664; }
+		.page-tab.active { background:var(--brand); color:#fff; border-color:var(--brand); }
+		.filters { padding:5px 10px 0; }
+		.filter-line { min-height:31px; display:flex; align-items:center; gap:9px; flex-wrap:wrap; padding:3px 0; }
+		.filter-label { color:#4b5259; width:58px; flex:0 0 58px; white-space:nowrap; }
+		.chip-list { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+		.chip { min-height:21px; padding:2px 8px; border:0; border-radius:2px; background:#f0f4f4; color:#5f6769; line-height:17px; white-space:nowrap; }
+		.chip.active { background:#e5f8f9; color:#00a2b0; font-weight:500; }
+		.query-row { display:flex; align-items:center; gap:11px; flex-wrap:wrap; padding:5px 0; min-height:35px; }
+		.field-group { display:flex; align-items:center; gap:7px; white-space:nowrap; }
+		.field-label { color:#52565c; }
+		.input,.select { height:27px; padding:0 9px; border:1px solid #dcdfe5; border-radius:1px; background:#fff; color:#4f5964; min-width:0; }
+		.input::placeholder { color:#b8bdc2; }
+		.select { color:#666f78; width:126px; }
+		.input.keyword { width:216px; }
+		.btn { height:27px; border:1px solid #dbe0e8; background:#fff; padding:0 13px; border-radius:2px; color:#35404c; }
+		.btn.primary { background:#27b8be; border-color:#27b8be; color:#fff; }
+		.btn.primary:hover { background:#0ba9b2; }
+		.query-controls { display:flex; align-items:center; gap:8px; }
+		.export-row { padding:8px 0 7px; display:flex; align-items:center; justify-content:space-between; }
+		.demo-label { font-size:11px; color:#a2aab3; display:flex; align-items:center; gap:5px; }
+		.demo-label i { width:5px; height:5px; background:#c3d1d4; border-radius:50%; }
+		.status-wrap { margin:0 10px; overflow:auto; scrollbar-width:thin; scrollbar-color:#989c9f #f4f6f7; }
+		.status-tabs { display:flex; width:max-content; align-items:center; min-height:34px; border-bottom:1px solid #e9edf1; gap:0; }
+		.status-tab { font-size:11px; height:25px; white-space:nowrap; padding:0 11px; border:0; background:#fff; color:#4a4e54; }
+		.status-tab:first-child { padding-left:7px; }
+		.status-tab.active { background:#00a5ac; color:#fff; }
+		.selection-row { height:42px; padding:0 10px; display:flex; align-items:center; justify-content:space-between; color:#717b8a; font-size:11px; }
+		.table-setting { width:26px; height:26px; border:1px solid #e0e5ec; border-radius:50%; background:#fff; color:#596775; }
+		.table-scroll { margin:0 10px; overflow:auto; border:1px solid #edf0f4; scrollbar-width:thin; scrollbar-color:#999 #f5f6f7; }
+		table { width:100%; min-width:1450px; table-layout:fixed; border-collapse:collapse; font-size:11px; }
+		th { height:38px; background:#f5f7fa; font-weight:600; color:#303843; }
+		td { height:43px; color:#30343b; }
+		th,td { border-right:1px solid #f0f2f6; border-bottom:1px solid #edf0f4; text-align:center; padding:0 7px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+		tbody tr:hover { background:#f9fdfd; }
+		.check { width:13px; height:13px; accent-color:var(--brand); cursor:pointer; margin:0; vertical-align:middle; }
+		.link { color:#00a6b2; }
+		.muted { color:#98a2ab; }
+		.status-tag { display:inline-flex; align-items:center; justify-content:center; min-width:73px; height:22px; padding:0 7px; border-radius:2px; font-size:10px; }
+		.status-tag.waiting { color:#9a6d22; background:#fff5df; }
+		.status-tag.transit { color:#167b82; background:#e4f7f8; }
+		.status-tag.review { color:#4b7b98; background:#eaf4fb; }
+		.status-tag.reject { color:#b55252; background:#fff0ef; }
+		.status-tag.done { color:#458264; background:#eaf7ef; }
+		.substatus { color:#5e6871; }
+		.latest-node { display:inline-flex; align-items:center; gap:5px; max-width:100%; }
+		.latest-node i { width:5px; height:5px; border-radius:50%; background:#b6c0c7; flex:0 0 auto; }
+		.latest-node.active i { background:#22ae92; }
+		.latest-node.warn i { background:#e29342; }
+		.row-action { color:#00a2b0; padding:0 3px; border:0; background:none; font-size:11px; white-space:nowrap; }
+		.row-action:hover { color:#00717b; }
+		.row-action.muted { color:#b6bec5; }
+		.operation-actions { display:flex; align-items:center; justify-content:center; gap:7px; }
+		.operation-divider { width:1px; height:12px; background:#dfe6ea; }
+		.pagination { min-height:58px; display:flex; align-items:center; justify-content:flex-end; gap:6px; padding:10px; font-size:11px; color:#59616b; flex-wrap:wrap; }
+		.page-btn { width:26px; height:26px; border:1px solid #dce1e6; background:#fff; color:#5f6771; padding:0; }
+		.page-btn.active { border-color:#00b8c3; color:#00a5b0; }
+		.page-size { height:27px; border:1px solid #dde2e7; background:#fff; color:#737b84; padding:0 8px; }
+		.page-input { width:38px; height:26px; border:1px solid #dde2e7; padding:0 4px; text-align:center; color:#6e7882; }
+		.footer-note { padding:7px 10px 14px; color:#b1b7bd; font-size:10px; text-align:right; }
+		.toast { position:fixed; top:58px; left:50%; transform:translate(-50%,-10px); opacity:0; background:#fff; border:1px solid #e5ecef; color:#46545e; box-shadow:0 5px 22px #254d6b18; padding:10px 19px; border-radius:3px; z-index:120; pointer-events:none; transition:opacity .15s,transform .15s; }
+		.toast.show { opacity:1; transform:translate(-50%,0); }
+		.toast .tick { color:#26b29c; margin-right:7px; }
+		.modal-overlay { position:fixed; inset:0; background:#1b2b3b65; z-index:80; display:flex; align-items:center; justify-content:center; padding:25px; }
+		.modal { background:#fff; width:1180px; max-width:100%; border-radius:4px; box-shadow:0 15px 55px #10243a35; display:flex; flex-direction:column; max-height:calc(100vh - 50px); }
+		.modal-head { display:flex; align-items:center; justify-content:space-between; height:58px; flex:0 0 58px; padding:0 25px; border-bottom:1px solid #e8edf1; }
+		.modal-title { font-size:15px; font-weight:500; color:#27333d; }
+		.modal-title small { color:#99a2ab; font-size:11px; font-weight:400; margin-left:9px; }
+		.close-btn { border:0; background:transparent; color:#9aa2ab; padding:4px; font-size:22px; line-height:22px; }
+		.modal-body { display:grid; grid-template-columns:minmax(360px, .82fr) minmax(510px, 1.18fr); gap:25px; padding:20px 25px 17px; overflow:auto; min-height:0; }
+		.modal-body.confirm-mode .service-summary { display:none; }
+		.panel { min-width:0; }
+		.panel-title { height:26px; display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:#465361; }
+		.panel-title::before { content:""; width:3px; height:13px; background:var(--brand); border-radius:1px; }
+		.panel + .panel { border-left:1px solid #edf0f3; padding-left:25px; }
+		.info-grid { display:grid; grid-template-columns:92px minmax(0,1fr); border:1px solid #e6ebef; border-bottom:0; margin-top:9px; }
+		.info-label,.info-value { min-height:37px; display:flex; align-items:center; border-bottom:1px solid #e6ebef; }
+		.info-label { background:#f7f9fa; color:#7d8892; padding:0 10px; }
+		.info-value { padding:7px 10px; color:#3c4852; min-width:0; overflow-wrap:anywhere; }
+		.info-value strong { font-weight:500; }
+		.readonly-value { color:#3e4a54; }
+		.notice { margin-top:13px; padding:10px 11px; border:1px solid #f5dfb2; background:#fffbf0; color:#9b722e; line-height:1.65; }
+		.field-block { margin-top:9px; }
+		.field-block label { display:block; color:#68737e; margin-bottom:5px; }
+		.field-block input,.field-block select { width:100%; height:31px; border:1px solid #dfe4e8; border-radius:2px; padding:0 9px; color:#3d4852; background:#fff; }
+		.field-block input:disabled,.field-block select:disabled { background:#f7f9fa; color:#69757f; }
+		.field-error { color:var(--danger); line-height:1.6; margin-top:4px; min-height:18px; }
+		.field-error.success { color:var(--success); }
+		.field-error.warn { color:#a67528; }
+		.logistics-summary { margin-top:9px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+		.metric { min-height:56px; border:1px solid #e6ebef; background:#fafcfd; padding:8px 10px; min-width:0; }
+		.metric-label { color:#8a949d; font-size:10px; margin-bottom:6px; }
+		.metric-value { color:#38444f; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+		.metric-value.success { color:#258c72; }
+		.metric-value.warn { color:#b67925; }
+		.timeline { margin-top:12px; border:1px solid #e6ebef; background:#fcfdfd; padding:10px 13px 5px; min-height:208px; }
+		.timeline-head { color:#6b7680; font-size:11px; padding-bottom:8px; border-bottom:1px solid #edf0f2; }
+		.timeline-list { list-style:none; margin:0; padding:0; }
+		.timeline-item { position:relative; display:grid; grid-template-columns:94px 12px minmax(0,1fr); gap:8px; padding:11px 0 7px; color:#697680; }
+		.timeline-item::before { content:""; position:absolute; left:99px; top:20px; bottom:-2px; width:1px; background:#dfe9e9; }
+		.timeline-item:last-child::before { display:none; }
+		.timeline-time { color:#a0a9b0; font-size:10px; line-height:1.5; }
+		.timeline-dot { position:relative; z-index:1; width:9px; height:9px; margin-top:3px; border-radius:50%; border:2px solid #b9c7cc; background:#fff; }
+		.timeline-item.latest .timeline-dot { border-color:#27b49e; background:#27b49e; box-shadow:0 0 0 3px #def5ef; }
+		.timeline-content { min-width:0; line-height:1.55; overflow-wrap:anywhere; }
+		.timeline-content strong { display:block; color:#44525d; font-weight:500; }
+		.empty-logistics { min-height:208px; display:flex; align-items:center; justify-content:center; color:#9ca6ad; text-align:center; line-height:1.8; border:1px dashed #e0e6e9; background:#fcfdfd; margin-top:12px; }
+		.inline-alert { margin-top:10px; padding:9px 10px; border:1px solid #f3d9d6; background:#fff7f6; color:#af5b55; line-height:1.65; }
+		.inline-alert.info { border-color:#d7ecee; background:#f3fbfb; color:#4b8085; }
+		.modal-footer { border-top:1px solid #e8edf1; min-height:68px; padding:16px 25px; display:flex; justify-content:space-between; gap:15px; align-items:center; flex:0 0 auto; }
+		.footer-hint { color:#9aa4ad; font-size:11px; }
+		.modal-footer .actions { display:flex; gap:9px; }
+		[hidden] { display:none !important; }
+		@media (max-width:1500px) {
+			.topbar { gap:20px; }
+			.topnav { gap:17px; }
+			.query-row { gap:9px; }
+			.modal { width:1080px; }
+		}
+		@media (max-width:1050px) {
+			.sidebar { flex-basis:142px; padding:0 15px; }
+			.topnav { gap:12px; }
+			.topuser { gap:9px; }
+			.topbar { padding:0 15px; gap:20px; }
+			.topnav .optional { display:none; }
+			.modal-body { grid-template-columns:minmax(310px,.8fr) minmax(430px,1.2fr); gap:15px; padding-left:18px; padding-right:18px; }
+			.panel + .panel { padding-left:15px; }
+			.modal-head,.modal-footer { padding-left:18px; padding-right:18px; }
+		}
+		@media (max-width:760px) {
+			.topbar { min-width:0; padding:0 12px; gap:14px; }
+			.topnav { display:none; }
+			.topuser { gap:8px; }
+			.sidebar { display:none; }
+			.modal-overlay { padding:10px; align-items:flex-start; }
+			.modal { max-height:calc(100vh - 20px); }
+			.modal-body { display:block; padding:15px; }
+			.panel + .panel { border-left:0; border-top:1px solid #edf0f3; margin-top:17px; padding:17px 0 0; }
+			.modal-head { padding:0 15px; }
+			.modal-footer { padding:12px 15px; align-items:flex-start; flex-direction:column; }
+			.modal-footer .actions { width:100%; }
+			.modal-footer .actions .btn { flex:1; }
+			.logistics-summary { grid-template-columns:1fr 1fr; }
+			.timeline-item { grid-template-columns:77px 12px minmax(0,1fr); }
+			.timeline-item::before { left:82px; }
+		}
+	</style>
+</head>
+<body>
+	<header class="topbar">
+		<div class="brand"><span class="logo">Kx</span>跨信通税务管理系统</div>
+		<nav class="topnav" aria-label="主导航"><span>系统管理</span><span class="active">业务管理</span><span>CRM</span><span>客服工单</span><span class="optional">测试平台</span><span class="optional">埋点分析平台</span><span class="optional">数据平台</span></nav>
+		<div class="topuser"><span>⌕</span><span>ⓘ</span><span>♧</span><span class="avatar" aria-hidden="true"></span><span>李晨浩</span></div>
+	</header>
+	<div class="shell">
+		<aside class="sidebar" aria-label="业务菜单">
+			<div class="menu">首页 <span class="arrow">⌄</span></div>
+			<div class="menu">订单管理 <span class="arrow">⌄</span></div>
+			<div class="menu">续费管理 <span class="arrow">⌄</span></div>
+			<div class="menu">客户管理 <span class="arrow">⌄</span></div>
+			<div class="menu">VAT税务 <span class="arrow">⌄</span></div>
+			<div class="menu">EPR合规 <span class="arrow">⌄</span></div>
+			<div class="menu">授权代表管理 <span class="arrow">⌄</span></div>
+			<div class="menu">知识产权 <span class="arrow">⌄</span></div>
+			<div class="menu active">履约管理 <span class="arrow">⌃</span></div>
+			<div class="menu child active">服务管理 <span class="arrow">⌄</span></div>
+			<div class="menu child">任务管理 <span class="arrow">⌄</span></div>
+			<div class="menu child">SLA管理 <span class="arrow">⌄</span></div>
+			<div class="menu child">跟单管理 <span class="arrow">⌄</span></div>
+			<div class="menu child">信件管理 <span class="arrow">⌄</span></div>
+			<div class="menu child">驳回管理 <span class="arrow">⌄</span></div>
+			<div class="menu">商品管理 <span class="arrow">⌄</span></div>
+			<div class="menu">流程管理 <span class="arrow">⌄</span></div>
+			<div class="menu">业绩管理 <span class="arrow">⌄</span></div>
+			<div class="menu">RPA管理 <span class="arrow">⌄</span></div>
+			<div class="menu">产品管理 <span class="arrow">⌄</span></div>
+			<div class="menu">渠道管理 <span class="arrow">⌄</span></div>
+			<div class="menu">财务管理 <span class="arrow">⌄</span></div>
+			<div class="menu">营销管理 <span class="arrow">⌄</span></div>
+		</aside>
+		<main class="workspace">
+			<div class="page-tabs">
+				<span class="page-tab">履约工作台 ×</span>
+				<span class="page-tab active">● 西班牙包装法邮寄 ×</span>
+				<span class="page-tab">服务单列表 ×</span>
+			</div>
+			<section class="filters" aria-label="西班牙包装法邮寄筛选">
+				<div class="filter-line"><span class="filter-label">一级类目：</span><div class="chip-list"><button class="chip active" type="button">EPR</button><button class="chip" type="button">VAT</button><button class="chip" type="button">产品合规</button><button class="chip" type="button">知识产权</button></div></div>
+				<div class="filter-line"><span class="filter-label">国家：</span><div class="chip-list"><button class="chip active" type="button">西班牙</button><button class="chip" type="button">全部国家</button></div></div>
+				<div class="filter-line"><span class="filter-label">主状态：</span><div class="chip-list"><button class="chip active" type="button">资料邮寄中（5）</button></div></div>
+				<div class="filter-line"><span class="filter-label">邮寄子状态：</span><div class="chip-list"><button class="chip active" type="button">全部</button><button class="chip" type="button">资料待邮寄</button><button class="chip" type="button">邮寄中</button><button class="chip" type="button">已寄回待审核</button><button class="chip" type="button">原件审核驳回</button><button class="chip" type="button">原件审核通过</button></div></div>
+				<div class="query-row">
+					<label class="field-group"><span class="field-label">物流公司</span><select class="select" id="courierFilter" aria-label="物流公司"><option value="">全部物流公司</option><option>顺丰速运</option><option>中通快递</option><option>圆通速递</option></select></label>
+					<label class="field-group"><span class="field-label">服务单号</span><input class="input keyword" id="keyword" placeholder="请输入服务单号或客户名称" aria-label="服务单号或客户名称"></label>
+					<label class="field-group"><span class="field-label">是否逾期</span><select class="select" id="overdueFilter" aria-label="是否逾期"><option value="">全部</option><option value="yes">已逾期</option><option value="no">未逾期</option></select></label>
+					<div class="query-controls"><button class="btn primary" id="searchButton" type="button">搜 索</button><button class="btn" id="resetButton" type="button">重 置</button></div>
+				</div>
+				<div class="export-row"><button class="btn" id="exportButton" type="button">导出 ⌄</button><span class="demo-label"><i></i>演示数据 · 物流轨迹为 Mock</span></div>
+			</section>
+			<div class="status-wrap"><div class="status-tabs" id="statusTabs" role="group" aria-label="服务单状态筛选"></div></div>
+			<div class="selection-row"><span id="selectionCount">共 5 条服务单</span><button class="table-setting" type="button" id="tableSettings" aria-label="表格设置">▦</button></div>
+			<div class="table-scroll">
+				<table aria-label="西班牙包装法服务单列表" data-testid="service-table">
+					<colgroup>
+						<col style="width:31px"><col style="width:49px"><col style="width:260px"><col style="width:89px"><col style="width:438px"><col style="width:67px"><col style="width:65px"><col style="width:175px"><col style="width:76px"><col style="width:170px"><col style="width:235px">
+					</colgroup>
+					<thead><tr><th><input type="checkbox" class="check" aria-label="选择本页全部服务单"></th><th>序号</th><th>基础服务编号</th><th>服务类型</th><th>商品规格</th><th>客户级别</th><th>数据来源</th><th>订单号</th><th>订单来源</th><th>商品名称</th><th>操作</th></tr></thead>
+					<tbody id="serviceRows" data-testid="service-rows"></tbody>
+				</table>
+			</div>
+			<div class="pagination" id="pagination" data-testid="pagination"></div>
+			<div class="footer-note">本页面为交互 DEMO，列表内容和物流信息均为演示数据。</div>
+		</main>
+	</div>
+	<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+	<div class="modal-overlay" id="detailOverlay" hidden>
+		<section class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle" data-testid="detail-dialog">
+			<div class="modal-head">
+				<div class="modal-title" id="detailTitle">服务单详情 <small id="detailCode"></small></div>
+				<button class="close-btn" id="closeDetail" type="button" aria-label="关闭详情">×</button>
+			</div>
+			<div class="modal-body" id="detailBody">
+				<section class="panel" id="serviceInfoPanel" aria-label="服务单与收件信息">
+					<div class="service-summary">
+						<div class="panel-title">服务单信息</div>
+						<div class="info-grid">
+						<div class="info-label">服务单号</div><div class="info-value" id="infoCode"></div>
+						<div class="info-label">客户名称</div><div class="info-value" id="infoCustomer"></div>
+						<div class="info-label">商品名称</div><div class="info-value" id="infoProduct"></div>
+						<div class="info-label">主状态</div><div class="info-value" id="infoMainStatus"></div>
+						<div class="info-label">西包邮寄子状态</div><div class="info-value" id="infoSubStatus"></div>
+						</div>
+					</div>
+					<div class="panel-title" style="margin-top:18px">收件信息</div>
+					<div class="info-grid">
+						<div class="info-label">收件人</div><div class="info-value readonly-value" id="infoReceiver"></div>
+						<div class="info-label">联系电话</div><div class="info-value readonly-value" id="infoPhone"></div>
+						<div class="info-label">收件地址</div><div class="info-value readonly-value" id="infoAddress"></div>
+					</div>
+					<div class="notice">寄件提示：本司不接收顺丰到付件，请勿将到付件寄出。</div>
+				</section>
+				<section class="panel" aria-label="寄件与物流信息">
+					<div class="panel-title">寄件与物流</div>
+					<div class="field-block">
+						<label for="courierInput">快递公司</label>
+						<input id="courierInput" aria-label="快递公司" placeholder="填写单号后自动识别" readonly>
+						<div class="field-error" id="courierError" aria-live="polite"></div>
+					</div>
+					<div class="field-block">
+						<label for="trackingInput">快递单号</label>
+						<input id="trackingInput" aria-label="快递单号" placeholder="请输入快递单号">
+						<div class="field-error" id="trackingError" aria-live="polite"></div>
+					</div>
+					<div class="logistics-summary" id="logisticsSummary" hidden>
+						<div class="metric"><div class="metric-label">物流状态</div><div class="metric-value" id="logisticsStatus"></div></div>
+						<div class="metric"><div class="metric-label">最新节点时间</div><div class="metric-value" id="logisticsTime"></div></div>
+						<div class="metric"><div class="metric-label">查询来源</div><div class="metric-value">快递100 Mock</div></div>
+					</div>
+					<div class="timeline" id="timeline" hidden>
+						<div class="timeline-head">物流时间线</div>
+						<ul class="timeline-list" id="timelineList"></ul>
+					</div>
+					<div class="empty-logistics" id="emptyLogistics">尚未提交快递信息<br>填写快递单号后点击“确认邮寄”</div>
+					<div class="inline-alert" id="logisticsAlert" hidden></div>
+				</section>
+			</div>
+			<div class="modal-footer">
+				<div class="footer-hint" id="footerHint">收件信息只读，快递信息提交后会自动查询物流。</div>
+				<div class="actions">
+					<button class="btn primary" id="confirmMail" type="button">确认邮寄</button>
+					<button class="btn" id="editCourier" type="button">修改快递</button>
+					<button class="btn" id="closeDetailBottom" type="button">关闭</button>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<script>
+	(() => {
+		"use strict";
+		const $ = id => document.getElementById(id);
+		const statusNames = ["全部","资料待邮寄","邮寄中","已寄回待审核","原件审核驳回","原件审核通过"];
+		const statusClass = { "资料邮寄中":"transit", "资料待邮寄":"waiting", "邮寄中":"transit", "已寄回待审核":"review", "原件审核驳回":"reject", "原件审核通过":"done" };
+		const courierTracks = {
+			"SF202610270001": {
+				courier:"顺丰速运",
+				status:"运输中", time:"2026-10-27 14:20", latest:"深圳转运中心 已发出",
+				items:[
+					{time:"2026-10-27 14:20",place:"深圳转运中心",text:"快件已发出，发往广州转运中心",latest:true},
+					{time:"2026-10-27 09:08",place:"深圳龙华区",text:"快件已由【深圳龙华区】收件"},
+					{time:"2026-10-26 18:42",place:"寄件网点",text:"已提交寄件信息，等待揽收"}
+				]
+			},
+			"SF202610270002": {
+				courier:"顺丰速运",
+				status:"已签收", time:"2026-10-26 16:31", latest:"广州天河区 已签收",
+				items:[
+					{time:"2026-10-26 16:31",place:"广州天河区",text:"快件已签收，签收人：前台",latest:true},
+					{time:"2026-10-26 10:24",place:"广州天河区",text:"快件派送中，请保持电话畅通"},
+					{time:"2026-10-25 22:18",place:"广州转运中心",text:"快件已到达广州转运中心"}
+				]
+			},
+			"SF202610270003": {
+				courier:"顺丰速运",
+				status:"查询中", time:"--", latest:"物流轨迹查询中",
+				items:[]
+			}
+		};
+		const rows = [
+			{ id:"sp001", code:"ES-EPR-202610-001", customer:"深圳市拓远贸易有限公司", type:"EPR服务", spec:"西班牙包装法注册+授权代表", level:"D", source:"saas客户端", order:"DD261027001", orderSource:"企微", product:"西班牙包装法注册及授权代表", mainStatus:"资料邮寄中", subStatus:"资料待邮寄", courier:"", tracking:"", receiver:"王敏", phone:"138****6021", address:"广东省深圳市龙华区民治大道 188 号 8 层", updated:"2026-10-27 10:12", overdue:"no", invalid:false },
+			{ id:"sp002", code:"ES-EPR-202610-002", customer:"宁波市海拓电子商务有限公司", type:"EPR服务", spec:"西班牙包装法注册+授权代表", level:"C", source:"crm", order:"DD261027002", orderSource:"商城", product:"西班牙包装法注册及授权代表", mainStatus:"资料邮寄中", subStatus:"资料待邮寄", courier:"", tracking:"YT-INVALID-20261027", receiver:"陈璐", phone:"139****1846", address:"浙江省宁波市鄞州区学府路 99 号", updated:"2026-10-26 16:45", overdue:"yes", invalid:true },
+			{ id:"sp003", code:"ES-EPR-202610-003", customer:"广州立方供应链有限公司", type:"EPR服务", spec:"西班牙包装法年度合规服务", level:"D", source:"saas客户端", order:"DD261027003", orderSource:"企微", product:"西班牙包装法年度合规服务", mainStatus:"资料邮寄中", subStatus:"邮寄中", courier:"顺丰速运", tracking:"SF202610270001", receiver:"刘洋", phone:"137****5512", address:"广东省广州市白云区机场路 600 号", updated:"2026-10-27 14:20", overdue:"no" },
+			{ id:"sp004", code:"ES-EPR-202610-004", customer:"杭州麦田家居科技有限公司", type:"EPR服务", spec:"西班牙包装法注册+授权代表", level:"B", source:"crm", order:"DD261027004", orderSource:"商城", product:"西班牙包装法注册及授权代表", mainStatus:"资料邮寄中", subStatus:"已寄回待审核", courier:"顺丰速运", tracking:"SF202610270002", receiver:"赵欣", phone:"136****7328", address:"浙江省杭州市余杭区文一西路 969 号", updated:"2026-10-26 16:31", overdue:"no" },
+			{ id:"sp005", code:"ES-EPR-202610-005", customer:"厦门禾木户外用品有限公司", type:"EPR服务", spec:"西班牙包装法注册+授权代表", level:"C", source:"saas客户端", order:"DD261027005", orderSource:"企微", product:"西班牙包装法注册及授权代表", mainStatus:"资料邮寄中", subStatus:"原件审核驳回", courier:"", tracking:"", receiver:"周航", phone:"135****3189", address:"福建省厦门市湖里区金山路 80 号", updated:"2026-10-25 11:06", overdue:"yes", rejection:"原件照片不清晰，请重新准备并寄送纸质授权书。" }
+		];
+		const state = { status:"全部", keyword:"", courier:"", overdue:"", currentId:null, editing:false, toastTimer:null };
+		const clone = value => JSON.parse(JSON.stringify(value));
+		function notify(message) {
+			clearTimeout(state.toastTimer);
+			$("toast").innerHTML = '<span class="tick">✓</span>' + message;
+			$("toast").classList.add("show");
+			state.toastTimer = setTimeout(() => $("toast").classList.remove("show"), 2300);
+		}
+		function getRow(id) { return rows.find(row => row.id === id); }
+		function visibleRows() {
+			return rows.filter(row => {
+				const text = (row.code + row.customer + row.product).toLowerCase();
+				return (state.status === "全部" || row.subStatus === state.status) &&
+					(!state.keyword || text.includes(state.keyword.toLowerCase())) &&
+					(!state.courier || row.courier === state.courier) &&
+					(!state.overdue || row.overdue === state.overdue);
+			});
+		}
+		function tag(status) { return '<span class="status-tag ' + (statusClass[status] || "") + '">' + status + '</span>'; }
+		function latestNode(row) {
+			if (!row.tracking) return '<span class="latest-node"><i></i><span class="muted">尚未提交快递信息</span></span>';
+			const track = courierTracks[row.tracking];
+			if (!track) return '<span class="latest-node warn"><i></i><span>暂未识别物流单号</span></span>';
+			return '<span class="latest-node ' + (track.status === "已签收" ? "active" : "") + '"><i></i><span>' + track.latest + '</span></span>';
+		}
+		function renderStatusTabs() {
+			$("statusTabs").innerHTML = statusNames.map(name => {
+				const count = name === "全部" ? rows.length : rows.filter(row => row.subStatus === name).length;
+				return '<button type="button" class="status-tab ' + (state.status === name ? "active" : "") + '" data-status="' + name + '">' + name + '（' + count + '）</button>';
+			}).join("");
+		}
+		function renderRows() {
+			const list = visibleRows();
+			$("selectionCount").textContent = "共 " + list.length + " 条服务单";
+			$("serviceRows").innerHTML = list.length ? list.map((row,index) => {
+				const confirmClass = row.subStatus === "资料待邮寄" ? "row-action" : "row-action muted";
+				const confirmDisabled = row.subStatus === "资料待邮寄" ? "" : " disabled";
+				return '<tr data-row-id="' + row.id + '">' +
+					'<td><input type="checkbox" class="check" aria-label="选择 ' + row.code + '"></td>' +
+					'<td>' + (index + 1) + '</td>' +
+					'<td class="link">' + row.code + '</td>' +
+					'<td>' + row.type + '</td>' +
+					'<td title="' + row.spec + '">' + row.spec + '</td>' +
+					'<td>' + row.level + '</td>' +
+					'<td>' + row.source + '</td>' +
+					'<td class="link">' + row.order + '</td>' +
+					'<td>' + row.orderSource + '</td>' +
+					'<td title="' + row.product + '">' + row.product + '</td>' +
+					'<td><div class="operation-actions"><button type="button" class="' + confirmClass + '"' + confirmDisabled + ' data-confirm-mail="' + row.id + '">确认邮寄</button><span class="operation-divider"></span><button type="button" class="row-action" data-view-mail="' + row.id + '">查看邮寄信息</button></div></td>' +
+				'</tr>';
+			}).join("") : '<tr><td colspan="11" style="height:300px;color:#929ca8">暂无符合条件的服务单</td></tr>';
+			$("pagination").innerHTML = '<span style="margin-right:5px">共有 ' + list.length + ' 条数据</span><button type="button" class="page-btn" disabled>〈</button><button type="button" class="page-btn active">1</button><button type="button" class="page-btn" disabled>〉</button><select class="page-size" aria-label="每页条数"><option>10条/页</option></select>';
+		}
+		function render() { renderStatusTabs(); renderRows(); }
+		function updateButtonState(row) {
+			const waiting = row.subStatus === "资料待邮寄";
+			const transit = row.subStatus === "邮寄中";
+			$("confirmMail").disabled = !waiting;
+			$("editCourier").disabled = !transit;
+		}
+		function clearErrors() {
+			$("courierError").textContent = "";
+			$("trackingError").textContent = "";
+			$("courierError").className = "field-error";
+			$("trackingError").className = "field-error";
+		}
+		function setFieldsDisabled(disabled) {
+			$("trackingInput").disabled = disabled;
+		}
+		function showEmptyLogistics() {
+			$("logisticsSummary").hidden = true;
+			$("timeline").hidden = true;
+			$("emptyLogistics").hidden = false;
+		}
+		function showTrack(track) {
+			$("emptyLogistics").hidden = true;
+			$("logisticsSummary").hidden = false;
+			$("timeline").hidden = false;
+			$("logisticsStatus").textContent = track.status;
+			$("logisticsStatus").className = "metric-value " + (track.status === "已签收" ? "success" : track.status === "查询中" ? "warn" : "");
+			$("logisticsTime").textContent = track.time;
+			$("timelineList").innerHTML = track.items.length ? track.items.map(item => '<li class="timeline-item ' + (item.latest ? "latest" : "") + '"><span class="timeline-time">' + item.time + '</span><span class="timeline-dot"></span><span class="timeline-content"><strong>' + item.place + '</strong>' + item.text + '</span></li>').join("") : '<li style="padding:55px 0;text-align:center;color:#9ca6ad">物流轨迹查询中，请稍候</li>';
+		}
+		function showAlert(text, kind) {
+			$("logisticsAlert").hidden = !text;
+			$("logisticsAlert").className = "inline-alert " + (kind || "");
+			$("logisticsAlert").textContent = text || "";
+		}
+		function autoQuery(row) {
+			showAlert("", "");
+			if (!row.tracking) { showEmptyLogistics(); return; }
+			const track = courierTracks[row.tracking];
+			if (!track) {
+				showEmptyLogistics();
+				$("courierInput").value = "";
+				showAlert("暂未识别该快递单号，请核对单号。", "");
+				$("trackingError").textContent = "快递100暂未识别该快递单号";
+				$("trackingError").className = "field-error";
+				return;
+			}
+			$("courierInput").value = track.courier || "";
+			showTrack(track);
+			if (track.status === "已签收") showAlert("已捕捉到签收节点，请等待纸质原件审核。", "info");
+		}
+		function detectCourierFromTracking() {
+			const tracking = $("trackingInput").value.trim();
+			const track = courierTracks[tracking];
+			if (track) {
+				$("courierInput").value = track.courier || "";
+				$("trackingError").textContent = "";
+				$("courierError").textContent = "";
+				showTrack(track);
+				return;
+			}
+			$("courierInput").value = "";
+			$("logisticsSummary").hidden = true;
+			$("timeline").hidden = true;
+			$("emptyLogistics").hidden = false;
+		}
+		function openDetail(id, entry) {
+			const row = getRow(id);
+			if (!row) return;
+			$("toast").classList.remove("show");
+			state.currentId = id;
+			state.editing = false;
+			clearErrors();
+			$("detailTitle").firstChild.textContent = entry === "confirm" ? "确认邮寄 " : "查看邮寄信息 ";
+			$("detailCode").textContent = row.code;
+			$("detailBody").classList.toggle("confirm-mode", entry === "confirm");
+			$("infoCode").textContent = row.code;
+			$("infoCustomer").textContent = row.customer;
+			$("infoProduct").textContent = row.product;
+			$("infoMainStatus").innerHTML = tag(row.mainStatus);
+			$("infoSubStatus").innerHTML = tag(row.subStatus);
+			$("infoReceiver").textContent = row.receiver;
+			$("infoPhone").textContent = row.phone;
+			$("infoAddress").textContent = row.address;
+			$("courierInput").value = row.courier || "";
+			$("trackingInput").value = row.tracking || "";
+			setFieldsDisabled(row.subStatus !== "资料待邮寄");
+			updateButtonState(row);
+			$("footerHint").textContent = row.subStatus === "原件审核驳回" ? row.rejection : row.subStatus === "已寄回待审核" ? "纸质授权书已签收，当前等待原件审核。" : "收件信息只读，快递信息提交后会自动查询物流。";
+			autoQuery(row);
+			if (row.invalid) $("trackingError").textContent = "快递100暂未识别该快递单号";
+			$("detailOverlay").hidden = false;
+			document.body.classList.add("modal-open");
+			$("closeDetail").focus();
+		}
+		function closeDetail() {
+			$("detailOverlay").hidden = true;
+			document.body.classList.remove("modal-open");
+			state.currentId = null;
+			state.editing = false;
+		}
+		function validateCourier() {
+			const tracking = $("trackingInput").value.trim();
+			clearErrors();
+			let valid = true;
+			if (!tracking) { $("trackingError").textContent = "请输入快递单号"; valid = false; }
+			else if (!/^[A-Za-z0-9-]{8,32}$/.test(tracking)) { $("trackingError").textContent = "请核对快递单号格式"; valid = false; }
+			else if (!courierTracks[tracking]) { $("trackingError").textContent = "暂未识别该快递单号，请核对单号"; valid = false; }
+			return valid;
+		}
+		function submitCourier(mode) {
+			const row = getRow(state.currentId);
+			if (!row || !validateCourier()) return;
+			row.tracking = $("trackingInput").value.trim();
+			row.courier = courierTracks[row.tracking].courier;
+			row.subStatus = "邮寄中";
+			row.updated = "2026-10-27 15:02";
+			row.invalid = false;
+			state.editing = false;
+			setFieldsDisabled(true);
+			updateButtonState(row);
+			autoQuery(row);
+			$("infoSubStatus").innerHTML = tag(row.subStatus);
+			$("footerHint").textContent = "快递信息已提交，系统将继续轮询物流轨迹。";
+			render();
+			notify(mode === "edit" ? "快递信息已更新" : "已确认邮寄，服务单进入邮寄中");
+		}
+		function startEditing() {
+			const row = getRow(state.currentId);
+			if (!row || row.subStatus !== "邮寄中") return;
+			if (!state.editing) {
+				state.editing = true;
+				setFieldsDisabled(false);
+				$("footerHint").textContent = "请修改快递单号，再次点击“修改快递”提交。";
+				$("editCourier").focus();
+				return;
+			}
+			submitCourier("edit");
+		}
+		$("statusTabs").addEventListener("click", event => {
+			const button = event.target.closest("[data-status]");
+			if (!button) return;
+			state.status = button.dataset.status;
+			render();
+		});
+		$("serviceRows").addEventListener("click", event => {
+			const confirmButton = event.target.closest("[data-confirm-mail]");
+			if (confirmButton) { openDetail(confirmButton.dataset.confirmMail, "confirm"); return; }
+			const viewButton = event.target.closest("[data-view-mail]");
+			if (viewButton) openDetail(viewButton.dataset.viewMail, "view");
+		});
+		$("searchButton").addEventListener("click", () => {
+			state.keyword = $("keyword").value.trim();
+			state.courier = $("courierFilter").value;
+			state.overdue = $("overdueFilter").value;
+			render();
+		});
+		$("keyword").addEventListener("keydown", event => { if (event.key === "Enter") $("searchButton").click(); });
+		$("resetButton").addEventListener("click", () => {
+			state.status = "全部"; state.keyword = ""; state.courier = ""; state.overdue = "";
+			$("keyword").value = ""; $("courierFilter").value = ""; $("overdueFilter").value = "";
+			render();
+			notify("筛选条件已重置");
+		});
+		$("exportButton").addEventListener("click", () => notify("演示数据暂不支持导出"));
+		$("tableSettings").addEventListener("click", () => notify("当前展示固定字段：服务单、寄件和物流信息"));
+		$("confirmMail").addEventListener("click", () => submitCourier("confirm"));
+		$("editCourier").addEventListener("click", startEditing);
+		$("trackingInput").addEventListener("input", detectCourierFromTracking);
+		$("closeDetail").addEventListener("click", closeDetail);
+		$("closeDetailBottom").addEventListener("click", closeDetail);
+		$("detailOverlay").addEventListener("click", event => { if (event.target === $("detailOverlay")) closeDetail(); });
+		document.addEventListener("keydown", event => { if (event.key === "Escape" && !$("detailOverlay").hidden) closeDetail(); });
+		render();
+		window.__spanishPackagingMailingDemo = {
+			getRows: () => clone(rows),
+			openDetail,
+			getState: () => ({...state})
+		};
+	})();
+	</script>
+</body>
+</html>

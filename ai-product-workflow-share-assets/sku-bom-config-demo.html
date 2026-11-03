@@ -1,0 +1,3328 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>SKU配置 Demo</title>
+	<style>
+		:root {
+			--brand: #00a5a8;
+			--brand-dark: #008b8f;
+			--brand-soft: #e7fafa;
+			--nav: #eaf8f8;
+			--sidebar: #eefafa;
+			--line: #e5e8eb;
+			--line-strong: #d5dbe0;
+			--text: #17212b;
+			--muted: #657383;
+			--weak: #a0aab5;
+			--danger: #ff4d4f;
+			--success: #18b978;
+			--warning: #faad14;
+			--blue: #2f80ed;
+			--bg: #f5f7f9;
+			--white: #fff;
+			--shadow: 0 18px 48px rgba(15, 23, 42, .16);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			min-width: 1360px;
+			color: var(--text);
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+			font-size: 14px;
+			letter-spacing: 0;
+			background: var(--bg);
+		}
+
+		button,
+		input,
+		select {
+			font: inherit;
+			letter-spacing: 0;
+		}
+
+		button {
+			cursor: pointer;
+		}
+
+		.topbar {
+			height: 52px;
+			display: flex;
+			align-items: center;
+			border-bottom: 1px solid #d9eeee;
+			background: var(--nav);
+		}
+
+		.brand {
+			width: 210px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding-left: 28px;
+			font-size: 15px;
+			font-weight: 600;
+			color: #12212b;
+		}
+
+		.logo {
+			width: 20px;
+			height: 20px;
+			display: grid;
+			place-items: center;
+			border: 1px solid #1ba8a8;
+			border-radius: 50%;
+			color: #138f91;
+			font-size: 11px;
+			font-weight: 700;
+		}
+
+		.main-nav {
+			height: 100%;
+			display: flex;
+			align-items: center;
+			gap: 24px;
+			font-size: 14px;
+		}
+
+		.nav-item {
+			height: 100%;
+			display: flex;
+			align-items: center;
+			border-bottom: 2px solid transparent;
+			color: #1f2937;
+		}
+
+		.nav-item.active {
+			color: var(--brand-dark);
+			border-color: var(--brand);
+		}
+
+		.top-actions {
+			margin-left: auto;
+			display: flex;
+			align-items: center;
+			gap: 22px;
+			padding-right: 28px;
+			color: #74808a;
+			font-size: 18px;
+		}
+
+		.avatar {
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			background: linear-gradient(160deg, #ffb347 0%, #293241 48%, #111827 100%);
+			box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5);
+		}
+
+		.user {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 14px;
+			color: #657383;
+		}
+
+		.app-shell {
+			display: grid;
+			grid-template-columns: 210px 1fr;
+			min-height: calc(100vh - 52px);
+		}
+
+		.sidebar {
+			background: var(--sidebar);
+			border-right: 1px solid #ddecee;
+			padding-top: 10px;
+		}
+
+		.menu-row {
+			height: 48px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 28px;
+			color: #0f172a;
+			font-size: 14px;
+		}
+
+		.menu-row.small {
+			height: 44px;
+			padding-left: 52px;
+			color: #1f2937;
+		}
+
+		.menu-row.active {
+			position: relative;
+			background: #cceaea;
+			color: var(--brand-dark);
+		}
+
+		.menu-row.active::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			right: 10px;
+			width: 3px;
+			height: 100%;
+			background: var(--brand);
+		}
+
+		.content {
+			min-height: calc(100vh - 52px);
+			background: #fff;
+			overflow: hidden;
+		}
+
+		.page-tabs {
+			height: 33px;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			padding-left: 16px;
+			border-bottom: 1px solid var(--line);
+			background: #fafafa;
+		}
+
+		.page-tab {
+			height: 26px;
+			display: flex;
+			align-items: center;
+			gap: 5px;
+			padding: 0 11px;
+			border: 1px solid #dfe5ea;
+			border-radius: 2px;
+			background: #fff;
+			font-size: 13px;
+			color: #1f2937;
+		}
+
+		.page-tab.active {
+			border-color: var(--brand);
+			background: var(--brand);
+			color: #fff;
+		}
+
+		.workspace {
+			position: relative;
+			height: calc(100vh - 85px);
+			padding: 0 20px 28px;
+			overflow: auto;
+		}
+
+		.toolbar {
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			padding: 18px 0 14px;
+		}
+
+		.input,
+		.select {
+			height: 32px;
+			border: 1px solid #d7dfe6;
+			border-radius: 2px;
+			background: #fff;
+			color: #1f2937;
+			outline: none;
+		}
+
+		.input {
+			width: 250px;
+			padding: 0 10px;
+		}
+
+		.select {
+			min-width: 150px;
+			padding: 0 30px 0 10px;
+		}
+
+		.input:focus,
+		.select:focus {
+			border-color: var(--brand);
+			box-shadow: 0 0 0 2px rgba(0, 165, 168, .12);
+		}
+
+		.btn {
+			height: 32px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			padding: 0 16px;
+			border: 1px solid #d7dfe6;
+			border-radius: 2px;
+			background: #fff;
+			color: #263442;
+		}
+
+		.btn.primary {
+			border-color: var(--brand);
+			background: var(--brand);
+			color: #fff;
+		}
+
+		.btn.primary:hover {
+			background: var(--brand-dark);
+		}
+
+		.btn.ghost {
+			border-color: var(--brand);
+			color: var(--brand-dark);
+			background: #fff;
+		}
+
+		.btn.text {
+			height: auto;
+			padding: 0;
+			border: 0;
+			background: transparent;
+			color: var(--brand-dark);
+		}
+
+		.btn:disabled {
+			cursor: not-allowed;
+			border-color: #d9dde1;
+			background: #f4f6f8;
+			color: #a0aab5;
+		}
+
+		.action-buttons {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin: 12px 0 42px;
+		}
+
+		.field-group {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.field-label {
+			color: #17212b;
+			white-space: nowrap;
+		}
+
+		.price-table table {
+			min-width: 1420px;
+		}
+
+		.drawer.price-drawer {
+			width: min(1320px, calc(100vw - 300px));
+		}
+
+		.price-drawer .drawer-body {
+			padding-top: 26px;
+		}
+
+		.price-section-title {
+			margin: 4px 0 18px;
+			font-weight: 600;
+		}
+
+		.price-edit-table table {
+			min-width: 1260px;
+		}
+
+		.price-drawer .recycle-table table {
+			min-width: 1060px;
+		}
+
+		.price-edit-table th,
+		.price-edit-table td {
+			height: 54px;
+		}
+
+		.table-wrap {
+			overflow: auto;
+			border: 1px solid #edf0f2;
+			background: #fff;
+		}
+
+		table {
+			width: 100%;
+			min-width: 1500px;
+			border-collapse: collapse;
+			table-layout: fixed;
+			font-size: 13px;
+		}
+
+		th,
+		td {
+			height: 44px;
+			padding: 0 12px;
+			border-right: 1px solid #edf0f2;
+			border-bottom: 1px solid #edf0f2;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			text-align: center;
+		}
+
+		th {
+			height: 42px;
+			background: #f6f8fa;
+			color: #0f172a;
+			font-weight: 600;
+		}
+
+		td.left,
+		th.left {
+			text-align: left;
+		}
+
+		.link {
+			color: var(--brand-dark);
+			cursor: pointer;
+		}
+
+		.link:hover {
+			text-decoration: underline;
+		}
+
+		.status-green {
+			color: #22aa00;
+		}
+
+		.status-red {
+			color: #ff4d4f;
+		}
+
+		.switch {
+			position: relative;
+			display: inline-block;
+			width: 38px;
+			height: 20px;
+			border-radius: 999px;
+			background: #b8c0c8;
+			vertical-align: middle;
+		}
+
+		.switch::after {
+			content: "";
+			position: absolute;
+			top: 2px;
+			left: 2px;
+			width: 16px;
+			height: 16px;
+			border-radius: 50%;
+			background: #fff;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, .18);
+		}
+
+		.switch.on {
+			background: var(--brand);
+		}
+
+		.switch.on::after {
+			left: 20px;
+		}
+
+		.actions {
+			display: inline-flex;
+			align-items: center;
+			gap: 12px;
+			color: var(--brand-dark);
+		}
+
+		.action-text {
+			color: var(--brand-dark);
+			cursor: pointer;
+		}
+
+		.pagination {
+			height: 56px;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 8px;
+			color: #34404d;
+			font-size: 13px;
+		}
+
+		.page-box {
+			width: 30px;
+			height: 30px;
+			display: grid;
+			place-items: center;
+			border: 1px solid #d7dfe6;
+			background: #fff;
+		}
+
+		.page-box.active {
+			border-color: var(--brand);
+			color: var(--brand-dark);
+		}
+
+		.sku-panel {
+			position: absolute;
+			inset: 0 0 0 0;
+			z-index: 20;
+			display: none;
+			background: rgba(0, 0, 0, .42);
+		}
+
+		.sku-panel.open {
+			display: block;
+		}
+
+		.sku-window {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 220px;
+			display: flex;
+			flex-direction: column;
+			background: #fff;
+			box-shadow: -12px 0 28px rgba(15, 23, 42, .12);
+		}
+
+		.sku-header {
+			height: 56px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 20px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.sku-title {
+			display: flex;
+			align-items: baseline;
+			gap: 12px;
+			font-size: 16px;
+			font-weight: 600;
+		}
+
+		.spu-context {
+			font-size: 13px;
+			font-weight: 400;
+			color: var(--muted);
+		}
+
+		.icon-btn {
+			width: 32px;
+			height: 32px;
+			display: grid;
+			place-items: center;
+			border: 0;
+			border-radius: 4px;
+			background: transparent;
+			color: #667280;
+			font-size: 22px;
+		}
+
+		.icon-btn:hover {
+			background: #edf4f5;
+			color: var(--brand-dark);
+		}
+
+		.sku-body {
+			flex: 1;
+			padding: 24px 20px;
+			overflow: auto;
+		}
+
+		.sku-body table {
+			min-width: 1460px;
+		}
+
+		.drawer-mask {
+			position: fixed;
+			inset: 52px 0 0 0;
+			z-index: 50;
+			display: none;
+			background: rgba(15, 23, 42, .18);
+		}
+
+		.drawer-mask.open {
+			display: block;
+		}
+
+		.drawer {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			width: min(760px, calc(100vw - 280px));
+			display: flex;
+			flex-direction: column;
+			background: #fff;
+			box-shadow: var(--shadow);
+		}
+
+		.drawer.config {
+			width: min(900px, calc(100vw - 320px));
+		}
+
+		.drawer-header {
+			height: 58px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 22px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.drawer-title {
+			display: flex;
+			align-items: baseline;
+			gap: 10px;
+			font-size: 16px;
+			font-weight: 600;
+		}
+
+		.drawer-subtitle {
+			font-size: 13px;
+			font-weight: 400;
+			color: var(--muted);
+		}
+
+		.drawer-body {
+			flex: 1;
+			padding: 18px 22px 84px;
+			overflow: auto;
+		}
+
+		.drawer-footer {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			height: 64px;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 10px;
+			padding: 0 22px;
+			border-top: 1px solid var(--line);
+			background: #fff;
+		}
+
+		.info-strip {
+			display: grid;
+			grid-template-columns: 160px minmax(0, 1fr);
+			gap: 12px;
+			margin-bottom: 18px;
+			padding: 12px 14px;
+			border: 1px solid #dbe8ea;
+			background: #f8fcfc;
+		}
+
+		.info-item.wide {
+			grid-column: 1 / -1;
+		}
+
+		.info-item {
+			min-width: 0;
+		}
+
+		.info-label {
+			margin-bottom: 5px;
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.info-value {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			color: #17212b;
+		}
+
+		.info-item.wide .select {
+			width: 100%;
+		}
+
+		.section-title {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin: 18px 0 10px;
+			font-weight: 600;
+			color: #17212b;
+		}
+
+		.hint {
+			margin: 0 0 14px;
+			color: var(--muted);
+			font-size: 13px;
+		}
+
+		.bom-type-line {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 12px 14px;
+			border: 1px solid #dbe8ea;
+			background: #fff;
+		}
+
+		.bom-type-name {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-weight: 600;
+		}
+
+		.tag {
+			display: inline-flex;
+			align-items: center;
+			height: 22px;
+			padding: 0 8px;
+			border-radius: 11px;
+			background: var(--brand-soft);
+			color: var(--brand-dark);
+			font-size: 12px;
+			font-weight: 400;
+		}
+
+		.group-list {
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+		}
+
+		.fee-group {
+			border: 1px solid #dbe3ea;
+			background: #fff;
+		}
+
+		.fee-group-header {
+			height: 42px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 14px;
+			border-bottom: 1px solid #eef2f5;
+			background: #f7f9fb;
+			font-weight: 600;
+		}
+
+		.fee-group-body {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 14px;
+			padding: 14px;
+		}
+
+		.form-item {
+			min-width: 0;
+		}
+
+		.form-label {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			margin-bottom: 6px;
+			color: #34404d;
+			font-size: 13px;
+		}
+
+		.required {
+			color: var(--danger);
+		}
+
+		.form-item .input,
+		.form-item .select {
+			width: 100%;
+			min-width: 0;
+		}
+
+		.error-text {
+			min-height: 18px;
+			margin-top: 4px;
+			color: var(--danger);
+			font-size: 12px;
+		}
+
+		.config-grid {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 12px;
+			margin-bottom: 18px;
+		}
+
+		.config-item {
+			padding: 12px;
+			border: 1px solid #dbe8ea;
+			background: #f8fcfc;
+		}
+
+		.config-key {
+			margin-bottom: 6px;
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.config-value {
+			font-family: Consolas, "Microsoft YaHei", monospace;
+			color: #17212b;
+		}
+
+		.config-table table {
+			min-width: 820px;
+		}
+
+		.config-table td {
+			height: auto;
+			min-height: 44px;
+			padding-top: 10px;
+			padding-bottom: 10px;
+			white-space: normal;
+			overflow: visible;
+			line-height: 1.5;
+			text-overflow: clip;
+			word-break: break-word;
+		}
+
+		.config-table td:first-child {
+			word-break: break-all;
+		}
+
+		.bom-type-tabs {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 16px;
+			padding: 12px 14px;
+			border: 1px solid #dbe8ea;
+			background: #f8fcfc;
+		}
+
+		.bom-type-select-label {
+			color: #34404d;
+			font-weight: 600;
+		}
+
+		.bom-type-select-desc {
+			margin-left: 4px;
+			color: var(--muted);
+			font-size: 13px;
+		}
+
+		.company-panel {
+			display: none;
+		}
+
+		.country-grid {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 8px;
+			padding: 14px;
+			border: 1px solid #dbe3ea;
+			background: #fff;
+		}
+
+		.country-option {
+			min-height: 34px;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 7px 10px;
+			border: 1px solid #e4eaf0;
+			background: #fbfcfd;
+			color: #263442;
+		}
+
+		.country-option input {
+			width: 15px;
+			height: 15px;
+			accent-color: var(--brand);
+		}
+
+		.toast {
+			position: fixed;
+			top: 74px;
+			left: 50%;
+			z-index: 80;
+			display: none;
+			align-items: center;
+			gap: 8px;
+			transform: translateX(-50%);
+			padding: 10px 16px;
+			border-radius: 3px;
+			background: rgba(23, 33, 43, .92);
+			color: #fff;
+			box-shadow: 0 10px 24px rgba(15, 23, 42, .18);
+		}
+
+		.toast.open {
+			display: flex;
+		}
+
+		.publish-mask {
+			position: fixed;
+			inset: 0;
+			z-index: 45;
+			display: none;
+			background: rgba(15, 23, 42, .42);
+		}
+
+		.publish-mask.open {
+			display: block;
+		}
+
+		.publish-dialog {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			width: calc(100vw - 360px);
+			min-width: 1100px;
+			display: flex;
+			flex-direction: column;
+			background: #fff;
+			box-shadow: var(--shadow);
+		}
+
+		.publish-header {
+			height: 44px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 18px;
+			border-bottom: 1px solid var(--line);
+			font-weight: 600;
+		}
+
+		.publish-body {
+			flex: 1;
+			padding: 20px 20px 92px;
+			overflow: auto;
+		}
+
+		.publish-footer {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			height: 64px;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 10px;
+			padding: 0 22px;
+			border-top: 1px solid var(--line);
+			background: #fff;
+		}
+
+		.publish-form {
+			width: 520px;
+		}
+
+		.publish-row {
+			display: grid;
+			grid-template-columns: 76px minmax(0, 1fr);
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 14px;
+		}
+
+		.publish-label {
+			text-align: right;
+			color: #34404d;
+			font-size: 13px;
+		}
+
+		.publish-row .input,
+		.publish-row .select {
+			width: 100%;
+		}
+
+		.inline-fields {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 6px;
+		}
+
+		.textarea {
+			width: 100%;
+			height: 78px;
+			padding: 8px 10px;
+			border: 1px solid #d7dfe6;
+			border-radius: 2px;
+			resize: vertical;
+			outline: none;
+		}
+
+		.upload-box {
+			height: 138px;
+			display: grid;
+			place-items: center;
+			border: 1px dashed #d6dde5;
+			background: #fafcff;
+			color: var(--muted);
+			font-size: 13px;
+			text-align: center;
+			line-height: 1.8;
+		}
+
+		.attribute-block {
+			margin: 10px 0 24px 64px;
+			padding: 14px 16px;
+			border: 1px solid #d8dde2;
+			background: #fbfcfd;
+		}
+
+		.attribute-line {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 10px;
+			min-height: 30px;
+			color: #34404d;
+			font-size: 13px;
+		}
+
+		.attribute-line + .attribute-line {
+			margin-top: 8px;
+		}
+
+		.attribute-line input {
+			accent-color: var(--brand);
+		}
+
+		.attribute-note {
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.recycle-inline-section {
+			margin-top: 16px;
+			border: 1px solid #d8dde2;
+			background: #fff;
+		}
+
+		.recycle-inline-header {
+			min-height: 54px;
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			gap: 18px;
+			padding: 12px 16px;
+			border-bottom: 1px solid var(--line);
+			background: #fbfcfd;
+		}
+
+		.recycle-inline-title-row {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.recycle-inline-title {
+			font-weight: 600;
+			color: #17212b;
+		}
+
+		.recycle-inline-note {
+			margin-top: 4px;
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.switch-button {
+			height: 32px;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 0 12px;
+			border: 1px solid #d7dfe6;
+			border-radius: 2px;
+			background: #fff;
+			color: #263442;
+		}
+
+		.switch-button.on {
+			border-color: var(--brand);
+			color: var(--brand-dark);
+			background: var(--brand-soft);
+		}
+
+		.recycle-manage-panel {
+			display: none;
+			padding: 14px 16px 16px;
+		}
+
+		.recycle-manage-panel.open {
+			display: block;
+		}
+
+		.recycle-inline-actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 10px;
+			margin-top: 12px;
+		}
+
+		.publish-spec-section {
+			margin-top: 4px;
+		}
+
+		.publish-spec-title {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin: 0 0 10px;
+			font-weight: 600;
+		}
+
+		.publish-spec-table table {
+			min-width: 1380px;
+		}
+
+		.publish-spec-table td {
+			height: 44px;
+		}
+
+		.table-input {
+			width: 100%;
+			height: 30px;
+			padding: 0 10px;
+			border: 1px solid #d7dfe6;
+			border-radius: 2px;
+			background: #fff;
+			outline: none;
+		}
+
+		.table-input:focus {
+			border-color: var(--brand);
+			box-shadow: 0 0 0 2px rgba(0, 165, 168, .12);
+		}
+
+		.attribute-note strong {
+			color: #34404d;
+			font-weight: 600;
+		}
+
+		.recycle-dialog-mask {
+			position: fixed;
+			inset: 0;
+			z-index: 68;
+			display: none;
+			align-items: center;
+			justify-content: center;
+			background: rgba(15, 23, 42, .34);
+		}
+
+		.recycle-dialog-mask.open {
+			display: flex;
+		}
+
+		.recycle-dialog {
+			width: min(1180px, calc(100vw - 96px));
+			max-height: calc(100vh - 96px);
+			display: flex;
+			flex-direction: column;
+			background: #fff;
+			box-shadow: var(--shadow);
+		}
+
+		.recycle-dialog-header,
+		.recycle-dialog-footer {
+			height: 54px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 18px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.recycle-dialog-footer {
+			justify-content: flex-end;
+			gap: 10px;
+			border-top: 1px solid var(--line);
+			border-bottom: 0;
+		}
+
+		.recycle-dialog-title {
+			font-size: 16px;
+			font-weight: 600;
+		}
+
+		.recycle-dialog-body {
+			padding: 16px 18px 18px;
+			overflow: auto;
+		}
+
+		.recycle-batch-bar {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 10px;
+			margin-bottom: 12px;
+			padding: 12px;
+			border: 1px solid #dbe3ea;
+			background: #f7f9fb;
+		}
+
+		.recycle-batch-bar .select,
+		.recycle-batch-bar .input {
+			width: 140px;
+			min-width: 0;
+		}
+
+		.recycle-table table {
+			min-width: 1280px;
+		}
+
+		.recycle-table td {
+			height: auto;
+			min-height: 42px;
+			padding: 8px 10px;
+			white-space: normal;
+			overflow: visible;
+			text-overflow: clip;
+		}
+
+		.recycle-table .select,
+		.recycle-table .input {
+			width: 100%;
+			min-width: 0;
+		}
+
+		.recycle-sku-name {
+			font-weight: 600;
+			line-height: 1.5;
+		}
+
+		.recycle-checkbox {
+			width: 16px;
+			height: 16px;
+			accent-color: var(--brand);
+		}
+
+		.limit-cell {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.status-chip {
+			display: inline-flex;
+			align-items: center;
+			height: 22px;
+			padding: 0 8px;
+			border-radius: 11px;
+			background: #f3f5f7;
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.status-chip.done {
+			background: var(--brand-soft);
+			color: var(--brand-dark);
+		}
+
+		.workspace-page {
+			display: none;
+		}
+
+		.workspace-page.active {
+			display: block;
+		}
+
+		.empty {
+			height: 120px;
+			display: grid;
+			place-items: center;
+			border: 1px dashed #ccd6df;
+			color: var(--muted);
+			background: #fbfcfd;
+		}
+	</style>
+</head>
+<body>
+<header class="topbar">
+	<div class="brand"><span class="logo">KX</span>跨信通税务管理系统</div>
+	<nav class="main-nav">
+		<span class="nav-item">系统管理</span>
+		<span class="nav-item active">税务管理</span>
+		<span class="nav-item">CRM</span>
+		<span class="nav-item">客服工单</span>
+		<span class="nav-item">测试平台</span>
+		<span class="nav-item">埋点分析平台</span>
+		<span class="nav-item">数据平台</span>
+		<span class="nav-item">旧系统</span>
+	</nav>
+	<div class="top-actions">
+		<span>⌕</span>
+		<span>?</span>
+		<div class="user"><span class="avatar"></span><span>李晨浩</span></div>
+	</div>
+</header>
+
+<div class="app-shell">
+	<aside class="sidebar">
+		<div class="menu-row">导出审核</div>
+		<div class="menu-row">风险产品库 <span>⌄</span></div>
+		<div class="menu-row">授权代表案件管理</div>
+		<div class="menu-row">系统管理 <span>⌄</span></div>
+		<div class="menu-row">客户管理 <span>⌄</span></div>
+		<div class="menu-row">营销管理 <span>⌄</span></div>
+		<div class="menu-row">订单管理 <span>⌄</span></div>
+		<div class="menu-row">续费管理 <span>⌄</span></div>
+		<div class="menu-row">优惠券管理 <span>⌄</span></div>
+		<div class="menu-row" style="color: var(--brand-dark);">商品管理 <span>⌃</span></div>
+		<div class="menu-row small">类目管理 <span>⌄</span></div>
+		<div class="menu-row small">属性管理 <span>⌄</span></div>
+		<div class="menu-row small">费用管理 <span>⌄</span></div>
+		<div class="menu-row small">商品管理 <span>⌃</span></div>
+		<div id="productMenuItem" class="menu-row small" onclick="switchDemoPage('product')">基础商品管理</div>
+		<div class="menu-row small">增值商品管理</div>
+		<div class="menu-row small">追加商品管理</div>
+		<div class="menu-row small">续费商品管理</div>
+		<div class="menu-row" style="color: var(--brand-dark);">价格管理 <span>⌃</span></div>
+		<div id="priceMenuItem" class="menu-row small active" onclick="switchDemoPage('price')">商品价格</div>
+		<div class="menu-row small">续费价格</div>
+		<div class="menu-row">流程管理 <span>⌄</span></div>
+		<div class="menu-row">知识产权 <span>⌄</span></div>
+	</aside>
+
+	<main class="content">
+		<div class="page-tabs">
+			<div class="page-tab">履约工作台 ×</div>
+			<div class="page-tab">基础服务 ×</div>
+			<div id="productPageTab" class="page-tab" onclick="switchDemoPage('product')">基础商品管理 ×</div>
+			<div id="pricePageTab" class="page-tab active" onclick="switchDemoPage('price')">商品价格 ×</div>
+		</div>
+
+		<section class="workspace">
+			<div id="pricePage" class="workspace-page active">
+			<div class="toolbar">
+				<label class="field-group"><span class="field-label">商品ID</span><input class="input" placeholder="商品ID"></label>
+				<label class="field-group"><span class="field-label">商品名称</span><input class="input" placeholder="商品名称"></label>
+				<label class="field-group"><span class="field-label">类目</span><select class="select">
+					<option>请选择类目</option>
+					<option>EPR-&gt;包装法</option>
+					<option>VAT-&gt;VAT</option>
+					<option>知识产权-&gt;发明专利</option>
+				</select></label>
+				<label class="field-group"><span class="field-label">类型</span><select class="select">
+					<option>请选择类型</option>
+					<option>基础服务-&gt;注册+申报</option>
+					<option>基础服务-&gt;注册</option>
+					<option>基础服务-&gt;翻译</option>
+				</select></label>
+				<label class="field-group"><span class="field-label">国家</span><select class="select">
+					<option>请选择国家</option>
+					<option>德国</option>
+					<option>西班牙</option>
+					<option>美国</option>
+				</select></label>
+				<label class="field-group"><span class="field-label">状态</span><select class="select">
+					<option>请选择状态</option>
+					<option>上架</option>
+					<option>下架</option>
+				</select></label>
+				<button class="btn primary">查询</button>
+				<button class="btn">重置</button>
+			</div>
+
+			<div class="action-buttons">
+				<button class="btn primary">导入底价</button>
+				<button class="btn primary">导出底价</button>
+			</div>
+
+			<div class="table-wrap price-table">
+				<table>
+					<colgroup>
+						<col style="width:80px">
+						<col style="width:300px">
+						<col style="width:160px">
+						<col style="width:170px">
+						<col style="width:90px">
+						<col style="width:190px">
+						<col style="width:80px">
+						<col style="width:80px">
+						<col style="width:110px">
+						<col style="width:150px">
+						<col style="width:250px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>商品ID</th>
+						<th>商品名称</th>
+						<th>所属类目</th>
+						<th>所属类型</th>
+						<th>所属国家</th>
+						<th>上架渠道</th>
+						<th>状态</th>
+						<th>更新人</th>
+						<th>最近更新时间</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody id="priceTableBody"></tbody>
+				</table>
+			</div>
+
+			<div class="pagination">
+				<span>共有 2176 条数据</span>
+				<span class="page-box active">1</span>
+				<span class="page-box">2</span>
+				<span class="page-box">3</span>
+				<span class="page-box">4</span>
+				<span class="page-box">5</span>
+				<span>...</span>
+				<span class="page-box">218</span>
+				<select class="select" style="min-width:90px;height:30px">
+					<option>10条/页</option>
+				</select>
+			</div>
+			</div>
+
+			<div id="productPage" class="workspace-page">
+				<div class="toolbar">
+					<input class="input" placeholder="商品ID/商品名称/添加人/更新人">
+					<select class="select">
+						<option>上架</option>
+						<option>下架</option>
+					</select>
+					<select class="select">
+						<option>请选择类目</option>
+						<option>EPR &gt; 包装法</option>
+						<option>VAT &gt; VAT</option>
+					</select>
+					<select class="select">
+						<option>请选择类型</option>
+						<option>基础服务 &gt; 注册+申报</option>
+						<option>基础服务 &gt; 转代理+申报</option>
+					</select>
+					<select class="select">
+						<option>请选择国家</option>
+						<option>西班牙</option>
+						<option>比利时</option>
+						<option>英国</option>
+					</select>
+					<select class="select">
+						<option>服务类型</option>
+						<option>SaaS服务</option>
+						<option>专属顾问</option>
+					</select>
+					<button class="btn primary">查询</button>
+					<button class="btn">重置</button>
+				</div>
+
+				<div class="action-buttons">
+					<button class="btn primary" onclick="openPublishDialog()">发布商品</button>
+					<button class="btn primary">客户端排序</button>
+				</div>
+
+				<div class="table-wrap">
+					<table>
+						<colgroup>
+							<col style="width:80px">
+							<col style="width:210px">
+							<col style="width:95px">
+							<col style="width:150px">
+							<col style="width:160px">
+							<col style="width:120px">
+							<col style="width:100px">
+							<col style="width:150px">
+							<col style="width:110px">
+							<col style="width:150px">
+							<col style="width:80px">
+							<col style="width:245px">
+						</colgroup>
+						<thead>
+						<tr>
+							<th>商品ID</th>
+							<th>商品名称</th>
+							<th>商品规格</th>
+							<th>所属类目</th>
+							<th>所属类型</th>
+							<th>所属国家</th>
+							<th>添加人</th>
+							<th>添加时间</th>
+							<th>状态</th>
+							<th>是否可售</th>
+							<th>商品类型</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody id="spuTableBody"></tbody>
+					</table>
+				</div>
+
+				<div class="pagination">
+					<span>共有 1544 条数据</span>
+					<span class="page-box active">1</span>
+					<span class="page-box">2</span>
+					<span class="page-box">3</span>
+					<span class="page-box">4</span>
+					<span class="page-box">5</span>
+					<span>...</span>
+					<span class="page-box">155</span>
+					<select class="select" style="min-width:90px;height:30px">
+						<option>10条/页</option>
+					</select>
+				</div>
+			</div>
+
+			<div id="skuPanel" class="sku-panel" aria-hidden="true">
+				<div class="sku-window">
+					<div class="sku-header">
+						<div class="sku-title">SKU列表 <span id="spuContext" class="spu-context"></span></div>
+						<button class="icon-btn" title="关闭" onclick="closeSkuPanel()">×</button>
+					</div>
+					<div class="sku-body">
+						<div class="table-wrap">
+							<table>
+								<colgroup>
+									<col style="width:70px">
+									<col style="width:75px">
+									<col style="width:250px">
+									<col style="width:260px">
+									<col style="width:90px">
+									<col style="width:80px">
+									<col style="width:80px">
+									<col style="width:90px">
+									<col style="width:120px">
+									<col style="width:130px">
+									<col style="width:80px">
+									<col style="width:150px">
+									<col style="width:90px">
+									<col style="width:150px">
+									<col style="width:95px">
+									<col style="width:130px">
+								</colgroup>
+								<thead>
+								<tr>
+									<th>SKUID</th>
+									<th>商品ID</th>
+									<th>规格</th>
+									<th>商品名称</th>
+									<th>基础服务费</th>
+									<th>回收费</th>
+									<th>官费</th>
+									<th>原价</th>
+									<th>是否有追加商品</th>
+									<th>是否有续费商品</th>
+									<th>添加人</th>
+									<th>添加时间</th>
+									<th>更新人</th>
+									<th>更新时间</th>
+									<th>是否可售</th>
+									<th>操作</th>
+								</tr>
+								</thead>
+								<tbody id="skuTableBody"></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+</div>
+
+<div id="priceEditDrawerMask" class="drawer-mask" aria-hidden="true">
+	<aside class="drawer price-drawer" role="dialog" aria-modal="true" aria-labelledby="priceEditDrawerTitle">
+		<div class="drawer-header">
+			<div class="drawer-title" id="priceEditDrawerTitle">规格信息 <span id="priceEditDrawerSub" class="drawer-subtitle"></span></div>
+			<button class="icon-btn" title="关闭" onclick="closePriceEditDrawer()">×</button>
+		</div>
+		<div class="drawer-body">
+			<div class="price-section-title">规格信息</div>
+			<div class="table-wrap price-edit-table">
+				<table>
+					<colgroup>
+						<col style="width:80px">
+						<col style="width:220px">
+						<col style="width:150px">
+						<col style="width:150px">
+						<col style="width:150px">
+						<col style="width:110px">
+						<col style="width:150px">
+						<col style="width:150px">
+						<col style="width:150px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th rowspan="2">SKUID</th>
+						<th rowspan="2">规格</th>
+						<th colspan="4">售价</th>
+						<th colspan="3">销售底价</th>
+					</tr>
+					<tr>
+						<th><span class="required">*</span> 基础服务费</th>
+						<th><span class="required">*</span> 回收费</th>
+						<th><span class="required">*</span> 官费</th>
+						<th>售价</th>
+						<th><span class="required">*</span> 基础服务费</th>
+						<th>回收费</th>
+						<th>官费</th>
+					</tr>
+					</thead>
+					<tbody id="priceEditSkuList"></tbody>
+				</table>
+			</div>
+			<div class="recycle-inline-section">
+				<div class="recycle-inline-header">
+					<div>
+						<div class="recycle-inline-title-row">
+							<div class="recycle-inline-title">回收费额度管理</div>
+							<button id="priceEditRecycleSwitchBtn" class="switch-button" type="button" onclick="togglePriceEditRecycleManage()">
+								<span id="priceEditRecycleSwitch" class="switch"></span>
+								<span id="priceEditRecycleSwitchText">关闭</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div id="priceEditRecyclePanel" class="recycle-manage-panel">
+					<div class="recycle-batch-bar">
+						<label><input id="priceEditRecycleSelectAll" class="recycle-checkbox" type="checkbox" onchange="togglePriceEditRecycleSelectAll(this.checked)"> 全选</label>
+						<span id="priceEditRecycleSelectedCount">已选 0 个 SKU</span>
+						<select id="priceEditBatchTargetGroup" class="select">
+							<option value="0">填充到：额度组 1</option>
+							<option value="1">填充到：额度组 2</option>
+						</select>
+						<select id="priceEditBatchAnnualFeeYear" class="select"></select>
+						<input id="priceEditBatchAmount" class="input" type="number" min="0" step="0.01" placeholder="金额">
+						<select id="priceEditBatchCurrency" class="select"></select>
+						<select id="priceEditBatchSource" class="select"></select>
+						<button class="btn ghost" onclick="applyPriceEditRecycleBatch()">批量填充</button>
+					</div>
+					<div class="table-wrap recycle-table">
+						<table>
+							<colgroup>
+								<col style="width:46px">
+								<col style="width:330px">
+								<col style="width:70px">
+								<col style="width:130px">
+								<col style="width:110px">
+								<col style="width:110px">
+								<col style="width:150px">
+								<col style="width:110px">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>选</th>
+								<th>SKU / 规格</th>
+								<th>额度组</th>
+								<th><span class="required">*</span> 回收费年份</th>
+								<th><span class="required">*</span> 金额</th>
+								<th><span class="required">*</span> 币种</th>
+								<th><span class="required">*</span> 回收费来源</th>
+								<th>操作</th>
+							</tr>
+							</thead>
+							<tbody id="priceEditRecycleSkuList"></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="drawer-footer">
+			<button class="btn" onclick="closePriceEditDrawer()">取消</button>
+			<button class="btn primary" onclick="savePriceEditDrawer()">确认</button>
+		</div>
+	</aside>
+</div>
+
+<div id="priceRecycleDrawerMask" class="drawer-mask" aria-hidden="true">
+	<aside class="drawer price-drawer" role="dialog" aria-modal="true" aria-labelledby="priceRecycleDrawerTitle">
+		<div class="drawer-header">
+			<div class="drawer-title" id="priceRecycleDrawerTitle">回收费额度管理 <span id="priceRecycleDrawerSub" class="drawer-subtitle"></span></div>
+			<button class="icon-btn" title="关闭" onclick="closePriceRecycleDrawer()">×</button>
+		</div>
+		<div class="drawer-body">
+			<div class="recycle-batch-bar">
+				<label><input id="priceRecycleSelectAll" class="recycle-checkbox" type="checkbox" onchange="togglePriceRecycleSelectAll(this.checked)"> 全选</label>
+				<span id="priceRecycleSelectedCount">已选 0 个 SKU</span>
+				<select id="priceBatchTargetGroup" class="select">
+					<option value="0">填充到：额度组 1</option>
+					<option value="1">填充到：额度组 2</option>
+				</select>
+				<select id="priceBatchAnnualFeeYear" class="select"></select>
+				<input id="priceBatchAmount" class="input" type="number" min="0" step="0.01" placeholder="金额">
+				<select id="priceBatchCurrency" class="select"></select>
+				<select id="priceBatchSource" class="select"></select>
+				<button class="btn ghost" onclick="applyPriceRecycleBatch()">批量填充</button>
+			</div>
+			<div class="table-wrap recycle-table">
+				<table>
+					<colgroup>
+						<col style="width:46px">
+						<col style="width:330px">
+						<col style="width:70px">
+						<col style="width:130px">
+						<col style="width:110px">
+						<col style="width:110px">
+						<col style="width:150px">
+						<col style="width:110px">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>选</th>
+						<th>SKU / 规格</th>
+						<th>额度组</th>
+						<th><span class="required">*</span> 回收费年份</th>
+						<th><span class="required">*</span> 金额</th>
+						<th><span class="required">*</span> 币种</th>
+						<th><span class="required">*</span> 回收费来源</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody id="priceRecycleSkuList"></tbody>
+				</table>
+			</div>
+		</div>
+		<div class="drawer-footer">
+			<button class="btn" onclick="closePriceRecycleDrawer()">取消</button>
+			<button class="btn primary" onclick="savePriceRecycleDrawer()">确认</button>
+		</div>
+	</aside>
+</div>
+
+<div id="publishMask" class="publish-mask" aria-hidden="true">
+	<aside class="publish-dialog" role="dialog" aria-modal="true" aria-labelledby="publishDialogTitle">
+		<div class="publish-header">
+			<div id="publishDialogTitle">发布商品</div>
+			<button class="icon-btn" title="关闭" onclick="closePublishDialog()">×</button>
+		</div>
+		<div class="publish-body">
+			<div class="publish-form">
+				<div class="publish-row">
+					<div class="publish-label"><span class="required">*</span> 商品类目：</div>
+					<select class="select">
+						<option>VAT-&gt;VAT</option>
+						<option>EPR-&gt;包装法</option>
+					</select>
+				</div>
+				<div class="publish-row">
+					<div class="publish-label"><span class="required">*</span> 商品类型：</div>
+					<select id="publishProductType" class="select" onchange="refreshRecycleDefaults()">
+						<option>基础服务-&gt;注册+申报</option>
+						<option>基础服务-&gt;转代理+申报</option>
+					</select>
+				</div>
+				<div class="publish-row">
+					<div class="publish-label"><span class="required">*</span> 国家：</div>
+					<div class="inline-fields">
+						<select id="publishCountry" class="select" onchange="refreshRecycleDefaults()">
+							<option>意大利</option>
+							<option>西班牙</option>
+							<option>比利时</option>
+							<option>英国</option>
+							<option>美国</option>
+						</select>
+						<select class="select">
+							<option>欧洲</option>
+							<option>欧盟</option>
+						</select>
+					</div>
+				</div>
+				<div class="publish-row">
+					<div class="publish-label"><span class="required">*</span> 商品名称：</div>
+					<input id="publishProductName" class="input" value="意大利VAT注册" />
+				</div>
+				<div class="publish-row">
+					<div class="publish-label"><span class="required">*</span> 服务期限：</div>
+					<div class="inline-fields">
+						<select class="select">
+							<option>服务年限</option>
+						</select>
+						<select id="publishServiceYear" class="select" onchange="refreshRecycleDefaults()">
+							<option value="2026">2026年</option>
+							<option value="2027">2027年</option>
+						</select>
+					</div>
+				</div>
+				<div class="publish-row">
+					<div class="publish-label">排序：</div>
+					<input class="input" value="1" />
+				</div>
+				<div class="publish-row" style="align-items:start">
+					<div class="publish-label">购买须知：</div>
+					<textarea class="textarea" placeholder="0/100"></textarea>
+				</div>
+				<div class="publish-row" style="align-items:start">
+					<div class="publish-label">商品主图：</div>
+					<div class="upload-box">点击或将文件拖拽到此上传<br>仅支持 png、jpg、jpeg 的文件</div>
+				</div>
+				<div class="publish-row" style="align-items:start">
+					<div class="publish-label"><span class="required">*</span> 商品属性：</div>
+					<button class="btn primary" type="button">添加属性</button>
+				</div>
+			</div>
+
+			<div class="attribute-block">
+				<div class="attribute-line">
+					<span>服务类型：</span>
+					<label><input type="checkbox" name="publishServiceType" value="SaaS服务" checked> SaaS服务</label>
+					<label><input type="checkbox" name="publishServiceType" value="专属顾问服务"> 专属顾问服务</label>
+					<span class="link" onclick="togglePublishGroup('publishServiceType', true)">全选</span>
+					<span class="link" onclick="togglePublishGroup('publishServiceType', false)">全不选</span>
+				</div>
+				<div class="attribute-line">
+					<span>是否进行B2B申报：</span>
+					<label><input type="checkbox" name="publishB2b" value="否"> 否</label>
+					<label><input type="checkbox" name="publishB2b" value="是" checked> 是</label>
+					<span class="link" onclick="togglePublishGroup('publishB2b', true)">全选</span>
+					<span class="link" onclick="togglePublishGroup('publishB2b', false)">全不选</span>
+				</div>
+				<div class="attribute-line">
+					<button class="btn ghost" onclick="generatePublishSpecs()">生成商品规格</button>
+				</div>
+			</div>
+
+			<div class="publish-spec-section">
+				<div class="publish-spec-title"><span><span class="required">*</span> 商品规格：</span></div>
+				<div class="table-wrap publish-spec-table">
+					<table>
+						<colgroup>
+							<col style="width:180px">
+							<col style="width:160px">
+							<col style="width:140px">
+							<col style="width:140px">
+							<col style="width:120px">
+							<col style="width:120px">
+							<col style="width:140px">
+							<col style="width:160px">
+						</colgroup>
+						<thead>
+						<tr>
+							<th>服务类型</th>
+							<th>是否进行B2B申报</th>
+							<th><span class="required">*</span> 基础服务费</th>
+							<th><span class="required">*</span> 回收费</th>
+							<th><span class="required">*</span> 官费</th>
+							<th>售价</th>
+							<th>产品ID</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody id="publishSpecTableBody"></tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="recycle-inline-section">
+				<div class="recycle-inline-header">
+					<div>
+						<div class="recycle-inline-title-row">
+							<div class="recycle-inline-title">回收费额度管理</div>
+							<button id="recycleManageSwitchBtn" class="switch-button" type="button" onclick="toggleRecycleManage()">
+								<span id="recycleManageSwitch" class="switch"></span>
+								<span id="recycleManageSwitchText">关闭</span>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div id="recycleManagePanel" class="recycle-manage-panel">
+					<div class="recycle-batch-bar">
+						<label><input id="recycleSelectAll" class="recycle-checkbox" type="checkbox" onchange="toggleRecycleSelectAll(this.checked)"> 全选</label>
+						<span id="recycleSelectedCount">已选 0 个 SKU</span>
+						<select id="batchTargetGroup" class="select">
+							<option value="0">填充到：额度组 1</option>
+							<option value="1">填充到：额度组 2</option>
+						</select>
+						<select id="batchAnnualFeeYear" class="select"></select>
+						<input id="batchAmount" class="input" type="number" min="0" step="0.01" placeholder="金额">
+						<select id="batchCurrency" class="select"></select>
+						<select id="batchSource" class="select"></select>
+						<button class="btn ghost" onclick="applyRecycleBatch()">批量填充</button>
+					</div>
+					<div class="table-wrap recycle-table">
+						<table>
+							<colgroup>
+								<col style="width:52px">
+								<col style="width:350px">
+								<col style="width:80px">
+								<col style="width:150px">
+								<col style="width:130px">
+								<col style="width:130px">
+								<col style="width:170px">
+								<col style="width:150px">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>选择</th>
+								<th>SKU / 规格</th>
+								<th>额度组</th>
+								<th><span class="required">*</span> 回收费年份</th>
+								<th><span class="required">*</span> 金额</th>
+								<th><span class="required">*</span> 币种</th>
+								<th><span class="required">*</span> 回收费来源</th>
+								<th>操作</th>
+							</tr>
+							</thead>
+							<tbody id="recycleSkuList"></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="publish-footer">
+			<button class="btn" onclick="closePublishDialog()">取消</button>
+			<button class="btn primary" onclick="savePublishDialog()">确定</button>
+		</div>
+	</aside>
+</div>
+
+<div id="bomDrawerMask" class="drawer-mask" aria-hidden="true">
+	<aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="bomDrawerTitle">
+		<div class="drawer-header">
+			<div class="drawer-title" id="bomDrawerTitle">SKU配置 <span id="bomDrawerSub" class="drawer-subtitle"></span></div>
+			<button class="icon-btn" title="关闭" onclick="closeBomDrawer()">×</button>
+		</div>
+		<div class="drawer-body">
+			<div class="info-strip">
+				<div class="info-item">
+					<div class="info-label">发布商品</div>
+					<div id="currentSpuId" class="info-value">-</div>
+				</div>
+				<div class="info-item">
+					<div class="info-label">当前规格</div>
+					<div id="currentSkuName" class="info-value">-</div>
+				</div>
+				<div class="info-item wide">
+					<div class="info-label">SKU / 规格</div>
+					<select id="currentSkuSelect" class="select" onchange="switchDrawerSku(this.value)"></select>
+				</div>
+			</div>
+
+			<div class="section-title">
+				<span>回收费额度</span>
+				<button id="addGroupBtn" class="btn ghost" onclick="addFeeGroup()">添加一组</button>
+			</div>
+			<div id="feeGroupList" class="group-list"></div>
+		</div>
+		<div class="drawer-footer">
+			<button class="btn" onclick="closeBomDrawer()">取消</button>
+			<button class="btn primary" onclick="saveBomConfig()">保存</button>
+		</div>
+	</aside>
+</div>
+
+<div id="toast" class="toast">保存成功</div>
+
+<script>
+	const bomConfig = {
+		bomTypeCode: "RECYCLE_FEE_LIMIT",
+		bomTypeName: "回收费额度",
+		bindLevel: "SKU",
+		maxGroups: 2,
+		years: ["2026", "2027"],
+		currencies: ["EUR", "USD", "GBP"],
+		sources: ["追溯费用", "新注册/转代理", "申报罚金", "真实回收", "续费基础", "续费补差", "超额申报"]
+	};
+
+	const declarationCurrencyByCountry = {
+		"意大利": "EUR",
+		"德国": "EUR",
+		"西班牙": "EUR",
+		"比利时": "EUR",
+		"英国": "GBP",
+		"美国": "USD",
+		"日本": "USD",
+		"全球": "USD"
+	};
+
+	const spuRows = [
+		{ id: "12828", name: "中国商标交易", spec: "查看明细", category: "知识产权->商标交易", type: "基础服务->商标交易", country: "中国", creator: "徐如珍", createdAt: "2026-08-05 18:50:02", updater: "徐如珍", updatedAt: "2026-08-06 18:28:07", status: "上架", sale: true },
+		{ id: "11129", name: "香港公司变更股权", spec: "查看明细", category: "海外工商财税->海外工商", type: "基础服务->变更", country: "中国香港", creator: "KXT000914", createdAt: "2025-10-13 17:16:07", updater: "KXT000914", updatedAt: "2026-08-06 17:25:48", status: "上架", sale: true },
+		{ id: "11920", name: "CTC/CPA", spec: "查看明细", category: "海外工商财税->海外工商", type: "基础服务->其他", country: "中国香港", creator: "金妍宏", createdAt: "2026-01-27 18:13:02", updater: "陈佩佩", updatedAt: "2026-08-06 17:25:06", status: "上架", sale: true },
+		{ id: "12851", name: "中国商标注册", spec: "查看明细", category: "知识产权->商标", type: "基础服务->注册", country: "中国", creator: "徐如珍", createdAt: "2026-08-06 15:35:46", updater: "徐如珍", updatedAt: "2026-08-06 15:38:22", status: "上架", sale: true },
+		{ id: "11510", name: "中国商标注册", spec: "查看明细", category: "知识产权->商标", type: "基础服务->注册", country: "中国", creator: "徐如珍", createdAt: "2025-11-19 17:14:18", updater: "徐如珍", updatedAt: "2026-08-06 15:37:32", status: "下架", sale: true },
+		{ id: "12823", name: "美国商标交易", spec: "查看明细", category: "知识产权->商标交易", type: "基础服务->商标交易", country: "美国", creator: "徐如珍", createdAt: "2026-08-05 18:48:15", updater: "徐如珍", updatedAt: "2026-08-06 14:32:32", status: "上架", sale: true },
+		{ id: "12556", name: "西班牙VAT转代理+申报（香港海牙）", spec: "查看明细", category: "VAT->VAT", type: "基础服务->转代理+申报", country: "西班牙", creator: "黎广", createdAt: "2026-05-18 15:37:25", updater: "黎广", updatedAt: "2026-08-06 14:16:45", status: "上架", sale: true },
+		{ id: "12558", name: "西班牙VAT注册+申报（香港海牙）", spec: "查看明细", category: "VAT->VAT", type: "基础服务->注册+申报", country: "西班牙", creator: "黎广", createdAt: "2026-05-18 15:48:28", updater: "黎广", updatedAt: "2026-08-06 14:16:09", status: "上架", sale: true },
+		{ id: "12844", name: "比利时包装法注册+申报（2026年度，含50欧回收费）", spec: "查看明细", category: "EPR->包装法", type: "基础服务->注册+申报", country: "比利时", creator: "黎广", createdAt: "2026-08-06 10:48:00", updater: "黎广", updatedAt: "2026-08-06 13:35:20", status: "上架", sale: true },
+		{ id: "11521", name: "比利时包装法注册+申报（2026年度，含100欧回收费）", spec: "查看明细", category: "EPR->包装法", type: "基础服务->注册+申报", country: "比利时", creator: "黎广", createdAt: "2025-11-20 13:56:48", updater: "黎广", updatedAt: "2026-08-06 11:17:38", status: "上架", sale: true }
+	];
+
+	const skuRows = [
+		{ id: "28978", spuId: "12556", spec: "公司注册地（中国公司） 服务类型（SaaS服务）", name: "西班牙VAT转代理+申报（香港海牙）", baseFee: "3368", recycleFee: "0", officialFee: "0", price: "3368", hasAddon: "无", hasRenewal: "查看明细", creator: "黎广", createdAt: "2026-05-18 15:37:25", updater: "陈火威", updatedAt: "2026-08-06 13:44:01", sale: true },
+		{ id: "28979", spuId: "12556", spec: "公司注册地（中国公司） 服务类型（专属顾问）", name: "西班牙VAT转代理+申报（香港海牙）", baseFee: "3868", recycleFee: "0", officialFee: "0", price: "3868", hasAddon: "无", hasRenewal: "查看明细", creator: "黎广", createdAt: "2026-05-18 15:37:25", updater: "黎广", updatedAt: "2026-08-06 13:44:01", sale: false },
+		{ id: "28980", spuId: "12556", spec: "公司注册地（非中国公司） 服务类型（SaaS服务）", name: "西班牙VAT转代理+申报（香港海牙）", baseFee: "4068", recycleFee: "0", officialFee: "0", price: "4068", hasAddon: "无", hasRenewal: "查看明细", creator: "黎广", createdAt: "2026-05-18 15:37:25", updater: "陈火威", updatedAt: "2026-08-06 13:44:01", sale: true },
+		{ id: "28981", spuId: "12556", spec: "公司注册地（非中国公司） 服务类型（专属顾问）", name: "西班牙VAT转代理+申报（香港海牙）", baseFee: "4568", recycleFee: "0", officialFee: "0", price: "4568", hasAddon: "无", hasRenewal: "查看明细", creator: "黎广", createdAt: "2026-05-18 15:37:25", updater: "黎广", updatedAt: "2026-08-06 13:44:01", sale: false },
+		{ id: "30102", spuId: "12844", spec: "年度（2026） 服务类型（SaaS服务）", name: "比利时包装法注册+申报（2026年度，含50欧回收费）", baseFee: "2200", recycleFee: "50", officialFee: "0", price: "2250", hasAddon: "无", hasRenewal: "查看明细", creator: "黎广", createdAt: "2026-08-06 10:48:00", updater: "黎广", updatedAt: "2026-08-06 13:35:20", sale: true },
+		{ id: "30103", spuId: "12844", spec: "年度（2026） 服务类型（专属顾问）", name: "比利时包装法注册+申报（2026年度，含50欧回收费）", baseFee: "2600", recycleFee: "50", officialFee: "0", price: "2650", hasAddon: "无", hasRenewal: "查看明细", creator: "黎广", createdAt: "2026-08-06 10:48:00", updater: "黎广", updatedAt: "2026-08-06 13:35:20", sale: true },
+		{ id: "28110", spuId: "11521", spec: "年度（2026） 服务类型（SaaS服务）", name: "比利时包装法注册+申报（2026年度，含100欧回收费）", baseFee: "2400", recycleFee: "100", officialFee: "0", price: "2500", hasAddon: "无", hasRenewal: "查看明细", creator: "黎广", createdAt: "2025-11-20 13:56:48", updater: "黎广", updatedAt: "2026-08-06 11:17:38", sale: true },
+		{ id: "28111", spuId: "11521", spec: "年度（2026） 服务类型（专属顾问）", name: "比利时包装法注册+申报（2026年度，含100欧回收费）", baseFee: "2800", recycleFee: "100", officialFee: "0", price: "2900", hasAddon: "无", hasRenewal: "查看明细", creator: "黎广", createdAt: "2025-11-20 13:56:48", updater: "黎广", updatedAt: "2026-08-06 11:17:38", sale: true },
+		{ id: "40001", spuId: "12828", spec: "商标类型（普通商标） 服务类型（SaaS服务）", name: "中国商标交易", baseFee: "1800", recycleFee: "0", officialFee: "0", price: "1800", hasAddon: "无", hasRenewal: "查看明细", creator: "徐如珍", createdAt: "2026-08-05 18:50:02", updater: "徐如珍", updatedAt: "2026-08-06 18:28:07", sale: true },
+		{ id: "40002", spuId: "12828", spec: "商标类型（普通商标） 服务类型（专属顾问）", name: "中国商标交易", baseFee: "2400", recycleFee: "0", officialFee: "0", price: "2400", hasAddon: "无", hasRenewal: "查看明细", creator: "徐如珍", createdAt: "2026-08-05 18:50:02", updater: "徐如珍", updatedAt: "2026-08-06 18:28:07", sale: true },
+		{ id: "40011", spuId: "11129", spec: "公司注册地（中国香港） 服务类型（SaaS服务）", name: "香港公司变更股权", baseFee: "1600", recycleFee: "0", officialFee: "0", price: "1600", hasAddon: "无", hasRenewal: "查看明细", creator: "KXT000914", createdAt: "2025-10-13 17:16:07", updater: "KXT000914", updatedAt: "2026-08-06 17:25:48", sale: true },
+		{ id: "40012", spuId: "11129", spec: "公司注册地（中国香港） 服务类型（专属顾问）", name: "香港公司变更股权", baseFee: "2200", recycleFee: "0", officialFee: "0", price: "2200", hasAddon: "无", hasRenewal: "查看明细", creator: "KXT000914", createdAt: "2025-10-13 17:16:07", updater: "KXT000914", updatedAt: "2026-08-06 17:25:48", sale: true },
+		{ id: "40021", spuId: "11920", spec: "报告类型（CTC） 服务类型（SaaS服务）", name: "CTC/CPA", baseFee: "3000", recycleFee: "0", officialFee: "0", price: "3000", hasAddon: "无", hasRenewal: "查看明细", creator: "金妍宏", createdAt: "2026-01-27 18:13:02", updater: "陈佩佩", updatedAt: "2026-08-06 17:25:06", sale: true },
+		{ id: "40022", spuId: "11920", spec: "报告类型（CPA） 服务类型（专属顾问）", name: "CTC/CPA", baseFee: "4200", recycleFee: "0", officialFee: "0", price: "4200", hasAddon: "无", hasRenewal: "查看明细", creator: "金妍宏", createdAt: "2026-01-27 18:13:02", updater: "陈佩佩", updatedAt: "2026-08-06 17:25:06", sale: true },
+		{ id: "40031", spuId: "12851", spec: "类别数量（1类） 服务类型（SaaS服务）", name: "中国商标注册", baseFee: "980", recycleFee: "0", officialFee: "270", price: "1250", hasAddon: "无", hasRenewal: "查看明细", creator: "徐如珍", createdAt: "2026-08-06 15:35:46", updater: "徐如珍", updatedAt: "2026-08-06 15:38:22", sale: true },
+		{ id: "40032", spuId: "12851", spec: "类别数量（1类） 服务类型（专属顾问）", name: "中国商标注册", baseFee: "1680", recycleFee: "0", officialFee: "270", price: "1950", hasAddon: "无", hasRenewal: "查看明细", creator: "徐如珍", createdAt: "2026-08-06 15:35:46", updater: "徐如珍", updatedAt: "2026-08-06 15:38:22", sale: true },
+		{ id: "40041", spuId: "11510", spec: "类别数量（1类） 服务类型（SaaS服务）", name: "中国商标注册", baseFee: "880", recycleFee: "0", officialFee: "270", price: "1150", hasAddon: "无", hasRenewal: "查看明细", creator: "徐如珍", createdAt: "2025-11-19 17:14:18", updater: "徐如珍", updatedAt: "2026-08-06 15:37:32", sale: true },
+		{ id: "40042", spuId: "11510", spec: "类别数量（1类） 服务类型（专属顾问）", name: "中国商标注册", baseFee: "1580", recycleFee: "0", officialFee: "270", price: "1850", hasAddon: "无", hasRenewal: "查看明细", creator: "徐如珍", createdAt: "2025-11-19 17:14:18", updater: "徐如珍", updatedAt: "2026-08-06 15:37:32", sale: false },
+		{ id: "40051", spuId: "12823", spec: "商标类型（普通商标） 服务类型（SaaS服务）", name: "美国商标交易", baseFee: "2600", recycleFee: "0", officialFee: "0", price: "2600", hasAddon: "无", hasRenewal: "查看明细", creator: "徐如珍", createdAt: "2026-08-05 18:48:15", updater: "徐如珍", updatedAt: "2026-08-06 14:32:32", sale: true },
+		{ id: "40052", spuId: "12823", spec: "商标类型（普通商标） 服务类型（专属顾问）", name: "美国商标交易", baseFee: "3600", recycleFee: "0", officialFee: "0", price: "3600", hasAddon: "无", hasRenewal: "查看明细", creator: "徐如珍", createdAt: "2026-08-05 18:48:15", updater: "徐如珍", updatedAt: "2026-08-06 14:32:32", sale: true },
+		{ id: "40061", spuId: "12558", spec: "公司注册地（中国公司） 服务类型（SaaS服务）", name: "西班牙VAT注册+申报（香港海牙）", baseFee: "4468", recycleFee: "0", officialFee: "0", price: "4468", hasAddon: "无", hasRenewal: "查看明细", creator: "黎广", createdAt: "2026-05-18 15:48:28", updater: "黎广", updatedAt: "2026-08-06 14:16:09", sale: true },
+		{ id: "40062", spuId: "12558", spec: "公司注册地（非中国公司） 服务类型（专属顾问）", name: "西班牙VAT注册+申报（香港海牙）", baseFee: "5668", recycleFee: "0", officialFee: "0", price: "5668", hasAddon: "无", hasRenewal: "查看明细", creator: "黎广", createdAt: "2026-05-18 15:48:28", updater: "黎广", updatedAt: "2026-08-06 14:16:09", sale: true }
+	];
+
+	const skuBomStore = {
+		"28978": [
+			{ annualFeeYear: "2026", amount: "1200.00", currency: "EUR", source: "新注册/转代理" }
+		],
+		"30102": [
+			{ annualFeeYear: "2026", amount: "50.00", currency: "EUR", source: "真实回收" }
+		]
+	};
+
+	const priceRows = [
+		{ id: "12844", name: "德国包装法注册+申报（2026年度，50kg纸...）", category: "EPR->包装法", type: "基础服务->注册+申报", country: "德国", channel: "CRM", status: "上架", updater: "黎广", updatedAt: "2026-08-10 19:15:44" },
+		{ id: "12558", name: "西班牙VAT注册+申报（香港海牙）", category: "VAT->VAT", type: "基础服务->注册+申报", country: "西班牙", channel: "PC（客户端）,小程序,CRM", status: "上架", updater: "黎广", updatedAt: "2026-08-10 18:41:27" },
+		{ id: "12823", name: "美国发明专利授权", category: "知识产权->外观专利", type: "基础服务->注册", country: "美国", channel: "-", status: "下架", updater: "方小路", updatedAt: "2026-08-10 15:54:19" },
+		{ id: "12851", name: "美国发明专利授权", category: "知识产权->发明专利", type: "基础服务->注册", country: "美国", channel: "CRM", status: "上架", updater: "方小路", updatedAt: "2026-08-10 15:54:04" },
+		{ id: "11510", name: "美国发明专利注册", category: "知识产权->外观专利", type: "基础服务->注册", country: "美国", channel: "-", status: "下架", updater: "方小路", updatedAt: "2026-08-10 15:51:18" },
+		{ id: "11920", name: "发明专利和实用新型专利文书翻译", category: "知识产权->发明专利", type: "基础服务->翻译", country: "全球", channel: "CRM", status: "上架", updater: "方小路", updatedAt: "2026-08-10 15:50:54" },
+		{ id: "12828", name: "美国发明专利注册", category: "知识产权->发明专利", type: "基础服务->注册", country: "美国", channel: "CRM", status: "上架", updater: "方小路", updatedAt: "2026-08-10 15:50:47" },
+		{ id: "11521", name: "德国WEEE转入+申报（2026年度）", category: "EPR->电气法", type: "基础服务->注册+申报", country: "德国", channel: "-", status: "下架", updater: "黎广", updatedAt: "2026-08-10 10:27:29" },
+		{ id: "11129", name: "日本商标交易", category: "知识产权->商标交易", type: "基础服务->商标交易", country: "日本", channel: "CRM", status: "上架", updater: "徐如珍", updatedAt: "2026-08-10 09:43:59" }
+	];
+
+	const publishSpecCodeMap = {
+		"SaaS服务": "saas",
+		"专属顾问服务": "advisor",
+		"是": "yes",
+		"否": "no"
+	};
+
+	let publishSpecRows = [];
+	let recycleFeeDraft = {};
+	let recycleSelectedSkuIds = new Set();
+	let recycleManageEnabled = false;
+	let currentSpu = null;
+	let currentSku = null;
+	let editingGroups = [];
+	let currentPriceSpu = null;
+	let priceRecycleDraft = {};
+	let priceRecycleSelectedSkuIds = new Set();
+	let priceEditRecycleManageEnabled = false;
+
+	function escapeHtml(value) {
+		return String(value ?? "")
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;");
+	}
+
+	function optionHtml(options, selected, placeholder) {
+		const normalizedOptions = selected && !options.includes(selected) ? [selected, ...options] : options;
+		const list = [`<option value="">${placeholder}</option>`];
+		normalizedOptions.forEach(item => {
+			const checked = item === selected ? " selected" : "";
+			list.push(`<option value="${escapeHtml(item)}"${checked}>${escapeHtml(item)}</option>`);
+		});
+		return list.join("");
+	}
+
+	function getSelectValue(id) {
+		const el = document.getElementById(id);
+		return el ? el.value : "";
+	}
+
+	function queryDeclarationCurrency(country) {
+		return declarationCurrencyByCountry[country] || "EUR";
+	}
+
+	function getPublishProductType() {
+		return getSelectValue("publishProductType");
+	}
+
+	function getPublishCountry() {
+		return getSelectValue("publishCountry");
+	}
+
+	function getDefaultCurrency() {
+		return queryDeclarationCurrency(getPublishCountry());
+	}
+
+	function getRecycleYearOptions() {
+		const year = getSelectValue("publishServiceYear");
+		return year ? [year] : bomConfig.years;
+	}
+
+	function getDefaultRecycleYear() {
+		return getRecycleYearOptions()[0] || "";
+	}
+
+	function getCurrencyOptions() {
+		const currency = getDefaultCurrency();
+		return currency ? [currency] : bomConfig.currencies;
+	}
+
+	function getDefaultRecycleSource() {
+		return getPublishProductType().startsWith("基础服务") ? "新注册/转代理" : "";
+	}
+
+	function refreshRecycleDefaults() {
+		if (recycleManageEnabled) {
+			renderRecycleBatchControls();
+			renderRecycleFeeSkuList();
+		}
+	}
+
+	function switchDemoPage(page) {
+		const isPricePage = page === "price";
+		document.getElementById("pricePage").classList.toggle("active", isPricePage);
+		document.getElementById("productPage").classList.toggle("active", !isPricePage);
+		document.getElementById("priceMenuItem").classList.toggle("active", isPricePage);
+		document.getElementById("productMenuItem").classList.toggle("active", !isPricePage);
+		document.getElementById("pricePageTab").classList.toggle("active", isPricePage);
+		document.getElementById("productPageTab").classList.toggle("active", !isPricePage);
+		closeSkuPanel();
+		if (isPricePage) {
+			renderPriceTable();
+		} else {
+			renderSpuTable();
+		}
+	}
+
+	function getSkuRowsBySpu(spuId) {
+		return skuRows.filter(row => row.spuId === spuId);
+	}
+
+	function getPriceRow(spuId) {
+		return priceRows.find(row => row.id === spuId) || priceRows[0];
+	}
+
+	function ensurePriceFloorFields(row) {
+		if (!row.floorBaseFee) {
+			row.floorBaseFee = String(Math.max(Number(row.baseFee || 0) - 180, 0));
+			row.floorRecycleFee = row.recycleFee || "0";
+			row.floorOfficialFee = row.officialFee || "0";
+		}
+		return row;
+	}
+
+	function renderPriceTable() {
+		document.getElementById("priceTableBody").innerHTML = priceRows.map(row => `
+			<tr>
+				<td>${row.id}</td>
+				<td title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</td>
+				<td>${escapeHtml(row.category)}</td>
+				<td>${escapeHtml(row.type)}</td>
+				<td>${escapeHtml(row.country)}</td>
+				<td title="${escapeHtml(row.channel)}">${escapeHtml(row.channel)}</td>
+				<td><span class="${row.status === "上架" ? "status-green" : "status-red"}">${row.status}</span></td>
+				<td>${escapeHtml(row.updater)}</td>
+				<td>${escapeHtml(row.updatedAt)}</td>
+				<td>
+					<span class="actions">
+						<span class="action-text" onclick="showToast('详情沿用现有商品价格详情页')">详情</span>
+						<span class="action-text" onclick="openPriceEditDrawer('${row.id}')">编辑</span>
+						<span class="action-text" onclick="showToast('价格记录沿用现有记录页')">价格记录</span>
+					</span>
+				</td>
+			</tr>
+		`).join("");
+	}
+
+	function openPriceEditDrawer(spuId) {
+		currentPriceSpu = getPriceRow(spuId);
+		document.getElementById("priceEditDrawerSub").textContent = `${currentPriceSpu.id} / ${currentPriceSpu.name}`;
+		renderPriceEditSkuList();
+		priceEditRecycleManageEnabled = false;
+		renderPriceEditRecycleManageState();
+		document.getElementById("priceEditDrawerMask").classList.add("open");
+		document.getElementById("priceEditDrawerMask").setAttribute("aria-hidden", "false");
+	}
+
+	function closePriceEditDrawer() {
+		document.getElementById("priceEditDrawerMask").classList.remove("open");
+		document.getElementById("priceEditDrawerMask").setAttribute("aria-hidden", "true");
+	}
+
+	function updatePriceSkuField(skuId, field, value) {
+		const row = skuRows.find(item => item.id === skuId);
+		if (row) {
+			ensurePriceFloorFields(row)[field] = value;
+		}
+	}
+
+	function renderPriceEditSkuList() {
+		const rows = getSkuRowsBySpu(currentPriceSpu.id).map(ensurePriceFloorFields);
+		const body = document.getElementById("priceEditSkuList");
+		if (!rows.length) {
+			body.innerHTML = `<tr><td colspan="9"><div class="empty">当前商品暂无 SKU 示例数据</div></td></tr>`;
+			return;
+		}
+		body.innerHTML = rows.map(row => `
+			<tr>
+				<td>${row.id}</td>
+				<td class="left" title="${escapeHtml(row.spec)}">${escapeHtml(row.spec)}</td>
+				<td><input class="table-input" value="${escapeHtml(row.baseFee)}" oninput="updatePriceSkuField('${row.id}', 'baseFee', this.value)"></td>
+				<td><input class="table-input" value="${escapeHtml(row.recycleFee)}" oninput="updatePriceSkuField('${row.id}', 'recycleFee', this.value)"></td>
+				<td><input class="table-input" value="${escapeHtml(row.officialFee)}" oninput="updatePriceSkuField('${row.id}', 'officialFee', this.value)"></td>
+				<td><input class="table-input" value="${escapeHtml(row.price)}" oninput="updatePriceSkuField('${row.id}', 'price', this.value)"></td>
+				<td><input class="table-input" value="${escapeHtml(row.floorBaseFee)}" oninput="updatePriceSkuField('${row.id}', 'floorBaseFee', this.value)"></td>
+				<td><input class="table-input" value="${escapeHtml(row.floorRecycleFee)}" oninput="updatePriceSkuField('${row.id}', 'floorRecycleFee', this.value)"></td>
+				<td><input class="table-input" value="${escapeHtml(row.floorOfficialFee)}" oninput="updatePriceSkuField('${row.id}', 'floorOfficialFee', this.value)"></td>
+			</tr>
+		`).join("");
+	}
+
+	function savePriceEditDrawer() {
+		if (priceEditRecycleManageEnabled && !savePriceEditRecycleManage({ silent: true })) {
+			return;
+		}
+		closePriceEditDrawer();
+		showToast("价格信息已保存");
+	}
+
+	function renderPriceEditRecycleManageState() {
+		const panel = document.getElementById("priceEditRecyclePanel");
+		const switchBtn = document.getElementById("priceEditRecycleSwitchBtn");
+		const switchIcon = document.getElementById("priceEditRecycleSwitch");
+		const switchText = document.getElementById("priceEditRecycleSwitchText");
+		panel.classList.toggle("open", priceEditRecycleManageEnabled);
+		switchBtn.classList.toggle("on", priceEditRecycleManageEnabled);
+		switchIcon.classList.toggle("on", priceEditRecycleManageEnabled);
+		switchText.textContent = priceEditRecycleManageEnabled ? "开启" : "关闭";
+	}
+
+	function togglePriceEditRecycleManage(force) {
+		if (force === false) {
+			priceEditRecycleManageEnabled = false;
+			renderPriceEditRecycleManageState();
+			return;
+		}
+		if (!currentPriceSpu || !getSkuRowsBySpu(currentPriceSpu.id).length) {
+			showToast("当前商品暂无 SKU");
+			return;
+		}
+		priceEditRecycleManageEnabled = typeof force === "boolean" ? force : !priceEditRecycleManageEnabled;
+		renderPriceEditRecycleManageState();
+		if (priceEditRecycleManageEnabled) {
+			buildPriceRecycleDraft();
+			renderPriceEditRecycleBatchControls();
+			renderPriceEditRecycleSkuList();
+		}
+	}
+
+	function renderPriceEditRecycleBatchControls() {
+		document.getElementById("priceEditBatchAnnualFeeYear").innerHTML = optionHtml(getPriceRecycleYearOptions(), getPriceDefaultRecycleYear(), "回收费年份");
+		document.getElementById("priceEditBatchCurrency").innerHTML = optionHtml(getPriceCurrencyOptions(), getPriceDefaultCurrency(), "币种");
+		document.getElementById("priceEditBatchSource").innerHTML = optionHtml(bomConfig.sources, getPriceDefaultRecycleSource(), "回收费来源");
+		updatePriceEditRecycleSelectedState();
+	}
+
+	function updatePriceEditRecycleSelectedState() {
+		const rows = currentPriceSpu ? getSkuRowsBySpu(currentPriceSpu.id) : [];
+		const selectedCount = priceRecycleSelectedSkuIds.size;
+		const selectAll = document.getElementById("priceEditRecycleSelectAll");
+		document.getElementById("priceEditRecycleSelectedCount").textContent = `已选 ${selectedCount} 个 SKU`;
+		selectAll.checked = rows.length > 0 && selectedCount === rows.length;
+		selectAll.indeterminate = selectedCount > 0 && selectedCount < rows.length;
+	}
+
+	function togglePriceEditRecycleSelectAll(checked) {
+		const rows = getSkuRowsBySpu(currentPriceSpu.id);
+		priceRecycleSelectedSkuIds = checked ? new Set(rows.map(row => row.id)) : new Set();
+		renderPriceEditRecycleSkuList();
+	}
+
+	function togglePriceEditRecycleSku(skuId, checked) {
+		if (checked) {
+			priceRecycleSelectedSkuIds.add(skuId);
+		} else {
+			priceRecycleSelectedSkuIds.delete(skuId);
+		}
+		updatePriceEditRecycleSelectedState();
+	}
+
+	function updatePriceEditRecycleGroup(skuId, index, field, value) {
+		priceRecycleDraft[skuId][index][field] = value;
+	}
+
+	function applyPriceEditRecycleBatch() {
+		if (!priceRecycleSelectedSkuIds.size) {
+			showToast("请先选择 SKU");
+			return;
+		}
+		const annualFeeYear = document.getElementById("priceEditBatchAnnualFeeYear").value;
+		const amount = document.getElementById("priceEditBatchAmount").value;
+		const currency = document.getElementById("priceEditBatchCurrency").value;
+		const source = document.getElementById("priceEditBatchSource").value;
+		const targetGroupIndex = Number(document.getElementById("priceEditBatchTargetGroup").value);
+		if (!annualFeeYear && !amount && !currency && !source) {
+			showToast("请先填写批量内容");
+			return;
+		}
+		priceRecycleSelectedSkuIds.forEach(skuId => {
+			const groups = priceRecycleDraft[skuId] || [createPriceEmptyFeeGroup()];
+			while (groups.length <= targetGroupIndex && groups.length < bomConfig.maxGroups) {
+				groups.push(createPriceEmptyFeeGroup());
+			}
+			const targetGroup = groups[targetGroupIndex] || createPriceEmptyFeeGroup();
+			if (annualFeeYear) targetGroup.annualFeeYear = annualFeeYear;
+			if (amount) targetGroup.amount = amount;
+			if (currency) targetGroup.currency = currency;
+			if (source) targetGroup.source = source;
+			groups[targetGroupIndex] = targetGroup;
+			priceRecycleDraft[skuId] = groups;
+		});
+		renderPriceEditRecycleSkuList();
+		showToast(`已批量填充额度组 ${targetGroupIndex + 1}`);
+	}
+
+	function addPriceEditRecycleGroup(skuId) {
+		const groups = priceRecycleDraft[skuId] || [];
+		if (groups.length >= bomConfig.maxGroups) {
+			return;
+		}
+		groups.push(createPriceEmptyFeeGroup());
+		priceRecycleDraft[skuId] = groups;
+		renderPriceEditRecycleSkuList();
+	}
+
+	function removePriceEditRecycleGroup(skuId, index) {
+		const groups = priceRecycleDraft[skuId] || [];
+		if (groups.length <= 1) {
+			showToast("至少保留一组额度");
+			return;
+		}
+		groups.splice(index, 1);
+		priceRecycleDraft[skuId] = groups;
+		renderPriceEditRecycleSkuList();
+	}
+
+	function renderPriceEditRecycleSkuList(errors = {}) {
+		const list = document.getElementById("priceEditRecycleSkuList");
+		const rows = getSkuRowsBySpu(currentPriceSpu.id);
+		if (!rows.length) {
+			list.innerHTML = `<tr><td colspan="8"><div class="empty">当前商品暂无 SKU 示例数据</div></td></tr>`;
+			updatePriceEditRecycleSelectedState();
+			return;
+		}
+		list.innerHTML = rows.map(row => {
+			const groups = priceRecycleDraft[row.id] || [createPriceEmptyFeeGroup()];
+			return groups.map((group, index) => {
+				const groupErrors = (errors[row.id] && errors[row.id][index]) || {};
+				const showSkuCell = index === 0;
+				return `
+					<tr>
+						${showSkuCell ? `
+							<td rowspan="${groups.length}">
+								<input class="recycle-checkbox" type="checkbox" ${priceRecycleSelectedSkuIds.has(row.id) ? "checked" : ""} onchange="togglePriceEditRecycleSku('${row.id}', this.checked)">
+							</td>
+							<td rowspan="${groups.length}">
+								<div class="recycle-sku-name">${escapeHtml(getPriceSkuLabel(row))}</div>
+							</td>
+						` : ""}
+						<td>额度组 ${index + 1}</td>
+						<td>
+							<select class="select" onchange="updatePriceEditRecycleGroup('${row.id}', ${index}, 'annualFeeYear', this.value)">
+								${optionHtml(getPriceRecycleYearOptions(), group.annualFeeYear || getPriceDefaultRecycleYear(), "请选择")}
+							</select>
+							<div class="error-text">${groupErrors.annualFeeYear || ""}</div>
+						</td>
+						<td>
+							<input class="input" type="number" min="0" step="0.01" value="${escapeHtml(group.amount)}" placeholder="金额" oninput="updatePriceEditRecycleGroup('${row.id}', ${index}, 'amount', this.value)">
+							<div class="error-text">${groupErrors.amount || ""}</div>
+						</td>
+						<td>
+							<select class="select" onchange="updatePriceEditRecycleGroup('${row.id}', ${index}, 'currency', this.value)">
+								${optionHtml(getPriceCurrencyOptions(), group.currency || getPriceDefaultCurrency(), "请选择")}
+							</select>
+							<div class="error-text">${groupErrors.currency || ""}</div>
+						</td>
+						<td>
+							<select class="select" onchange="updatePriceEditRecycleGroup('${row.id}', ${index}, 'source', this.value)">
+								${optionHtml(bomConfig.sources, group.source || getPriceDefaultRecycleSource(), "请选择")}
+							</select>
+							<div class="error-text">${groupErrors.source || ""}</div>
+						</td>
+						<td>
+							<span class="actions">
+								${showSkuCell && groups.length < bomConfig.maxGroups ? `<span class="action-text" onclick="addPriceEditRecycleGroup('${row.id}')">添加一组</span>` : ""}
+								${groups.length > 1 ? `<span class="action-text" onclick="removePriceEditRecycleGroup('${row.id}', ${index})">删除</span>` : ""}
+							</span>
+						</td>
+					</tr>
+				`;
+			}).join("");
+		}).join("");
+		updatePriceEditRecycleSelectedState();
+	}
+
+	function savePriceEditRecycleManage(options = {}) {
+		const result = validatePriceRecycleDraft();
+		if (!result.valid) {
+			renderPriceEditRecycleSkuList(result.errors);
+			showToast("请完善必填字段");
+			return false;
+		}
+		Object.entries(priceRecycleDraft).forEach(([skuId, groups]) => {
+			skuBomStore[skuId] = groups
+				.filter(group => !isEmptyGroup(group))
+				.map(group => ({
+					annualFeeYear: group.annualFeeYear || getPriceDefaultRecycleYear(),
+					amount: Number(group.amount).toFixed(2),
+					currency: group.currency || getPriceDefaultCurrency(),
+					source: group.source || getPriceDefaultRecycleSource()
+				}));
+		});
+		renderPriceEditRecycleSkuList();
+		if (!options.silent) {
+			showToast("回收费额度已保存");
+		}
+		return true;
+	}
+
+	function extractYearFromText(text) {
+		const match = String(text || "").match(/20\d{2}/);
+		return match ? match[0] : "";
+	}
+
+	function getPriceRecycleYearOptions() {
+		const rows = currentPriceSpu ? getSkuRowsBySpu(currentPriceSpu.id) : [];
+		const years = Array.from(new Set(rows.map(row => extractYearFromText(`${row.spec} ${row.name}`)).filter(Boolean)));
+		return years.length ? years : bomConfig.years;
+	}
+
+	function getPriceDefaultRecycleYear() {
+		return getPriceRecycleYearOptions()[0] || "";
+	}
+
+	function getPriceDefaultCurrency() {
+		return queryDeclarationCurrency(currentPriceSpu && currentPriceSpu.country);
+	}
+
+	function getPriceCurrencyOptions() {
+		const currency = getPriceDefaultCurrency();
+		return currency ? [currency] : bomConfig.currencies;
+	}
+
+	function getPriceDefaultRecycleSource() {
+		return currentPriceSpu && currentPriceSpu.type.startsWith("基础服务") ? "新注册/转代理" : "";
+	}
+
+	function createPriceEmptyFeeGroup() {
+		return {
+			annualFeeYear: getPriceDefaultRecycleYear(),
+			amount: "",
+			currency: getPriceDefaultCurrency(),
+			source: getPriceDefaultRecycleSource()
+		};
+	}
+
+	function clonePriceFeeGroups(groups) {
+		return groups.length ? groups.map(group => ({ ...group })) : [createPriceEmptyFeeGroup()];
+	}
+
+	function getPriceSkuLabel(row) {
+		return `${row.id} / ${row.spec}`;
+	}
+
+	function buildPriceRecycleDraft() {
+		const rows = getSkuRowsBySpu(currentPriceSpu.id);
+		priceRecycleDraft = {};
+		priceRecycleSelectedSkuIds = new Set(rows.map(row => row.id));
+		rows.forEach(row => {
+			priceRecycleDraft[row.id] = clonePriceFeeGroups(skuBomStore[row.id] || []);
+		});
+	}
+
+	function renderPriceRecycleBatchControls() {
+		document.getElementById("priceBatchAnnualFeeYear").innerHTML = optionHtml(getPriceRecycleYearOptions(), getPriceDefaultRecycleYear(), "回收费年份");
+		document.getElementById("priceBatchCurrency").innerHTML = optionHtml(getPriceCurrencyOptions(), getPriceDefaultCurrency(), "币种");
+		document.getElementById("priceBatchSource").innerHTML = optionHtml(bomConfig.sources, getPriceDefaultRecycleSource(), "回收费来源");
+		updatePriceRecycleSelectedState();
+	}
+
+	function openPriceRecycleDrawer(spuId) {
+		currentPriceSpu = getPriceRow(spuId);
+		document.getElementById("priceRecycleDrawerSub").textContent = `${currentPriceSpu.id} / ${currentPriceSpu.name}`;
+		buildPriceRecycleDraft();
+		renderPriceRecycleBatchControls();
+		renderPriceRecycleSkuList();
+		document.getElementById("priceRecycleDrawerMask").classList.add("open");
+		document.getElementById("priceRecycleDrawerMask").setAttribute("aria-hidden", "false");
+	}
+
+	function closePriceRecycleDrawer() {
+		document.getElementById("priceRecycleDrawerMask").classList.remove("open");
+		document.getElementById("priceRecycleDrawerMask").setAttribute("aria-hidden", "true");
+	}
+
+	function updatePriceRecycleSelectedState() {
+		const rows = currentPriceSpu ? getSkuRowsBySpu(currentPriceSpu.id) : [];
+		const selectedCount = priceRecycleSelectedSkuIds.size;
+		const selectAll = document.getElementById("priceRecycleSelectAll");
+		document.getElementById("priceRecycleSelectedCount").textContent = `已选 ${selectedCount} 个 SKU`;
+		selectAll.checked = rows.length > 0 && selectedCount === rows.length;
+		selectAll.indeterminate = selectedCount > 0 && selectedCount < rows.length;
+	}
+
+	function togglePriceRecycleSelectAll(checked) {
+		const rows = getSkuRowsBySpu(currentPriceSpu.id);
+		priceRecycleSelectedSkuIds = checked ? new Set(rows.map(row => row.id)) : new Set();
+		renderPriceRecycleSkuList();
+	}
+
+	function togglePriceRecycleSku(skuId, checked) {
+		if (checked) {
+			priceRecycleSelectedSkuIds.add(skuId);
+		} else {
+			priceRecycleSelectedSkuIds.delete(skuId);
+		}
+		updatePriceRecycleSelectedState();
+	}
+
+	function updatePriceRecycleGroup(skuId, index, field, value) {
+		priceRecycleDraft[skuId][index][field] = value;
+	}
+
+	function applyPriceRecycleBatch() {
+		if (!priceRecycleSelectedSkuIds.size) {
+			showToast("请先选择 SKU");
+			return;
+		}
+		const annualFeeYear = document.getElementById("priceBatchAnnualFeeYear").value;
+		const amount = document.getElementById("priceBatchAmount").value;
+		const currency = document.getElementById("priceBatchCurrency").value;
+		const source = document.getElementById("priceBatchSource").value;
+		const targetGroupIndex = Number(document.getElementById("priceBatchTargetGroup").value);
+		if (!annualFeeYear && !amount && !currency && !source) {
+			showToast("请先填写批量内容");
+			return;
+		}
+		priceRecycleSelectedSkuIds.forEach(skuId => {
+			const groups = priceRecycleDraft[skuId] || [createPriceEmptyFeeGroup()];
+			while (groups.length <= targetGroupIndex && groups.length < bomConfig.maxGroups) {
+				groups.push(createPriceEmptyFeeGroup());
+			}
+			const targetGroup = groups[targetGroupIndex] || createPriceEmptyFeeGroup();
+			if (annualFeeYear) targetGroup.annualFeeYear = annualFeeYear;
+			if (amount) targetGroup.amount = amount;
+			if (currency) targetGroup.currency = currency;
+			if (source) targetGroup.source = source;
+			groups[targetGroupIndex] = targetGroup;
+			priceRecycleDraft[skuId] = groups;
+		});
+		renderPriceRecycleSkuList();
+		showToast(`已批量填充额度组 ${targetGroupIndex + 1}`);
+	}
+
+	function addPriceRecycleGroup(skuId) {
+		const groups = priceRecycleDraft[skuId] || [];
+		if (groups.length >= bomConfig.maxGroups) {
+			return;
+		}
+		groups.push(createPriceEmptyFeeGroup());
+		priceRecycleDraft[skuId] = groups;
+		renderPriceRecycleSkuList();
+	}
+
+	function removePriceRecycleGroup(skuId, index) {
+		const groups = priceRecycleDraft[skuId] || [];
+		if (groups.length <= 1) {
+			showToast("至少保留一组额度");
+			return;
+		}
+		groups.splice(index, 1);
+		priceRecycleDraft[skuId] = groups;
+		renderPriceRecycleSkuList();
+	}
+
+	function renderPriceRecycleSkuList(errors = {}) {
+		const list = document.getElementById("priceRecycleSkuList");
+		const rows = getSkuRowsBySpu(currentPriceSpu.id);
+		if (!rows.length) {
+			list.innerHTML = `<tr><td colspan="8"><div class="empty">当前商品暂无 SKU 示例数据</div></td></tr>`;
+			updatePriceRecycleSelectedState();
+			return;
+		}
+		list.innerHTML = rows.map(row => {
+			const groups = priceRecycleDraft[row.id] || [createPriceEmptyFeeGroup()];
+			return groups.map((group, index) => {
+				const groupErrors = (errors[row.id] && errors[row.id][index]) || {};
+				const showSkuCell = index === 0;
+				return `
+					<tr>
+						${showSkuCell ? `
+							<td rowspan="${groups.length}">
+								<input class="recycle-checkbox" type="checkbox" ${priceRecycleSelectedSkuIds.has(row.id) ? "checked" : ""} onchange="togglePriceRecycleSku('${row.id}', this.checked)">
+							</td>
+							<td rowspan="${groups.length}">
+								<div class="recycle-sku-name">${escapeHtml(getPriceSkuLabel(row))}</div>
+							</td>
+						` : ""}
+						<td>额度组 ${index + 1}</td>
+						<td>
+							<select class="select" onchange="updatePriceRecycleGroup('${row.id}', ${index}, 'annualFeeYear', this.value)">
+								${optionHtml(getPriceRecycleYearOptions(), group.annualFeeYear || getPriceDefaultRecycleYear(), "请选择")}
+							</select>
+							<div class="error-text">${groupErrors.annualFeeYear || ""}</div>
+						</td>
+						<td>
+							<input class="input" type="number" min="0" step="0.01" value="${escapeHtml(group.amount)}" placeholder="金额" oninput="updatePriceRecycleGroup('${row.id}', ${index}, 'amount', this.value)">
+							<div class="error-text">${groupErrors.amount || ""}</div>
+						</td>
+						<td>
+							<select class="select" onchange="updatePriceRecycleGroup('${row.id}', ${index}, 'currency', this.value)">
+								${optionHtml(getPriceCurrencyOptions(), group.currency || getPriceDefaultCurrency(), "请选择")}
+							</select>
+							<div class="error-text">${groupErrors.currency || ""}</div>
+						</td>
+						<td>
+							<select class="select" onchange="updatePriceRecycleGroup('${row.id}', ${index}, 'source', this.value)">
+								${optionHtml(bomConfig.sources, group.source || getPriceDefaultRecycleSource(), "请选择")}
+							</select>
+							<div class="error-text">${groupErrors.source || ""}</div>
+						</td>
+						<td>
+							<span class="actions">
+								${showSkuCell && groups.length < bomConfig.maxGroups ? `<span class="action-text" onclick="addPriceRecycleGroup('${row.id}')">添加一组</span>` : ""}
+								${groups.length > 1 ? `<span class="action-text" onclick="removePriceRecycleGroup('${row.id}', ${index})">删除</span>` : ""}
+							</span>
+						</td>
+					</tr>
+				`;
+			}).join("");
+		}).join("");
+		updatePriceRecycleSelectedState();
+	}
+
+	function validatePriceRecycleDraft() {
+		const errors = {};
+		let valid = true;
+		Object.entries(priceRecycleDraft).forEach(([skuId, groups]) => {
+			groups.forEach((group, index) => {
+				if (isEmptyGroup(group)) {
+					return;
+				}
+				group.annualFeeYear = group.annualFeeYear || getPriceDefaultRecycleYear();
+				group.currency = group.currency || getPriceDefaultCurrency();
+				group.source = group.source || getPriceDefaultRecycleSource();
+				const groupErrors = {};
+				if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费年份";
+				if (!group.amount) {
+					groupErrors.amount = "请输入金额";
+				} else if (Number(group.amount) < 0) {
+					groupErrors.amount = "金额不能小于0";
+				}
+				if (!group.currency) groupErrors.currency = "请选择币种";
+				if (!group.source) groupErrors.source = "请选择回收费来源";
+				if (Object.keys(groupErrors).length) {
+					valid = false;
+					if (!errors[skuId]) {
+						errors[skuId] = {};
+					}
+					errors[skuId][index] = groupErrors;
+				}
+			});
+		});
+		return { valid, errors };
+	}
+
+	function savePriceRecycleDrawer() {
+		const result = validatePriceRecycleDraft();
+		if (!result.valid) {
+			renderPriceRecycleSkuList(result.errors);
+			showToast("请完善必填字段");
+			return;
+		}
+		Object.entries(priceRecycleDraft).forEach(([skuId, groups]) => {
+			skuBomStore[skuId] = groups
+				.filter(group => !isEmptyGroup(group))
+				.map(group => ({
+					annualFeeYear: group.annualFeeYear || getPriceDefaultRecycleYear(),
+					amount: Number(group.amount).toFixed(2),
+					currency: group.currency || getPriceDefaultCurrency(),
+					source: group.source || getPriceDefaultRecycleSource()
+				}));
+		});
+		closePriceRecycleDrawer();
+		showToast("回收费额度已保存");
+	}
+
+	function renderSpuTable() {
+		const rows = spuRows.map(row => `
+			<tr>
+				<td>${row.id}</td>
+				<td title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</td>
+				<td><span class="link" onclick="openSkuPanel('${row.id}')">查看明细</span></td>
+				<td>${escapeHtml(row.category)}</td>
+				<td>${escapeHtml(row.type)}</td>
+				<td>${escapeHtml(row.country)}</td>
+				<td>${escapeHtml(row.creator)}</td>
+				<td>${escapeHtml(row.createdAt)}</td>
+				<td><span class="${row.status === "上架" ? "status-green" : "status-red"}">${row.status}</span></td>
+				<td><span class="switch ${row.sale ? "on" : ""}"></span></td>
+				<td>基础商品</td>
+				<td>
+					<span class="actions">
+						<span class="action-text">复制</span>
+						<span class="action-text">编辑</span>
+						<span class="action-text">作废</span>
+						<span class="action-text">${row.status === "上架" ? "下架" : "上架"}</span>
+						<span class="action-text">操作日志</span>
+					</span>
+				</td>
+			</tr>
+		`).join("");
+		document.getElementById("spuTableBody").innerHTML = rows;
+	}
+
+	function openSkuPanel(spuId) {
+		currentSpu = spuRows.find(row => row.id === spuId) || spuRows[0];
+		document.getElementById("spuContext").textContent = `${currentSpu.id} / ${currentSpu.name}`;
+		renderSkuTable();
+		document.getElementById("skuPanel").classList.add("open");
+		document.getElementById("skuPanel").setAttribute("aria-hidden", "false");
+	}
+
+	function closeSkuPanel() {
+		document.getElementById("skuPanel").classList.remove("open");
+		document.getElementById("skuPanel").setAttribute("aria-hidden", "true");
+	}
+
+	function renderSkuTable() {
+		const rows = skuRows.filter(row => row.spuId === currentSpu.id);
+		if (!rows.length) {
+			document.getElementById("skuTableBody").innerHTML = `<tr><td colspan="16"><div class="empty">当前SPU暂无SKU示例数据</div></td></tr>`;
+			return;
+		}
+		document.getElementById("skuTableBody").innerHTML = rows.map(row => `
+			<tr>
+				<td>${row.id}</td>
+				<td>${row.spuId}</td>
+				<td class="left" title="${escapeHtml(row.spec)}">${escapeHtml(row.spec)}</td>
+				<td title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</td>
+				<td>${row.baseFee}</td>
+				<td>${row.recycleFee}</td>
+				<td>${row.officialFee}</td>
+				<td>${row.price}</td>
+				<td>${row.hasAddon}</td>
+				<td><span class="link">${row.hasRenewal}</span></td>
+				<td>${escapeHtml(row.creator)}</td>
+				<td>${row.createdAt}</td>
+				<td>${escapeHtml(row.updater)}</td>
+				<td>${row.updatedAt}</td>
+				<td><span class="switch ${row.sale ? "on" : ""}"></span></td>
+				<td>
+					<span class="actions">
+						<span class="action-text">日志</span>
+					</span>
+				</td>
+			</tr>
+		`).join("");
+	}
+
+function openPublishDialog() {
+	refreshRecycleDefaults();
+	if (!publishSpecRows.length) {
+		generatePublishSpecs(false);
+	} else {
+		syncPublishSpecSummary();
+		renderPublishSpecTable();
+	}
+	document.getElementById("publishMask").classList.add("open");
+	document.getElementById("publishMask").setAttribute("aria-hidden", "false");
+}
+
+function closePublishDialog() {
+	document.getElementById("publishMask").classList.remove("open");
+	document.getElementById("publishMask").setAttribute("aria-hidden", "true");
+}
+
+function togglePublishGroup(name, checked) {
+	document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
+		input.checked = checked;
+	});
+}
+
+function getCheckedValues(name) {
+	return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(input => input.value);
+}
+
+function buildPublishSpecId(serviceType, b2bDeclare) {
+	return `publish-${publishSpecCodeMap[serviceType] || "spec"}-${publishSpecCodeMap[b2bDeclare] || "option"}`;
+}
+
+function buildPublishSpecLabel(row) {
+	return `${row.serviceType} / 是否进行B2B申报（${row.b2bDeclare}）`;
+}
+
+function getPublishProductName() {
+	return document.getElementById("publishProductName").value.trim() || "意大利VAT注册";
+}
+
+function getPublishSpecSelectLabel(row) {
+	return `${row.id} / ${buildPublishSpecLabel(row)}`;
+}
+
+function syncPublishSpecSummary() {
+	const productName = getPublishProductName();
+	publishSpecRows.forEach(row => {
+		row.name = productName;
+		row.spec = buildPublishSpecLabel(row);
+		row.configuredGroups = (skuBomStore[row.id] || []).filter(group => !isEmptyGroup(group)).length;
+	});
+}
+
+function updatePublishSpecField(id, field, value) {
+	const row = publishSpecRows.find(item => item.id === id);
+	if (!row) {
+		return;
+	}
+	row[field] = value;
+}
+
+	function removePublishSpec(id) {
+		publishSpecRows = publishSpecRows.filter(row => row.id !== id);
+		delete recycleFeeDraft[id];
+		recycleSelectedSkuIds.delete(id);
+		if (currentSku && currentSku.id === id) {
+			closeBomDrawer();
+		}
+		renderPublishSpecTable();
+		if (recycleManageEnabled) {
+			if (!publishSpecRows.length) {
+				toggleRecycleManage(false);
+			} else {
+				renderRecycleFeeSkuList();
+			}
+		}
+	}
+
+function renderPublishSpecTable() {
+	const body = document.getElementById("publishSpecTableBody");
+	if (!publishSpecRows.length) {
+		body.innerHTML = `<tr><td colspan="8"><div class="empty">请先选择商品属性并生成商品规格</div></td></tr>`;
+		return;
+	}
+	syncPublishSpecSummary();
+	body.innerHTML = publishSpecRows.map(row => `
+		<tr>
+			<td>${row.serviceType}</td>
+			<td>${row.b2bDeclare}</td>
+			<td><input class="table-input" value="${escapeHtml(row.baseFee)}" oninput="updatePublishSpecField('${row.id}', 'baseFee', this.value)"></td>
+			<td><input class="table-input" value="${escapeHtml(row.recycleFee)}" oninput="updatePublishSpecField('${row.id}', 'recycleFee', this.value)"></td>
+			<td><input class="table-input" value="${escapeHtml(row.officialFee)}" oninput="updatePublishSpecField('${row.id}', 'officialFee', this.value)"></td>
+			<td><input class="table-input" value="${escapeHtml(row.price)}" oninput="updatePublishSpecField('${row.id}', 'price', this.value)"></td>
+			<td><input class="table-input" value="${escapeHtml(row.productId)}" oninput="updatePublishSpecField('${row.id}', 'productId', this.value)"></td>
+			<td>
+				<span class="actions">
+					<span class="action-text" onclick="removePublishSpec('${row.id}')">删除</span>
+				</span>
+			</td>
+		</tr>
+	`).join("");
+}
+
+function generatePublishSpecs(showSuccess = true) {
+	const serviceTypes = getCheckedValues("publishServiceType");
+	const b2bDeclares = getCheckedValues("publishB2b");
+	if (!serviceTypes.length || !b2bDeclares.length) {
+		showToast("请至少选择一组商品属性");
+		return;
+	}
+	const previousRows = new Map(publishSpecRows.map(row => [row.id, row]));
+	const productName = getPublishProductName();
+	publishSpecRows = [];
+	serviceTypes.forEach(serviceType => {
+		b2bDeclares.forEach(b2bDeclare => {
+			const id = buildPublishSpecId(serviceType, b2bDeclare);
+			const existing = previousRows.get(id);
+			const configuredGroups = (skuBomStore[id] || []).filter(group => !isEmptyGroup(group)).length;
+			const row = existing || {
+				id,
+				source: "publish",
+				serviceType,
+				b2bDeclare,
+				baseFee: "0.00",
+				recycleFee: "0.00",
+				officialFee: "0.00",
+				price: "0.00",
+				productId: "待生成",
+				configuredGroups
+			};
+			row.name = productName;
+			row.serviceType = serviceType;
+			row.b2bDeclare = b2bDeclare;
+			row.spec = buildPublishSpecLabel(row);
+			row.configuredGroups = configuredGroups;
+			publishSpecRows.push(row);
+		});
+	});
+	renderPublishSpecTable();
+	if (recycleManageEnabled) {
+		buildRecycleFeeDraft();
+		renderRecycleBatchControls();
+		renderRecycleFeeSkuList();
+	}
+	if (showSuccess) {
+		showToast("已生成商品规格");
+	}
+}
+
+function createEmptyFeeGroup() {
+	return {
+		annualFeeYear: getDefaultRecycleYear(),
+		amount: "",
+		currency: getDefaultCurrency(),
+		source: getDefaultRecycleSource()
+	};
+}
+
+function cloneFeeGroups(groups) {
+	return groups.length ? groups.map(group => ({ ...group })) : [createEmptyFeeGroup()];
+}
+
+	function buildRecycleFeeDraft() {
+		recycleFeeDraft = {};
+		recycleSelectedSkuIds = new Set(publishSpecRows.map(row => row.id));
+		publishSpecRows.forEach(row => {
+			recycleFeeDraft[row.id] = cloneFeeGroups(skuBomStore[row.id] || []);
+		});
+	}
+
+	function renderRecycleManageState() {
+		const panel = document.getElementById("recycleManagePanel");
+		const switchBtn = document.getElementById("recycleManageSwitchBtn");
+		const switchIcon = document.getElementById("recycleManageSwitch");
+		const switchText = document.getElementById("recycleManageSwitchText");
+		panel.classList.toggle("open", recycleManageEnabled);
+		switchBtn.classList.toggle("on", recycleManageEnabled);
+		switchIcon.classList.toggle("on", recycleManageEnabled);
+		switchText.textContent = recycleManageEnabled ? "开启" : "关闭";
+	}
+
+	function toggleRecycleManage(force) {
+		if (force === false) {
+			recycleManageEnabled = false;
+			renderRecycleManageState();
+			return;
+		}
+		if (!publishSpecRows.length) {
+			showToast("请先生成商品规格");
+			return;
+		}
+		recycleManageEnabled = typeof force === "boolean" ? force : !recycleManageEnabled;
+		renderRecycleManageState();
+		if (recycleManageEnabled) {
+			syncPublishSpecSummary();
+			buildRecycleFeeDraft();
+			renderRecycleBatchControls();
+			renderRecycleFeeSkuList();
+		}
+	}
+
+	function openRecycleFeeDialog() {
+		toggleRecycleManage(true);
+	}
+
+	function closeRecycleFeeDialog() {
+		toggleRecycleManage(false);
+	}
+
+function updateRecycleGroup(skuId, index, field, value) {
+	recycleFeeDraft[skuId][index][field] = value;
+}
+
+	function renderRecycleBatchControls() {
+		document.getElementById("batchAnnualFeeYear").innerHTML = optionHtml(getRecycleYearOptions(), getDefaultRecycleYear(), "回收费年份");
+	document.getElementById("batchCurrency").innerHTML = optionHtml(getCurrencyOptions(), getDefaultCurrency(), "币种");
+	document.getElementById("batchSource").innerHTML = optionHtml(bomConfig.sources, getDefaultRecycleSource(), "回收费来源");
+	updateRecycleSelectedState();
+}
+
+function updateRecycleSelectedState() {
+	const selectedCount = recycleSelectedSkuIds.size;
+	const selectAll = document.getElementById("recycleSelectAll");
+	document.getElementById("recycleSelectedCount").textContent = `已选 ${selectedCount} 个 SKU`;
+	selectAll.checked = publishSpecRows.length > 0 && selectedCount === publishSpecRows.length;
+	selectAll.indeterminate = selectedCount > 0 && selectedCount < publishSpecRows.length;
+}
+
+function toggleRecycleSelectAll(checked) {
+	recycleSelectedSkuIds = checked ? new Set(publishSpecRows.map(row => row.id)) : new Set();
+	renderRecycleFeeSkuList();
+}
+
+function toggleRecycleSku(skuId, checked) {
+	if (checked) {
+		recycleSelectedSkuIds.add(skuId);
+	} else {
+		recycleSelectedSkuIds.delete(skuId);
+	}
+	updateRecycleSelectedState();
+}
+
+function applyRecycleBatch() {
+	if (!recycleSelectedSkuIds.size) {
+		showToast("请先选择 SKU");
+		return;
+	}
+	const annualFeeYear = document.getElementById("batchAnnualFeeYear").value;
+	const amount = document.getElementById("batchAmount").value;
+	const currency = document.getElementById("batchCurrency").value;
+	const source = document.getElementById("batchSource").value;
+	const targetGroupIndex = Number(document.getElementById("batchTargetGroup").value);
+	if (!annualFeeYear && !amount && !currency && !source) {
+		showToast("请先填写批量内容");
+		return;
+	}
+	recycleSelectedSkuIds.forEach(skuId => {
+		const groups = recycleFeeDraft[skuId] || [createEmptyFeeGroup()];
+		while (groups.length <= targetGroupIndex && groups.length < bomConfig.maxGroups) {
+			groups.push(createEmptyFeeGroup());
+		}
+		const targetGroup = groups[targetGroupIndex] || createEmptyFeeGroup();
+		if (annualFeeYear) targetGroup.annualFeeYear = annualFeeYear;
+		if (amount) targetGroup.amount = amount;
+		if (currency) targetGroup.currency = currency;
+		if (source) targetGroup.source = source;
+		groups[targetGroupIndex] = targetGroup;
+		recycleFeeDraft[skuId] = groups;
+	});
+	renderRecycleFeeSkuList();
+	showToast(`已批量填充额度组 ${targetGroupIndex + 1}`);
+}
+
+function addRecycleGroup(skuId) {
+	const groups = recycleFeeDraft[skuId] || [];
+	if (groups.length >= bomConfig.maxGroups) {
+		return;
+	}
+	groups.push(createEmptyFeeGroup());
+	recycleFeeDraft[skuId] = groups;
+	renderRecycleFeeSkuList();
+}
+
+function removeRecycleGroup(skuId, index) {
+	const groups = recycleFeeDraft[skuId] || [];
+	if (groups.length <= 1) {
+		showToast("至少保留一组额度");
+		return;
+	} else {
+		groups.splice(index, 1);
+		recycleFeeDraft[skuId] = groups;
+	}
+	renderRecycleFeeSkuList();
+}
+
+function renderRecycleFeeSkuList(errors = {}) {
+	const list = document.getElementById("recycleSkuList");
+	list.innerHTML = publishSpecRows.map((row, rowIndex) => {
+		const groups = recycleFeeDraft[row.id] || [createEmptyFeeGroup()];
+		return groups.map((group, index) => {
+			const groupErrors = (errors[row.id] && errors[row.id][index]) || {};
+			const showSkuCell = index === 0;
+			return `
+				<tr>
+					${showSkuCell ? `
+						<td rowspan="${groups.length}">
+							<input class="recycle-checkbox" type="checkbox" ${recycleSelectedSkuIds.has(row.id) ? "checked" : ""} onchange="toggleRecycleSku('${row.id}', this.checked)">
+						</td>
+						<td rowspan="${groups.length}">
+							<div class="recycle-sku-name">${escapeHtml(getPublishSpecSelectLabel(row))}</div>
+						</td>
+					` : ""}
+					<td>额度组 ${index + 1}</td>
+					<td>
+						<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'annualFeeYear', this.value)">
+							${optionHtml(getRecycleYearOptions(), group.annualFeeYear || getDefaultRecycleYear(), "请选择")}
+						</select>
+						<div class="error-text">${groupErrors.annualFeeYear || ""}</div>
+					</td>
+					<td>
+						<input class="input" type="number" min="0" step="0.01" value="${escapeHtml(group.amount)}" placeholder="金额" oninput="updateRecycleGroup('${row.id}', ${index}, 'amount', this.value)">
+						<div class="error-text">${groupErrors.amount || ""}</div>
+					</td>
+					<td>
+						<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'currency', this.value)">
+							${optionHtml(getCurrencyOptions(), group.currency || getDefaultCurrency(), "请选择")}
+						</select>
+						<div class="error-text">${groupErrors.currency || ""}</div>
+					</td>
+					<td>
+						<select class="select" onchange="updateRecycleGroup('${row.id}', ${index}, 'source', this.value)">
+							${optionHtml(bomConfig.sources, group.source || getDefaultRecycleSource(), "请选择")}
+						</select>
+						<div class="error-text">${groupErrors.source || ""}</div>
+					</td>
+					<td>
+						<span class="actions">
+							${showSkuCell && groups.length < bomConfig.maxGroups ? `<span class="action-text" onclick="addRecycleGroup('${row.id}')">添加一组</span>` : ""}
+							${groups.length > 1 ? `<span class="action-text" onclick="removeRecycleGroup('${row.id}', ${index})">删除</span>` : ""}
+						</span>
+					</td>
+				</tr>
+			`;
+		}).join("");
+	}).join("");
+	updateRecycleSelectedState();
+}
+
+function validateRecycleFeeDraft() {
+	const errors = {};
+	let valid = true;
+	Object.entries(recycleFeeDraft).forEach(([skuId, groups]) => {
+		groups.forEach((group, index) => {
+			if (isEmptyGroup(group)) {
+				return;
+			}
+			group.annualFeeYear = group.annualFeeYear || getDefaultRecycleYear();
+			group.currency = group.currency || getDefaultCurrency();
+			group.source = group.source || getDefaultRecycleSource();
+			const groupErrors = {};
+			if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费年份";
+			if (!group.amount) {
+				groupErrors.amount = "请输入金额";
+			} else if (Number(group.amount) < 0) {
+				groupErrors.amount = "金额不能小于0";
+			}
+			if (!group.currency) groupErrors.currency = "请选择币种";
+			if (!group.source) groupErrors.source = "请选择回收费来源";
+			if (Object.keys(groupErrors).length) {
+				valid = false;
+				if (!errors[skuId]) {
+					errors[skuId] = {};
+				}
+				errors[skuId][index] = groupErrors;
+			}
+		});
+	});
+	return { valid, errors };
+}
+
+function savePublishDialog() {
+	if (recycleManageEnabled && !saveRecycleFeeDialog({ silent: true })) {
+		return;
+	}
+	closePublishDialog();
+	showToast("商品信息已保存");
+}
+
+function saveRecycleFeeDialog(options = {}) {
+	const result = validateRecycleFeeDraft();
+	if (!result.valid) {
+		renderRecycleFeeSkuList(result.errors);
+		showToast("请完善必填字段");
+		return false;
+	}
+	Object.entries(recycleFeeDraft).forEach(([skuId, groups]) => {
+		const saved = groups
+			.filter(group => !isEmptyGroup(group))
+			.map(group => ({
+				annualFeeYear: group.annualFeeYear || getDefaultRecycleYear(),
+				amount: Number(group.amount).toFixed(2),
+				currency: group.currency || getDefaultCurrency(),
+				source: group.source || getDefaultRecycleSource()
+			}));
+		skuBomStore[skuId] = saved;
+		const row = publishSpecRows.find(item => item.id === skuId);
+		if (row) {
+			row.configuredGroups = saved.length;
+		}
+	});
+	renderPublishSpecTable();
+	renderRecycleFeeSkuList();
+	if (!options.silent) {
+		showToast("回收费额度已保存");
+	}
+	return true;
+}
+
+function findConfigTargetById(id) {
+	return publishSpecRows.find(row => row.id === id) || null;
+}
+
+function isPublishSpec(row) {
+	return !!row && row.source === "publish";
+}
+
+function renderCurrentSkuSelect() {
+	const select = document.getElementById("currentSkuSelect");
+	select.innerHTML = publishSpecRows.map(row => `
+		<option value="${row.id}" ${currentSku && row.id === currentSku.id ? "selected" : ""}>${escapeHtml(getPublishSpecSelectLabel(row))}</option>
+	`).join("");
+}
+
+function loadDrawerSku(skuId) {
+	currentSku = findConfigTargetById(skuId);
+	if (!currentSku) {
+		return false;
+	}
+	currentSku.name = getPublishProductName();
+	currentSku.spec = buildPublishSpecLabel(currentSku);
+	const saved = skuBomStore[skuId] || [];
+	editingGroups = saved.length
+		? saved.map(item => ({ ...item }))
+		: [createEmptyFeeGroup()];
+	document.getElementById("currentSpuId").textContent = currentSku.name;
+	document.getElementById("currentSkuName").textContent = currentSku.spec;
+	document.getElementById("bomDrawerSub").textContent = `${currentSku.id}`;
+	renderCurrentSkuSelect();
+	renderFeeGroups();
+	return true;
+}
+
+function switchDrawerSku(skuId) {
+	loadDrawerSku(skuId);
+}
+
+function openBomDrawer(skuId) {
+	if (!publishSpecRows.length) {
+		showToast("请先生成商品规格");
+		return;
+	}
+	if (!loadDrawerSku(skuId)) {
+		showToast("未找到可配置规格");
+		return;
+	}
+	document.getElementById("bomDrawerMask").classList.add("open");
+	document.getElementById("bomDrawerMask").setAttribute("aria-hidden", "false");
+}
+
+function closeBomDrawer() {
+	document.getElementById("bomDrawerMask").classList.remove("open");
+	document.getElementById("bomDrawerMask").setAttribute("aria-hidden", "true");
+}
+
+function renderFeeGroups(errors = {}) {
+	const groupList = document.getElementById("feeGroupList");
+	groupList.innerHTML = editingGroups.map((group, index) => {
+		const groupErrors = errors[index] || {};
+		return `
+			<div class="fee-group" data-index="${index}">
+				<div class="fee-group-header">
+					<span>额度组 ${index + 1}</span>
+					${editingGroups.length > 1 ? `<button class="btn text" onclick="removeFeeGroup(${index})">删除</button>` : ""}
+				</div>
+				<div class="fee-group-body">
+					<div class="form-item">
+						<label class="form-label"><span class="required">*</span>回收费年份</label>
+						<select class="select" onchange="updateGroup(${index}, 'annualFeeYear', this.value)">
+							${optionHtml(getRecycleYearOptions(), group.annualFeeYear || getDefaultRecycleYear(), "请选择回收费年份")}
+						</select>
+						<div class="error-text">${groupErrors.annualFeeYear || ""}</div>
+					</div>
+					<div class="form-item">
+						<label class="form-label"><span class="required">*</span>金额</label>
+						<input class="input" type="number" min="0" step="0.01" value="${escapeHtml(group.amount)}" placeholder="请输入金额" oninput="updateGroup(${index}, 'amount', this.value)">
+						<div class="error-text">${groupErrors.amount || ""}</div>
+					</div>
+					<div class="form-item">
+						<label class="form-label"><span class="required">*</span>币种</label>
+						<select class="select" onchange="updateGroup(${index}, 'currency', this.value)">
+							${optionHtml(getCurrencyOptions(), group.currency || getDefaultCurrency(), "请选择币种")}
+						</select>
+						<div class="error-text">${groupErrors.currency || ""}</div>
+					</div>
+					<div class="form-item">
+						<label class="form-label"><span class="required">*</span>回收费来源</label>
+						<select class="select" onchange="updateGroup(${index}, 'source', this.value)">
+							${optionHtml(bomConfig.sources, group.source || getDefaultRecycleSource(), "请选择回收费来源")}
+						</select>
+						<div class="error-text">${groupErrors.source || ""}</div>
+					</div>
+				</div>
+			</div>
+		`;
+	}).join("");
+	document.getElementById("addGroupBtn").disabled = editingGroups.length >= bomConfig.maxGroups;
+}
+
+function updateGroup(index, field, value) {
+	editingGroups[index][field] = value;
+}
+
+function removeFeeGroup(index) {
+	if (editingGroups.length <= 1) {
+		showToast("至少保留一组额度");
+		return;
+	} else {
+		editingGroups.splice(index, 1);
+	}
+	renderFeeGroups();
+}
+
+function addFeeGroup() {
+	if (editingGroups.length >= bomConfig.maxGroups) {
+		return;
+	}
+	editingGroups.push(createEmptyFeeGroup());
+	renderFeeGroups();
+}
+
+function isEmptyGroup(group) {
+	return !group.amount;
+}
+
+function validateGroups() {
+	const errors = {};
+	let valid = true;
+	editingGroups.forEach((group, index) => {
+		if (isEmptyGroup(group)) {
+			return;
+		}
+		group.annualFeeYear = group.annualFeeYear || getDefaultRecycleYear();
+		group.currency = group.currency || getDefaultCurrency();
+		group.source = group.source || getDefaultRecycleSource();
+		const groupErrors = {};
+		if (!group.annualFeeYear) groupErrors.annualFeeYear = "请选择回收费年份";
+		if (!group.amount) {
+			groupErrors.amount = "请输入金额";
+		} else if (Number(group.amount) < 0) {
+			groupErrors.amount = "金额不能小于0";
+		}
+		if (!group.currency) groupErrors.currency = "请选择币种";
+		if (!group.source) groupErrors.source = "请选择回收费来源";
+		if (Object.keys(groupErrors).length) {
+			valid = false;
+			errors[index] = groupErrors;
+		}
+	});
+	return { valid, errors };
+}
+
+function saveBomConfig() {
+	const result = validateGroups();
+	if (!result.valid) {
+		renderFeeGroups(result.errors);
+		showToast("请完善必填字段");
+		return;
+	}
+	const saved = editingGroups
+		.filter(group => !isEmptyGroup(group))
+		.map(group => ({
+			annualFeeYear: group.annualFeeYear || getDefaultRecycleYear(),
+			amount: Number(group.amount).toFixed(2),
+			currency: group.currency || getDefaultCurrency(),
+			source: group.source || getDefaultRecycleSource()
+		}));
+	skuBomStore[currentSku.id] = saved;
+	currentSku.configuredGroups = saved.length;
+	renderPublishSpecTable();
+	renderCurrentSkuSelect();
+	closeBomDrawer();
+	showToast("保存成功");
+}
+
+function showToast(message) {
+	const toast = document.getElementById("toast");
+	toast.textContent = message;
+	toast.classList.add("open");
+	window.clearTimeout(showToast.timer);
+	showToast.timer = window.setTimeout(() => toast.classList.remove("open"), 1800);
+}
+
+switchDemoPage("price");
+</script>
+</body>
+</html>

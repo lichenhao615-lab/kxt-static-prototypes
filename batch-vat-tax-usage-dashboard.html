@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>批量录入 VAT 税号处理结果统计</title>
+	<style>
+		body {
+			margin: 0;
+			background: #f5f7fb;
+			color: #1f2937;
+			font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+		}
+		main {
+			width: min(880px, calc(100vw - 40px));
+			margin: 72px auto;
+			padding: 28px;
+			background: #fff;
+			border: 1px solid #d8e1ea;
+			border-radius: 8px;
+			box-shadow: 0 12px 28px rgba(15, 23, 42, .07);
+		}
+		h1 {
+			margin: 0 0 12px;
+			font-size: 22px;
+		}
+		p {
+			color: #667085;
+			line-height: 1.7;
+		}
+		code {
+			padding: 2px 5px;
+			border-radius: 4px;
+			background: #f1f5f9;
+			color: #0f172a;
+		}
+		pre {
+			padding: 14px;
+			overflow: auto;
+			border-radius: 6px;
+			background: #0f172a;
+			color: #e2e8f0;
+		}
+	</style>
+</head>
+<body>
+	<main>
+		<h1>批量录入 VAT 税号处理结果统计</h1>
+		<p>这个页面已经改为直接查询生产数据库，不再通过浏览器调用接口，也不需要输入 Token。浏览器不能直接连接 MySQL，需要先启动本地只读查询服务。</p>
+		<p>统计口径：查询批量录入后的“我的任务”结果文件，解析 Excel 中的“录入结果 / 失败原因”列，统计处理成功条数和失败条数。</p>
+		<p>启动命令：</p>
+		<pre>&amp; "C:\Users\admin\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" tools\batch-vat-tax-usage-dashboard\server.py --port 8792</pre>
+		<p>启动后访问：<code>http://127.0.0.1:8792/</code></p>
+	</main>
+</body>
+</html>

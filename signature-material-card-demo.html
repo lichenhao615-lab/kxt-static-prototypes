@@ -1,0 +1,1094 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>表单可签署资料项卡片 Demo</title>
+	<style>
+		:root {
+			--brand: #009fa3;
+			--brand-dark: #00888c;
+			--brand-soft: #e9fbfb;
+			--nav: #eaf8f8;
+			--sidebar: #eefafa;
+			--line: #e6eaee;
+			--line-strong: #d8dee5;
+			--text: #17212b;
+			--muted: #667582;
+			--weak: #a7b0ba;
+			--danger: #ff4d4f;
+			--success: #18b978;
+			--warning: #f59e0b;
+			--blue: #2f80ed;
+			--bg: #f5f7f9;
+			--white: #fff;
+			--shadow: 0 20px 52px rgba(15, 23, 42, .18);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			min-width: 1280px;
+			color: var(--text);
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+			background: var(--bg);
+			letter-spacing: 0;
+		}
+
+		button,
+		input {
+			font: inherit;
+			letter-spacing: 0;
+		}
+
+		button {
+			cursor: pointer;
+		}
+
+		.topbar {
+			height: 52px;
+			display: flex;
+			align-items: center;
+			border-bottom: 1px solid #d9eeee;
+			background: var(--nav);
+		}
+
+		.brand {
+			width: 210px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding-left: 28px;
+			font-size: 15px;
+			font-weight: 600;
+		}
+
+		.logo {
+			width: 20px;
+			height: 20px;
+			display: grid;
+			place-items: center;
+			border: 1px solid #1ba8a8;
+			border-radius: 50%;
+			color: #138f91;
+			font-size: 11px;
+			font-weight: 700;
+		}
+
+		.main-nav {
+			display: flex;
+			align-items: center;
+			gap: 24px;
+			height: 100%;
+			font-size: 14px;
+		}
+
+		.nav-item {
+			height: 100%;
+			display: flex;
+			align-items: center;
+			border-bottom: 2px solid transparent;
+			color: #1f2937;
+		}
+
+		.nav-item.active {
+			color: var(--brand-dark);
+			border-color: var(--brand);
+		}
+
+		.app-shell {
+			display: grid;
+			grid-template-columns: 210px 1fr;
+			min-height: calc(100vh - 52px);
+		}
+
+		.sidebar {
+			background: var(--sidebar);
+			border-right: 1px solid #ddecee;
+			padding-top: 10px;
+		}
+
+		.menu-row {
+			height: 48px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 28px;
+			color: #0f172a;
+			font-size: 14px;
+		}
+
+		.menu-row.small {
+			height: 44px;
+			padding-left: 52px;
+			color: #1f2937;
+		}
+
+		.menu-row.active {
+			position: relative;
+			background: #cceaea;
+			color: var(--brand-dark);
+		}
+
+		.menu-row.active::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			right: 10px;
+			width: 3px;
+			height: 100%;
+			background: var(--brand);
+		}
+
+		.content {
+			position: relative;
+			min-height: calc(100vh - 52px);
+			overflow: hidden;
+			background: #fff;
+		}
+
+		.mock-list {
+			padding: 18px 20px;
+		}
+
+		.breadcrumb {
+			height: 34px;
+			display: inline-flex;
+			align-items: center;
+			padding: 0 12px;
+			border: 1px solid #dfe5ea;
+			border-radius: 2px;
+			color: #344050;
+			font-size: 13px;
+			background: #fafafa;
+		}
+
+		.filter-card {
+			margin-top: 18px;
+			padding: 16px;
+			border: 1px solid var(--line);
+			background: #fff;
+		}
+
+		.filter-line {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 14px;
+			color: #344050;
+			font-size: 14px;
+		}
+
+		.select-like,
+		.input-like {
+			height: 32px;
+			min-width: 140px;
+			display: inline-flex;
+			align-items: center;
+			padding: 0 12px;
+			border: 1px solid var(--line-strong);
+			border-radius: 2px;
+			color: #98a3ad;
+			background: #fff;
+		}
+
+		.toolbar {
+			display: flex;
+			gap: 10px;
+		}
+
+		.btn {
+			height: 36px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			padding: 0 15px;
+			border: 1px solid var(--line-strong);
+			border-radius: 2px;
+			color: #344050;
+			background: #fff;
+		}
+
+		.btn.primary {
+			border-color: var(--brand);
+			color: #fff;
+			background: var(--brand);
+		}
+
+		.btn.ghost {
+			color: var(--brand-dark);
+			border-color: #9dd8da;
+			background: #f3ffff;
+		}
+
+		.btn.text {
+			height: auto;
+			padding: 0;
+			border: 0;
+			color: var(--brand-dark);
+			background: transparent;
+		}
+
+		.mock-table {
+			width: 100%;
+			margin-top: 14px;
+			border-collapse: collapse;
+			font-size: 13px;
+		}
+
+		.mock-table th,
+		.mock-table td {
+			height: 48px;
+			border: 1px solid var(--line);
+			text-align: left;
+			padding: 0 12px;
+			color: #43515f;
+		}
+
+		.mock-table th {
+			background: #f5f8fa;
+			color: #17212b;
+			font-weight: 600;
+		}
+
+		.overlay {
+			position: absolute;
+			inset: 0;
+			background: rgba(15, 23, 42, .46);
+		}
+
+		.drawer {
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: calc(100vw - 380px);
+			min-width: 1120px;
+			height: calc(100vh - 52px);
+			display: flex;
+			flex-direction: column;
+			background: #fff;
+			box-shadow: var(--shadow);
+		}
+
+		.drawer-head {
+			height: 54px;
+			display: flex;
+			align-items: center;
+			padding: 0 24px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.drawer-title {
+			font-size: 16px;
+			font-weight: 600;
+		}
+
+		.drawer-close {
+			margin-left: auto;
+			border: 0;
+			background: transparent;
+			color: #5c6670;
+			font-size: 26px;
+			line-height: 1;
+		}
+
+		.drawer-actions {
+			height: 72px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 38px 0 24px;
+		}
+
+		.form-name {
+			font-size: 20px;
+			font-weight: 600;
+		}
+
+		.action-group {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.drawer-body {
+			position: relative;
+			display: grid;
+			grid-template-columns: 250px 1fr;
+			min-height: 0;
+			flex: 1;
+			overflow: auto;
+			padding-bottom: 28px;
+		}
+
+		.step-panel {
+			padding: 30px 38px 0 24px;
+			border-right: 1px solid var(--line);
+		}
+
+		.step-box {
+			width: 212px;
+			padding: 8px 0;
+			box-shadow: 0 18px 44px rgba(15, 23, 42, .08);
+		}
+
+		.step {
+			height: 58px;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 0 20px;
+			font-size: 15px;
+			background: #fff;
+		}
+
+		.step.active {
+			color: #072f32;
+			background: #effafa;
+		}
+
+		.step-dot {
+			width: 18px;
+			height: 18px;
+			display: grid;
+			place-items: center;
+			border-radius: 50%;
+			color: #fff;
+			background: #d3d7dc;
+			font-size: 12px;
+			font-weight: 700;
+		}
+
+		.step.active .step-dot {
+			background: var(--success);
+		}
+
+		.form-area {
+			padding: 0 38px 40px 40px;
+		}
+
+		.form-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			column-gap: 24px;
+			row-gap: 22px;
+			padding-top: 6px;
+		}
+
+		.field {
+			min-width: 0;
+		}
+
+		.field.full {
+			grid-column: 1 / -1;
+		}
+
+		.label {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			margin-bottom: 8px;
+			color: #17212b;
+			font-size: 14px;
+		}
+
+		.required {
+			color: #f5222d;
+		}
+
+		.help {
+			width: 14px;
+			height: 14px;
+			display: inline-grid;
+			place-items: center;
+			border: 1px solid var(--brand);
+			border-radius: 50%;
+			color: var(--brand);
+			font-size: 10px;
+		}
+
+		.input {
+			height: 32px;
+			width: 100%;
+			border: 1px solid #d6dbe0;
+			border-radius: 2px;
+			padding: 0 10px;
+			color: #98a3ad;
+		}
+
+		.amount {
+			position: relative;
+		}
+
+		.amount::after {
+			content: "EUR";
+			position: absolute;
+			right: 10px;
+			top: 8px;
+			color: #111827;
+			font-size: 12px;
+		}
+
+		.upload-grid {
+			display: grid;
+			grid-template-columns: 1fr 132px;
+			gap: 18px;
+		}
+
+		.dropzone {
+			height: 174px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			border-radius: 4px;
+			background: #f6f6f6;
+			color: #8b96a2;
+		}
+
+		.drop-title {
+			margin-bottom: 8px;
+			font-size: 16px;
+		}
+
+		.drop-type {
+			margin-bottom: 16px;
+			color: #b0bac4;
+			font-size: 13px;
+		}
+
+		.sample {
+			height: 174px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			border-radius: 4px;
+			background: #f6f6f6;
+			color: #98a3ad;
+		}
+
+		.sample-img {
+			width: 88px;
+			height: 58px;
+			border: 1px solid #d7dde4;
+			background:
+				linear-gradient(90deg, transparent 68%, rgba(255, 77, 79, .35) 68% 72%, transparent 72%),
+				repeating-linear-gradient(0deg, #fefefe 0 7px, #e9edf2 7px 8px);
+		}
+
+		.sign-card {
+			grid-column: 1 / -1;
+			display: grid;
+			grid-template-columns: 1fr 310px;
+			gap: 20px;
+			border: 1px solid #b8e0e1;
+			border-radius: 6px;
+			background: #fff;
+			box-shadow: 0 10px 24px rgba(0, 159, 163, .08);
+		}
+
+		.sign-main {
+			padding: 18px 20px 18px 18px;
+		}
+
+		.sign-top {
+			display: flex;
+			align-items: flex-start;
+			gap: 14px;
+		}
+
+		.sign-icon {
+			width: 42px;
+			height: 42px;
+			display: grid;
+			place-items: center;
+			flex: 0 0 auto;
+			border-radius: 6px;
+			color: var(--brand-dark);
+			background: var(--brand-soft);
+		}
+
+		.sign-title-line {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin-bottom: 6px;
+		}
+
+		.sign-title {
+			font-size: 16px;
+			font-weight: 600;
+		}
+
+		.tag {
+			height: 22px;
+			display: inline-flex;
+			align-items: center;
+			padding: 0 8px;
+			border-radius: 2px;
+			font-size: 12px;
+			color: var(--brand-dark);
+			background: var(--brand-soft);
+		}
+
+		.tag.gray {
+			color: #5d6975;
+			background: #f1f3f5;
+		}
+
+		.sign-desc {
+			color: #667582;
+			font-size: 13px;
+			line-height: 1.6;
+		}
+
+		.sign-meta {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 12px;
+			margin-top: 18px;
+			padding: 14px;
+			border-radius: 4px;
+			background: #f8fbfb;
+		}
+
+		.meta-label {
+			margin-bottom: 5px;
+			color: #8a96a3;
+			font-size: 12px;
+		}
+
+		.meta-value {
+			overflow: hidden;
+			color: #263442;
+			font-size: 13px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.sign-flow {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin-top: 16px;
+			color: #667582;
+			font-size: 13px;
+		}
+
+		.flow-step {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.flow-dot {
+			width: 18px;
+			height: 18px;
+			display: inline-grid;
+			place-items: center;
+			border-radius: 50%;
+			color: #fff;
+			background: #c9d1d8;
+			font-size: 11px;
+		}
+
+		.flow-step.done .flow-dot {
+			background: var(--success);
+		}
+
+		.flow-step.active .flow-dot {
+			background: var(--brand);
+		}
+
+		.flow-line {
+			width: 28px;
+			height: 1px;
+			background: #dfe5ea;
+		}
+
+		.sign-side {
+			display: flex;
+			flex-direction: column;
+			padding: 18px 18px 18px 0;
+		}
+
+		.status-box {
+			min-height: 108px;
+			padding: 14px;
+			border: 1px solid #dfe8e9;
+			border-radius: 4px;
+			background: #fbfefe;
+		}
+
+		.status-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 10px;
+		}
+
+		.status-name {
+			font-size: 15px;
+			font-weight: 600;
+		}
+
+		.status-pill {
+			height: 24px;
+			display: inline-flex;
+			align-items: center;
+			padding: 0 9px;
+			border-radius: 12px;
+			color: #8a5a00;
+			background: #fff3d6;
+			font-size: 12px;
+		}
+
+		.status-pill.ready {
+			color: var(--brand-dark);
+			background: var(--brand-soft);
+		}
+
+		.status-pill.running {
+			color: #1b62b7;
+			background: #e9f2ff;
+		}
+
+		.status-pill.done {
+			color: #148653;
+			background: #e7f8ef;
+		}
+
+		.status-text {
+			color: #667582;
+			font-size: 13px;
+			line-height: 1.55;
+		}
+
+		.sign-actions {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 10px;
+			margin-top: 12px;
+		}
+
+		.sign-actions .btn {
+			width: 100%;
+			height: 34px;
+			padding: 0 10px;
+			font-size: 13px;
+		}
+
+		.sign-actions .primary-action {
+			grid-column: 1 / -1;
+		}
+
+		.sign-actions .btn:disabled {
+			cursor: not-allowed;
+			color: #a7b0ba;
+			border-color: #dde2e7;
+			background: #f5f6f7;
+		}
+
+		.log-line {
+			margin-top: 12px;
+			color: #8a96a3;
+			font-size: 12px;
+		}
+
+		.toast {
+			position: fixed;
+			right: 32px;
+			bottom: 28px;
+			min-width: 260px;
+			padding: 13px 16px;
+			border-radius: 4px;
+			color: #fff;
+			background: rgba(23, 33, 43, .9);
+			box-shadow: 0 10px 24px rgba(15, 23, 42, .2);
+			font-size: 14px;
+			opacity: 0;
+			transform: translateY(12px);
+			pointer-events: none;
+			transition: .2s ease;
+		}
+
+		.toast.show {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		svg {
+			display: block;
+		}
+
+		@media (max-width: 900px) {
+			body {
+				min-width: 0;
+			}
+
+			.app-shell {
+				grid-template-columns: 1fr;
+			}
+
+			.sidebar,
+			.mock-list {
+				display: none;
+			}
+
+			.drawer {
+				width: 100%;
+				min-width: 0;
+				height: calc(100vh - 52px);
+			}
+
+			.drawer-body {
+				grid-template-columns: 1fr;
+			}
+
+			.step-panel {
+				display: none;
+			}
+
+			.form-area {
+				padding: 0 18px 28px;
+			}
+
+			.form-grid,
+			.upload-grid,
+			.sign-card {
+				grid-template-columns: 1fr;
+			}
+
+			.sign-side {
+				padding: 0 18px 18px;
+			}
+
+			.sign-meta {
+				grid-template-columns: 1fr 1fr;
+			}
+		}
+	</style>
+</head>
+<body>
+	<header class="topbar">
+		<div class="brand"><span class="logo">KX</span>跨信通税务管理系统</div>
+		<nav class="main-nav">
+			<div class="nav-item">系统管理</div>
+			<div class="nav-item active">税务管理</div>
+			<div class="nav-item">CRM</div>
+		</nav>
+	</header>
+
+	<main class="app-shell">
+		<aside class="sidebar">
+			<div class="menu-row">客户管理 <span>⌄</span></div>
+			<div class="menu-row">营销管理 <span>⌄</span></div>
+			<div class="menu-row">订单管理 <span>⌄</span></div>
+			<div class="menu-row">商品管理 <span>⌃</span></div>
+			<div class="menu-row small">类目管理</div>
+			<div class="menu-row small">属性管理</div>
+			<div class="menu-row">服务管理 <span>⌃</span></div>
+			<div class="menu-row small active">基础服务</div>
+			<div class="menu-row small">增值服务</div>
+			<div class="menu-row small">追加服务</div>
+			<div class="menu-row small">续费服务</div>
+			<div class="menu-row small">单据列表</div>
+		</aside>
+
+		<section class="content">
+			<div class="mock-list">
+				<div class="breadcrumb">履约工作台 ×　基础服务</div>
+				<div class="filter-card">
+					<div class="filter-line">
+						<span>二级类目：</span><span class="select-like">全部</span>
+						<span>国家：</span><span class="select-like">请选择</span>
+						<span>提交资料时间</span><span class="input-like">开始时间</span>
+					</div>
+					<div class="toolbar">
+						<button class="btn">导出</button>
+						<button class="btn ghost">全部（99053）</button>
+						<button class="btn">待上传资料</button>
+					</div>
+					<table class="mock-table">
+						<thead>
+							<tr><th style="width: 60px;">序号</th><th>服务单号</th><th>服务类型</th><th>国家</th><th>状态</th></tr>
+						</thead>
+						<tbody>
+							<tr><td>1</td><td>SV202607030001</td><td>德国VAT注册+申报</td><td>DE</td><td>待上传资料</td></tr>
+							<tr><td>2</td><td>SV202607030002</td><td>德国VAT注册</td><td>DE</td><td>审核中</td></tr>
+							<tr><td>3</td><td>SV202607030003</td><td>德国VAT注册+申报</td><td>DE</td><td>待上传资料</td></tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="overlay"></div>
+			<section class="drawer" aria-label="上传资料">
+				<div class="drawer-head">
+					<div class="drawer-title">上传资料</div>
+					<button class="drawer-close" aria-label="关闭">×</button>
+				</div>
+				<div class="drawer-actions">
+					<div class="form-name">德国VAT注册 + 申报</div>
+					<div class="action-group">
+						<button class="btn">资料复用</button>
+						<button class="btn">取消</button>
+						<button class="btn primary">保存</button>
+						<button class="btn primary">提交</button>
+					</div>
+				</div>
+				<div class="drawer-body">
+					<aside class="step-panel">
+						<div class="step-box">
+							<div class="step"><span class="step-dot">✓</span>公司信息</div>
+							<div class="step"><span class="step-dot">✓</span>法人信息</div>
+							<div class="step"><span class="step-dot">✓</span>店铺信息</div>
+							<div class="step active"><span class="step-dot">✓</span>VAT税号信息</div>
+						</div>
+					</aside>
+
+					<div class="form-area">
+						<div class="form-grid">
+							<div class="field">
+								<div class="label"><span class="required">*</span>店铺后台公司名称(拼音或英文)<span class="help">?</span></div>
+								<input class="input" placeholder="请输入">
+							</div>
+							<div class="field">
+								<div class="label"><span class="required">*</span>店铺后台地址（拼音或英文）<span class="help">?</span></div>
+								<input class="input" placeholder="请输入">
+							</div>
+							<div class="field">
+								<div class="label"><span class="required">*</span>预估第一年销售额(欧元)<span class="help">?</span></div>
+								<div class="amount"><input class="input" placeholder="预估值需大于1000，小于该金额不具备注册VAT的条件"></div>
+							</div>
+							<div class="field">
+								<div class="label"><span class="required">*</span>预估第二年销售额(欧元)<span class="help">?</span></div>
+								<div class="amount"><input class="input" placeholder="预估值需大于6000，小于该金额不具备注册VAT的条件"></div>
+							</div>
+
+							<section class="sign-card" aria-label="可签署资料项卡片">
+								<div class="sign-main">
+									<div class="sign-top">
+										<div class="sign-icon" aria-hidden="true">
+											<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+												<path d="M6 3.75h8.2L18 7.55v12.7H6V3.75Z" stroke="currentColor" stroke-width="1.7"/>
+												<path d="M14 4v4h4" stroke="currentColor" stroke-width="1.7"/>
+												<path d="M8.8 13.2h6.4M8.8 16h4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+											</svg>
+										</div>
+										<div>
+											<div class="sign-title-line">
+												<div class="sign-title">授权委托书</div>
+												<span class="tag">可签署</span>
+												<span class="tag gray">PDF</span>
+											</div>
+											<div class="sign-desc">资料项引用当前表单数据生成签署文件，也支持上传人工修正版。签署完成后，资料包导出和资料包预览优先使用已签署文件。</div>
+										</div>
+									</div>
+
+									<div class="sign-meta">
+										<div>
+											<div class="meta-label">当前文件</div>
+											<div class="meta-value" id="fileStateText">未生成</div>
+										</div>
+										<div>
+											<div class="meta-label">最近更新</div>
+											<div class="meta-value" id="updatedAtText">--</div>
+										</div>
+									</div>
+
+									<div class="sign-flow" id="flowSteps">
+										<span class="flow-step active" data-flow="file"><span class="flow-dot">1</span>准备文件</span>
+										<span class="flow-line"></span>
+										<span class="flow-step" data-flow="sign"><span class="flow-dot">2</span>发起签署</span>
+										<span class="flow-line"></span>
+										<span class="flow-step" data-flow="archive"><span class="flow-dot">3</span>回写已签文件</span>
+									</div>
+								</div>
+
+								<div class="sign-side">
+									<div class="status-box">
+										<div class="status-head">
+											<div class="status-name">签署状态</div>
+											<span class="status-pill" id="statusPill">未生成</span>
+										</div>
+										<div class="status-text" id="statusText">当前单据还没有可用于签署的文件，请先生成模板文件，或上传已整理好的文件。</div>
+									</div>
+									<div class="sign-actions">
+										<button class="btn" id="generateBtn">生成文件</button>
+										<button class="btn" id="uploadBtn">上传文件</button>
+										<button class="btn primary primary-action" id="signBtn" disabled>发起签署</button>
+										<button class="btn" id="progressBtn" disabled>查看进度</button>
+										<button class="btn" id="signedBtn" disabled>查看已签文件</button>
+									</div>
+								</div>
+							</section>
+
+							<div class="field">
+								<div class="label"><span class="required">*</span>前台店铺信息截图 <span class="help">?</span><button class="btn text">查看指引</button></div>
+								<div class="upload-grid">
+									<div class="dropzone">
+										<div class="drop-title">可将文件拖至此处</div>
+										<div class="drop-type">JPG/PNG/PDF/JPEG</div>
+										<button class="btn primary">选择文件</button>
+									</div>
+									<div class="sample"><div class="sample-img"></div><div style="margin-top: 12px;">示例图</div></div>
+								</div>
+							</div>
+
+							<div class="field">
+								<div class="label"><span class="required">*</span>卖家/商家记号截图 <span class="help">?</span><button class="btn text">查看指引</button></div>
+								<div class="upload-grid">
+									<div class="dropzone">
+										<div class="drop-title">可将文件拖至此处</div>
+										<div class="drop-type">JPG/PNG/PDF</div>
+										<button class="btn primary">选择文件</button>
+									</div>
+									<div class="sample"><div class="sample-img"></div><div style="margin-top: 12px;">示例图</div></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</section>
+	</main>
+
+	<div class="toast" id="toast">操作成功</div>
+
+	<script>
+		const state = {
+			stage: "empty",
+			updatedAt: "--"
+		};
+
+		const statusPill = document.getElementById("statusPill");
+		const statusText = document.getElementById("statusText");
+		const fileStateText = document.getElementById("fileStateText");
+		const updatedAtText = document.getElementById("updatedAtText");
+		const generateBtn = document.getElementById("generateBtn");
+		const uploadBtn = document.getElementById("uploadBtn");
+		const signBtn = document.getElementById("signBtn");
+		const progressBtn = document.getElementById("progressBtn");
+		const signedBtn = document.getElementById("signedBtn");
+		const toast = document.getElementById("toast");
+
+		function nowText() {
+			const date = new Date();
+			const pad = (num) => String(num).padStart(2, "0");
+			return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+		}
+
+		function showToast(message) {
+			toast.textContent = message;
+			toast.classList.add("show");
+			window.clearTimeout(showToast.timer);
+			showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 1800);
+		}
+
+		function setFlow(fileStatus, signStatus, archiveStatus) {
+			const file = document.querySelector("[data-flow='file']");
+			const sign = document.querySelector("[data-flow='sign']");
+			const archive = document.querySelector("[data-flow='archive']");
+			file.className = `flow-step ${fileStatus}`;
+			sign.className = `flow-step ${signStatus}`;
+			archive.className = `flow-step ${archiveStatus}`;
+		}
+
+		function render() {
+			updatedAtText.textContent = state.updatedAt;
+			statusPill.className = "status-pill";
+			generateBtn.textContent = state.stage === "signed" ? "重新生成" : "生成文件";
+			uploadBtn.textContent = state.stage === "signed" ? "替换文件" : "上传文件";
+
+			if (state.stage === "empty") {
+				statusPill.textContent = "未生成";
+				statusText.textContent = "当前单据还没有可用于签署的文件，请先生成模板文件，或上传已整理好的文件。";
+				fileStateText.textContent = "未生成";
+				signBtn.disabled = true;
+				progressBtn.disabled = true;
+				signedBtn.disabled = true;
+				setFlow("active", "", "");
+				return;
+			}
+
+			if (state.stage === "ready") {
+				statusPill.textContent = "待签署";
+				statusPill.classList.add("ready");
+				statusText.textContent = "文件已准备完成，可发起腾讯电子签签署流程。发起后将锁定当前文件版本。";
+				fileStateText.textContent = "授权委托书.pdf";
+				signBtn.disabled = false;
+				progressBtn.disabled = true;
+				signedBtn.disabled = true;
+				setFlow("done", "active", "");
+				return;
+			}
+
+			if (state.stage === "signing") {
+				statusPill.textContent = "签署中";
+				statusPill.classList.add("running");
+				statusText.textContent = "腾讯电子签流程已发起，等待签署人完成签名或盖章。可查看签署进度。";
+				fileStateText.textContent = "授权委托书.pdf";
+				signBtn.disabled = true;
+				progressBtn.disabled = false;
+				signedBtn.disabled = true;
+				setFlow("done", "active", "");
+				return;
+			}
+
+			statusPill.textContent = "已签署";
+			statusPill.classList.add("done");
+			statusText.textContent = "签署完成，已签文件已回写到当前单据资料项。资料包导出和预览将优先使用该文件。";
+			fileStateText.textContent = "授权委托书-已签署.pdf";
+			signBtn.disabled = true;
+			progressBtn.disabled = false;
+			signedBtn.disabled = false;
+			setFlow("done", "done", "done");
+		}
+
+		generateBtn.addEventListener("click", () => {
+			state.stage = "ready";
+			state.updatedAt = nowText();
+			render();
+			showToast("已生成授权委托书文件");
+		});
+
+		uploadBtn.addEventListener("click", () => {
+			state.stage = "ready";
+			state.updatedAt = nowText();
+			render();
+			showToast("已上传当前单据资料项文件");
+		});
+
+		signBtn.addEventListener("click", () => {
+			state.stage = "signing";
+			state.updatedAt = nowText();
+			render();
+			showToast("已发起腾讯电子签流程");
+			window.clearTimeout(signBtn.timer);
+			signBtn.timer = window.setTimeout(() => {
+				state.stage = "signed";
+				state.updatedAt = nowText();
+				render();
+				showToast("签署完成，已签文件已回写");
+			}, 2200);
+		});
+
+		progressBtn.addEventListener("click", () => {
+			showToast(state.stage === "signed" ? "签署流程已完成" : "签署人：法人代表，状态：待签署");
+		});
+
+		signedBtn.addEventListener("click", () => {
+			showToast("打开已签署文件预览");
+		});
+
+		render();
+	</script>
+</body>
+</html>

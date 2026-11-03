@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="data:,">
+	<title>期望税号生效日期 · 表单配置</title>
+	<link rel="stylesheet" href="tax-effective-date-demo.css">
+	<script defer src="tax-effective-date-demo.js"></script>
+</head>
+<body>
+	<header class="topbar">
+		<div class="brand"><span class="logo">Tx</span>跨信通税务管理系统</div>
+		<nav class="topnav"><span>系统管理</span><span class="active">业务管理</span><span>CRM</span><span>客服工单</span><span>测试平台</span><span>数据平台</span></nav>
+		<div class="account"><span class="demo-badge">交互演示</span><span>产品体验</span></div>
+	</header>
+	<div class="app">
+		<aside class="sidebar">
+			<div>订单管理 <span>⌄</span></div><div>续费管理 <span>⌄</span></div><div>客户管理 <span>⌄</span></div><div>VAT税务 <span>⌄</span></div><div>EPR合规 <span>⌄</span></div><div>授权代表管理 <span>⌄</span></div><div>知识产权 <span>⌄</span></div><div>海外工商 <span>⌄</span></div><div>履约管理 <span>⌄</span></div><div>商品管理 <span>⌄</span></div>
+			<div class="active">流程管理 <span>⌃</span></div><div class="sub">节点和操作项</div><div class="sub selected">表单列表</div><div class="sub">流程列表</div><div class="sub">模板列表</div><div class="sub">资料项列表</div><div class="sub">源数据管理</div>
+		</aside>
+		<main class="workspace">
+			<div class="page-tabs"><span>履约工作台 ×</span><span>基础服务 ×</span><span class="current">表单列表 ×</span></div>
+			<div class="form-header">
+				<div class="back"><i data-icon="chevron-left"></i>表单配置</div>
+				<label>类型 <select disabled><option>服务</option></select></label>
+				<label class="form-name">表单名称 <select id="formPreset" aria-label="表单名称"></select></label>
+				<span id="saveState" class="save-state">已保存</span>
+			</div>
+			<div class="designer">
+				<aside class="palette">
+					<div class="search"><input id="componentSearch" placeholder="搜索组件" aria-label="搜索组件"><i data-icon="search"></i></div>
+					<div class="palette-title">⌄　基础控件</div>
+					<div class="component-grid" id="basicComponents"></div>
+					<div class="palette-title">⌄　自定义控件</div>
+					<div class="component-grid" id="customComponents"></div>
+				</aside>
+				<section class="canvas-wrap">
+					<div class="canvas-toolbar">
+						<div class="toolbar-left"><button class="icon-button" data-action="preview" title="预览表单" aria-label="预览表单"><i data-icon="play"></i></button><button class="icon-button" data-action="restore" title="撤销未保存修改" aria-label="撤销未保存修改"><i data-icon="undo-2"></i></button><span class="toolbar-divider"></span><span>表单设计</span></div>
+						<button class="text-button" data-action="preview"><i data-icon="eye"></i>填写预览</button>
+					</div>
+					<div class="canvas-scroll">
+						<div class="canvas">
+							<div class="upload-field">
+								<label>授权书 <a href="#" data-action="sample">下载模板</a></label>
+								<div class="upload-box"><i data-icon="upload-cloud"></i><div>可将文件拖至此处</div><small>JPG / PNG / PDF / JPEG</small><button class="button primary" data-action="sample">选择文件</button></div>
+								<div class="field-key">FileUpload/shopProductInfoAuthorization</div>
+							</div>
+							<h2>VAT税号信息</h2>
+							<div class="canvas-row">
+								<div class="mock-field"><label><em>*</em> 是否有欧盟EORI号</label><div class="radios"><label><input type="radio" name="eori" checked>否</label><label><input type="radio" name="eori">是</label></div><div class="field-key">radioGroup/taxInfoHasEori</div></div>
+								<div class="mock-field"><label>欧盟EORI号</label><input placeholder="请输入" disabled><div class="field-key">input/taxInfoEori</div></div>
+							</div>
+							<div class="canvas-row">
+								<div class="mock-field"><label><em>*</em> 是否有其它欧盟国家VAT号 <a href="#" data-action="sample">查看指引</a></label><div class="radios"><label><input type="radio" name="other" checked>否</label><label><input type="radio" name="other">是</label></div><div class="field-key">radioGroup/taxInfoHasOtherVat</div></div>
+								<div class="mock-field"><label>其它欧盟国家VAT号</label><input placeholder="国家 / VAT号" disabled><div class="field-key">VatNumberCompanyInput/taxInfoOtherVat</div></div>
+							</div>
+							<div id="selectedField" class="date-component selected-field" tabindex="0">
+								<div class="selection-strip"><span>日期选择框</span><button class="icon-button" data-action="focus-config" title="配置日期规则" aria-label="配置日期规则"><i data-icon="settings-2"></i></button></div>
+								<label id="canvasLabel"><em>*</em> 期望税号生效日期 <i data-icon="circle-help"></i></label>
+								<p id="canvasHint" class="field-hint"></p>
+								<div class="date-input"><input id="canvasDate" type="date" aria-label="设计区期望税号生效日期"><i data-icon="calendar-days"></i></div>
+								<div class="field-key">date/taxInfoExpectTime</div>
+							</div>
+							<div class="calculation">
+								<div class="section-heading"><i data-icon="calculator"></i><strong>规则试算</strong><span class="muted">场景条件</span></div>
+								<div class="scenario-grid">
+									<label><span id="scenarioDateLabel">模拟提交日期</span><input type="date" id="scenarioDate" value="2026-10-30"></label>
+									<label>公司注册地区<select id="scenarioRegion"><option value="mainland">中国大陆</option><option value="hongkong">中国香港</option><option value="eu">欧盟</option><option value="other">其他境外地区</option></select></label>
+									<label>公司成立日期<input type="date" id="scenarioFounded" value="2024-01-10"></label>
+								</div>
+								<div class="result-line"><span>推荐日期</span><strong id="recommendedDate"></strong><span id="ruleBranch" class="branch"></span></div>
+								<p id="calculationReason" class="muted"></p>
+								<div id="pendingNote" class="pending-note"></div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<aside class="properties">
+					<div class="property-tabs"><button data-tab="control">控件属性</button><button data-tab="component" class="active">组件属性</button></div>
+					<div class="property-scroll">
+						<div id="controlPane" hidden>
+							<div class="property-section"><h3>控件信息</h3><label class="stack">字段标识<input value="taxInfoExpectTime" readonly></label><label class="stack">字段名称<input data-config="label"></label><label class="check"><input type="checkbox" data-config="required">必填</label><p class="muted">保存格式：YYYY-MM-DD</p></div>
+						</div>
+						<div id="componentPane">
+							<div class="property-section base-properties">
+								<label class="inline-field">栅格数 <input type="range" min="12" max="24" step="12" data-config="span"><output id="spanValue">12</output></label>
+								<label class="inline-field">占位符 <input data-config="placeholder"></label>
+								<div class="inline-field">展示格式 <span class="read-value">YYYY-MM-DD</span></div>
+								<div class="inline-field">绑定值格式 <span class="read-value">YYYY-MM-DD</span></div>
+							</div>
+							<div class="property-section">
+								<div class="section-heading"><h3>生效日期规则</h3><label class="switch"><input type="checkbox" data-config="enabled" aria-label="启用生效日期规则"><span></span></label></div>
+								<div id="ruleControls">
+									<label class="stack">国家规则预设<select id="rulePreset" aria-label="国家规则预设"></select></label>
+									<div class="two-fields"><label class="stack">计算基准<select data-config="base"><option value="submission">本次提交日期</option><option value="first">首次提交日期</option></select></label><label class="stack">偏离推荐时<select data-config="mode"><option value="warn">提示后可继续</option><option value="block">不允许提交</option></select></label></div>
+									<label class="stack top-space">日期匹配方式<select data-config="match"><option value="exact">等于推荐日期</option><option value="later">推荐日期及以后（保持日历规则）</option><option value="window">推荐日期前后容差范围</option></select></label>
+									<p class="setting-note">按自然月计算，提交时重新校验；不自动覆盖用户已填写的日期。</p>
+									<div id="countrySettings"></div>
+									<label class="check top-space"><input type="checkbox" data-config="notBeforeFounded">不得早于公司成立日期</label>
+									<label class="check"><input type="checkbox" data-config="noPast">不得早于本次提交日期</label>
+									<div id="francePastNote" class="setting-note" hidden>法国季报可追溯至本季度首日，默认不启用过去日期拦截。</div>
+								</div>
+							</div>
+							<div class="property-section">
+								<h3>填写提示</h3>
+								<label class="check"><input type="checkbox" data-config="showHint">展示推荐日期和填写规则</label>
+								<label class="stack">补充提示<textarea rows="2" data-config="extraHint" placeholder="选填"></textarea></label>
+							</div>
+							<div class="property-section">
+								<h3>驳回重提</h3>
+								<label class="check"><input type="checkbox" data-config="unlockInvalid">日期不符合当前规则时，允许修改该字段</label>
+								<p class="setting-note">仅针对可重新提交的驳回状态；流转完成仍保持禁用。</p>
+							</div>
+						</div>
+					</div>
+					<div class="property-footer"><i data-icon="info"></i>配置随“修改表单”统一保存</div>
+				</aside>
+			</div>
+			<footer class="page-footer"><span id="footerStatus">字段：taxInfoExpectTime</span><div><button class="button" data-action="restore">恢复已保存</button><button class="button" data-action="preview"><i data-icon="eye"></i>填写预览</button><button class="button primary" id="saveForm" data-action="save"><i data-icon="save"></i>修改表单</button><button class="button" data-action="save-as">保存为新表单</button></div></footer>
+		</main>
+	</div>
+	<dialog id="previewDialog" class="preview-dialog">
+		<div class="dialog-head"><div><h2>填写预览</h2><span id="previewFormName" class="muted"></span></div><button class="icon-button" data-action="close-preview" aria-label="关闭预览" title="关闭预览"><i data-icon="x"></i></button></div>
+		<div class="preview-body">
+			<div class="preview-context"><span>提交场景</span><label>本次提交<input id="previewSubmission" type="date"></label><label id="firstDateWrap">首次提交<input id="previewFirst" type="date"></label><label>流程状态<select id="previewStatus"><option value="draft">待提交</option><option value="rejected">已驳回 · 字段锁定</option><option value="completed">流转完成</option></select></label></div>
+			<section class="customer-form">
+				<div class="customer-section-title">公司信息</div>
+				<div class="customer-grid"><label>公司注册地区<select id="previewRegion"><option value="mainland">中国大陆</option><option value="hongkong">中国香港</option><option value="eu">欧盟</option><option value="other">其他境外地区</option></select></label><label>公司成立日期<input id="previewFounded" type="date"></label></div>
+				<div class="customer-section-title">VAT税号信息</div>
+				<label class="customer-date-label" id="previewLabel">期望税号生效日期</label>
+				<p id="previewHint" class="field-hint"></p>
+				<div class="customer-date-row"><input id="previewDate" type="date" aria-label="预览期望税号生效日期"><button id="useRecommended" class="text-button" data-action="use-recommended"><i data-icon="calendar-check"></i>使用推荐日期</button></div>
+				<div id="lockNotice" class="lock-notice" hidden></div>
+				<div id="previewResult" class="validation-result" role="status" hidden></div>
+			</section>
+			<div class="preview-rule-summary"><span>本次命中规则</span><strong id="previewBranch"></strong><span id="previewRecommendation"></span></div>
+		</div>
+		<div class="dialog-footer"><span id="previewSaveState" class="muted">尚未提交</span><div><button class="button" data-action="close-preview">关闭</button><button class="button primary" id="submitPreview" data-action="submit-preview">提交资料</button></div></div>
+	</dialog>
+	<dialog id="confirmDialog" class="small-dialog">
+		<div class="dialog-head"><h2 id="confirmTitle"></h2><button class="icon-button" data-action="close-confirm" title="取消" aria-label="取消"><i data-icon="x"></i></button></div><p id="confirmText"></p><div class="dialog-footer"><button class="button" data-action="close-confirm">取消</button><button class="button primary" id="confirmAction">确认</button></div>
+	</dialog>
+	<dialog id="saveAsDialog" class="small-dialog">
+		<div class="dialog-head"><h2>保存为新表单</h2><button class="icon-button" data-action="close-save-as" title="关闭" aria-label="关闭"><i data-icon="x"></i></button></div><label class="stack">表单名称<input id="newFormName" maxlength="60"></label><p id="newFormError" class="error-text" hidden></p><div class="dialog-footer"><button class="button" data-action="close-save-as">取消</button><button class="button primary" data-action="confirm-save-as">保存</button></div>
+	</dialog>
+	<div id="toast" role="status" class="toast" hidden></div>
+</body>
+</html>

@@ -20,11 +20,9 @@
 	const baselineMonth = new URLSearchParams(window.location.search).get("period") === "current" ? "2026-10" : "2026-09";
 	const baselineLabel = baselineMonth === "2026-10" ? "10月" : "9月";
 
-	// 在同一灰绿区间连续插值，让矩阵和重点项目使用一致的完成度色阶。
+	// 完成度从 0% 的中性灰连续过渡至 100% 的深绿。
 	const rateColor = (ratio) => {
-		const gray = [125, 133, 139];
-		const green = [8, 114, 63];
-		return `rgb(${gray.map((value, index) => Math.round(value + (green[index] - value) * ratio)).join(", ")})`;
+		return `hsl(140, ${(ratio * 76).toFixed(1)}%, ${(55 - ratio * 27).toFixed(1)}%)`;
 	};
 
 	document.querySelectorAll("[data-automation-current][data-automation-total]").forEach((element) => {
@@ -41,8 +39,8 @@
 			element.setAttribute("aria-label", `自动化率 ${percent}%，当前 ${current}，总数 ${total}`);
 		} else {
 			element.innerHTML = `<div class="rate-value" title="自动化率：${current}/${total}">
-				<strong>${percent}%</strong><span class="rate-fraction">${current}/${total}</span>
-				<progress value="${current}" max="${total}" aria-label="自动化率 ${percent}%，${current}/${total}"></progress>
+				<div class="rate-heading"><strong>${percent}%</strong></div>
+				<div class="rate-details"><progress value="${current}" max="${total}" aria-label="自动化率 ${percent}%，${current}/${total}"></progress><span class="rate-fraction">${current}/${total}</span></div>
 			</div>`;
 		}
 	});
@@ -50,35 +48,34 @@
 	document.querySelectorAll("[data-product-key]").forEach((item) => {
 		const marker = item.querySelector("[data-automation-current][data-automation-total]");
 		const previous = snapshots[baselineMonth][item.dataset.productKey];
-		const cell = item.querySelector(".comparison-cell");
 		const project = item.classList.contains("priority-project");
-		let target = cell;
-		if (project) {
-			target = document.createElement("p");
-			target.className = "project-comparison";
-			item.lastElementChild.appendChild(target);
-		}
-		if (!target) return;
-		if (!marker || !previous) {
-			target.innerHTML = '<span class="comparison-empty">暂无对比数据</span>';
-			return;
-		}
+		const target = project ? item.querySelector("p") : item.querySelector(".rate-heading");
+		if (!target || !marker) return;
 		const current = Number(marker.dataset.automationCurrent);
 		const total = Number(marker.dataset.automationTotal);
 		if (!Number.isFinite(current) || !Number.isFinite(total) || total <= 0 || current < 0 || current > total) return;
+		const indicator = document.createElement("span");
+		indicator.className = "rate-change";
+		indicator.dataset.baseline = baselineMonth;
+		if (!previous) {
+			indicator.classList.add("new");
+			indicator.dataset.kind = "new";
+			indicator.textContent = "↑新增";
+			indicator.title = `${baselineLabel}暂无自动化率记录，本期新增数据：${current}/${total}（${Math.round(current / total * 100)}%）；不将缺失数据视为 0%。`;
+			indicator.setAttribute("aria-label", indicator.title);
+			target.appendChild(indicator);
+			return;
+		}
 		const previousRatio = previous[0] / previous[1];
 		const change = Math.round((current / total - previousRatio) * 1000) / 10 || 0;
 		const direction = change > 0 ? "up" : change < 0 ? "down" : "flat";
-		const delta = `${change > 0 ? "+" : ""}${change.toFixed(1)} 个百分点`;
-		const previousPercent = Math.round(previousRatio * 100);
-		target.dataset.change = change.toFixed(1);
-		target.dataset.baseline = baselineMonth;
-		target.title = `本期 ${current}/${total}；对比期 ${previous[0]}/${previous[1]}，${(previousRatio * 100).toFixed(1)}%`;
-		if (project) {
-			target.classList.add(direction);
-			target.textContent = `较${baselineLabel} ${change === 0 ? "持平" : delta}`;
-		} else {
-			target.innerHTML = `<div class="comparison-value ${direction}"><strong>${delta}</strong><small>较${baselineLabel} ${previousPercent}%${change === 0 ? " · 持平" : ""}</small></div>`;
-		}
+		const arrow = change > 0 ? "↑" : change < 0 ? "↓" : "→";
+		indicator.classList.add(direction);
+		indicator.dataset.kind = direction;
+		indicator.dataset.change = change.toFixed(1);
+		indicator.textContent = `${arrow}${Math.abs(change).toFixed(1)}`;
+		indicator.title = `较${baselineLabel}${change > 0 ? "提高" : change < 0 ? "下降" : "持平"}${change === 0 ? "" : ` ${Math.abs(change).toFixed(1)} 个百分点`}；本期 ${current}/${total}，对比期 ${previous[0]}/${previous[1]}。`;
+		indicator.setAttribute("aria-label", indicator.title);
+		target.appendChild(indicator);
 	});
 })();

@@ -129,11 +129,22 @@ html.embedded .page > .hero {
 
 .rate-value {
 	display: grid;
-	grid-template-columns: auto 1fr;
-	gap: 6px 10px;
+	gap: 6px;
 	width: 100%;
-	max-width: 112px;
+	max-width: 180px;
 	color: var(--rate-color);
+}
+
+.rate-heading,
+.rate-details {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+}
+
+.rate-heading {
+	align-items: baseline;
 }
 
 .rate-value strong {
@@ -150,9 +161,10 @@ html.embedded .page > .hero {
 }
 
 .rate-value progress {
-	grid-column: 1 / -1;
-	width: 100%;
-	height: 7px;
+	flex: 1 1 auto;
+	width: 84px;
+	max-width: 96px;
+	height: 6px;
 	accent-color: var(--rate-color);
 }
 
@@ -164,54 +176,40 @@ html.embedded .page > .hero {
 	background: var(--rate-color);
 }
 
-.comparison-cell {
-	vertical-align: middle;
-	font-variant-numeric: tabular-nums;
-}
-
-.comparison-value strong {
-	display: block;
+.rate-change {
+	display: inline-flex;
+	align-items: center;
 	color: var(--muted);
-	font-size: 14px;
-	font-weight: 700;
-	line-height: 1.6;
-}
-
-.comparison-value small,
-.comparison-empty {
-	color: var(--muted);
-	font-size: 12px;
-	line-height: 1.6;
-}
-
-.comparison-value small {
-	display: block;
-}
-
-.comparison-value.up strong {
-	color: #08723f;
-}
-
-.comparison-value.down strong {
-	color: #b42318;
-}
-
-.priority-project .project-comparison {
-	margin-top: 6px;
 	font-size: 11px;
+	font-weight: 500;
 	font-variant-numeric: tabular-nums;
-	overflow-wrap: anywhere;
+	line-height: 1.3;
+	white-space: nowrap;
 }
 
-.project-comparison.up {
+.rate-change.up {
 	color: #08723f;
 }
 
-.project-comparison.down {
-	color: #b42318;
+.rate-change.down {
+	color: #a66058;
 }
 
-/* 八列在桌面完整展示，窄屏仅在矩阵内部横向滚动。 */
+.rate-change.new {
+	color: #5476a3;
+}
+
+.rate-value .rate-change {
+	min-width: 0;
+	text-align: left;
+}
+
+.priority-project .rate-change {
+	margin-left: 6px;
+	font-size: 10px;
+}
+
+/* 七列在桌面完整展示，窄屏仅在矩阵内部横向滚动。 */
 table {
 	min-width: 1120px;
 	table-layout: fixed;
@@ -227,16 +225,14 @@ th:first-child { width: 14%; }
 th:nth-child(2) { width: 11%; }
 th:nth-child(3),
 th:nth-child(4),
-th:nth-child(5) { width: 11%; }
-th:nth-child(6) { width: 11%; }
-th:nth-child(7) { width: 14%; }
-th:nth-child(8) { width: 17%; }
+th:nth-child(5) { width: 12%; }
+th:nth-child(6) { width: 18%; }
+th:nth-child(7) { width: 21%; }
 
 .country-cell,
 .volume,
 .node,
 .rate-cell,
-.comparison-cell,
 .efficiency-column {
 	min-width: 0;
 	width: auto;

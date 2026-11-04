@@ -612,7 +612,7 @@
 			}
 		}
 	</style>
-	<link rel="stylesheet" href="automation-monthly.css?v=20261104-comparison">
+	<link rel="stylesheet" href="automation-monthly.css?v=20261104-inline-change">
 </head>
 <body>
 	<main class="page">
@@ -678,7 +678,6 @@
 							<th>注册递交</th>
 							<th>税号录入</th>
 							<th>自动化率</th>
-							<th>自动化率环比</th>
 							<th>注册人效参考</th>
 						</tr>
 					</thead>
@@ -815,11 +814,11 @@
 					const country = row.querySelector(".country-title")?.textContent.trim().split(/\s+/)[1] || "";
 					const content = vatEfficiencyByCountry[country] || '<span class="rate-empty">&mdash;</span>';
 					row.dataset.productKey = `vat:${row.querySelector(".country-title small").textContent.trim()}`;
-					row.insertAdjacentHTML("beforeend", `<td class="comparison-cell"><span class="comparison-empty">暂无对比数据</span></td><td class="efficiency-column"><div class="efficiency-reference"><div class="efficiency-reference-item">${content}</div></div></td>`);
+					row.insertAdjacentHTML("beforeend", `<td class="efficiency-column"><div class="efficiency-reference"><div class="efficiency-reference-item">${content}</div></div></td>`);
 				});
 			</script>
 			<div class="note">
-				<strong>数据说明：</strong>按 VAT 类目、基础服务单，资料审核通过时间为 2026-10-01 至 2026-10-31 统计；按服务单号去重，排除退款中、停止服务、已注销、注销中状态。合计仅含当前展示的 15 条国家线，未含斯洛伐克 1 单；统计更新于 2026-11-04。<br>自动化率 = 当前自动化数 / 自动化总数，明细数依据 10 月通晒快照；&mdash; 表示暂无数据，不按三节点状态推算。<br>环比为本期与对比期自动化率的百分点差，按原始分子/分母计算；现状对比十月，十月对比九月。对比期缺少明细时显示“暂无对比数据”。
+				<strong>数据说明：</strong>按 VAT 类目、基础服务单，资料审核通过时间为 2026-10-01 至 2026-10-31 统计；按服务单号去重，排除退款中、停止服务、已注销、注销中状态。合计仅含当前展示的 15 条国家线，未含斯洛伐克 1 单；统计更新于 2026-11-04。<br>自动化率 = 当前自动化数 / 自动化总数，明细数依据 10 月通晒快照；&mdash; 表示暂无数据，不按三节点状态推算。<br>箭头数值为自动化率的百分点变化；现状对比十月，十月对比九月。上期无记录、本期有数据标记“↑新增”，不将缺失记录视为 0%。
 			</div>
 		</section>
 
@@ -858,7 +857,7 @@
 			</div>
 		</section>
 	</main>
-	<script src="automation-map-progress.js?v=20261104-comparison"></script>
+	<script src="automation-map-progress.js?v=20261104-inline-change"></script>
 	<script src="automation-map-frame.js"></script>
 </body>
 </html>

@@ -64,15 +64,8 @@
 			line-height: 1.25;
 		}
 
-		.hero-copy {
-			margin-top: 9px;
-			color: rgba(255, 255, 255, 0.78);
-			font-size: 14px;
-			line-height: 1.6;
-		}
-
 		.report-meta {
-			min-width: 260px;
+			min-width: 250px;
 			padding: 14px 16px;
 			border: 1px solid rgba(255, 255, 255, 0.28);
 			border-radius: 12px;
@@ -83,17 +76,65 @@
 			backdrop-filter: blur(10px);
 		}
 
-		.report-meta strong {
+		.report-meta label {
 			display: block;
 			color: #fff;
-			font-size: 18px;
-			line-height: 1.4;
+			font-size: 13px;
+			margin-bottom: 6px;
+		}
+
+		.report-meta select {
+			width: 100%;
+			min-height: 40px;
+			padding: 7px 10px;
+			border: 1px solid #dce4ef;
+			border-radius: 6px;
+			background: #fff;
+			color: var(--text);
+			font: inherit;
+			font-weight: 700;
+			cursor: pointer;
+		}
+
+		.month-period {
+			margin-top: 7px;
+			font-size: 12px;
+		}
+
+		.result-heading {
+			margin: 0;
+			padding: 16px 22px 0;
+			color: var(--text);
+			font-size: 17px;
+		}
+
+		.result-heading span {
+			display: inline-block;
+			margin-left: 12px;
+			color: var(--muted);
+			font-size: 12px;
+			font-weight: 400;
+		}
+
+		.month-status {
+			margin-left: auto;
+			align-self: center;
+			padding: 0 12px;
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.hero,
+		.tabs,
+		.tab,
+		.report-meta {
+			border-radius: 8px;
 		}
 
 		.tabs {
 			margin-top: 20px;
 			border: 1px solid var(--line);
-			border-radius: 14px;
+			border-radius: 8px;
 			background: var(--surface);
 			box-shadow: var(--shadow);
 			overflow: hidden;
@@ -112,7 +153,7 @@
 			min-height: 44px;
 			padding: 10px 18px;
 			border: 1px solid transparent;
-			border-radius: 9px;
+			border-radius: 8px;
 			background: transparent;
 			color: var(--muted);
 			font: inherit;
@@ -182,6 +223,7 @@
 			}
 
 			.tab-list {
+				flex-wrap: wrap;
 				gap: 6px;
 				padding: 8px;
 			}
@@ -190,6 +232,19 @@
 				flex: 1 1 0;
 				padding: 9px 8px;
 				font-size: 14px;
+			}
+
+			.month-status {
+				display: none;
+			}
+
+			.result-heading {
+				padding: 14px 12px 0;
+			}
+
+			.result-heading span {
+				display: block;
+				margin: 5px 0 0;
 			}
 
 			.page-frame {
@@ -229,36 +284,44 @@
 	<main class="shell">
 		<header class="hero">
 			<div>
-				<p class="eyebrow">管理层自动化进程总览</p>
+				<p class="eyebrow">自动化月度通晒 · 2026</p>
 				<h1>VAT &amp; EPR 自动化进程产品地图</h1>
-				<p class="hero-copy">通过 Tab 切换查看 VAT 国家线与 EPR 国家 + 产品线的自动化进度。</p>
 			</div>
 			<div class="report-meta">
-				<strong>产品线总览</strong>
-				<div>VAT：国家线自动化进程</div>
-				<div>EPR：国家 + 产品线自动化进程</div>
-				<div>状态：已自动化 / 开发中 / 待自动化</div>
+				<label for="resultMonth">月份结果</label>
+				<select id="resultMonth">
+					<option value="2026-10">2026 年 10 月通晒结果</option>
+					<option value="2026-09">2026 年 9 月通晒结果</option>
+				</select>
+				<p class="month-period" id="monthPeriod">2026.10.01 至 2026.10.31</p>
 			</div>
 		</header>
 
 		<section class="tabs" aria-label="产品线切换">
 			<div class="tab-list" role="tablist" aria-label="VAT 与 EPR 产品地图">
 				<button class="tab active" id="vatTab" type="button" role="tab" aria-selected="true" aria-controls="vatPanel" data-target="vatPanel">VAT 自动化</button>
-				<button class="tab" id="eprTab" type="button" role="tab" aria-selected="false" aria-controls="eprPanel" data-target="eprPanel">EPR 自动化</button>
+				<button class="tab" id="eprTab" type="button" role="tab" aria-selected="false" aria-controls="eprPanel" tabindex="-1" data-target="eprPanel">EPR 自动化</button>
+				<span class="month-status" id="monthStatus">Q4 重点项目 · 5 项</span>
 			</div>
 
+			<h2 class="result-heading" id="resultHeading" aria-live="polite">2026 年 10 月通晒结果<span>统计更新：2026.11.04</span></h2>
 			<div class="tab-panel" id="vatPanel" role="tabpanel" aria-labelledby="vatTab">
-				<iframe class="page-frame vat-frame" src="vat-automation-product-map.html?v=20261021-efficiency-rows" title="VAT 自动化产品地图"></iframe>
+				<iframe class="page-frame vat-frame" src="vat-automation-product-map.html?v=20261104-monthly" data-month="2026-10" title="2026 年 10 月 VAT 自动化产品地图"></iframe>
 			</div>
 			<div class="tab-panel" id="eprPanel" role="tabpanel" aria-labelledby="eprTab" hidden>
-				<iframe class="page-frame epr-frame" src="epr-automation-product-map.html?v=20261021-efficiency-rows-fr-packaging-v2" title="EPR 自动化进程产品地图"></iframe>
+				<iframe class="page-frame epr-frame" src="epr-automation-product-map.html?v=20261104-monthly" data-month="2026-10" title="2026 年 10 月 EPR 自动化进程产品地图"></iframe>
 			</div>
 		</section>
 	</main>
 
 	<script>
 		const tabs = [...document.querySelectorAll(".tab")];
-		const frames = [...document.querySelectorAll(".page-frame")];
+		let frames = [...document.querySelectorAll(".page-frame")];
+		const monthSelect = document.getElementById("resultMonth");
+		const months = {
+			"2026-10": { label: "2026 年 10 月通晒结果", period: "2026.10.01 至 2026.10.31", path: "", updated: "统计更新：2026.11.04" },
+			"2026-09": { label: "2026 年 9 月通晒结果", period: "2026.09.01 至 2026.09.30", path: "automation-monthly/2026-09/", updated: "历史快照" }
+		};
 
 		window.addEventListener("message", (event) => {
 			const frame = frames.find((item) => item.contentWindow === event.source);
@@ -268,9 +331,10 @@
 				frame.style.height = `${height}px`;
 			}
 		});
-		frames.forEach((frame) => {
+		const observeFrame = (frame) => {
 			frame.addEventListener("load", () => frame.contentWindow.postMessage({ type: "automation-map-measure" }, "*"));
-		});
+		};
+		frames.forEach(observeFrame);
 
 		const activateTab = (tab) => {
 			const targetId = tab.dataset.target;
@@ -278,6 +342,7 @@
 				const isActive = item === tab;
 				item.classList.toggle("active", isActive);
 				item.setAttribute("aria-selected", String(isActive));
+				item.tabIndex = isActive ? 0 : -1;
 			});
 			document.querySelectorAll(".tab-panel").forEach((panel) => {
 				panel.hidden = panel.id !== targetId;
@@ -285,17 +350,63 @@
 			document.querySelector(`#${targetId} iframe`).contentWindow.postMessage({ type: "automation-map-measure" }, "*");
 		};
 
+		const applyState = (month, product, historyMode) => {
+			const result = months[month];
+			monthSelect.value = month;
+			document.getElementById("monthPeriod").textContent = result.period;
+			document.getElementById("resultHeading").innerHTML = `${result.label}<span>${result.updated}</span>`;
+			document.getElementById("monthStatus").textContent = month === "2026-10" ? "Q4 重点项目 · 5 项" : "9 月历史快照";
+			document.title = `${result.label} | VAT & EPR 自动化进程产品地图`;
+			frames = frames.map((frame, index) => {
+				const line = index === 0 ? "vat" : "epr";
+				if (frame.dataset.month !== month) {
+					// 重建嵌入页，避免 iframe 导航进入浏览器的月份返回历史。
+					const replacement = frame.cloneNode(false);
+					replacement.src = `${result.path}${line}-automation-product-map.html?v=20261104-monthly`;
+					replacement.dataset.month = month;
+					replacement.style.removeProperty("height");
+					observeFrame(replacement);
+					frame.replaceWith(replacement);
+					frame = replacement;
+				}
+				frame.title = `${result.label} · ${line.toUpperCase()} 自动化产品地图`;
+				return frame;
+			});
+			activateTab(document.getElementById(`${product}Tab`));
+			if (historyMode) {
+				const url = new URL(window.location.href);
+				url.searchParams.set("month", month);
+				url.searchParams.set("tab", product);
+				window.history[historyMode]({ month, product }, "", url);
+			}
+		};
+
+		const restoreState = (historyMode) => {
+			const params = new URLSearchParams(window.location.search);
+			const month = Object.hasOwn(months, params.get("month")) ? params.get("month") : "2026-10";
+			const product = params.get("tab") === "epr" ? "epr" : "vat";
+			applyState(month, product, historyMode);
+		};
+
+		monthSelect.addEventListener("change", () => {
+			const product = document.getElementById("eprTab").getAttribute("aria-selected") === "true" ? "epr" : "vat";
+			applyState(monthSelect.value, product, "pushState");
+		});
 		tabs.forEach((tab, index) => {
-			tab.addEventListener("click", () => activateTab(tab));
+			const selectTab = (nextTab) => applyState(monthSelect.value, nextTab.id === "eprTab" ? "epr" : "vat", "pushState");
+			tab.addEventListener("click", () => selectTab(tab));
 			tab.addEventListener("keydown", (event) => {
-				if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+				if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
 				event.preventDefault();
 				const direction = event.key === "ArrowRight" ? 1 : -1;
-				const nextTab = tabs[(index + direction + tabs.length) % tabs.length];
+				const nextIndex = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : (index + direction + tabs.length) % tabs.length;
+				const nextTab = tabs[nextIndex];
 				nextTab.focus();
-				activateTab(nextTab);
+				selectTab(nextTab);
 			});
 		});
+		window.addEventListener("popstate", () => restoreState());
+		restoreState("replaceState");
 	</script>
 </body>
 </html>

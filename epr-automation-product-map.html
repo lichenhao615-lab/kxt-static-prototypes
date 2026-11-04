@@ -580,7 +580,7 @@
 			}
 		}
 	</style>
-	<link rel="stylesheet" href="automation-monthly.css?v=20261104">
+	<link rel="stylesheet" href="automation-monthly.css?v=20261104-comparison">
 </head>
 <body>
 	<main class="page">
@@ -601,28 +601,21 @@
 			<div class="month-total">
 				<span>10月资料审核通过量</span>
 				<strong id="totalAuditCount">587</strong>
-				<small>指定商品清单及法国包装法对应的 38 条产品线合计</small>
 			</div>
 			<div class="priority-section">
 				<div class="priority-heading"><h2>我们的重点项目</h2><span>Q4 · EPR 2 项</span></div>
 				<div class="priority-projects epr-priorities">
-					<article class="priority-project" data-project="西班牙包装法">
+					<article class="priority-project" data-project="西班牙包装法" data-product-key="epr:ES:包装法">
 						<div class="progress-ring" data-automation-current="14" data-automation-total="17"></div>
 						<div><h3>西班牙包装法</h3><p>当前 14 / 总数 17</p></div>
 					</article>
-					<article class="priority-project" data-project="法国包装法">
+					<article class="priority-project" data-project="法国包装法" data-product-key="epr:FR:包装法">
 						<div class="progress-ring" data-automation-current="4" data-automation-total="7"></div>
 						<div><h3>法国包装法</h3><p>当前 4 / 总数 7</p></div>
 					</article>
 				</div>
 			</div>
 		</section>
-		<div class="capability-summary" aria-label="节点能力汇总">
-			<span>国家 + 产品线<strong id="productLineCount">38</strong></span>
-			<span>资料制作已自动化<strong>38 / 38</strong></span>
-			<span>注册递交已自动化<strong>1 / 38</strong></span>
-			<span>证书录入已自动化<strong>38 / 38</strong></span>
-		</div>
 
 		<section class="band">
 			<div class="band-head">
@@ -646,6 +639,7 @@
 							<th>注册递交</th>
 							<th>证书录入</th>
 							<th>自动化率</th>
+							<th>自动化率环比</th>
 							<th>注册人效参考</th>
 						</tr>
 					</thead>
@@ -653,7 +647,7 @@
 				</table>
 			</div>
 			<div class="note">
-				<strong>口径说明：</strong>沿用指定商品清单及法国包装法口径；按 2026-10-01 至 2026-10-31 的资料审核通过数量统计，按服务单号去重。法国包装法按法国 + 包装法基础服务单口径汇总 190 单；其余产品线仅匹配清单中的商品全名，不扩展其他商品版本，排除退款中、停止服务、已注销、注销中状态。合计对应 38 条产品线；统计更新于 2026-11-04。比利时包装法指定商品名称未匹配到，按本清单口径计 0 单。西包指西班牙包装法，免海牙和含海牙方案合并展示。<br>自动化率 = 当前自动化数 / 自动化总数，明细数依据 10 月通晒快照；&mdash; 表示暂无数据，不按三节点状态推算。
+				<strong>口径说明：</strong>沿用指定商品清单及法国包装法口径；按 2026-10-01 至 2026-10-31 的资料审核通过数量统计，按服务单号去重。法国包装法按法国 + 包装法基础服务单口径汇总 190 单；其余产品线仅匹配清单中的商品全名，不扩展其他商品版本，排除退款中、停止服务、已注销、注销中状态。合计对应 38 条产品线；统计更新于 2026-11-04。比利时包装法指定商品名称未匹配到，按本清单口径计 0 单。西包指西班牙包装法，免海牙和含海牙方案合并展示。<br>自动化率 = 当前自动化数 / 自动化总数，明细数依据 10 月通晒快照；&mdash; 表示暂无数据，不按三节点状态推算。<br>环比为本期与对比期自动化率的百分点差，按原始分子/分母计算；现状对比十月，十月对比九月。对比期缺少明细时显示“暂无对比数据”。
 			</div>
 		</section>
 
@@ -760,18 +754,19 @@
 				: node("semi", "待自动化", "注册递交尚待实现产品线自动化能力。");
 
 			matrixBody.insertAdjacentHTML("beforeend", `
-				<tr>
+				<tr data-product-key="epr:${item.code}:${item.line}">
 					<td class="country-cell"><div class="country-title"><span>${index + 1}. ${countryProductLabel}</span>${aliasLabel}<small>${item.code}</small></div></td>
 					<td class="volume"><strong>${item.auditCount.toLocaleString("zh-CN")}</strong><div class="bar"><i style="--w:${barWidth}%"></i></div></td>
 					<td class="node">${node("auto", "已自动化", "资料制作自动化已完成。")}</td>
 					<td class="node">${registration}</td>
 					<td class="node">${node("auto", "已自动化", "证书支持批量上传与录入。")}</td>
 					<td class="rate-cell">${rate(item.automationCurrent, item.automationTotal, "自动化率")}</td>
+					<td class="comparison-cell"><span class="comparison-empty">暂无对比数据</span></td>
 					${efficiencyReference(item)}
 				</tr>`);
 		});
 	</script>
-	<script src="automation-map-progress.js?v=20261104"></script>
+	<script src="automation-map-progress.js?v=20261104-comparison"></script>
 	<script src="automation-map-frame.js"></script>
 </body>
 </html>

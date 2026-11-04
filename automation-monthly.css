@@ -179,12 +179,29 @@ html.embedded .page > .hero {
 .rate-change {
 	display: inline-flex;
 	align-items: center;
+	gap: 3px;
+	vertical-align: middle;
 	color: var(--muted);
 	font-size: 11px;
 	font-weight: 500;
 	font-variant-numeric: tabular-nums;
 	line-height: 1.3;
 	white-space: nowrap;
+}
+
+.rate-change > span {
+	min-width: 0;
+	text-align: left;
+}
+
+.rate-change .rate-arrow {
+	flex: 0 0 18px;
+	font-family: Arial, sans-serif;
+	font-size: 20px;
+	font-weight: 800;
+	-webkit-text-stroke: 0.35px currentColor;
+	line-height: 1;
+	text-align: center;
 }
 
 .rate-change.up {

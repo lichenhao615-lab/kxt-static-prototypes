@@ -60,7 +60,7 @@
 		if (!previous) {
 			indicator.classList.add("new");
 			indicator.dataset.kind = "new";
-			indicator.textContent = "↑新增";
+			indicator.innerHTML = '<span class="rate-arrow" aria-hidden="true">↑</span><span>新增</span>';
 			indicator.title = `${baselineLabel}暂无自动化率记录，本期新增数据：${current}/${total}（${Math.round(current / total * 100)}%）；不将缺失数据视为 0%。`;
 			indicator.setAttribute("aria-label", indicator.title);
 			target.appendChild(indicator);
@@ -73,7 +73,7 @@
 		indicator.classList.add(direction);
 		indicator.dataset.kind = direction;
 		indicator.dataset.change = change.toFixed(1);
-		indicator.textContent = `${arrow}${Math.abs(change).toFixed(1)}`;
+		indicator.innerHTML = `<span class="rate-arrow" aria-hidden="true">${arrow}</span><span>${Math.abs(change).toFixed(1)}</span>`;
 		indicator.title = `较${baselineLabel}${change > 0 ? "提高" : change < 0 ? "下降" : "持平"}${change === 0 ? "" : ` ${Math.abs(change).toFixed(1)} 个百分点`}；本期 ${current}/${total}，对比期 ${previous[0]}/${previous[1]}。`;
 		indicator.setAttribute("aria-label", indicator.title);
 		target.appendChild(indicator);

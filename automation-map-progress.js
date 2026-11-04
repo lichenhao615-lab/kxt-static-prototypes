@@ -29,14 +29,6 @@
 		return stops[index].map((channel, channelIndex) =>
 			Math.round(channel + (stops[index + 1][channelIndex] - channel) * offset));
 	};
-	const rateInk = (channels) => {
-		const linear = channels.map((channel) => {
-			const value = channel / 255;
-			return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
-		});
-		const luminance = linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
-		return luminance > 0.179 ? "#000" : "#fff";
-	};
 
 	document.querySelectorAll("[data-automation-current][data-automation-total]").forEach((element) => {
 		const current = Number(element.dataset.automationCurrent);
@@ -46,7 +38,6 @@
 		const percent = Math.round(ratio * 100);
 		const color = rateColor(ratio);
 		element.style.setProperty("--rate-color", `rgb(${color.join(", ")})`);
-		element.style.setProperty("--rate-ink", rateInk(color));
 		element.style.setProperty("--rate-angle", `${ratio * 360}deg`);
 		if (element.classList.contains("progress-ring")) {
 			element.innerHTML = `<strong>${percent}%</strong>`;

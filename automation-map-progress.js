@@ -20,9 +20,22 @@
 	const baselineMonth = new URLSearchParams(window.location.search).get("period") === "current" ? "2026-10" : "2026-09";
 	const baselineLabel = baselineMonth === "2026-10" ? "10月" : "9月";
 
-	// 完成度从 0% 的中性灰连续过渡至 100% 的深绿。
+	// 用明确的灰、灰绿、浅绿、绿、深绿锚点拉开不同完成度的视觉差异。
 	const rateColor = (ratio) => {
-		return `hsl(140, ${(ratio * 76).toFixed(1)}%, ${(55 - ratio * 27).toFixed(1)}%)`;
+		const stops = [[222, 222, 222], [193, 207, 195], [127, 184, 141], [43, 129, 69], [4, 71, 35]];
+		const position = ratio * (stops.length - 1);
+		const index = Math.min(Math.floor(position), stops.length - 2);
+		const offset = position - index;
+		return stops[index].map((channel, channelIndex) =>
+			Math.round(channel + (stops[index + 1][channelIndex] - channel) * offset));
+	};
+	const rateInk = (channels) => {
+		const linear = channels.map((channel) => {
+			const value = channel / 255;
+			return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+		});
+		const luminance = linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+		return luminance > 0.179 ? "#000" : "#fff";
 	};
 
 	document.querySelectorAll("[data-automation-current][data-automation-total]").forEach((element) => {
@@ -31,7 +44,9 @@
 		if (!Number.isFinite(current) || !Number.isFinite(total) || total <= 0 || current < 0 || current > total) return;
 		const ratio = current / total;
 		const percent = Math.round(ratio * 100);
-		element.style.setProperty("--rate-color", rateColor(ratio));
+		const color = rateColor(ratio);
+		element.style.setProperty("--rate-color", `rgb(${color.join(", ")})`);
+		element.style.setProperty("--rate-ink", rateInk(color));
 		element.style.setProperty("--rate-angle", `${ratio * 360}deg`);
 		if (element.classList.contains("progress-ring")) {
 			element.innerHTML = `<strong>${percent}%</strong>`;

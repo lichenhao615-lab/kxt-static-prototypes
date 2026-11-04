@@ -307,10 +307,10 @@
 
 			<h2 class="result-heading" id="resultHeading" aria-live="polite">2026 年 10 月通晒结果<span>统计更新：2026.11.04</span></h2>
 			<div class="tab-panel" id="vatPanel" role="tabpanel" aria-labelledby="vatTab">
-				<iframe class="page-frame vat-frame" src="vat-automation-product-map.html?v=20261104-arrow-emphasis&amp;period=2026-10" data-month="2026-10" title="2026 年 10 月 VAT 自动化产品地图"></iframe>
+				<iframe class="page-frame vat-frame" src="vat-automation-product-map.html?v=20261104-rate-background&amp;period=2026-10" data-month="2026-10" title="2026 年 10 月 VAT 自动化产品地图"></iframe>
 			</div>
 			<div class="tab-panel" id="eprPanel" role="tabpanel" aria-labelledby="eprTab" hidden>
-				<iframe class="page-frame epr-frame" src="epr-automation-product-map.html?v=20261104-arrow-emphasis&amp;period=2026-10" data-month="2026-10" title="2026 年 10 月 EPR 自动化进程产品地图"></iframe>
+				<iframe class="page-frame epr-frame" src="epr-automation-product-map.html?v=20261104-rate-background&amp;period=2026-10" data-month="2026-10" title="2026 年 10 月 EPR 自动化进程产品地图"></iframe>
 			</div>
 		</section>
 	</main>
@@ -364,7 +364,7 @@
 				if (frame.dataset.month !== month) {
 					// 重建嵌入页，避免 iframe 导航进入浏览器的月份返回历史。
 					const replacement = frame.cloneNode(false);
-					replacement.src = `${result.path}${line}-automation-product-map.html?v=20261104-arrow-emphasis&period=${month}`;
+					replacement.src = `${result.path}${line}-automation-product-map.html?v=20261104-rate-background&period=${month}`;
 					replacement.dataset.month = month;
 					replacement.style.removeProperty("height");
 					observeFrame(replacement);

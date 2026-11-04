@@ -320,7 +320,7 @@
 		let frames = [...document.querySelectorAll(".page-frame")];
 		const monthSelect = document.getElementById("resultMonth");
 		const months = {
-			"current": { label: "现状", period: "2026.10.01 至 2026.10.31", path: "", updated: "统计更新：2026.11.04 · 自动化率对比十月" },
+			"current": { label: "现状", period: "2026.10.01 至 2026.10.31", path: "" },
 			"2026-10": { label: "2026 年 10 月通晒结果", period: "2026.10.01 至 2026.10.31", path: "", updated: "统计更新：2026.11.04 · 自动化率对比九月" },
 			"2026-09": { label: "2026 年 9 月通晒结果", period: "2026.09.01 至 2026.09.30", path: "automation-monthly/2026-09/", updated: "历史快照" }
 		};
@@ -356,7 +356,9 @@
 			const result = months[month];
 			monthSelect.value = month;
 			document.getElementById("monthPeriod").textContent = result.period;
-			document.getElementById("resultHeading").innerHTML = `${result.label}<span>${result.updated}</span>`;
+			const resultHeading = document.getElementById("resultHeading");
+			resultHeading.hidden = month === "current";
+			resultHeading.innerHTML = month === "current" ? "" : `${result.label}<span>${result.updated}</span>`;
 			document.getElementById("monthStatus").textContent = month === "2026-09" ? "9 月历史快照" : "Q4 重点项目 · 5 项";
 			document.title = `${result.label} | VAT & EPR 自动化进程产品地图`;
 			frames = frames.map((frame, index) => {

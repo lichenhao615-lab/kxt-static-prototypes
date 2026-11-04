@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>VAT 自动化产品地图</title>
+	<style>
+		:root {
+			color-scheme: light;
+			--bg: #f3f6fa;
+			--surface: #ffffff;
+			--surface-soft: #f8fafc;
+			--text: #172033;
+			--muted: #667085;
+			--line: #dce4ef;
+			--navy: #16243d;
+			--blue: #1d5fd6;
+			--teal: #0f8b78;
+			--amber: #a56416;
+			--red: #b42318;
+			--cyan: #0e7490;
+			--slate: #596579;
+			--green-soft: #e8f7f2;
+			--blue-soft: #edf4ff;
+			--amber-soft: #fff4df;
+			--red-soft: #fff0ed;
+			--cyan-soft: #ecfeff;
+			--slate-soft: #eef3f8;
+			--shadow: 0 18px 45px rgba(22, 36, 61, 0.09);
+			--shadow-soft: 0 10px 24px rgba(22, 36, 61, 0.06);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			background:
+				linear-gradient(180deg, #eaf2f5 0, rgba(234, 242, 245, 0) 260px),
+				var(--bg);
+			color: var(--text);
+			font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+			letter-spacing: 0;
+		}
+
+		.page {
+			width: min(1360px, calc(100vw - 40px));
+			margin: 30px auto 48px;
+		}
+
+		.hero {
+			display: grid;
+			grid-template-columns: 1fr auto;
+			gap: 24px;
+			align-items: start;
+			padding: 28px 30px;
+			border: 1px solid rgba(255, 255, 255, 0.68);
+			border-radius: 18px;
+			background:
+				linear-gradient(135deg, rgba(15, 139, 120, 0.96), rgba(22, 36, 61, 0.98)),
+				var(--navy);
+			box-shadow: var(--shadow);
+			overflow: hidden;
+		}
+
+		.eyebrow {
+			margin: 0 0 8px;
+			color: rgba(255, 255, 255, 0.74);
+			font-size: 13px;
+			font-weight: 700;
+		}
+
+		h1,
+		h2,
+		h3,
+		p {
+			margin: 0;
+		}
+
+		h1 {
+			font-size: 34px;
+			line-height: 1.25;
+			color: #fff;
+		}
+
+		.report-meta {
+			min-width: 250px;
+			border: 1px solid rgba(255, 255, 255, 0.28);
+			border-radius: 12px;
+			background: rgba(255, 255, 255, 0.12);
+			padding: 14px 16px;
+			box-shadow: none;
+			color: rgba(255, 255, 255, 0.78);
+			font-size: 13px;
+			line-height: 1.8;
+			backdrop-filter: blur(10px);
+		}
+
+		.report-meta strong {
+			display: block;
+			color: #fff;
+			font-size: 18px;
+			line-height: 1.4;
+		}
+
+		.kpis {
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			gap: 16px;
+			margin: 18px 0 20px;
+		}
+
+		.kpi {
+			position: relative;
+			min-height: 116px;
+			border: 1px solid var(--line);
+			border-radius: 14px;
+			background: linear-gradient(180deg, #fff, #f9fbfd);
+			padding: 17px 18px 16px;
+			box-shadow: var(--shadow-soft);
+			overflow: hidden;
+		}
+
+		.kpi::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 4px;
+			background: linear-gradient(90deg, var(--teal), var(--blue));
+		}
+
+		.kpi span {
+			display: block;
+			color: var(--muted);
+			font-size: 13px;
+			line-height: 1.5;
+		}
+
+		.kpi strong {
+			display: block;
+			margin-top: 10px;
+			color: var(--navy);
+			font-size: 32px;
+			line-height: 1.1;
+		}
+
+		.kpi small {
+			display: block;
+			margin-top: 8px;
+			color: var(--muted);
+			font-size: 12px;
+			line-height: 1.5;
+		}
+
+		.band {
+			margin-top: 20px;
+			border: 1px solid var(--line);
+			border-radius: 16px;
+			background: var(--surface);
+			box-shadow: var(--shadow);
+			overflow: hidden;
+		}
+
+		.band-head {
+			display: flex;
+			justify-content: space-between;
+			gap: 18px;
+			padding: 18px 22px;
+			border-bottom: 1px solid var(--line);
+			background:
+				linear-gradient(90deg, #f8fbff, #f4faf8);
+		}
+
+		.band-head h2 {
+			color: var(--navy);
+			font-size: 19px;
+			line-height: 1.35;
+		}
+
+		.band-head p {
+			margin-top: 5px;
+			color: var(--muted);
+			font-size: 13px;
+			line-height: 1.6;
+		}
+
+		.legend {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: flex-end;
+			gap: 8px;
+			align-items: center;
+			min-width: 370px;
+		}
+
+		.legend .pill {
+			white-space: nowrap;
+		}
+
+		.table-scroll {
+			overflow-x: auto;
+			background: var(--surface);
+		}
+
+		table {
+			width: 100%;
+			min-width: 1180px;
+			border-collapse: collapse;
+			background: var(--surface);
+		}
+
+		.efficiency-column {
+			min-width: 360px;
+			width: 360px;
+			background: #fbfcfe;
+		}
+
+		.efficiency-reference {
+			display: grid;
+			gap: 10px;
+			color: var(--muted);
+			font-size: 13px;
+			line-height: 1.6;
+		}
+
+		.efficiency-reference-item {
+			padding-bottom: 10px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		.efficiency-reference-item:last-child {
+			padding-bottom: 0;
+			border-bottom: 0;
+		}
+
+		.efficiency-reference-item strong {
+			display: block;
+			color: var(--navy);
+		}
+
+		th,
+		td {
+			padding: 14px 16px;
+			border-bottom: 1px solid var(--line);
+			text-align: left;
+			vertical-align: top;
+			font-size: 13px;
+			line-height: 1.6;
+		}
+
+		th {
+			position: sticky;
+			top: 0;
+			z-index: 2;
+			background: #eef5f8;
+			color: #35445a;
+			font-weight: 800;
+			white-space: nowrap;
+		}
+
+		tbody tr:last-child td {
+			border-bottom: 0;
+		}
+
+		tbody tr:nth-child(even) {
+			background: #fbfcfe;
+		}
+
+		tbody tr:hover {
+			background: #f3faf9;
+		}
+
+		.country-cell {
+			min-width: 188px;
+		}
+
+		.country-title {
+			display: flex;
+			align-items: baseline;
+			gap: 8px;
+			font-weight: 900;
+			color: var(--navy);
+			font-size: 15px;
+		}
+
+		.country-title small {
+			color: var(--muted);
+			font-weight: 700;
+			font-size: 12px;
+		}
+
+		.volume {
+			min-width: 150px;
+		}
+
+		.volume strong {
+			display: block;
+			color: var(--navy);
+			font-size: 22px;
+			line-height: 1.1;
+		}
+
+		.bar {
+			width: 120px;
+			height: 7px;
+			margin-top: 8px;
+			border-radius: 999px;
+			background: #e6edf5;
+			overflow: hidden;
+		}
+
+		.bar i {
+			display: block;
+			width: var(--w);
+			min-width: 4px;
+			height: 100%;
+			border-radius: inherit;
+			background: linear-gradient(90deg, var(--teal), var(--blue));
+		}
+
+		.node {
+			min-width: 180px;
+		}
+
+		.node strong {
+			display: block;
+			margin-bottom: 7px;
+			color: var(--text);
+			font-size: 13px;
+		}
+
+		.node p {
+			color: var(--muted);
+			font-size: 12px;
+			line-height: 1.65;
+		}
+
+		.pill {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			min-height: 26px;
+			padding: 4px 10px;
+			border: 1px solid transparent;
+			border-radius: 999px;
+			font-size: 12px;
+			font-weight: 800;
+			line-height: 1.3;
+			white-space: nowrap;
+		}
+
+		.pill::before {
+			content: "";
+			width: 6px;
+			height: 6px;
+			border-radius: 999px;
+			background: currentColor;
+		}
+
+		.pill.auto {
+			border-color: rgba(12, 146, 113, 0.24);
+			background: var(--green-soft);
+			color: var(--teal);
+		}
+
+		.pill.batch {
+			border-color: rgba(23, 105, 224, 0.2);
+			background: var(--blue-soft);
+			color: var(--blue);
+		}
+
+		.pill.dev {
+			border-color: rgba(183, 121, 31, 0.24);
+			background: var(--amber-soft);
+			color: var(--amber);
+		}
+
+		.pill.risk {
+			border-color: rgba(180, 35, 24, 0.2);
+			background: var(--red-soft);
+			color: var(--red);
+		}
+
+		.pill.semi {
+			border-color: rgba(89, 101, 121, 0.22);
+			background: var(--slate-soft);
+			color: var(--slate);
+		}
+
+		.pill.none {
+			border-color: rgba(14, 116, 144, 0.2);
+			background: var(--cyan-soft);
+			color: var(--cyan);
+		}
+
+
+		.rate-cell {
+			min-width: 150px;
+			vertical-align: middle;
+			font-variant-numeric: tabular-nums;
+		}
+
+		.rate-value {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			white-space: nowrap;
+		}
+
+		.rate-value progress {
+			appearance: none;
+			-webkit-appearance: none;
+			flex: 0 0 84px;
+			width: 84px;
+			height: 8px;
+			border: 0;
+			border-radius: 4px;
+			overflow: hidden;
+			background: #e5e7eb;
+			accent-color: #376dff;
+		}
+
+		.rate-value progress::-webkit-progress-bar {
+			background: #e5e7eb;
+			border-radius: 4px;
+		}
+
+		.rate-value progress::-webkit-progress-value {
+			background: #376dff;
+			border-radius: 4px;
+		}
+
+		.rate-value progress::-moz-progress-bar {
+			background: #376dff;
+			border-radius: 4px;
+		}
+
+		.rate-value span {
+			min-width: 36px;
+			text-align: right;
+		}
+
+		.rate-empty {
+			color: var(--muted);
+		}
+
+		.timeline {
+			position: relative;
+			display: grid;
+			grid-template-columns: repeat(5, minmax(0, 1fr));
+			gap: 18px;
+			padding: 30px 22px 26px;
+			background: #fff;
+		}
+
+		.timeline::before {
+			content: "";
+			position: absolute;
+			left: 48px;
+			right: 48px;
+			top: 50px;
+			height: 2px;
+			background: linear-gradient(90deg, var(--teal), #9fb9d5, var(--amber));
+		}
+
+		.milestone {
+			position: relative;
+			padding: 44px 14px 0 0;
+		}
+
+		.milestone::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			top: 12px;
+			width: 20px;
+			height: 20px;
+			border: 5px solid var(--surface);
+			border-radius: 999px;
+			background: var(--teal);
+			box-shadow: 0 0 0 2px rgba(12, 146, 113, 0.28);
+			z-index: 1;
+		}
+
+		.milestone.plan::before {
+			background: var(--amber);
+			box-shadow: 0 0 0 2px rgba(183, 121, 31, 0.28);
+		}
+
+		.milestone time {
+			display: inline-block;
+			margin-bottom: 8px;
+			color: var(--teal);
+			font-size: 14px;
+			font-weight: 900;
+		}
+
+		.milestone.plan time {
+			color: var(--amber);
+		}
+
+		.milestone h3 {
+			color: var(--navy);
+			font-size: 16px;
+			line-height: 1.4;
+		}
+
+		.milestone p {
+			margin-top: 8px;
+			color: var(--muted);
+			font-size: 13px;
+			line-height: 1.7;
+		}
+
+		.note {
+			padding: 16px 20px 20px;
+			color: var(--muted);
+			font-size: 12px;
+			line-height: 1.8;
+			border-top: 1px solid var(--line);
+			background: #f8fbfd;
+		}
+
+		.note strong {
+			color: var(--text);
+		}
+
+		@media (max-width: 1080px) {
+			.hero {
+				grid-template-columns: 1fr;
+			}
+
+			.report-meta {
+				min-width: 0;
+			}
+
+			.kpis,
+			.timeline {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+			}
+
+			.legend {
+				justify-content: flex-start;
+				min-width: 0;
+			}
+		}
+
+		@media (max-width: 720px) {
+			.page {
+				width: min(100vw - 24px, 1360px);
+				margin-top: 16px;
+			}
+
+			h1 {
+				font-size: 26px;
+			}
+
+			.kpis,
+			.timeline {
+				grid-template-columns: 1fr;
+			}
+
+			.band-head {
+				display: grid;
+			}
+
+			.timeline {
+				gap: 0;
+				padding: 20px 20px 20px 34px;
+			}
+
+			.timeline::before {
+				left: 22px;
+				right: auto;
+				top: 30px;
+				bottom: 38px;
+				width: 2px;
+				height: auto;
+			}
+
+			.milestone {
+				padding: 0 0 22px 22px;
+			}
+
+			.milestone::before {
+				left: -20px;
+				top: 0;
+			}
+		}
+
+		@media print {
+			body {
+				background: #fff;
+			}
+
+			.page {
+				width: 100%;
+				margin: 0;
+			}
+
+			.band,
+			.kpi,
+			.report-meta {
+				box-shadow: none;
+			}
+
+			th {
+				position: static;
+			}
+		}
+	</style>
+</head>
+<body>
+	<main class="page">
+		<header class="hero">
+			<div>
+				<p class="eyebrow">VAT 自动化进程产品地图</p>
+				<h1>VAT 自动化进程产品地图</h1>
+			</div>
+			<div class="report-meta">
+				<strong>统计口径</strong>
+				<div>时间：2026-09-01 至 2026-09-30</div>
+				<div>范围：VAT 类目，基础服务单</div>
+				<div>指标：资料审核通过数量</div>
+			</div>
+		</header>
+
+		<section class="kpis" aria-label="核心指标">
+			<div class="kpi">
+				<span>9月审核通过基础服务单</span>
+				<strong>2,446</strong>
+				<small>当前展示的 15 条 VAT 国家线合计</small>
+			</div>
+			<div class="kpi">
+				<span>已完全自动化国家</span>
+				<strong>4</strong>
+				<small>德国、波兰、捷克、西班牙已完成自动化闭环</small>
+			</div>
+			<div class="kpi">
+				<span>本轮完成国家线</span>
+				<strong>3</strong>
+				<small>波兰、捷克完成全自动，西班牙补齐资料制作和注册递交</small>
+			</div>
+			<div class="kpi">
+				<span>TOP 6 国家承载量</span>
+				<strong>90.9%</strong>
+				<small>德国、英国、波兰、荷兰、法国、西班牙</small>
+			</div>
+		</section>
+
+		<section class="band">
+			<div class="band-head">
+				<div>
+					<h2>国家线自动化矩阵</h2>
+					<p>按 2026 年 9 月审核通过的 VAT 基础服务单数量排序，展示资料制作、注册递交、税号录入三节点进度。</p>
+				</div>
+				<div class="legend" aria-label="状态图例">
+					<span class="pill auto">已自动化</span>
+
+					<span class="pill dev">开发中</span>
+					<span class="pill risk">体验风险</span>
+					<span class="pill semi">待自动化</span>
+				</div>
+			</div>
+			<div class="table-scroll">
+				<table>
+					<thead>
+						<tr>
+							<th>排名 / 国家线</th>
+							<th>9月审核通过量</th>
+							<th>资料制作</th>
+							<th>注册递交</th>
+							<th>税号录入</th>
+							<th>自动化率</th>
+							<th>注册人效参考</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="country-cell"><div class="country-title">1. 德国 <small>DE</small></div></td>
+							<td class="volume"><strong>530</strong><div class="bar"><i style="--w:100%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料包制作和校验后流转已自动化。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>注册递交已实现自动化。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入已完成自动化闭环。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">2. 英国 <small>GB</small></div></td>
+							<td class="volume"><strong>500</strong><div class="bar"><i style="--w:94%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill dev">待RPA完成</span></strong><p>注册递交待 RPA 完成。</p></td>
+							<td class="node"><strong><span class="pill dev">待RPA完成</span></strong><p>税号录入待 RPA 完成。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">3. 波兰 <small>PL</small></div></td>
+							<td class="volume"><strong>421</strong><div class="bar"><i style="--w:79%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>注册递交自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>上传税号自动化已完成。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">4. 荷兰 <small>NL</small></div></td>
+							<td class="volume"><strong>336</strong><div class="bar"><i style="--w:63%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入使用通用模板上传。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">5. 法国 <small>FR</small></div></td>
+							<td class="volume"><strong>290</strong><div class="bar"><i style="--w:55%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入自动化已完成。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">6. 西班牙 <small>ES</small></div></td>
+							<td class="volume"><strong>147</strong><div class="bar"><i style="--w:28%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>注册递交自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入自动化已完成。</p></td>
+<td class="rate-cell"><div class="rate-value" title="自动化率：68%"><progress value="15" max="22" aria-label="自动化率 15/22，68%"></progress><span>15/22</span></div></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">7. 捷克 <small>CZ</small></div></td>
+							<td class="volume"><strong>67</strong><div class="bar"><i style="--w:13%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>注册递交自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入自动化已完成。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">8. 意大利 <small>IT</small></div></td>
+							<td class="volume"><strong>55</strong><div class="bar"><i style="--w:10%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入使用通用模板上传。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">9. 沙特 <small>SA</small></div></td>
+							<td class="volume"><strong>51</strong><div class="bar"><i style="--w:10%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入使用通用模板上传。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">10. 阿联酋 <small>UAE</small></div></td>
+							<td class="volume"><strong>27</strong><div class="bar"><i style="--w:5%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入使用通用模板上传。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">11. 墨西哥 <small>MX</small></div></td>
+							<td class="volume"><strong>13</strong><div class="bar"><i style="--w:2%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入使用通用模板上传。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">12. 日本 <small>JPN</small></div></td>
+							<td class="volume"><strong>6</strong><div class="bar"><i style="--w:1%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入使用通用模板上传。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">13. 爱尔兰 <small>IE</small></div></td>
+							<td class="volume"><strong>2</strong><div class="bar"><i style="--w:1%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入使用通用模板上传。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">14. 瑞典 <small>SWE</small></div></td>
+							<td class="volume"><strong>1</strong><div class="bar"><i style="--w:1%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入使用通用模板上传。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+						<tr>
+							<td class="country-cell"><div class="country-title">15. 奥地利 <small>AT</small></div></td>
+							<td class="volume"><strong>0</strong><div class="bar"><i style="--w:0%"></i></div></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
+							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
+							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入使用通用模板上传。</p></td>
+<td class="rate-cell"><span class="rate-empty" title="暂无数据" aria-label="暂无数据">&mdash;</span></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<script>
+				const vatEfficiencyByCountry = {
+					"德国": "<strong>德国 VAT：30 单/人天（≈16.2分钟/单）</strong>技术：王洋兵<br>交付：Claire（Danielle负责）",
+					"法国": "<strong>法国 VAT：35 单/人天（≈14分钟/单）</strong>技术：李剑锋<br>交付：Haley（Lux负责）"
+				};
+				document.querySelectorAll("table:not(.efficiency-table) tbody tr").forEach(row => {
+					const country = row.querySelector(".country-title")?.textContent.trim().split(/\s+/)[1] || "";
+					const content = vatEfficiencyByCountry[country] || '<span class="rate-empty">&mdash;</span>';
+					row.insertAdjacentHTML("beforeend", `<td class="efficiency-column"><div class="efficiency-reference"><div class="efficiency-reference-item">${content}</div></div></td>`);
+				});
+			</script>
+			<div class="note">
+				<strong>数据说明：</strong>按 VAT 类目、基础服务单、资料审核通过时间落在 2026 年 9 月统计；按服务单号去重，排除退款中、停止服务、已注销、注销中状态。合计仅含当前展示的 15 条国家线，未含斯洛伐克 1 单；统计更新于 2026-10-13。<br>自动化率 = 当前自动化数 / 自动化总数&mdash; 表示暂无数据。
+			</div>
+		</section>
+
+		<section class="band">
+			<div class="band-head">
+				<div>
+					<h2>自动化里程碑</h2>
+				</div>
+			</div>
+			<div class="timeline">
+				<div class="milestone">
+					<time>7.15</time>
+					<h3>德国实现全自动化</h3>
+					<p>德国资料制作、注册递交、税号录入三节点完成自动化闭环。</p>
+				</div>
+				<div class="milestone">
+					<time>7.30</time>
+					<h3>上线资料包能力</h3>
+					<p>上线资料包能力，为资料制作自动化打下基础。</p>
+				</div>
+				<div class="milestone">
+					<time>8.6</time>
+					<h3>录入税号已自动化</h3>
+					<p>税号录入具备通用模板/批量上传能力，作为各国家线过渡能力。</p>
+				</div>
+				<div class="milestone">
+					<time>9月上旬</time>
+					<h3>波兰、捷克实现全自动化</h3>
+					<p>波兰、捷克资料制作、注册递交、税号录入三节点已完成自动化闭环。</p>
+				</div>
+				<div class="milestone">
+					<time>当前</time>
+					<h3>西班牙补齐资料制作和注册递交</h3>
+					<p>西班牙资料制作与注册递交已完成，税号录入延续批量上传能力，形成自动化闭环。</p>
+				</div>
+			</div>
+		</section>
+	</main>
+	<script src="automation-map-frame.js"></script>
+</body>
+</html>

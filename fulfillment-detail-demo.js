@@ -50,17 +50,41 @@
 		{ taxNumber: "112/345/67890", certificate: "德国VAT注册证书.pdf", effectiveDate: "2026-12-01" },
 		{ deliveryNote: "已向客户交付税号、证书及首次申报指引。", customerConfirmed: true }
 	];
+	const contextScenarios = [["cycle", "周期服务"], ["unlinked", "无关联单据"], ["multiple", "多服务单关联"], ["restricted", "权限受限"], ["loadError", "资料加载失败"]];
+	function seedContext(instance, kind) {
+		const periodic = kind === "cycle", unlinked = kind === "unlinked";
+		const service = {
+			name: periodic ? "德国 VAT 注册及年度维护" : "德国 VAT 注册 · 首次注册", country: "德国",
+			category: "国际税务 → VAT", productType: "基础服务 → 注册",
+			specs: [{ label: "注册类型", value: "首次注册" }, { label: "服务方式", value: "自营" }],
+			periodic, start: "2026-10-19", end: "2027-10-18", periodStatus: "服务中"
+		};
+		return {
+			service,
+			customer: { name: "深圳远航贸易有限公司", id: "KH202610190088", account: "yuanhang_trade", company: "深圳远航企业管理有限公司", accountType: "主账号", level: "B", source: "线上", channel: "否", registeredAt: "2025-03-18 10:26:43" },
+			team: { owner: "李晨浩", accountant: "张静", support: "", manager: "周敏", provider: "德国自营团队" },
+			company: { name: "YUANHANG TRADING LIMITED", location: "中国 / 深圳", legalPerson: "陈海", store: "" },
+			permissions: { customer: kind !== "restricted", amount: kind !== "restricted", order: kind !== "restricted", service: kind !== "restricted" },
+			loadStates: { customer: kind === "loadError" ? "error" : "ready", relations: kind === "loadError" ? "error" : "ready" },
+			orders: unlinked || !instance.orderNo ? [] : [{ number: instance.orderNo, product: "德国 VAT 注册 · 首次注册 × 1", amount: "1,280.00", currency: "CNY", invoiced: "是", source: "CRM", type: "普通订单", status: "已完成", paidAt: "2026-10-19 14:30:06" }],
+			serviceOrders: unlinked ? [] : [
+				{ number: `FW${instance.code.slice(2)}`, name: service.name, status: "已生效", createdAt: instance.createdAt },
+				...(kind === "multiple" ? [{ number: `FW${instance.code.slice(2)}-02`, name: "德国 VAT 注册 · 补充资料服务", status: "已生效", createdAt: "2026-10-23 16:10:00" }] : [])
+			]
+		};
+	}
 	function newRun(node, index, completed = false) {
 		return { id: uid(), nodeId: node.id, round: 1, valid: true, status: completed ? "completed" : "active", actor: completed ? people[index] : "李晨浩", startedAt: index ? dates[index - 1] : "2026-10-19 14:32:18", endedAt: completed ? dates[index] : "", dueAt: "2026-11-04 18:00", values: completed ? clone(sampleValues[index]) : {} };
 	}
 	function seedInstance(kind) {
 		const nodes = clone(baseNodes), finished = kind === "completed";
 		const instance = {
-			code: kind === "empty" ? "SV20261019000124" : finished ? "SV20261019000125" : kind === "returned" ? "SV20261019000126" : "SV20261019000123",
-			orderNo: "DD2026101900123456", createdAt: "2026-10-19 14:32:18", templateVersion: "V2.3", nodes, currentIndex: finished ? -1 : 4,
+			code: `SV20261019${({ active: "000123", empty: "000124", completed: "000125", returned: "000126", cycle: "000127", unlinked: "000128", multiple: "000129", restricted: "000130", loadError: "000131" })[kind] || "000123"}`,
+			orderNo: kind === "unlinked" ? "" : "DD2026101900123456", createdAt: "2026-10-19 14:32:18", templateVersion: "V2.3", nodes, currentIndex: finished ? -1 : 4,
 			runs: nodes.slice(0, finished ? 7 : 5).map((n, i) => newRun(n, i, finished || i < 4)),
 			tickets: [], events: [], draft: {}, returnCount: 0
 		};
+		instance.context = seedContext(instance, kind);
 		if (!finished && kind !== "empty" && kind !== "returned") {
 			instance.tickets.push({ id: uid(), number: "WO202610270001", title: "税局要求补充经营地址证明", type: "资料补充", owner: "周敏", creator: "李晨浩", nodeId: "n5", runId: instance.runs[4].id, blocking: true, status: "处理中", createdAt: "2026-10-27 09:20:00", description: "税局要求提供近三个月经营地址证明，请客户经理收集后反馈。", resolution: "" });
 		}
@@ -68,12 +92,15 @@
 		return instance;
 	}
 	function initialState() {
-		return { schema: 2, scenario: "active", instances: Object.fromEntries(["active", "returned", "empty", "completed"].map(k => [k, seedInstance(k)])), published: { version: "V2.3", nodes: clone(baseNodes) }, draftTemplate: clone(baseNodes), versions: [{ version: "V2.3", time: "2026-10-18 16:00:00", note: "德国 VAT 注册标准流程，新增结果齐备与交付验收。", nodes: clone(baseNodes) }] };
+		return { schema: 2, scenario: "active", instances: Object.fromEntries(["active", "returned", "empty", "completed", ...contextScenarios.map(([kind]) => kind)].map(k => [k, seedInstance(k)])), published: { version: "V2.3", nodes: clone(baseNodes) }, draftTemplate: clone(baseNodes), versions: [{ version: "V2.3", time: "2026-10-18 16:00:00", note: "德国 VAT 注册标准流程，新增结果齐备与交付验收。", nodes: clone(baseNodes) }] };
 	}
 	let store;
 	try { store = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { /* 存储不可用时仍可使用本次会话。 */ }
 	if (!store || store.schema !== 2) store = initialState();
-	let view = "detail", selectedNode = store.draftTemplate[4]?.id || store.draftTemplate[0].id, detailTab = "business", filterOpen = false, templateDirty = false, drawerDirty = false, toastTimer;
+	// 只补充新增的展示资料，保留原有任务、草稿、工单及流程版本。
+	for (const [kind] of contextScenarios) if (!store.instances[kind]) store.instances[kind] = seedInstance(kind);
+	for (const [kind, instance] of Object.entries(store.instances)) if (!instance.context) instance.context = seedContext(instance, kind);
+	let view = "detail", selectedNode = store.draftTemplate[4]?.id || store.draftTemplate[0].id, filterOpen = false, templateDirty = false, drawerDirty = false, toastTimer;
 	let drawerContext = null;
 	const current = () => store.instances[store.scenario];
 	function activeNode(instance) { return instance.nodes[instance.currentIndex]; }
@@ -124,15 +151,6 @@
 		});
 		return records.filter(record => record.time).sort((a, b) => b.time.localeCompare(a.time) || (b.order || 0) - (a.order || 0) || b.rank - a.rank || (b.index || 0) - (a.index || 0));
 	}
-	function progressSummary(instance, done) {
-		const status = overall(instance), node = activeNode(instance);
-		return `<aside class="progress-summary ${status[1]}" aria-label="整体进度">
-			<div class="progress-status"><span class="status-symbol">${icon(instance.currentIndex < 0 ? "check" : blockers(instance).length ? "alert" : "clock")}</span><strong id="overallStatus">${status[0]}</strong></div>
-			<p class="progress-count"><b id="effectiveCount">${done}</b> / ${instance.nodes.length}<span>节点有效完成</span></p>
-			<div class="progress-bar" role="progressbar" aria-label="有效完成节点" aria-valuemin="0" aria-valuemax="${instance.nodes.length}" aria-valuenow="${done}"><span style="width:${done / instance.nodes.length * 100}%"></span></div>
-			<p class="progress-location">${node ? `当前：${esc(node.name)}` : "全部节点完成，交付已确认"}</p>
-		</aside>`;
-	}
 	function latestProgressView(instance) {
 		const latest = progressRecords(instance)[0];
 		return `<div class="latest-progress" id="latestProgress"><span class="latest-label">最新进展</span><p class="latest-copy" title="${esc(latest ? `${latest.title}；${latest.description}` : "")}">${latest ? `<b>${esc(latest.title)}</b><span>${esc(latest.description)}</span>` : "暂无业务进展"}</p>${latest ? `<time>${esc(latest.time)}</time>` : ""}<button class="link-btn" data-action="progress">进度明细${icon("chevron")}</button></div>`;
@@ -142,6 +160,7 @@
 		$("#detailTab").classList.toggle("selected", view === "detail");
 		$("#configTab").classList.toggle("selected", view === "config");
 		document.querySelectorAll("button.side-item").forEach(el => el.classList.toggle("selected", el.dataset.action === `view-${view}`));
+		$("#app").classList.toggle("detail-layout", view === "detail");
 		$("#app").innerHTML = view === "detail" ? detailView() : configView();
 		const milestones = $(".process-milestones"), currentMarker = $("#processTrack .current");
 		if (milestones && currentMarker && milestones.scrollWidth > milestones.clientWidth) {
@@ -149,29 +168,29 @@
 		}
 	}
 	function detailView() {
-		const instance = current(), status = overall(instance), done = instance.nodes.filter(n => instance.runs.some(r => r.nodeId === n.id && r.valid && r.status === "completed")).length;
-		const options = [["active", "税局处理中"], ["returned", "退回重办"], ["empty", "无关联工单"], ["completed", "已完成交付"], ...(store.instances.fresh ? [["fresh", "新版本履约单"]] : [])];
+		const instance = current(), context = instance.context, status = overall(instance);
+		const options = [["active", "税局处理中"], ["returned", "退回重办"], ["empty", "无关联工单"], ["completed", "已完成交付"], ...contextScenarios, ...(store.instances.fresh ? [["fresh", "新版本履约单"]] : [])];
 		return `<header class="page-header">
-			<div class="title-wrap"><div class="title-line"><h1>履约单详情</h1>${chip(status[0], status[1])}</div><div class="breadcrumb">履约管理 / 基础服务 / 德国 VAT 注册</div></div>
+			<div class="title-wrap"><div class="title-line"><h1>履约单详情</h1>${chip(status[0], status[1])}</div><div class="breadcrumb">履约管理 / 基础服务 / <span class="service-name">${esc(context.service.name)}</span></div></div>
 			<label class="caption" for="scenario">评审样例</label><select id="scenario" class="scenario-select">${options.map(([v, l]) => `<option value="${v}" ${v === store.scenario ? "selected" : ""}>${l}</option>`).join("")}</select>
 			<button class="icon-btn" data-action="reset" title="重置全部评审样例" aria-label="重置全部评审样例">${icon("rotate")}</button>
-			<div class="header-actions">${button("处理记录", "history", "", "", "history")}${button("流程配置", "view-config", "", "", "settings")}</div>
+			<div class="header-actions">${context.serviceOrders.length && context.permissions.service ? button("查看服务单", "view-service", "", "", "file") : ""}${button("处理记录", "history", "", "", "history")}${button("流程配置", "view-config", "", "", "settings")}</div>
 		</header>
 		<section class="section" id="basicSection"><div class="section-head"><h2 class="section-title">基础信息</h2><div class="spacer"></div>${chip("德国 VAT 注册", "teal")}</div>
 			<dl class="info-grid">
-				${field("订单号", `<span class="number" id="orderNo">${instance.orderNo}</span><button class="icon-btn" data-action="copy" data-value="${instance.orderNo}" title="复制订单号" aria-label="复制订单号">${icon("copy")}</button>`)}
+				${field("订单号", instance.orderNo ? `${context.permissions.order && context.orders.some(order => order.number === instance.orderNo) ? `<button class="link-btn number" id="orderNo" data-action="view-order" data-id="${esc(instance.orderNo)}">${esc(instance.orderNo)}</button>` : `<span class="number" id="orderNo">${esc(instance.orderNo)}</span>`}<button class="icon-btn" data-action="copy" data-value="${esc(instance.orderNo)}" title="复制订单号" aria-label="复制订单号">${icon("copy")}</button>` : '<span id="orderNo">--</span>')}
 				${field("履约单号", `<span class="number" id="serviceCode">${instance.code}</span><button class="icon-btn" data-action="copy" data-value="${instance.code}" title="复制履约单号" aria-label="复制履约单号">${icon("copy")}</button>`)}
-				${field("客户名称", "深圳远航贸易有限公司")}${field("履约负责人", "李晨浩")}
-				${field("国家 / 产品", "德国 / VAT 注册")}${field("业务归属", "自营 · 注册服务")}
-				${field("创建时间", esc(instance.createdAt || "2026-10-19 14:32:18"))}${field("目标交付日期", "2026-11-10")}
+				${field("客户名称", context.permissions.customer ? esc(context.customer.name) : '<span class="muted">无权限查看</span>')}${field("履约负责人", esc(context.team.owner || "待分配"))}
+				${field("国家 / 产品", "德国 / VAT 注册")}${field("关联会计师", esc(context.team.accountant || "待分配"))}
+				${field("创建时间", esc(instance.createdAt || "2026-10-19 14:32:18"))}
 			</dl>
 		</section>
 		<section class="section" id="processSection"><div class="section-head"><h2 class="section-title">流程节点与状态</h2>${instance.returnCount ? chip(`返工 ${instance.returnCount} 次`, "red") : ""}<div class="spacer"></div>
 			<button class="link-btn" data-action="snapshot">绑定流程 ${instance.templateVersion}</button><span class="muted">｜</span><div class="legend"><span class="done">已完成</span><span class="active">当前处理</span><span>未开始</span><span class="returned">退回重办</span></div>
-		</div><div class="process-overview">${progressSummary(instance, done)}<div class="process-milestones" style="--process-width:${instance.nodes.length > 7 ? instance.nodes.length * 190 : 0}px">${processView(instance)}</div></div>${latestProgressView(instance)}${currentTaskView(instance)}</section>
+		</div><div class="process-overview"><div class="process-milestones" style="--process-width:${instance.nodes.length > 7 ? instance.nodes.length * 190 : 0}px">${processView(instance)}</div></div>${latestProgressView(instance)}${currentTaskView(instance)}</section>
 		<section class="section" id="ticketSection"><div class="section-head"><h2 class="section-title">关联工单</h2>${chip(`${instance.tickets.length} 条`)}<div class="spacer"></div><label class="toggle-label"><input type="checkbox" id="openOnly" ${filterOpen ? "checked" : ""}>仅看未完成</label>${button("创建工单", "create-ticket", "small", instance.currentIndex < 0 ? "disabled title='履约已完成'" : "", "plus")}</div>${ticketTable(instance)}</section>
-		<section class="section" id="businessSection"><div class="section-head"><h2 class="section-title">履约单详情</h2><nav class="content-tabs" aria-label="详情内容">${[["business", "业务资料"], ["outcomes", "交付成果"], ["files", "往来附件"]].map(([v, l]) => `<button class="${detailTab === v ? "active" : ""}" data-action="detail-tab" data-tab="${v}">${l}</button>`).join("")}</nav><div class="spacer"></div><span class="caption">资料版本 V3 · 最近更新 2026-10-23</span></div>${businessView(instance)}</section>
-		<footer class="page-foot"><span>履约升级 V2.0 · 产品评审 Demo</span><span>1920 × 1080</span></footer>`;
+		<section class="section" id="businessSection"><div class="section-head"><h2 class="section-title">履约单详情</h2><div class="spacer"></div><span class="caption">资料版本 V3 · 最近更新 2026-10-23</span></div><div class="detail-content" id="detailContent">${businessView(instance)}${peopleView(instance)}${relationsView(instance)}${outcomesView(instance)}${filesView(instance)}</div></section>
+		<footer class="page-foot"><span>履约升级 V2.2 · 内部运营 Demo</span><span>1920 × 1080</span></footer>`;
 	}
 	function processView(instance) {
 		const groups = [];
@@ -209,15 +228,73 @@
 	}
 	function businessView(instance) {
 		const values = effectiveValues(instance);
-		if (detailTab === "outcomes") return `<div class="outcome-grid"><div><p class="caption">德国税号</p><p class="value">${esc(values.taxNumber || "待取得")}</p></div><div><p class="caption">VAT 证书</p><p class="value">${values.certificate ? `<button class="link-btn" data-action="preview" data-name="${esc(values.certificate)}">${esc(values.certificate)}</button>` : "待取得"}</p></div><div><p class="caption">税号生效日期</p><p class="value">${esc(values.effectiveDate || "--")}</p></div></div><div class="attachment-strip">${values.deliveryNote ? esc(values.deliveryNote) : "尚未完成服务交付"}</div>`;
-		if (detailTab === "files") {
-			const files = Object.entries(values).filter(([key]) => outputs[key]?.type === "file");
-			return `<div class="table-wrap"><table class="data-table"><thead><tr><th>附件名称</th><th>业务用途</th><th>所属流程版本</th><th>操作</th></tr></thead><tbody>${files.map(([key, name]) => `<tr><td>${esc(name)}</td><td>${esc(outputs[key].label)}</td><td>${instance.templateVersion}</td><td><button class="link-btn" data-action="preview" data-name="${esc(name)}">预览</button></td></tr>`).join("") || '<tr><td colspan="4">暂无有效附件</td></tr>'}</tbody></table></div>`;
-		}
-		return `<dl class="info-grid detail-grid">${field("公司名称", "YUANHANG TRADING LIMITED")}${field("客户账号", "yuanhang_trade")}${field("公司注册地", "中国 / 深圳")}${field("服务商", "德国自营团队")}
+		const { service, company } = instance.context;
+		return `<h3 class="detail-group-title">服务信息</h3><dl class="info-grid grouped-grid">
+			${field("服务名称", esc(service.name))}${field("国家", esc(service.country))}${field("服务类目", esc(service.category))}${field("商品类型", esc(service.productType))}
+			${service.specs.map(spec => field(spec.label, esc(spec.value))).join("")}
+			${service.periodic ? `${field("服务区间", `${esc(service.start)} ~ ${esc(service.end)}`)}${field("到期时间", esc(service.end))}${field("服务期状态", chip(service.periodStatus, "teal"))}` : ""}
+		</dl><h3 class="detail-group-title">履约资料 <span class="caption">本单资料版本 V3 · 最近更新 2026-10-23 14:50:18</span></h3>
+		<dl class="info-grid grouped-grid">${field("公司名称", esc(company.name))}${field("公司注册地", esc(company.location))}${field("法人", esc(company.legalPerson || "--"))}${field("店铺名称", esc(company.store || "--"))}
 			${field("服务类型", "首次注册")}${field("递交方式", "API 递交")}${field("资料审核", values.auditNote ? "已通过" : "待审核")}${field("期望生效日期", "2026-12-01")}
 			${field("德国税号", esc(values.taxNumber || "--"))}${field("欧盟 VAT 号", esc(values.euVat || "--"))}${field("VAT 证书", values.certificate ? `<button class="link-btn" data-action="preview" data-name="${esc(values.certificate)}">查看证书</button>` : '<span class="muted">待取得</span>')}${field("客户备注", "需在首次申报前完成注册")}
 		</dl><div class="attachment-strip">${["materialPackage", "packageFile", "submitReceipt"].map(key => values[key] ? `<button class="link-btn" data-action="preview" data-name="${esc(values[key])}">${icon("file")}${esc(outputs[key].label)}</button>` : `<span>${esc(outputs[key].label)}：本轮未完成</span>`).join("")}</div>`;
+	}
+	function outcomesView(instance) {
+		const values = effectiveValues(instance);
+		return `<h3 class="detail-group-title" id="outcomesSection">交付成果</h3><div class="outcome-grid"><div><p class="caption">德国税号</p><p class="value">${esc(values.taxNumber || "待取得")}</p></div><div><p class="caption">VAT 证书</p><p class="value">${values.certificate ? `<button class="link-btn" data-action="preview" data-name="${esc(values.certificate)}">${esc(values.certificate)}</button>` : "待取得"}</p></div><div><p class="caption">税号生效日期</p><p class="value">${esc(values.effectiveDate || "--")}</p></div></div><div class="attachment-strip">${values.deliveryNote ? esc(values.deliveryNote) : "尚未完成服务交付"}</div>`;
+	}
+	function filesView(instance) {
+		const files = Object.entries(effectiveValues(instance)).filter(([key]) => outputs[key]?.type === "file");
+		return `<h3 class="detail-group-title" id="filesSection">往来附件</h3><div class="relation-table-wrap"><table class="data-table"><thead><tr><th>附件名称</th><th>业务用途</th><th>所属流程版本</th><th>操作</th></tr></thead><tbody>${files.map(([key, name]) => `<tr><td>${esc(name)}</td><td>${esc(outputs[key].label)}</td><td>${instance.templateVersion}</td><td><button class="link-btn" data-action="preview" data-name="${esc(name)}">预览</button></td></tr>`).join("") || '<tr><td colspan="4">暂无有效附件</td></tr>'}</tbody></table></div>`;
+	}
+	function regionError(region) {
+		return `<div class="region-error" role="alert">${icon("alert")}<span>${region === "customer" ? "客户信息" : "关联单据"}加载失败</span>${button("重试", "retry-region", "small", `data-region="${region}"`, "rotate")}</div>`;
+	}
+	function peopleView(instance) {
+		const { customer, team, permissions, loadStates } = instance.context;
+		const customerContent = !permissions.customer ? '<div class="access-empty">无权限查看客户信息</div>' : loadStates.customer === "error" ? regionError("customer") : `<dl class="info-grid grouped-grid">
+			${field("客户名称", esc(customer.name))}${field("客户 ID", esc(customer.id))}${field("客户账号", esc(customer.account))}${field("客户级别", esc(customer.level || "--"))}
+			${field("主体公司名称", esc(customer.company))}${field("账号类型", esc(customer.accountType))}${field("数据来源", esc(customer.source))}${field("是否渠道用户", esc(customer.channel))}
+			${field("注册时间", esc(customer.registeredAt))}
+		</dl>`;
+		return `<h3 class="detail-group-title">客户信息 <span class="caption">客户档案</span></h3>${customerContent}
+			<h3 class="detail-group-title">服务团队 <span class="caption">当前分配</span></h3><dl class="info-grid grouped-grid">
+			${field("履约负责人", esc(team.owner || "待分配"))}${field("当前工序负责人", esc(instance.currentIndex < 0 ? "--（无当前任务）" : activeRun(instance)?.actor || "待分配"))}${field("关联会计师", esc(team.accountant || "待分配"))}${field("客服专员", esc(team.support || "待分配"))}${field("客户经理", esc(team.manager || "待分配"))}${field("服务商", esc(team.provider || "待分配"))}
+			</dl>`;
+	}
+	function orderLink(order, allowed) {
+		return `<span class="document-number">${allowed ? `<button class="link-btn" data-action="view-order" data-id="${esc(order.number)}">${esc(order.number)}</button>` : `<span>${esc(order.number)}</span>`}<button class="icon-btn" data-action="copy" data-value="${esc(order.number)}" title="复制订单号" aria-label="复制订单号">${icon("copy")}</button></span>`;
+	}
+	function relationsView(instance) {
+		const { orders, serviceOrders, permissions, loadStates } = instance.context;
+		if (loadStates.relations === "error") return `<h3 class="detail-group-title">关联订单与单据关系</h3>${regionError("relations")}`;
+		return `<h3 class="detail-group-title">关联订单 ${chip(`${orders.length} 条`)}</h3>
+			${orders.length ? `<div class="relation-table-wrap"><table class="data-table order-table"><thead><tr><th style="width:230px">订单号</th><th>商品名称</th>${permissions.amount ? '<th style="width:135px">实付金额</th>' : ""}<th style="width:90px">是否开票</th><th style="width:100px">订单来源</th><th style="width:100px">订单类型</th><th style="width:100px">订单状态</th><th style="width:110px">操作</th></tr></thead><tbody>${orders.map(order => `<tr><td>${orderLink(order, permissions.order)}</td><td>${esc(order.product)}</td>${permissions.amount ? `<td>${esc(order.currency)} ${esc(order.amount)}</td>` : ""}<td>${esc(order.invoiced)}</td><td>${esc(order.source)}</td><td>${esc(order.type)}</td><td>${chip(order.status, "green")}</td><td>${permissions.order ? `<button class="link-btn" data-action="view-order" data-id="${esc(order.number)}">查看</button>` : '<span class="muted">无查看权限</span>'}</td></tr>`).join("")}</tbody></table></div>` : '<div class="access-empty">暂无关联订单</div>'}
+			<h3 class="detail-group-title">关联关系</h3><div class="relation-table-wrap"><table class="data-table"><thead><tr><th style="width:160px">单据类型</th><th>单据编号</th><th>关联关系</th><th style="width:120px">操作</th></tr></thead><tbody>
+			<tr><td>履约单</td><td>${esc(instance.code)}</td><td>当前履约单</td><td><span class="muted">当前单据</span></td></tr>
+			${serviceOrders.map(item => `<tr><td>服务单</td><td>${esc(item.number)}</td><td>来源服务单</td><td>${permissions.service ? `<button class="link-btn" data-action="view-service" data-id="${esc(item.number)}">查看</button>` : '<span class="muted">无查看权限</span>'}</td></tr>`).join("")}
+			${orders.map(item => `<tr><td>订单</td><td>${esc(item.number)}</td><td>来源订单</td><td>${permissions.order ? `<button class="link-btn" data-action="view-order" data-id="${esc(item.number)}">查看</button>` : '<span class="muted">无查看权限</span>'}</td></tr>`).join("")}
+			</tbody></table></div>${serviceOrders.length ? "" : '<p class="relation-empty">暂无关联服务单</p>'}`;
+	}
+	function relatedDocument(kind, id) {
+		const instance = current(), context = instance.context, service = kind === "service";
+		if (!context.permissions[kind]) { toast("无权限查看该单据"); return; }
+		if (context.loadStates.relations === "error") {
+			openDrawer("关联单据", regionError("relations"), button("返回履约详情", "close-drawer", "", "", "arrow-left"));
+			drawerContext = { kind: "related", documentKind: kind, documentId: id }; return;
+		}
+		const list = service ? context.serviceOrders : context.orders;
+		if (service && !id && list.length > 1) {
+			openDrawer("选择关联服务单", `<p class="caption related-origin">履约单：${esc(instance.code)}</p>${list.map(item => `<article class="related-option"><div><h3>${esc(item.name)}</h3><p class="caption">${esc(item.number)} · ${esc(item.status)}</p></div>${button("查看", "view-service", "small", `data-id="${esc(item.number)}"`, "chevron")}</article>`).join("")}`, button("返回履约详情", "close-drawer", "", "", "arrow-left"));
+			drawerContext = { kind: "related" }; return;
+		}
+		const item = list.find(entry => entry.number === id) || (!id && list.length === 1 ? list[0] : null);
+		if (!item) { toast(service ? "暂无关联服务单" : "暂无关联订单"); return; }
+		const pair = (label, value) => `<div><dt>${label}</dt><dd>${value}</dd></div>`;
+		const details = service ? `${pair("服务名称", esc(item.name))}${pair("国家", esc(context.service.country))}${pair("服务单状态", esc(item.status))}${pair("创建时间", esc(item.createdAt))}${pair("服务类目", esc(context.service.category))}${pair("商品类型", esc(context.service.productType))}${context.service.periodic ? `${pair("服务区间", `${esc(context.service.start)} ~ ${esc(context.service.end)}`)}${pair("服务期状态", chip(context.service.periodStatus, "teal"))}` : ""}` :
+			`${pair("商品名称", esc(item.product))}${pair("订单状态", chip(item.status, "green"))}${context.permissions.amount ? pair("实付金额", `${esc(item.currency)} ${esc(item.amount)}`) : ""}${pair("是否开票", esc(item.invoiced))}${pair("订单来源", esc(item.source))}${pair("订单类型", esc(item.type))}${pair("支付时间", esc(item.paidAt))}`;
+		openDrawer(service ? "服务单详情" : "订单详情", `<div class="drawer-subtitle"><span class="number">${esc(item.number)}</span><button class="icon-btn" data-action="copy" data-value="${esc(item.number)}" title="复制单号" aria-label="复制单号">${icon("copy")}</button></div><dl class="read-grid">${details}</dl><h3 class="form-section-title">来源履约单</h3><p class="number">${esc(instance.code)}</p>`, `${service && list.length > 1 ? button("全部关联服务单", "view-service") : ""}${button("返回履约详情", "close-drawer", "", "", "arrow-left")}`);
+		drawerContext = { kind: "related" };
 	}
 	function openDrawer(title, body, footer = "") {
 		$("#overlay").hidden = false; $("#drawer").hidden = false;
@@ -408,14 +485,15 @@
 	function createFresh() {
 		const nodes = clone(store.published.nodes), first = nodes[0];
 		store.instances.fresh = { code: `SV${now().slice(0, 10).replace(/-/g, "")}00999`, orderNo: "DD20261029000999", createdAt: now(), templateVersion: store.published.version, nodes, currentIndex: 0, runs: [{ id: uid(), nodeId: first.id, round: 1, valid: true, status: "active", actor: "李晨浩", startedAt: now(), endedAt: "", dueAt: dueDate(first.sla), values: {} }], tickets: [], events: [], draft: {}, returnCount: 0 };
-		store.scenario = "fresh"; persist(); view = "detail"; detailTab = "business"; filterOpen = false; closeModal(); render(); toast(`新履约样例已绑定 ${store.published.version}`);
+		store.instances.fresh.context = seedContext(store.instances.fresh, "fresh");
+		store.scenario = "fresh"; persist(); view = "detail"; filterOpen = false; closeModal(); render(); window.scrollTo(0, 0); toast(`新履约样例已绑定 ${store.published.version}`);
 	}
 	function preview(name) {
 		openModal("附件预览", `<div class="preview-document"><h3>${esc(name)}</h3><p>履约单：${current().code}</p><p>所属业务：德国 VAT 注册</p><p>此文件为产品评审样例。正式附件通过文件权限校验后读取原件。</p></div>`, button("关闭", "close-modal"));
 	}
 	function changeView(target) {
 		if (view === "config" && target !== view && templateDirty) { openModal("保存流程草稿？", "<p>流程配置存在未保存更改。保存草稿后可继续编辑，不会立即生效。</p>", `${button("继续编辑", "close-modal")}${button("放弃更改", "discard-config")}${button("保存并返回", "save-config-return", "primary")}`); return; }
-		view = target; render();
+		view = target; render(); window.scrollTo(0, 0);
 	}
 	document.addEventListener("click", async e => {
 		const el = e.target.closest("[data-action]");
@@ -423,9 +501,16 @@
 		const action = el.dataset.action;
 		if (action === "view-detail") changeView("detail");
 		else if (action === "view-config") changeView("config");
-		else if (action === "detail-tab") { detailTab = el.dataset.tab; render(); }
-		else if (action === "show-outcomes") { detailTab = "outcomes"; render(); }
-		else if (action === "copy") { try { await navigator.clipboard.writeText(el.dataset.value); toast("编号已复制"); } catch { openModal("复制编号", `<input value="${esc(el.dataset.value)}" readonly style="width:100%">`, button("关闭", "close-modal")); } }
+		else if (action === "show-outcomes") $("#outcomesSection").scrollIntoView({ block: "start" });
+		else if (action === "view-service") relatedDocument("service", el.dataset.id);
+		else if (action === "view-order") relatedDocument("order", el.dataset.id);
+		else if (action === "retry-region") {
+			const related = drawerContext?.kind === "related" ? drawerContext : null;
+			current().context.loadStates[el.dataset.region] = "ready"; persist(); render();
+			if (related) relatedDocument(related.documentKind, related.documentId);
+			toast("资料已重新加载");
+		}
+		else if (action === "copy") { try { await navigator.clipboard.writeText(el.dataset.value); toast("复制成功"); } catch { openModal("复制失败，请选择完整编号", `<input value="${esc(el.dataset.value)}" readonly style="width:100%">`, button("关闭", "close-modal")); } }
 		else if (action === "node") nodeDrawer(el.dataset.id);
 		else if (action === "node-history") {
 			if (drawerDirty) { current().draft[drawerContext.runId] = readTaskValues(); persist(); toast("任务输入已保存为草稿"); }
@@ -485,7 +570,7 @@
 		else if (action === "discard-config") { let saved; try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { /* 回退至生效版本。 */ } store.draftTemplate = clone(saved?.draftTemplate || store.published.nodes); templateDirty = false; closeModal(); view = "detail"; render(); }
 		else if (action === "preview") preview(el.dataset.name);
 		else if (action === "reset") openModal("重置全部评审样例？", "<p>本地任务草稿、工单、流程草稿及发布记录将恢复为初始演示数据。</p>", `${button("取消", "close-modal")}${button("确认重置", "confirm-reset", "danger")}`);
-		else if (action === "confirm-reset") { store = initialState(); view = "detail"; selectedNode = "n5"; detailTab = "business"; filterOpen = false; templateDirty = false; persist(); closeModal(); closeDrawer(true); render(); toast("已恢复初始样例"); }
+		else if (action === "confirm-reset") { store = initialState(); view = "detail"; selectedNode = "n5"; filterOpen = false; templateDirty = false; persist(); closeModal(); closeDrawer(true); render(); window.scrollTo(0, 0); toast("已恢复初始样例"); }
 	});
 	document.addEventListener("input", e => {
 		if (e.target.closest("#drawer")) drawerDirty = true;
@@ -500,7 +585,7 @@
 	});
 	document.addEventListener("change", e => {
 		const el = e.target;
-		if (el.id === "scenario") { store.scenario = el.value; detailTab = "business"; filterOpen = false; persist(); render(); }
+		if (el.id === "scenario") { store.scenario = el.value; filterOpen = false; persist(); render(); window.scrollTo(0, 0); }
 		if (el.id === "openOnly") { filterOpen = el.checked; render(); }
 		if (el.dataset.requirement) { const node = store.draftTemplate.find(n => n.id === selectedNode), key = el.dataset.requirement; node.required = el.checked ? [...new Set([...node.required, key])] : node.required.filter(k => k !== key); templateDirty = true; $("#dirtyLabel").textContent = "存在未保存更改"; }
 		if (el.dataset.upload) {

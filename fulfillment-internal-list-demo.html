@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=1920, initial-scale=1">
+	<title>基础服务列表 · 内部版 · 跨信通</title>
+	<link rel="stylesheet" href="fulfillment-internal-list-demo.css">
+</head>
+<body>
+	<svg class="icon-defs" aria-hidden="true">
+		<symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+		<symbol id="chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+		<symbol id="copy" viewBox="0 0 24 24"><rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2"/></symbol>
+		<symbol id="x" viewBox="0 0 24 24"><path d="m18 6-12 12M6 6l12 12"/></symbol>
+		<symbol id="export" viewBox="0 0 24 24"><path d="M12 3v12m5-5-5-5-5 5M5 21h14a2 2 0 0 0 2-2v-4H3v4a2 2 0 0 0 2 2"/></symbol>
+	</svg>
+	<header class="system-bar"><div class="brand"><span class="brand-mark">Tax</span>跨信通税务管理系统</div><nav><span>系统管理</span><span class="selected">业务管理</span><span>CRM</span><span>客服工单</span><span>测试平台</span><span>数据平台</span><span>旧系统</span></nav><div class="account"><span class="demo-label">演示数据</span><span class="avatar">李</span>李晨浩</div></header>
+	<aside class="side-nav"><div class="nav-item">首页<span>⌃</span></div><div class="nav-item sub">履约工作台</div><div class="nav-item sub">我的导入/导出</div><div class="nav-item sub">导出审核</div><div class="nav-item">订单管理<span>⌄</span></div><div class="nav-item">续费管理<span>⌄</span></div><div class="nav-item">客户管理<span>⌄</span></div><div class="nav-item">VAT税务<span>⌄</span></div><div class="nav-item">EPR合规<span>⌄</span></div><div class="nav-item expanded">履约管理<span>⌃</span></div><div class="nav-item sub expanded">服务管理<span>⌃</span></div><div class="nav-item leaf selected">基础服务</div><div class="nav-item leaf">增值服务</div><div class="nav-item leaf">追加服务</div><div class="nav-item leaf">续费服务</div><div class="nav-item sub">流程配置</div><div class="nav-item">任务管理<span>⌄</span></div><div class="nav-item">SLA管理<span>⌄</span></div></aside>
+	<nav class="workspace-tabs"><span class="selected">基础服务</span><span>履约工作台</span><a href="fulfillment-detail-demo.html">履约单详情</a></nav>
+	<main class="work-area">
+		<section class="filter-panel" aria-label="基础服务筛选">
+			<div class="category-row"><span>一级类目：</span><button data-category="VAT" class="selected">VAT</button><button data-category="EPR">EPR</button><button data-category="知识产权">知识产权</button><button data-category="产品合规">产品合规</button></div>
+			<div class="category-row"><span>二级类目：</span><button data-subcategory="全部" class="selected">全部</button><button data-subcategory="注册">注册</button><button data-subcategory="申报">申报</button><button data-subcategory="转代理">转代理</button></div>
+			<form id="searchForm" class="search-grid">
+				<select id="country" aria-label="国家"><option value="">国家：请选择</option><option>德国</option><option>法国</option></select>
+				<select id="serviceType" aria-label="服务类型"><option value="">类型：请选择</option><option>注册服务</option><option>申报服务</option></select>
+				<select id="accountant" aria-label="关联会计师"><option value="">关联会计师</option><option>张静</option><option>待分配</option></select>
+				<select id="owner" aria-label="当前处理人"><option value="">当前处理人</option><option>李晨浩</option><option>周敏</option><option>待分配</option></select>
+				<input id="query" placeholder="基础服务编号 / 公司名称" aria-label="查询内容" maxlength="80">
+				<button class="btn primary" type="submit"><svg class="icon"><use href="#search"/></svg>搜索</button>
+				<button class="btn" type="reset">重置</button>
+			</form>
+		</section>
+		<section class="node-filter" aria-label="节点及状态筛选">
+			<div class="node-row" id="nodeRow"></div>
+			<div class="status-row" id="statusRow"></div>
+		</section>
+		<section class="result-panel">
+			<div class="result-heading"><h1>基础服务</h1><span id="resultSummary"></span><div class="spacer"></div><button class="btn" id="exportButton" type="button"><svg class="icon"><use href="#export"/></svg>导出当前筛选</button></div>
+			<div class="table-scroll"><table><colgroup><col style="width:58px"><col style="width:190px"><col style="width:190px"><col style="width:260px"><col style="width:210px"><col style="width:145px"><col style="width:145px"><col style="width:180px"><col></colgroup><thead><tr><th>序号</th><th>基础服务编号</th><th>订单号</th><th>公司名称</th><th>商品名称</th><th>当前节点</th><th>节点状态</th><th>当前处理人</th><th>操作</th></tr></thead><tbody id="rows"></tbody></table></div>
+			<div class="table-foot"><span id="selectedCount">已选择 0 项</span><span id="pageInfo"></span></div>
+		</section>
+	</main>
+	<div class="toast" id="toast" hidden></div>
+	<script src="fulfillment-internal-list-demo.js"></script>
+</body>
+</html>

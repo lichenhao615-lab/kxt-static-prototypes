@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=1920, initial-scale=1">
+	<title>基础服务 · 客户版 · 跨信通</title>
+	<link rel="stylesheet" href="fulfillment-customer-demo.css">
+</head>
+<body>
+	<!-- 图标来自仓库内 lucide-static v1.61.0，ISC License。 -->
+	<svg class="icon-defs" aria-hidden="true">
+		<symbol id="check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+		<symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6h4"/></symbol>
+		<symbol id="x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+		<symbol id="download" viewBox="0 0 24 24"><path d="M12 15V3M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m7-5 5 5 5-5"/></symbol>
+		<symbol id="upload" viewBox="0 0 24 24"><path d="M12 3v12m5-7-5-5-5 5M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></symbol>
+		<symbol id="file-text" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2zM14 2v5a1 1 0 0 0 1 1h5M10 9H8M16 13H8M16 17H8"/></symbol>
+		<symbol id="chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+		<symbol id="chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+		<symbol id="chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+		<symbol id="search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></symbol>
+		<symbol id="shopping-bag" viewBox="0 0 24 24"><path d="M16 10a4 4 0 0 1-8 0M3.103 6.034h17.794M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></symbol>
+		<symbol id="dashboard" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></symbol>
+		<symbol id="box" viewBox="0 0 24 24"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Zm-17.7-1 8.7 5 8.7-5M12 22V12"/></symbol>
+		<symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></symbol>
+		<symbol id="bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+		<symbol id="alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></symbol>
+	</svg>
+	<aside class="portal-nav">
+		<div class="brand"><span class="brand-seal">Tax</span><strong>跨信通</strong></div>
+		<div class="nav-item"><svg class="icon"><use href="#shopping-bag"/></svg>购买服务</div>
+		<div class="nav-item"><svg class="icon"><use href="#clock"/></svg>续费管理</div>
+		<div class="nav-divider"></div>
+		<div class="nav-item"><svg class="icon"><use href="#dashboard"/></svg>工作台</div>
+		<div class="nav-item"><svg class="icon"><use href="#box"/></svg>合规资产</div>
+		<div class="nav-divider"></div>
+		<button class="nav-item" id="serviceNav" aria-expanded="true"><svg class="icon"><use href="#dashboard"/></svg>服务管理<svg class="icon trailing"><use href="#chevron-down"/></svg></button>
+		<div id="serviceNavGroup"><button class="nav-item child active" data-action="list">基础服务</button><div class="nav-item child">增值服务</div><div class="nav-item child">追加服务</div><div class="nav-item child">续费服务</div></div>
+		<div class="nav-divider"></div>
+		<div class="nav-item"><svg class="icon"><use href="#file-text"/></svg>我的申报</div>
+		<div class="nav-item"><svg class="icon"><use href="#user"/></svg>个人中心</div>
+	</aside>
+	<header class="portal-top"><div class="crumb"><span>服务管理</span><span>/</span><b>基础服务</b></div><div class="account"><span class="sample-label">演示数据</span><span>深圳远航贸易有限公司</span><span class="avatar">远</span></div></header>
+	<main class="portal-main">
+		<section class="filter-band" aria-label="服务筛选">
+			<div class="category-line"><span>一级类目：</span><span class="category selected">VAT</span></div>
+			<div class="category-line"><span>二级类目：</span><span class="category selected">注册服务</span></div>
+			<form id="searchForm" class="search-form">
+				<select id="countryFilter" aria-label="国家"><option value="">全部国家</option><option>德国</option></select>
+				<select id="searchField" aria-label="查询字段"><option value="number">基础服务编号</option><option value="order">订单号</option><option value="company">公司名称</option></select>
+				<input id="searchQuery" placeholder="请输入查询内容" aria-label="查询内容" maxlength="80">
+				<button class="btn primary" type="submit"><svg class="icon"><use href="#search"/></svg>搜索</button>
+				<button class="btn" data-action="reset-search" type="button">重置</button>
+			</form>
+		</section>
+		<section class="service-list" aria-label="基础服务列表">
+			<div class="list-tabs" id="listTabs"></div>
+			<div class="list-heading"><h1>基础服务</h1><span id="resultCount"></span></div>
+			<table class="service-table"><colgroup><col style="width:65px"><col style="width:215px"><col style="width:225px"><col style="width:245px"><col style="width:210px"><col style="width:150px"><col style="width:150px"><col></colgroup><thead><tr><th>序号</th><th>基础服务编号</th><th>订单号</th><th>公司名称</th><th>商品名称</th><th>商品规格</th><th>服务状态</th><th>操作</th></tr></thead><tbody id="serviceRows"></tbody></table>
+			<div class="list-footer"><span id="totalCount"></span><span class="current-page">1</span><span>10 条 / 页</span></div>
+		</section>
+		<footer class="portal-footer">跨信通 · 客户服务中心</footer>
+	</main>
+	<div class="dialog-layer" id="progressLayer" hidden><section class="progress-dialog" id="progressDialog" role="dialog" aria-modal="true" aria-labelledby="progressTitle"></section></div>
+	<div class="secondary-layer" id="secondaryLayer" hidden><section class="secondary-dialog" id="secondaryDialog" role="dialog" aria-modal="true" aria-labelledby="secondaryTitle"></section></div>
+	<div class="toast" id="toast" role="status" hidden></div>
+	<script src="fulfillment-customer-demo.js"></script>
+</body>
+</html>

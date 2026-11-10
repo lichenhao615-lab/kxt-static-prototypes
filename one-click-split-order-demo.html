@@ -111,12 +111,16 @@
 		.toast.error { border-color:#ffd2d2; color:#c43d3d; }
 		.toast.error .tick { color:#e05252; }
 		.change-confirm-modal { width:560px; }
-		.change-warning { display:flex; gap:12px; margin:20px 24px 12px; padding:14px 16px; background:#fff8e8; border:1px solid #f6dfad; border-radius:3px; color:#66532d; line-height:1.7; }
-		.change-warning-icon { flex:0 0 22px; width:22px; height:22px; border-radius:50%; background:#e9a72d; color:#fff; display:grid; place-items:center; font-weight:700; }
-		.change-warning strong { color:#5b461d; font-weight:500; }
-		.change-warning p { margin:3px 0 0; }
-		.change-affected { margin:0 24px 16px; padding:10px 12px; background:#fafcfd; border:1px solid #e5eaee; border-radius:3px; color:#5e6b76; font-size:11px; line-height:1.8; }
-		.change-affected strong { color:#3d4a55; font-weight:500; }
+		.change-settlement { margin:26px 32px 34px; color:#3d4a55; line-height:1.8; }
+		.change-before { margin:0 0 20px; font-size:14px; }
+		.change-settlement-title { margin:0 0 14px; color:#26323b; font-size:16px; font-weight:600; }
+		.change-settlement-number { margin:0 0 24px; font-size:14px; }
+		.change-settlement-number a { color:#22b79f; text-decoration:none; }
+		.change-settlement-choice { display:flex; align-items:center; gap:34px; margin:0; font-size:15px; }
+		.change-settlement-choice .required { color:#e5484d; margin-right:3px; }
+		.change-settlement-choice label { display:inline-flex; align-items:center; gap:6px; cursor:pointer; }
+		.change-settlement-choice input { width:16px; height:16px; accent-color:#20b89f; }
+		.change-choice-error { min-height:18px; margin:8px 0 0 134px; color:#d93d45; font-size:12px; }
 		.history-table { width:calc(100% - 48px); margin:16px 24px; border-collapse:collapse; color:#687681; font-size:11px; }
 		.history-table th,.history-table td { border:1px solid #e7edf1; padding:9px 10px; text-align:left; }
 		.history-table th { background:#f7f9fb; color:#596773; font-weight:500; }
@@ -285,7 +289,7 @@
 	<div class="modal-overlay" id="oneClickOverlay" hidden>
 		<section class="modal split-modal" role="dialog" aria-modal="true" aria-labelledby="oneClickTitle">
 			<div class="modal-head"><span class="modal-title" id="oneClickTitle">分单</span><button class="close-btn" type="button" data-close-split aria-label="关闭分单">×</button></div>
-			<div class="split-context"><span>服务单号：<strong id="oneClickService">SV202610152547011591</strong></span><span>商品：<strong id="oneClickProduct">德国VAT注册+申报</strong></span><span>国家：<strong>德国</strong></span><span id="splitCostMode" class="split-cost-mode" hidden></span></div>
+			<div class="split-context"><span>服务单号：<strong id="oneClickService">SV202610152547011591</strong></span><span>商品：<strong id="oneClickProduct">德国VAT注册+申报</strong></span><span>国家：<strong>德国</strong></span></div>
 			<div class="split-body">
 			<div class="split-section" id="multipleConfigPanel"><div class="split-section-title">分单明细 <small id="splitExistingHint">配置服务项目/结算产品和服务商/渠道；通过新增或删除明细调整条数</small></div><table class="split-table"><thead><tr><th style="width:68px">明细</th><th style="width:190px">服务项目/结算产品</th><th style="width:260px">服务明细/渠道服务项</th><th style="width:230px">服务商/渠道</th><th style="width:100px">操作</th></tr></thead><tbody id="multiSplitRows"></tbody></table></div>
 			<div class="split-section operation-log-section"><div class="split-section-title">操作记录 <small>记录新增和变更操作</small></div><div class="operation-log" id="splitOperationLog"></div></div>
@@ -295,10 +299,15 @@
 	</div>
 	<div class="modal-overlay" id="splitChangeConfirmOverlay" hidden>
 		<section class="modal change-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="splitChangeConfirmTitle">
-			<div class="modal-head"><span class="modal-title" id="splitChangeConfirmTitle">变更分单确认</span><button class="close-btn" type="button" id="cancelSplitChangeTop" aria-label="关闭变更分单确认">×</button></div>
-			<div class="change-warning"><span class="change-warning-icon">!</span><div><strong>检测到已有分单并已完成结算</strong><p id="splitChangeConfirmText">继续操作将变更已有分单关系，请确认是否继续。</p></div></div>
-			<div class="change-affected" id="splitChangeAffectedList"></div>
-			<div class="modal-footer"><span class="modal-description" style="margin:0;color:#9aa5ad">请选择成本处理方式后进入分单配置。</span><div class="actions"><button class="btn" type="button" id="cancelSplitChange">取消</button><button class="btn" type="button" id="confirmAddSplitCost">确认二次增加成本</button><button class="btn primary" type="button" id="confirmOverwriteSplitCost">确认覆盖成本</button></div></div>
+			<div class="modal-head"><span class="modal-title" id="splitChangeConfirmTitle">变更提示</span><button class="close-btn" type="button" id="cancelSplitChangeTop" aria-label="关闭变更提示">×</button></div>
+			<div class="change-settlement">
+				<p class="change-before" id="splitChangeBefore">变更前：渠道商：-　渠道资源：-</p>
+				<p class="change-settlement-title">已生成结算数据</p>
+				<p class="change-settlement-number">结算编号：<a href="#" id="splitSettlementNumber">-</a></p>
+				<div class="change-settlement-choice" role="radiogroup" aria-label="是否确定要作废该结算单"><span><span class="required">*</span>是否确定要作废该结算单？</span><label><input type="radio" name="settlementVoidChoice" value="void">作废</label><label><input type="radio" name="settlementVoidChoice" value="keep">不作废</label></div>
+				<div class="change-choice-error" id="splitChangeChoiceError" role="alert"></div>
+			</div>
+			<div class="modal-footer"><div class="actions"><button class="btn" type="button" id="cancelSplitChange">取消</button><button class="btn primary" type="button" id="confirmSplitChange">确定</button></div></div>
 		</section>
 	</div>
 	<div class="modal-overlay" id="splitHistoryOverlay" hidden>
@@ -354,7 +363,7 @@
 			}
 		}
 		const existingSplitDemo = sampleRows.find(row => row.code === "SV202610152547011593");
-		if (existingSplitDemo) { existingSplitDemo.splitGenerated = true; existingSplitDemo.settlementCompleted = true; existingSplitDemo.settledProduct = "P00967 · 注册+申报"; }
+		if (existingSplitDemo) { existingSplitDemo.splitGenerated = true; existingSplitDemo.settlementCompleted = true; existingSplitDemo.settledProduct = "P00967 · 注册+申报"; existingSplitDemo.settlementNo = "SM123456789"; existingSplitDemo.previousResource = "KXTEPunkt000"; existingSplitDemo.previousCompany = "深圳跨信通科技有限公司"; }
 		const existingPlanDemo = sampleRows.find(row => row.code === "SV202610152547011594");
 		if (existingPlanDemo) { existingPlanDemo.splitGenerated = true; existingPlanDemo.settlementCompleted = false; existingPlanDemo.settledProduct = "P00967 · 注册+申报"; }
 		function notify(message, tone="success") {
@@ -497,14 +506,14 @@
 		function batchConditionKeys() { return [{key:"customer",label:"同客户"},{key:"type",label:"同类型"},{key:"category",label:"同类目"},{key:"country",label:"同国家"},{key:"node",label:"同节点"}]; }
 		function validateBatchRows(rows) { if (rows.length < 1) return {valid:false, message:"请至少选择 1 条服务单后再进行批量分单。", differences:[]}; const differences=batchConditionKeys().filter(condition=>new Set(rows.map(row=>row[condition.key])).size>1); return {valid:differences.length===0, message:differences.length ? "所选服务单不满足批量分单条件：" + differences.map(item=>item.label).join("、") + "不一致。" : "", differences}; }
 		function splitChangeRows(rows) { return rows.filter(row => row.splitGenerated && row.settlementCompleted); }
-		function requestSplitChangeConfirmation(rows, action) { const affected=splitChangeRows(rows); if (!affected.length) { action(""); return; } pendingSplitChangeAction=action; $("splitChangeConfirmText").textContent="以下服务单已存在分单且完成结算，请选择成本处理方式后继续变更。"; $("splitChangeAffectedList").innerHTML=affected.map(row=>'<div><strong>'+escapeHtml(row.code)+'</strong> · '+escapeHtml(row.settledProduct || row.product)+' · 已完成结算<br><span>原成本处理：已生成结算成本</span></div>').join(""); setOverlay("splitChangeConfirmOverlay",true); $("confirmAddSplitCost").focus(); }
-		function confirmSplitChange(costMode) { const action=pendingSplitChangeAction; pendingSplitChangeAction=null; setOverlay("splitChangeConfirmOverlay",false); if (action) action(costMode); }
+		function requestSplitChangeConfirmation(rows, action) { const affected=splitState.mode === "change" ? splitChangeRows(rows) : []; if (!affected.length) { action(""); return; } const row=affected[0]; pendingSplitChangeAction=action; $("splitChangeBefore").textContent="变更前：渠道商："+(row.previousCompany || "深圳跨信通科技有限公司")+"　渠道资源："+(row.previousResource || "KXTEPunkt000"); $("splitSettlementNumber").textContent=row.settlementNo || "SM123456789"; $("splitSettlementNumber").href="#"; document.querySelectorAll('input[name="settlementVoidChoice"]').forEach(input=>input.checked=false); $("splitChangeChoiceError").textContent=""; setOverlay("splitChangeConfirmOverlay",true); document.querySelector('input[name="settlementVoidChoice"]').focus(); }
+		function confirmSplitChange() { const choice=document.querySelector('input[name="settlementVoidChoice"]:checked'); if (!choice) { $("splitChangeChoiceError").textContent="请选择是否作废该结算单。"; return; } const action=pendingSplitChangeAction; pendingSplitChangeAction=null; setOverlay("splitChangeConfirmOverlay",false); if (action) action(choice.value); }
 		function cancelSplitChange() { pendingSplitChangeAction=null; setOverlay("splitChangeConfirmOverlay",false); }
-		function proceedBatchOneClick(rows, costMode) { splitState.batchIds=rows.map(row=>row.id); openOneClick(rows[0].id, costMode); $("oneClickTitle").textContent="批量分单"; $("oneClickService").textContent=rows.length+" 条服务单"; $("oneClickProduct").textContent=rows[0].customer+" · "+nameOf("type",rows[0].type)+" · "+rows[0].category+" · "+nameOf("country",rows[0].country)+" · "+rows[0].node; }
-		function startBatchOneClick() { const rows=selectedRows(); const validation=validateBatchRows(rows); if (!validation.valid) { notify(validation.message,"error"); return; } proceedBatchOneClick(rows,""); }
-		function startSingleOneClick(rowId) { splitState.search={product:"",service:"",resource:""}; splitState.searchOpen={product:false,service:false,resource:false}; openOneClick(rowId,"","manual"); }
-		function startViewSplit(rowId) { openOneClick(rowId,"","view"); }
-		function startChangeSplit(rowId) { openOneClick(rowId,"","change"); }
+		function proceedBatchOneClick(rows) { splitState.batchIds=rows.map(row=>row.id); openOneClick(rows[0].id); $("oneClickTitle").textContent="批量分单"; $("oneClickService").textContent=rows.length+" 条服务单"; $("oneClickProduct").textContent=rows[0].customer+" · "+nameOf("type",rows[0].type)+" · "+rows[0].category+" · "+nameOf("country",rows[0].country)+" · "+rows[0].node; }
+		function startBatchOneClick() { const rows=selectedRows(); const validation=validateBatchRows(rows); if (!validation.valid) { notify(validation.message,"error"); return; } proceedBatchOneClick(rows); }
+		function startSingleOneClick(rowId) { splitState.search={product:"",service:"",resource:""}; splitState.searchOpen={product:false,service:false,resource:false}; openOneClick(rowId,"manual"); }
+		function startViewSplit(rowId) { openOneClick(rowId,"view"); }
+		function startChangeSplit(rowId) { openOneClick(rowId,"change"); }
 		function createSplitItem(index, source) { return { product:splitProductId(source?.product || splitProducts[index % splitProducts.length].id), service:splitServiceId(source?.service || splitServices[0].id), resource:source?.resource || (index % 2 === 0 ? splitState.resource : "khzx"), existing:source?.existing === true }; }
 		function renderOperationLog() { const target=$("splitOperationLog"); target.innerHTML=splitState.operationLog.length ? splitState.operationLog.map(item=>'<div class="operation-log-item"><span>'+escapeHtml(item.time)+'</span><strong>'+escapeHtml(item.actor)+' · '+escapeHtml(item.type)+'</strong><span>'+escapeHtml(item.detail)+'</span></div>').join("") : '<div class="operation-log-empty">暂无操作记录</div>'; }
 		function appendOperationLog(type, detail) { const now=new Date(); const time=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0")+" "+String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0")+":"+String(now.getSeconds()).padStart(2,"0"); splitState.operationLog.push({actor:"当前用户",time,type,detail}); splitState.operationLogs[splitState.rowId]=splitState.operationLog; renderOperationLog(); }
@@ -521,10 +530,10 @@
 		function renderOneClick() {
 			const row=getService(splitState.rowId); $("oneClickService").textContent=row.code; $("oneClickProduct").textContent=row.product || "德国VAT注册+申报"; splitState.existingPlan=Boolean(row.splitGenerated); splitState.existingLocked=splitState.mode==="view"; splitState.operationLog=splitState.operationLogs[splitState.rowId] || (splitState.existingPlan ? [{actor:"李晨浩",time:"2026-10-27 14:32:18",type:"新增",detail:"生成 2 条已有分单记录"},{actor:"王小明",time:"2026-10-28 09:15:06",type:"变更",detail:"调整服务明细/渠道"}] : []); splitState.operationLogs[splitState.rowId]=splitState.operationLog; splitState.items=splitState.mode==="manual" ? (splitState.existingPlan ? [createSplitItem(0,{existing:true}),createSplitItem(1,{existing:true}),createSplitItem(2)] : [createSplitItem(0)]) : [createSplitItem(0,{existing:true}),createSplitItem(1,{existing:true})]; splitState.count=splitState.items.length; renderMultiRows(); renderOperationLog();
 		}
-		function openOneClick(rowId, costMode="", mode="manual") { splitState.rowId=rowId; splitState.mode=mode; splitState.search={product:"",service:"",resource:""}; splitState.searchOpen={product:false,service:false,resource:false}; renderOneClick(); $("oneClickTitle").textContent=mode==="view" ? "查看分单" : mode==="change" ? "变更分单" : "分单"; const cost=$("splitCostMode"); cost.hidden=!costMode; cost.textContent=costMode==="add" ? "成本处理：增加成本，不冲销原成本" : costMode==="overwrite" ? "成本处理：覆盖成本，冲销原成本后生成新成本" : ""; setOverlay("oneClickOverlay",true); }
+		function openOneClick(rowId, mode="manual") { splitState.rowId=rowId; splitState.mode=mode; splitState.search={product:"",service:"",resource:""}; splitState.searchOpen={product:false,service:false,resource:false}; renderOneClick(); $("oneClickTitle").textContent=mode==="view" ? "查看分单" : mode==="change" ? "变更分单" : "分单"; setOverlay("oneClickOverlay",true); }
 		function renderSplitHistory(rowId) { const row=getService(rowId); if (!row) return; $("historyService").textContent=row.code; const items=[createSplitItem(0),createSplitItem(1)]; $("splitHistoryRows").innerHTML=items.map((item,index)=>{ const product=findSplitProduct(item.product), service=findSplitService(item.service), resource=splitResources.find(r=>r.id===item.resource)||splitResources[0]; return '<tr class="history-disabled"><td>分单 '+(index+1)+'</td><td>'+escapeHtml(product.name)+'</td><td>'+escapeHtml(service.name)+'<small class="field-meta">服务明细/渠道服务项ID：'+escapeHtml(service.id)+'</small></td><td>'+escapeHtml(resource.name)+'<small class="field-meta">渠道商：'+escapeHtml(resource.company)+'<br>资源编号：'+escapeHtml(resource.code)+'</small></td><td class="history-status">已提交</td><td><button class="text-link" type="button" data-history-edit="'+rowId+'">修改</button></td></tr>'; }).join(""); setOverlay("splitHistoryOverlay",true); }
-		function completeOneClickSubmit(costMode) { const action=splitState.mode==="change" ? "变更" : "新增"; appendOperationLog(action,action==="变更" ? "提交已有分单变更" : "提交新增分单记录"); if (splitState.batchIds.length) notify("已提交批量分单，共处理 "+splitState.batchIds.length+" 条服务单，生成 "+(splitState.batchIds.length*splitState.count)+" 条分单记录"+(costMode==="add"?"，已增加新成本":costMode==="overwrite"?"，已覆盖原成本":"")); else notify("已提交"+(action==="变更"?"变更分单":"分单")+"，共生成 "+splitState.count+" 条分单记录"+(costMode==="add"?"，已增加新成本":costMode==="overwrite"?"，已覆盖原成本":"")); closeSplitOverlays(); splitState.batchIds=[]; }
-		function submitOneClick() { const rows=splitState.batchIds.length ? splitState.batchIds.map(id=>getService(id)) : [getService(splitState.rowId)]; requestSplitChangeConfirmation(rows,costMode => completeOneClickSubmit(costMode)); }
+		function completeOneClickSubmit(settlementAction) { const action=splitState.mode==="change" ? "变更" : "新增"; appendOperationLog(action,action==="变更" ? "提交已有分单变更" : "提交新增分单记录"); const settlementMessage=settlementAction==="void" ? "，已作废原结算单" : settlementAction==="keep" ? "，已保留原结算单" : ""; if (splitState.batchIds.length) notify("已提交批量分单，共处理 "+splitState.batchIds.length+" 条服务单，生成 "+(splitState.batchIds.length*splitState.count)+" 条分单记录"+settlementMessage); else notify("已提交"+(action==="变更"?"变更分单":"分单")+"，共生成 "+splitState.count+" 条分单记录"+settlementMessage); closeSplitOverlays(); splitState.batchIds=[]; }
+		function submitOneClick() { const rows=splitState.batchIds.length ? splitState.batchIds.map(id=>getService(id)) : [getService(splitState.rowId)]; requestSplitChangeConfirmation(rows,settlementAction => completeOneClickSubmit(settlementAction)); }
 		document.addEventListener("click",event => {
 			const batchCommand=event.target.closest("[data-batch-command]");
 				if (batchCommand) { $("batchOperationMenu").hidden=true; $("batchOperationButton").setAttribute("aria-expanded","false"); if (batchCommand.dataset.batchCommand === "batch-one-click") startBatchOneClick(); else notify("此 DEMO 暂仅演示批量分单"); return; }
@@ -625,14 +634,13 @@
 		$("fulfillmentWorkbenchNav").addEventListener("click",enterFulfillmentWorkbench);
 		$("fulfillmentWorkbenchNav").addEventListener("keydown",event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); enterFulfillmentWorkbench(); } });
 		$("batchOperationButton").addEventListener("click",event => { event.stopPropagation(); const menu=$("batchOperationMenu"); const visible=!menu.hidden; menu.hidden=visible; $("batchOperationButton").setAttribute("aria-expanded",String(!visible)); });
-		$("confirmAddSplitCost").addEventListener("click",() => confirmSplitChange("add"));
-		$("confirmOverwriteSplitCost").addEventListener("click",() => confirmSplitChange("overwrite"));
+		$("confirmSplitChange").addEventListener("click",confirmSplitChange);
 		$("cancelSplitChange").addEventListener("click",cancelSplitChange);
 		$("cancelSplitChangeTop").addEventListener("click",cancelSplitChange);
 		document.querySelectorAll("[data-close-split]").forEach(button => button.addEventListener("click",closeSplitOverlays));
 		["oneClickOverlay","splitChangeConfirmOverlay","splitHistoryOverlay"].forEach(id => $(id).addEventListener("click",event => { if (event.target === $(id)) { if (id === "splitChangeConfirmOverlay") cancelSplitChange(); else closeSplitOverlays(); } }));
 		document.querySelectorAll("[data-close-history]").forEach(button => button.addEventListener("click",closeSplitOverlays));
-		$("splitHistoryRows").addEventListener("click",event => { const edit=event.target.closest("[data-history-edit]"); if (!edit) return; closeSplitOverlays(); openOneClick(edit.dataset.historyEdit,""); });
+		$("splitHistoryRows").addEventListener("click",event => { const edit=event.target.closest("[data-history-edit]"); if (!edit) return; closeSplitOverlays(); openOneClick(edit.dataset.historyEdit); });
 		$("multiSplitRows").addEventListener("change",event => { if (!event.target.dataset.field) return; syncSplitItems(); renderMultiRows(); });
 		$("multiSplitRows").addEventListener("click",event => { const add=event.target.closest("[data-row-add]"); const del=event.target.closest("[data-row-delete]"); if (add) { syncSplitItems(); if (splitState.items.length>=20) return notify("最多支持 20 条分单"); const source=splitState.items[Number(add.dataset.rowAdd)]; splitState.items.splice(Number(add.dataset.rowAdd)+1,0,{...source,existing:false}); splitState.count=splitState.items.length; splitState.dirty=true; renderMultiRows(); } if (del && !del.disabled) { syncSplitItems(); const targetIndex=Number(del.dataset.rowDelete); if (splitState.mode!=="change" && splitState.items[targetIndex]?.existing) return; if (splitState.items.length<=1) return; if (splitState.mode==="manual" && splitState.items.filter(item=>!item.existing).length<=1) return; splitState.items.splice(targetIndex,1); splitState.count=splitState.items.length; splitState.dirty=true; renderMultiRows(); } });
 		$("multiSplitRows").addEventListener("dblclick",event => { const select=event.target.closest("select[data-field]"); if (!select) return; const field=select.dataset.field; const search=select.previousElementSibling; if (!search || !search.matches("[data-search-field]")) return; splitState.searchOpen[field]=true; search.classList.add("search-open"); search.focus(); search.select(); });

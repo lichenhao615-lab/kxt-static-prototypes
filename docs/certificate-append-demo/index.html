@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="color-scheme" content="light">
+	<link rel="icon" href="data:,">
+	<title>追加商品 · 德国 WEEE · 跨信通</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<div class="app-shell">
+		<aside class="sidebar">
+			<div class="brand"><span class="brand-mark">KXT</span><strong>跨信通</strong></div>
+			<nav aria-label="主导航">
+				<div class="nav-item nav-badge-row"><i data-icon="shopping-bag"></i><span>购买服务</span><span class="nav-badge red">12</span></div>
+				<div class="nav-item nav-badge-row"><i data-icon="refresh-cw"></i><span>续费管理</span><span class="nav-badge red">11</span></div>
+				<div class="nav-item active" id="dashboardNav"><i data-icon="layout-dashboard"></i>工作台</div>
+				<div class="nav-item"><i data-icon="shield-check"></i>合规资产</div>
+				<div class="nav-item empty-gap" aria-hidden="true"></div>
+				<div class="nav-item"><i data-icon="layers"></i>服务管理<i data-icon="chevron-down"></i></div>
+				<div class="nav-section" id="serviceNavGroup">
+					<div class="nav-item child" id="baseServiceNav">基础服务</div>
+					<div class="nav-item child">增值服务</div>
+					<div class="nav-item child">追加服务</div>
+					<div class="nav-item child">续费服务</div>
+					<div class="nav-item child">公司年审</div>
+				</div>
+				<div class="nav-item empty-gap" aria-hidden="true"></div>
+				<div class="nav-item"><i data-icon="file-text"></i>我的申报<i data-icon="chevron-down"></i></div>
+				<div class="nav-item"><i data-icon="copyright"></i>知识产权<i data-icon="chevron-down"></i></div>
+				<div class="nav-item"><i data-icon="search"></i>商标检索</div>
+				<div class="nav-item"><i data-icon="lightbulb"></i>专利检索</div>
+				<div class="nav-item empty-gap" aria-hidden="true"></div>
+				<div class="nav-item"><i data-icon="user"></i>个人中心<i data-icon="chevron-down"></i></div>
+			</nav>
+			<button class="sidebar-collapse" aria-label="收起菜单"><i data-icon="chevron-left"></i></button>
+		</aside>
+
+		<main class="workspace">
+			<header class="topbar">
+				<div class="breadcrumbs" id="pageBreadcrumbs">工作台</div>
+				<div class="top-actions">
+					<span><i data-icon="book-open"></i>操作手册</span>
+					<span><i data-icon="wrench"></i>实用工具</span>
+					<span><i data-icon="bell"></i>消息</span>
+					<span><i data-icon="shopping-cart"></i>购物车</span>
+					<div class="avatar">陈</div>
+				</div>
+			</header>
+
+			<div class="dashboard-page" id="dashboardPage">
+				<div class="dashboard-layout">
+					<div class="dashboard-main">
+						<section class="panel quick-section" aria-labelledby="quickTitle">
+							<div class="panel-heading"><h2 id="quickTitle">快捷入口</h2></div>
+							<div class="quick-grid">
+								<button class="quick-card" data-action="goto-services"><span class="quick-icon icon-cyan"><i data-icon="shopping-bag"></i></span><span>购买服务</span></button>
+								<button class="quick-card" data-action="show-renewal"><span class="quick-icon icon-blue"><i data-icon="refresh-cw"></i></span><span>续费管理</span></button>
+								<button class="quick-card" data-action="goto-services"><span class="quick-icon icon-blue"><i data-icon="shield-check"></i></span><span>合规资产</span></button>
+								<button class="quick-card" data-action="goto-services"><span class="quick-icon icon-cyan"><i data-icon="file-text"></i></span><span>我的订单</span></button>
+								<button class="quick-card" data-action="goto-services"><span class="quick-icon icon-cyan"><i data-icon="headphones"></i></span><span>我的信件</span></button>
+								<button class="quick-card append-quick-card" data-action="open-guide"><span class="quick-icon icon-cyan"><i data-icon="layers"></i></span><span>追加服务</span></button>
+								<button class="quick-card" data-action="goto-services"><span class="quick-icon icon-blue"><i data-icon="credit-card"></i></span><span>我的发票</span></button>
+							</div>
+						</section>
+						<section class="panel todo-panel" aria-labelledby="todoTitle">
+							<div class="panel-heading"><h2 id="todoTitle">待办事项</h2></div>
+							<div class="todo-empty">
+								<div class="todo-illustration"><i data-icon="clipboard-list"></i><i data-icon="user"></i></div>
+								<p>您还未购买服务，暂无待办事项</p>
+								<button class="btn primary" data-action="goto-services">立即购买</button>
+							</div>
+						</section>
+						<section class="panel tools-panel" aria-labelledby="toolsTitle">
+							<div class="panel-heading"><h2 id="toolsTitle">实用工具</h2></div>
+							<div class="tool-tabs"><span class="active">商标检索</span><span>专利检索</span><span>商标分类查询</span><span>爆雷商标查询</span><span>VAT有效性查询</span><span>EORI有效性查询</span><span>EPR有效性查询</span><span>公司核名</span></div>
+							<div class="tool-query"><select aria-label="国家区域"><option>请选择国家/区域</option><option>德国</option></select><input aria-label="查询关键词" placeholder="探索之旅从这里开始，输入关键词吧！"><button class="btn primary" data-action="goto-services">免费查询</button></div>
+						</section>
+						<section class="panel stats-panel" aria-labelledby="statsTitle">
+							<div class="panel-heading"><h2 id="statsTitle">VAT申报统计</h2><button class="btn primary" data-action="goto-services">导出对应税金账单</button></div>
+						</section>
+					</div>
+					<aside class="dashboard-side">
+						<section class="panel calendar-panel" aria-labelledby="calendarTitle">
+							<div class="panel-heading"><h2 id="calendarTitle">合规日历</h2><span class="more-link">更多 »</span></div>
+							<div class="calendar-title"><button class="icon-button" aria-label="上个月"><i data-icon="chevron-left"></i></button><strong>2026年11月</strong><button class="icon-button" aria-label="下个月"><i data-icon="chevron-right"></i></button><button class="text-button">回到今日</button></div>
+							<div class="calendar-grid" id="calendarGrid"></div>
+							<div class="side-todo">
+								<div class="side-date">2026年11月11日</div>
+								<div class="todo-illustration small"><i data-icon="clipboard-list"></i><i data-icon="search"></i></div>
+								<p>暂无待办事项</p>
+								<button class="btn add-todo" data-action="goto-services">+ 创建事项</button>
+							</div>
+						</section>
+						<section class="panel unread-panel" aria-labelledby="unreadTitle">
+							<div class="panel-heading"><h2 id="unreadTitle">未读消息</h2></div>
+							<div class="unread-tabs"><span class="active">业务消息</span><span>系统消息</span></div>
+						</section>
+						<div class="floating-consult"><button class="icon-button" title="联系客服"><i data-icon="headphones"></i></button><button class="icon-button" title="公众号"><i data-icon="message-circle"></i></button><button class="icon-button" title="帮助中心"><i data-icon="circle-help"></i></button><button class="icon-button" title="返回顶部"><i data-icon="arrow-up"></i></button></div>
+					</aside>
+				</div>
+				<footer class="page-footer">粤ICP备18006826号 · Copyright © 2018 深圳跨信通科技有限公司. All Rights Reserved · 隐私政策</footer>
+			</div>
+
+			<div class="list-page" id="servicePage" hidden>
+				<section class="service-filters">
+					<div class="filter-line"><span class="filter-name">一级类目：</span><span class="filter-chip selected">EPR</span><span class="filter-chip">VAT</span><span class="filter-chip">知识产权</span><span class="filter-chip">产品合规</span><span class="filter-chip">国内工商财税</span><span class="filter-chip">海外工商财税</span></div>
+					<div class="filter-line"><span class="filter-name">二级类目：</span><span class="filter-chip">全部</span><span class="filter-chip">建筑法</span><span class="filter-chip">一次性塑料税</span><span class="filter-chip">灯泡法</span><span class="filter-chip">体育与休闲运动</span><span class="filter-chip">园艺法</span><span class="filter-chip">玩具法</span><span class="filter-chip">家具法</span><span class="filter-chip">纺织法</span><span class="filter-chip">电池法</span><span class="filter-chip selected">电气法</span><span class="filter-chip">包装法</span></div>
+					<div class="filter-controls"><select aria-label="服务国家"><option>德国</option></select><select aria-label="服务类型"><option>注册＋申报</option></select><div class="keyword-query"><select aria-label="查询条件"><option>基础服务编号</option><option>公司名称</option></select><input id="serviceKeyword" placeholder="请输入查询内容" aria-label="查询内容"></div><button class="btn primary" id="searchServices">搜索</button><button class="btn" id="resetServices">重置</button></div>
+				</section>
+				<section class="services-section">
+					<div class="service-status-tabs"><span class="selected">全部(10)</span><span>待上传资料(2)</span><span>审核中(2)</span><span>资料被驳回(0)</span><span>注册中(1)</span><span>注册成功(5)</span></div>
+					<div class="list-toolbar"><span>已选择 <b id="selectedServices">0</b> 项<span class="toolbar-divider"></span><span class="muted">批量下载证书</span></span><span class="muted">共 <b id="serviceResultCount">10</b> 条</span></div>
+					<div class="service-table-scroll"><table class="service-list-table"><thead><tr><th class="service-check"><input type="checkbox" id="selectAllServices" aria-label="选择全部服务"></th><th>序号</th><th>基础服务编号</th><th>订单号</th><th>公司名称</th><th>商品名称</th><th>商品规格</th><th class="service-operation">操作</th></tr></thead><tbody id="serviceRows"></tbody></table></div>
+					<div class="list-pagination"><span id="servicePageCount">共 10 条</span><button class="icon-button" disabled aria-label="上一页"><i data-icon="chevron-left"></i></button><span class="current-page">1</span><button class="icon-button" disabled aria-label="下一页"><i data-icon="chevron-right"></i></button><span>10 条/页</span></div>
+				</section>
+				<div class="section-toolbar orders-title"><h2>追加记录 <span class="count" id="orderCount">0</span></h2><span class="muted">按追加单自身区间提供服务</span></div>
+				<div id="orderList" class="order-list"></div>
+				<footer class="page-footer">跨信通 · 证书类商品追加</footer>
+			</div>
+		</main>
+	</div>
+
+	<div class="overlay guide-overlay" id="guideOverlay" hidden>
+		<section class="guide-dialog" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+			<header class="dialog-header"><div class="dialog-heading"><span class="header-icon"><i data-icon="layers"></i></span><h2 id="guideTitle">追加服务指引</h2></div><button class="icon-button" id="closeGuide" title="关闭" aria-label="关闭追加服务指引"><i data-icon="x"></i></button></header>
+			<div class="guide-body">
+				<div class="guide-filters">
+					<label class="guide-field">
+						<span>公司名称</span>
+						<input id="guideCompany" type="search" placeholder="请输入公司名称" aria-label="按公司名称搜索">
+					</label>
+					<label class="guide-field">
+						<span>国家</span>
+						<select id="guideCountry" aria-label="按国家筛选">
+							<option value="">全部国家</option>
+							<option value="德国">德国</option>
+						</select>
+					</label>
+					<label class="guide-field">
+						<span>类目</span>
+						<select id="guideCategory" aria-label="按类目筛选">
+							<option value="">全部类目</option>
+							<option value="电气法">电气法</option>
+							<option value="包装法">包装法</option>
+						</select>
+					</label>
+				</div>
+				<div class="guide-list-head"><strong>可追加的基础服务</strong><span id="guideResultCount">共 2 条</span></div>
+				<div class="guide-services" id="guideServices">
+					<button class="guide-service-card" data-action="choose-base" data-base="SV202611100001" data-company="示例智联科技有限公司" data-country="德国" data-category="电气法">
+						<span class="guide-service-icon"><i data-icon="package"></i></span>
+						<span class="guide-service-copy"><strong>德国 WEEE · 注册＋申报</strong><small>示例智联科技有限公司 · 26-01-01 至 27-12-31</small><span class="guide-service-tags"><em>德国</em><em>电气法</em></span></span>
+						<span class="guide-service-meta">可追加 2026、2027<i data-icon="chevron-right"></i></span>
+					</button>
+					<button class="guide-service-card" data-action="choose-base" data-base="SV202611100008" data-company="示例智联科技有限公司" data-country="德国" data-category="包装法">
+						<span class="guide-service-icon"><i data-icon="package"></i></span>
+						<span class="guide-service-copy"><strong>德国包装法 · 注册＋申报</strong><small>示例智联科技有限公司 · 2026-01-01 至 2026-12-31</small><span class="guide-service-tags"><em>德国</em><em>包装法</em></span></span>
+						<span class="guide-service-meta">可追加 2026<i data-icon="chevron-right"></i></span>
+					</button>
+				</div>
+				<div class="guide-no-result" id="guideNoResult" hidden>没有符合筛选条件的基础服务</div>
+			</div>
+			<footer class="guide-footer"><button class="btn" id="guideCancel">取消</button><button class="btn primary" data-action="goto-services">查看全部基础服务</button></footer>
+		</section>
+	</div>
+
+	<div class="more-menu" id="moreMenu" role="menu" aria-label="更多操作" hidden>
+		<button role="menuitem" data-action="service-period">查看产品服务期</button><span>亚马逊平台备案指引</span><span>速卖通平台备案指引</span><span>阿里巴巴平台备案指引</span><span>TEMU平台备案指引</span><button role="menuitem" id="openAppend">追加商品</button>
+	</div>
+	<div class="overlay" id="appendOverlay" hidden>
+		<section class="append-dialog" role="dialog" aria-modal="true" aria-labelledby="appendTitle">
+			<header class="dialog-header"><div class="dialog-heading"><span class="header-icon"><i data-icon="package"></i></span><h2 id="appendTitle">追加商品</h2><span class="header-subtitle">德国 WEEE</span></div><button class="icon-button" data-action="close" title="关闭" aria-label="关闭追加窗口"><i data-icon="x"></i></button></header>
+			<div class="context-bar"><span class="context-base-id"><span class="muted">基础服务单</span> <b id="contextBaseId">SV202611100001</b><span class="context-base-product"><span class="muted">基础商品</span><strong id="contextBaseProduct">新-德国WEEE注册＋申报（26-01-01 至 27-12-31）</strong></span></span><span><span class="muted">企业</span> 示例智联科技有限公司</span><span><i data-icon="calendar-days"></i><span id="contextPeriod">2026-01-01 至 2027-12-31</span></span></div>
+			<div class="dialog-body">
+				<div class="form-scroll" id="formScroll">
+					<section class="year-section" aria-labelledby="yearTitle">
+						<div class="section-heading"><h3 id="yearTitle"><span class="step-number">1</span>选择追加年份<span class="required">*</span></h3><span class="hint">按自然年匹配商品</span></div>
+						<div class="year-options" id="appendYearOptions" role="group" aria-label="可追加年份"></div>
+						<p class="field-error" id="yearError" hidden>请选择追加年份</p>
+					</section>
+					<section class="products-section" aria-labelledby="productsTitle">
+						<div class="section-heading"><h3 id="productsTitle"><span class="step-number">2</span>品类选择<span class="count" id="productCount">1</span></h3><button class="text-button" id="addProduct"><i data-icon="plus"></i>添加类目</button></div>
+						<div class="product-table-wrap"><table class="product-table"><colgroup><col class="col-number"><col class="col-type"><col class="col-brand"><col class="col-actions"></colgroup><thead><tr><th>#</th><th><span class="type-header">类目<a class="type-guide-icon" href="assets/germany-weee-product-types.pdf" download="德国WEEE类目说明.pdf" title="下载类目说明（PDF · 德文原文）" aria-label="下载类目说明（PDF · 德文原文）"><i data-icon="download"></i></a></span></th><th>品牌</th><th>操作</th></tr></thead><tbody id="productRows"></tbody></table></div>
+						<div class="list-empty" id="productEmpty" hidden><i data-icon="layers"></i><strong>还未添加类目</strong><span>请添加类目和品牌</span><button class="btn" data-action="add"><i data-icon="plus"></i>添加类目</button></div>
+						<div id="productEditor"></div>
+						<div class="product-summary" id="productSummary"></div>
+					</section>
+				</div>
+				<div class="form-summary" id="formSummary" aria-live="polite"></div>
+			</div>
+			<div id="formError" class="form-error" role="alert" hidden></div>
+			<footer class="dialog-footer"><div class="footer-selection" id="footerSelection"><i data-icon="calendar-days"></i>尚未选择追加年份</div><div class="footer-total"><span>合计</span><b id="quoteTotal">—</b></div><div class="footer-actions"><button class="btn" data-action="close">取消</button><button class="btn primary" id="submitAppend">提交追加<i data-icon="chevron-right"></i></button></div></footer>
+		</section>
+	</div>
+
+	<div class="overlay secondary-overlay" id="confirmOverlay" hidden><section class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle"><header class="dialog-header"><div class="dialog-heading"><h2 id="confirmTitle">确认追加信息</h2></div><button class="icon-button" id="closeConfirm" title="返回修改" aria-label="返回修改"><i data-icon="x"></i></button></header><div class="confirm-body" id="confirmBody"></div><footer class="confirm-footer"><button class="btn" id="editAgain">返回修改</button><button class="btn primary" id="createOrder">确认并生成订单</button></footer></section></div>
+	<div class="overlay secondary-overlay" id="paymentOverlay" hidden><section class="payment-dialog" role="dialog" aria-modal="true" aria-labelledby="paymentTitle"><header class="dialog-header"><div class="dialog-heading"><h2 id="paymentTitle">追加订单</h2></div><button class="icon-button" id="closePayment" title="关闭" aria-label="关闭订单"><i data-icon="x"></i></button></header><div id="paymentBody"></div><footer class="confirm-footer" id="paymentFooter"></footer></section></div>
+	<div class="overlay secondary-overlay" id="discardOverlay" hidden><section class="discard-dialog" role="alertdialog" aria-modal="true" aria-labelledby="discardTitle"><div class="discard-body"><span class="warning-icon"><i data-icon="circle-alert"></i></span><div><h2 id="discardTitle">放弃本次填写？</h2><p>未提交的商品、类目和品牌信息将不会保留。</p></div></div><footer class="confirm-footer"><button class="btn" id="continueEditing">继续填写</button><button class="btn danger" id="discardForm">放弃填写</button></footer></section></div>
+	<div class="toast" id="toast" role="status" hidden></div>
+	<script src="icons.js"></script>
+	<script src="type-guide.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>

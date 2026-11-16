@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="color-scheme" content="light">
+	<link rel="icon" href="data:,">
+	<title>续费列表 · 跨信通税务管理系统</title>
+	<link rel="stylesheet" href="renewal.css">
+</head>
+<body>
+	<header class="system-header">
+		<a class="system-brand" href="renewal.html"><span class="brand-mark">K</span><strong>跨信通税务管理系统</strong></a>
+		<nav class="system-nav" aria-label="系统模块"><span>系统管理</span><span class="active">业务管理</span><span>CRM</span><span>客服工单</span><span>测试平台</span><span>数据平台</span></nav>
+		<div class="header-user"><i data-icon="bell"></i><span class="avatar">陈</span><span>陈经理</span></div>
+	</header>
+	<aside class="sidebar">
+		<div class="side-item"><i data-icon="layout-dashboard"></i>首页</div>
+		<div class="side-item"><i data-icon="file-text"></i>履约工作台</div>
+		<div class="side-item"><i data-icon="shopping-bag"></i>订单管理<i data-icon="chevron-down"></i></div>
+		<div class="side-item expanded"><i data-icon="refresh-cw"></i>续费管理<i data-icon="chevron-down"></i></div>
+		<div class="side-item child active">续费列表</div>
+		<div class="side-item child">续费列表（新）</div>
+		<div class="side-item child">设置续费截止时间</div>
+		<div class="side-item child">公司列表（新）</div>
+		<div class="side-item child">合同列表</div>
+		<div class="side-item child">续费回款</div>
+		<div class="side-item child">续费看板</div>
+		<div class="side-item"><i data-icon="layers"></i>客户管理<i data-icon="chevron-down"></i></div>
+		<div class="side-item"><i data-icon="shield-check"></i>EPR合规<i data-icon="chevron-down"></i></div>
+		<div class="side-item"><i data-icon="package"></i>商品管理<i data-icon="chevron-down"></i></div>
+		<div class="side-bottom">跨信通 · 业务管理</div>
+	</aside>
+	<main class="workspace">
+		<div class="page-tabs"><span>履约工作台</span><span class="current">续费列表</span></div>
+		<div class="page-content">
+			<section class="filters" aria-label="续费筛选">
+				<div class="service-types"><span>服务类型：</span><label><input type="radio" name="serviceType" value="全部" checked>全部</label><label><input type="radio" name="serviceType" value="SAAS">SAAS</label><label><input type="radio" name="serviceType" value="专属服务">专属服务</label></div>
+				<div class="filter-fields">
+					<label class="compact-select"><span>商品类目</span><select aria-label="商品类目"><option>电气法</option></select></label>
+					<label class="compact-select"><span>类型</span><select aria-label="类型"><option>注册＋申报</option></select></label>
+					<label class="compact-select"><span>国家</span><select aria-label="国家"><option>德国</option></select></label>
+					<label class="customer-query"><span>客户</span><input id="keyword" placeholder="公司名称 / 客户ID" aria-label="公司名称或客户ID"></label>
+					<label class="date-query"><span>服务结束时间</span><input type="date" id="dateFrom" aria-label="服务结束时间起始"><span class="date-dash">至</span><input type="date" id="dateTo" aria-label="服务结束时间结束"></label>
+				</div>
+				<div class="filter-actions"><button class="btn primary" id="searchRenewals"><i data-icon="search"></i>搜索</button><button class="btn" id="reset">重置</button><span class="input-error" id="filterError" role="alert" hidden></span></div>
+			</section>
+			<section class="list-section" aria-label="续费列表">
+				<div class="list-toolbar"><h1>续费列表</h1><div class="toolbar-right"><span class="muted">已续费金额汇总：</span><strong id="paidTotal">¥0.00</strong></div></div>
+				<div class="status-tabs" role="tablist" aria-label="续费状态">
+					<button class="selected" role="tab" aria-selected="true" data-status="全部">全部 <span id="allCount">10</span></button>
+					<button role="tab" aria-selected="false" data-status="待续费">待续费 <span id="pendingCount">10</span></button>
+					<button role="tab" aria-selected="false" data-status="已续费">已续费 <span id="renewedCount">0</span></button>
+					<button role="tab" aria-selected="false" data-status="不续费">不续费 <span id="cancelledCount">0</span></button>
+				</div>
+				<div class="table-wrap"><table class="renewal-list"><thead><tr><th>序号</th><th>服务类型</th><th>客户级别</th><th>客成专员</th><th>客户ID</th><th>公司名称</th><th>国家</th><th>商品名称</th><th>商品类目</th><th>服务结束时间</th><th>状态</th><th class="operation-col">操作</th></tr></thead><tbody id="customerRows"></tbody></table></div>
+				<div class="pagination"><span id="resultCount">共 10 条</span><button class="icon-button" disabled aria-label="上一页"><i data-icon="chevron-left"></i></button><span class="page-number">1</span><button class="icon-button" disabled aria-label="下一页"><i data-icon="chevron-right"></i></button><span>10 条/页</span></div>
+			</section>
+			<footer class="page-footer">证书类商品续费</footer>
+		</div>
+	</main>
+
+	<div class="overlay" id="flowOverlay" hidden>
+		<section class="flow-dialog" role="dialog" aria-modal="true" aria-labelledby="flowTitle" tabindex="-1">
+			<header class="dialog-header"><h2 id="flowTitle">选择续费商品</h2><button class="icon-button" data-action="close-flow" title="关闭" aria-label="关闭续费窗口"><i data-icon="x"></i></button></header>
+			<div id="flowProgress"></div>
+			<div class="flow-body" id="flowBody"></div>
+			<footer class="flow-footer" id="flowFooter"></footer>
+		</section>
+	</div>
+
+	<div class="overlay drawer-overlay" id="paymentOverlay" hidden>
+		<section class="payment-drawer" role="dialog" aria-modal="true" aria-labelledby="paymentTitle" tabindex="-1">
+			<header class="dialog-header"><h2 id="paymentTitle">新建续费订单</h2><button class="icon-button" data-action="close-payment" title="关闭" aria-label="关闭订单窗口"><i data-icon="x"></i></button></header>
+			<div id="paymentProgress"></div>
+			<div class="payment-body" id="paymentBody"></div>
+			<footer class="payment-footer" id="paymentFooter"></footer>
+		</section>
+	</div>
+
+	<div class="overlay result-overlay" id="resultOverlay" hidden>
+		<section class="result-dialog" role="dialog" aria-modal="true" aria-labelledby="resultTitle" tabindex="-1">
+			<header class="dialog-header"><h2 id="resultTitle">续费订单</h2><button class="icon-button" data-action="close-result" title="关闭" aria-label="关闭订单结果"><i data-icon="x"></i></button></header>
+			<div class="result-body" id="resultBody"></div>
+			<footer class="flow-footer"><span></span><button class="btn primary" data-action="close-result">返回续费列表</button></footer>
+		</section>
+	</div>
+	<script src="icons.js"></script>
+	<script src="renewal.js"></script>
+</body>
+</html>

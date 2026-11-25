@@ -40,10 +40,14 @@
 		element.style.setProperty("--rate-color", `rgb(${color.join(", ")})`);
 		element.style.setProperty("--rate-angle", `${ratio * 360}deg`);
 		if (element.classList.contains("progress-ring")) {
-			element.innerHTML = `<strong>${percent}%</strong>`;
+			const support = element.closest("[data-support]");
+			element.innerHTML = support
+				? `<strong>${percent}%</strong>`
+				: `<strong>${percent}%</strong>`;
 			element.setAttribute("role", "img");
 			element.setAttribute("aria-label", `自动化率 ${percent}%，当前 ${current}，总数 ${total}`);
 		} else {
+			const support = element.closest("[data-support]");
 			element.innerHTML = `<div class="rate-value" title="自动化率：${current}/${total}">
 				<div class="rate-heading"><strong>${percent}%</strong></div>
 				<div class="rate-details"><progress value="${current}" max="${total}" aria-label="自动化率 ${percent}%，${current}/${total}"></progress><span class="rate-fraction">${current}/${total}</span></div>

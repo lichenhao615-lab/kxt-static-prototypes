@@ -279,6 +279,7 @@
 			}
 		}
 	</style>
+	<link rel="stylesheet" href="automation-monthly.css?v=20261125-support-detail">
 </head>
 <body>
 	<main class="shell">
@@ -307,10 +308,10 @@
 
 			<h2 class="result-heading" id="resultHeading" aria-live="polite">2026 年 10 月通晒结果<span>统计更新：2026.11.04</span></h2>
 			<div class="tab-panel" id="vatPanel" role="tabpanel" aria-labelledby="vatTab">
-				<iframe class="page-frame vat-frame" src="vat-automation-product-map.html?v=20261104-rate-graphics&amp;period=2026-10" data-month="2026-10" title="2026 年 10 月 VAT 自动化产品地图"></iframe>
+				<iframe class="page-frame vat-frame" src="vat-automation-product-map.html?v=20261125-support-detail&amp;period=2026-10" data-month="2026-10" title="2026 年 10 月 VAT 自动化产品地图"></iframe>
 			</div>
 			<div class="tab-panel" id="eprPanel" role="tabpanel" aria-labelledby="eprTab" hidden>
-				<iframe class="page-frame epr-frame" src="epr-automation-product-map.html?v=20261104-rate-graphics&amp;period=2026-10" data-month="2026-10" title="2026 年 10 月 EPR 自动化进程产品地图"></iframe>
+				<iframe class="page-frame epr-frame" src="epr-automation-product-map.html?v=20261125-support-detail&amp;period=2026-10" data-month="2026-10" title="2026 年 10 月 EPR 自动化进程产品地图"></iframe>
 			</div>
 		</section>
 	</main>
@@ -318,6 +319,7 @@
 	<script>
 		const tabs = [...document.querySelectorAll(".tab")];
 		let frames = [...document.querySelectorAll(".page-frame")];
+		let supportFrame = null;
 		const monthSelect = document.getElementById("resultMonth");
 		const months = {
 			"current": { label: "现状", period: "2026.10.01 至 2026.10.31", path: "" },
@@ -327,11 +329,21 @@
 
 		window.addEventListener("message", (event) => {
 			const frame = frames.find((item) => item.contentWindow === event.source);
-			if (!frame || event.data?.type !== "automation-map-height") return;
+			if (!frame) return;
+			if (event.data?.type === "automation-support-open") {
+				supportFrame = frame;
+				return;
+			}
+			if (event.data?.type !== "automation-map-height") return;
 			const height = event.data.height;
 			if (Number.isFinite(height) && height > 0 && height < 100000 && !frame.closest(".tab-panel").hidden) {
 				frame.style.height = `${height}px`;
 			}
+		});
+		document.addEventListener("keydown", (event) => {
+			if (event.key !== "Escape" || !supportFrame) return;
+			supportFrame.contentWindow.postMessage({ type: "automation-support-close" }, "*");
+			supportFrame = null;
 		});
 		const observeFrame = (frame) => {
 			frame.addEventListener("load", () => frame.contentWindow.postMessage({ type: "automation-map-measure" }, "*"));
@@ -366,7 +378,7 @@
 				if (frame.dataset.month !== month) {
 					// 重建嵌入页，避免 iframe 导航进入浏览器的月份返回历史。
 					const replacement = frame.cloneNode(false);
-					replacement.src = `${result.path}${line}-automation-product-map.html?v=20261104-rate-graphics&period=${month}`;
+					replacement.src = `${result.path}${line}-automation-product-map.html?v=20261125-support-detail&period=${month}`;
 					replacement.dataset.month = month;
 					replacement.style.removeProperty("height");
 					observeFrame(replacement);

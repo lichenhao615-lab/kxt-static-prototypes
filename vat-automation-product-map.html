@@ -612,7 +612,7 @@
 			}
 		}
 	</style>
-	<link rel="stylesheet" href="automation-monthly.css?v=20261104-rate-graphics">
+	<link rel="stylesheet" href="automation-monthly.css?v=20261125-support-detail">
 </head>
 <body>
 	<main class="page">
@@ -638,18 +638,18 @@
 			<div class="priority-section">
 				<div class="priority-heading"><h2>我们的重点项目</h2><span>Q4 · VAT 3 项</span></div>
 				<div class="priority-projects">
-					<article class="priority-project" data-project="西班牙VAT" data-product-key="vat:ES">
+					<button class="priority-project support-trigger" type="button" data-project="西班牙VAT" data-product-key="vat:ES" data-support="ES" aria-label="展开西班牙 VAT 自动化率支持点明细，54 项">
 						<div class="progress-ring" data-automation-current="18" data-automation-total="27"></div>
 						<div><h3>西班牙 VAT</h3><p>当前 18 / 总数 27</p></div>
-					</article>
-					<article class="priority-project" data-project="德国VAT" data-product-key="vat:DE">
+					</button>
+					<button class="priority-project support-trigger" type="button" data-project="德国VAT" data-product-key="vat:DE" data-support="DE" aria-label="展开德国 VAT 自动化率支持点明细，22 项">
 						<div class="progress-ring" data-automation-current="8" data-automation-total="12"></div>
 						<div><h3>德国 VAT</h3><p>当前 8 / 总数 12</p></div>
-					</article>
-					<article class="priority-project" data-project="法国VAT" data-product-key="vat:FR">
+					</button>
+					<button class="priority-project support-trigger" type="button" data-project="法国VAT" data-product-key="vat:FR" data-support="FR" aria-label="展开法国 VAT 自动化率支持点明细，22 项">
 						<div class="progress-ring" data-automation-current="2" data-automation-total="5"></div>
 						<div><h3>法国 VAT</h3><p>当前 2 / 总数 5</p></div>
-					</article>
+					</button>
 				</div>
 			</div>
 		</section>
@@ -688,7 +688,7 @@
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料包制作和校验后流转已自动化。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>注册递交已实现自动化。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入已完成自动化闭环。</p></td>
-							<td class="rate-cell" data-automation-current="8" data-automation-total="12"></td>
+							<td class="rate-cell support-cell"><button class="support-trigger" type="button" data-support="DE" data-automation-current="8" data-automation-total="12" aria-label="展开德国 VAT 自动化率支持点明细，22 项"></button></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">2. 波兰 <small>PL</small></div></td>
@@ -720,7 +720,7 @@
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill semi">待自动化</span></strong><p>注册递交待实现国家专属自动化能力。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入自动化已完成。</p></td>
-							<td class="rate-cell" data-automation-current="2" data-automation-total="5"></td>
+							<td class="rate-cell support-cell"><button class="support-trigger" type="button" data-support="FR" data-automation-current="2" data-automation-total="5" aria-label="展开法国 VAT 自动化率支持点明细，22 项"></button></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">6. 西班牙 <small>ES</small></div></td>
@@ -728,7 +728,7 @@
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>资料制作自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>注册递交自动化已完成。</p></td>
 							<td class="node"><strong><span class="pill auto">已自动化</span></strong><p>税号录入自动化已完成。</p></td>
-							<td class="rate-cell" data-automation-current="18" data-automation-total="27"></td>
+							<td class="rate-cell support-cell"><button class="support-trigger" type="button" data-support="ES" data-automation-current="18" data-automation-total="27" aria-label="展开西班牙 VAT 自动化率支持点明细，54 项"></button></td>
 						</tr>
 						<tr>
 							<td class="country-cell"><div class="country-title">7. 捷克 <small>CZ</small></div></td>
@@ -857,7 +857,8 @@
 			</div>
 		</section>
 	</main>
-	<script src="automation-map-progress.js?v=20261104-rate-graphics"></script>
+	<script src="automation-map-progress.js?v=20261125-support-detail"></script>
+	<script src="automation-rate-support.js?v=20261125-support-detail"></script>
 	<script src="automation-map-frame.js"></script>
 </body>
 </html>

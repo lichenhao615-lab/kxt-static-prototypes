@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>类目渠道关联 · 跨信通税务管理系统</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<div class="app-shell">
+		<header class="topbar">
+			<div class="brand"><span class="brand-mark">K</span><strong>跨信通税务管理系统</strong></div>
+			<nav class="main-nav" aria-label="业务模块"><span>系统管理</span><span class="active">业务管理</span><span>CRM</span><span>客服工单</span><span>测试平台</span><span>数据平台</span></nav>
+			<div class="top-actions">
+				<span class="prototype-tag">产品评审</span>
+				<div class="settings-wrap">
+					<button id="settings-toggle" class="icon-btn" type="button" aria-label="演示设置" title="演示设置" aria-expanded="false"><i data-lucide="settings-2"></i></button>
+					<div id="settings-menu" class="settings-menu" hidden>
+						<div class="menu-title">演示设置</div>
+						<label class="menu-item"><input id="readonly-toggle" type="checkbox">只读模式</label>
+						<label class="menu-item"><input id="fail-toggle" type="checkbox">下次保存失败</label>
+						<button id="reset-demo" class="menu-item danger" type="button"><i data-lucide="rotate-ccw"></i>重置示例</button>
+					</div>
+				</div>
+				<span class="user-avatar">当</span><span class="user-name">当前用户</span>
+			</div>
+		</header>
+		<aside class="sidebar" aria-label="业务导航">
+			<div class="sidebar-item">首页<i data-lucide="chevron-up"></i></div>
+			<div class="sidebar-item sub">履约工作台</div>
+			<div class="sidebar-item">订单管理<i data-lucide="chevron-down"></i></div>
+			<div class="sidebar-item">续费管理<i data-lucide="chevron-down"></i></div>
+			<div class="sidebar-item">客户管理<i data-lucide="chevron-down"></i></div>
+			<div class="sidebar-item">VAT税务<i data-lucide="chevron-down"></i></div>
+			<div class="sidebar-item">EPR合规<i data-lucide="chevron-down"></i></div>
+			<div class="sidebar-item">履约管理<i data-lucide="chevron-down"></i></div>
+			<div class="sidebar-item">商品管理<i data-lucide="chevron-down"></i></div>
+			<div class="sidebar-item section">类目管理<i data-lucide="chevron-up"></i></div>
+			<button class="sidebar-item sub active" data-page="products" type="button">类目渠道关联</button>
+			<div class="sidebar-item sub">类型列表</div>
+			<div class="sidebar-item">属性管理<i data-lucide="chevron-down"></i></div>
+			<div class="sidebar-item">价格管理<i data-lucide="chevron-down"></i></div>
+			<div class="sidebar-item">流程管理<i data-lucide="chevron-down"></i></div>
+			<div class="sidebar-item">渠道管理<i data-lucide="chevron-up"></i></div>
+			<div class="sidebar-item sub">渠道服务管理</div>
+			<button class="sidebar-item sub" data-page="channels" type="button">渠道业务配置</button>
+		</aside>
+		<main class="workspace">
+			<div class="tabbar" role="tablist" aria-label="业务页面">
+				<button id="tab-products" class="page-tab active" role="tab" aria-selected="true" data-page="products" type="button">类目渠道关联</button>
+				<button id="tab-channels" class="page-tab" role="tab" aria-selected="false" data-page="channels" type="button">渠道业务配置</button>
+			</div>
+			<section class="content">
+				<div id="readonly-banner" class="readonly-banner" hidden><i data-lucide="eye"></i>当前为只读模式，可查看关联关系和变更记录。</div>
+				<div class="page-heading"><h1 id="page-title" class="page-title">类目渠道关联</h1><span class="muted" id="page-context" hidden></span></div>
+				<form id="filter-form" class="filters">
+					<label class="input-wrap search-field"><span class="sr-only" id="search-label">类目ID或类目名称</span><i data-lucide="search"></i><input id="keyword" aria-labelledby="search-label" type="search" placeholder="类目ID / 类目名称" autocomplete="off"></label>
+					<label><span class="sr-only">关联状态</span><select id="association-filter" aria-label="关联状态"><option value="">全部关联状态</option><option value="mapped">已关联</option><option value="unmapped">未关联</option></select></label>
+					<label><span class="sr-only">状态</span><select id="status-filter" aria-label="状态"><option value="">全部状态</option><option value="enabled">启用</option><option value="disabled">禁用</option></select></label>
+					<button class="btn primary" type="submit"><i data-lucide="search"></i>搜索</button>
+					<button id="reset-filters" class="btn" type="button"><i data-lucide="rotate-ccw"></i>重置</button>
+				</form>
+				<div class="association-summary"><span id="mapping-count" class="muted" aria-live="polite"></span></div>
+				<div class="table-wrap"><table id="main-table" class="data-table"><thead id="table-head"></thead><tbody id="table-body"></tbody></table></div>
+				<div class="pagination"><span id="total-count" class="muted"></span><span class="page-size">全部显示</span><button class="icon-btn" type="button" title="上一页" disabled aria-label="上一页"><i data-lucide="chevron-left"></i></button><span class="page-number">1</span><button class="icon-btn" type="button" title="下一页" disabled aria-label="下一页"><i data-lucide="chevron-right"></i></button></div>
+			</section>
+		</main>
+	</div>
+	<div id="overlay" class="overlay" hidden>
+		<button class="backdrop" id="drawer-backdrop" type="button" aria-label="关闭抽屉"></button>
+		<section id="drawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+			<header class="drawer-header"><div><h2 id="drawer-title">关联渠道业务</h2><p id="drawer-subtitle" class="drawer-subtitle" hidden></p></div><button id="drawer-close" class="icon-btn" aria-label="关闭" title="关闭" type="button"><i data-lucide="x"></i></button></header>
+			<div id="drawer-content" class="drawer-content"></div>
+			<footer id="drawer-footer" class="drawer-footer"></footer>
+		</section>
+	</div>
+	<div id="modal-overlay" class="modal-overlay" hidden>
+		<section id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+			<header class="modal-header"><h2 id="modal-title"></h2><button id="modal-close" class="icon-btn" type="button" aria-label="关闭确认"><i data-lucide="x"></i></button></header>
+			<div id="modal-content" class="modal-content"></div>
+			<footer id="modal-footer" class="modal-footer"></footer>
+		</section>
+	</div>
+	<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+	<script src="assets/lucide.min.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>
